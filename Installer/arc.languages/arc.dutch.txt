@@ -1,0 +1,448 @@
+﻿******************************************************************************
+***  This is a language file for FreeArc (http://freearc.org).             ***
+***  You may improve it by providing new translations.                     ***
+***  Messages that need translation are marked by "??",                    ***
+***  You just need to find all those question signs and replace them with  ***
+***  appropriate translations of the text at left side.                    ***
+***                                                                        ***
+***  Please note that Tooltips section should include not direct           ***
+***  translations but TOOLTIPS diplayed at the top of appropriate labels.  ***
+***  You may assign tooltip to any label - just use its number +1000 at    ***
+***  the left side. For example, label:                                    ***
+***    0185 Protection:=Protection: (written in your language, of course)  ***
+***  It's tooltip:                                                         ***
+***    1185 Protection:=Appends recovery information to archive            ***
+******************************************************************************
+
+Language name in english and mother tongue
+0000 Language=Dutch (Nederlands)
+0159 Copyright=Vertaald door (Translated by): Ferry Heibrink\nJune 25th 2008
+
+=== Menu ========================================================================
+Main menu
+0050 File=&Bestand
+0066 Edit=Be&werken
+
+File menu/toolbar 
+0030 Add=Toevoegen
+0040 Add files to archive(s)=Toevoegen bestanden aan archief
+0031 Modify=Wijzigen
+0041 Modify archive(s)=Wijzig parameters archief
+0032 Join=Samenvoegen
+0042 Join archives together=Archieven samenvoegen
+0033 Delete=Verwij&deren
+0043 Delete files (from archive)=Verwijder bestanden (normaal of uit archief)
+0034 Test=Test
+0044 Test files in archive(s)=Integriteit geselecteerde archief testen.
+0035 Extract=Uitpakken
+0045 Extract files from archive(s)=Bestanden uitpakken vanuit het geselecteerde archief.
+0064 Settings=Instellingen
+0065 Edit program settings=Programma-instellingen wijzigen
+0036 Exit=&Sluiten
+0046 Quit application=Afsluiten applicatie
+
+Edit menu/toolbar 
+0037 Select=Selecteren
+0047 Select files=Selecteer bestanden
+0038 Unselect=De-selecteren
+0048 Unselect files=De-selecteren bestanden
+0039 Refresh=&Verversen
+0049 Reread archive/directory=Opnieuw inlezen archief/map
+0086 ArcInfo=Achief Info
+0087 Information about archive=Informatie over archief
+
+
+=== File manager ==================================================================
+
+Navibar
+0006 Up=Omhoog
+0007 Save=Opslaan
+0008 Select files=&Selecteer...
+0009 Unselect files=&De-selecteer...
+
+Filelist
+0015 Name=Naam
+0016 Size=Grootte
+0017 Modified=Gewijzigd
+0018 DIRECTORY=<<MAP>>
+
+Statusbar
+0022 Selected %1 bytes in %2 file(s)=%2 item(s) geselecteerd, %1 bytes
+0023 Total %1 bytes in %2 file(s)=%2 item(s), %1 bytes
+
+Messages
+0012 There are no files selected!=Er zijn geen bestanden geselecteerd
+0013 There are no archives selected!=Er zijn geen archieven geselecteerd
+0071 %1: no such file or directory!=%1: bestand of map bestaat niet
+0133 You can't compress files directly from archive!=Je kunt geen bestanden rechtstreeks vanuit het archief comprimeren!
+0145 You can't join archives directly from archive!=Je kunt geen bestanden rechtstreeks vanuit het archief samenvoegen!
+0251 Abort operation?=??
+
+
+=== Dialogs =======================================================================
+Add dialog
+--Title
+0134 Add %1 to archive=Voeg %1 toe aan archief
+0135 Add %2 files to archive=Voeg %2 bestanden toe aan archief
+0136 Add all files to archive=Voeg alle bestanden toe aan archief
+0146 Modify all archives=Wijzig alle archieven
+0147 Modify %1=Wijzig %1
+0148 Modify %2 archives=Wijzig %2 archieven
+0149 Join all archives=Voeg alle archieven samen
+0150 Join %1 with another archive=Voeg %1 samen met een ander archief
+0151 Join %2 archives=Samenvoegen %2 archieven
+---------
+0182 Main=Hoofd
+0131 Output archive:=doelbestand &Archief:
+0132 Select output archive=Selecteer doelbestand archief
+0141 Base directory inside archive:=Basismap binnen archief
+--
+0188 Store file paths:=Vastleggen bestandspaden
+0189 No=Nee
+0190 Relative to compressed dir=Relatief aan gecomprimeerde map
+0191 Relative to curdir (default)=Relatief aan huidige map (standaard)
+0192 Absolute (relative to root dir)=Absoluut (Relatief aan hoofdmap)
+0193 Full (including drive letter)=Volledig (incl. schijfletter)
+--
+0194 Update mode:=&Bijwerk modus:
+0195 Add and replace files (default)=Toevoegen en vervangen bestanden (standaard)
+0196 Add and update files=Toevoegen en bijwerken bestanden
+0197 Fresh existing files=Bestaande bestanden verversen
+0198 Synchronize archive with disk contents=Synchroniseer archief met schijfinhoud
+--
+0183 Compression:=Compressie
+0184 Encryption:=Encryptie
+0185 Protection:=Beveiliging
+0186 Comment:=&Opmerking:
+0227 Make EXE:=Zelf uitpakkend (SF&X) archief maken (.exe)
+0128 Test archive after operation=Test archief na comprimeren
+0122 Delete files successfully archived=Verwijder bronbestanden na succesvol comprimeren
+0187 Finalize archive=Archief afsluiten
+---------
+0200 Archive=Archive
+0201 Compress each file into separate archive=Elk bestand in eigen archief comprimeren
+0202 Add to archive name:=Toevoegen aan archiefnaam:
+--
+0203 Set archive time to:=Archieftijd instellen op:
+0204 Current system time=Huidige systeemtijd
+0205 Original archive time=Originele archieftijd
+0206 Latest file time=Laatste bestandstijdstip
+--
+0207 Delete previous archive contents=Verwijder vorige archiefinhoud
+0208 Order of files in archive:=Bestandsvolgorde in archief
+--
+0209 Recompression mode:=Hercompressie modus:
+0210 Quickly append new files=Snel nieuwe bestanden toevoegen
+0211 Smart recompression of solid blocks (default)=Slim hercomprimeren complete blokken (standaard)
+0212 Recompress all files=Hercomprimeer alle bestanden
+0213 Store only fileinfo=Alleen bestandsinformatie opslaan
+0214 Store only fileinfo & crcs=Alleen bestandsinformatie en CRCs opslaan
+0215 No archive headers=Geen archieflabel
+--
+0216 Backup mode:=Backup modus
+0217 No (default)=Nee (Standaard)
+0218 Full: clear \"Archive\" attribute of files succesfully archived=Volledig: Verwijder \"Archief\" attribuut voor bestanden die succesvol zijn gearchiveerd
+0219 Differential: select only files with \"Archive\" attribute set=Differentieel: Alleen bestanden met \"Archief\" attribuut meenemen
+0220 Incremental: select by \"Archive\" attribute & clear it after compression=Incrementeel: Alleen bestanden met \"Archief\" attribuut meenemen en daarna Archief parameter verwijderen
+---------
+0221 Files=Bestanden
+0222 Include only files:=Alleen bestanden:
+0223 Exclude files:=Uitsluiten bestanden:
+0224 Include only files larger than:=Alleen bestanden groter dan:
+0225 Include only files smaller than:=Alleen bestanden kleiner dan:
+---------
+0199 Comment=Opmerking
+
+
+Delete dialog
+0160 Delete %1 from archive?=Weet u zeker dat u '%1' uit eht archief wilt verwijderen?
+0161 Delete %1?=Weet u zeker dat u '%1' wilt verwijderen?
+0019 Delete %2 file(s) from archive?=Weet u zeker dat u deze %2 items wilt verwijderen?
+0020 Delete %2 file(s)?=Weet u zeker dat u deze %2 items wilt verwijderen?
+
+
+Extract dialog
+0024 Extract files from %3=&Uitpakken bestanden vanuit %3
+0025 Extract %1 from %3=Uitpakken %1 van %3
+0026 Extract %2 files from %3=Uitpakken %2 bestanden vanuit %3
+0027 Extract files from %4 archives=Uitpakken bestanden van %4 archieven
+0158 Extract all archives=Uitpakken alle archieven
+0152 Test %3=Test  %3
+0153 Test %1 from %3=Test %1 van %3
+0154 Test %2 files from %3=Test %2 bestanden van %3
+0155 Test %4 archives=Test %4 archieven
+0157 Test all archives=Test alle archieven
+--Overwrite mode
+0005 Overwrite mode=Overschijven modus
+0001 Ask before overwrite=Vragen alvorens te overschrijven
+0002 Overwrite without prompt=Overschrijven zonder bevestiging
+0003 Update old files=Bijwerken oude bestanden
+0051 Skip existing files=Bestaande bestanden overslaan
+--Output directory
+0004 Output directory:=U&itpakken naar:
+0021 Select output directory=Selecteer doelmap
+0014 Append archive name to the output directory=Voeg naam van archief toe aan doelmap
+--Other
+0072 Additional options:=Overige opties:
+
+
+Archive information dialog
+0085 All about %1=Alles over %1
+0173 Directories:=Mappen:
+0088 Files:=Bestanden:
+0089 Total bytes:=Totale grootte:
+0090 Compressed bytes:=Gecomprimeerde grootte:
+0091 Ratio:=Compressieverhouding:
+--
+0104 Directory blocks:=Mapblokken
+0092 Solid blocks:=Solide blokken
+0093 Avg. size:=Gemm. grootte
+--
+0099 Compression memory:=Geheugengebruik bij comprimeren:
+0100 Decompression memory:=Geheugengebruik bij decomprimeren:
+0105 Dictionary:=&Woordenboekgrootte:
+--
+0094 Archive locked:=Archief gesloten
+0095 Recovery info:=Herstel info
+0096 SFX size:=Grootte uitpakprogramma (SFX)
+0156 Headers encrypted:=Codee&r bestandsnamen en archiefsamenvatting
+--
+0097 Encryption algorithms:=Encr&yptiemethode:
+0098 Archive comment:=&Opmerking:
+
+
+Settings dialog
+0067 Settings=Instellingen
+0174 Main=Hoofd
+0068 Language:=Taal:
+0069 Edit=&Bewerken
+0070 Import=Importeren
+0168 You should restart FreeArc in order for a language settings to take effect.=U dient FreeArc te herstarten alvorens de taalinstellingen geactiveerd worden.
+0169 Passwords need to be entered again after restart.=Wachtwoorden dienen na herstarten opnieuw ingevoerd te worden.
+0170 Full name:=Volledige naam
+0171 Copyright:=Auteursrecht:
+0166 Logfile:=Logbestand:
+0167 Select logfile=Selecteer logbestand
+0172 Associate FreeArc with .arc files=Koppel .arc bestanden aan FreeArc
+
+
+=== Profile settings ============================================================
+--Compression settings
+0106 Compression=Compressie
+0175 Compression profile:=Compressieprofiel
+0178 Save=Opslaan
+0107 Compression level=Compressie&niveau:
+0108 Maximum=Maximum
+0109 High=Hoog
+0110 Normal=Normaal
+0111 Fast=Snel
+0112 Very fast=Snelst
+0127 HDD-speed=Harddisk Snelheid
+0113 Fast, low-memory decompression=Snel, minimum-geheugengebruik bij decompressie
+0226 (fast, low-memory decompression)=(snel, minimum-geheugengebruik bij decompressie)
+0176 Filetype auto-detection=Automatisch herkennen bestandstype
+--Description of compression method selected
+0114 Compression level: %1=Comp.&niveau: %1
+0115 Compression speed: %1, memory: %2=Comp. snelheid:%1, Geheugengebruik: %2
+0116 Decompression speed: %1, memory: %2=Decomp. snelheid:%1, Geheugengebruik: %2
+0117 All speeds were measured on 1GHz single-core Duron,=Snelheden zijn gebasseerd op een:\n1GHz AMD Duron computer met 1 Core.
+0118 and your horse will probably run faster=\nUw machine zal waarschijnlijk sneller zijn...
+--Solid block size
+0177 Limit solid blocks=Limiteer solide blokken
+0138 Bytes, no more than:=Grootte, niet meer dan:
+0139 Files, no more than:=Bestanden, niet meer dan:
+0140 Split by extension=Splitsen op extensie
+
+--Encryption settings
+0119 Encryption=Encryptie
+0179 Encryption profile:=Encryptieprofiel
+0180 Save=Opslaan
+0120 Encrypt archive directory=Codee&r bestandsnamen en archiefinformatie
+0181 Use password=Wachtwoord
+0123 Keyfile:=sleutelbestand
+0124 Select keyfile=Selecteer sleutelbestand
+0125 Create=Maken
+0126 Create new keyfile=Maak nieuw sleutelbestand
+0121 Encryption algorithm:=Encr&yptiealgoritme:
+--Decryption settings
+0144 Decryption=Decryptie
+
+
+=== Execution dialogs ============================================================
+Progress indicator
+--Buttons
+0052 Background=&Achtergrond
+0053 Pause=&Pauze
+0054 Continue=&Hervatten
+0055 Cancel=&Annuleren
+--Labels
+0056 Files=Bestanden:
+0057 Total files=Totaal aantal bestanden
+0058 Bytes=Bytes
+0059 Total bytes=Totaal aantal bytes:
+0060 Ratio=Compressieverhouding:
+0061 Speed=Snelheid:
+0062 Time=Tijd:
+0063 Total time=Totaaltijd:
+--Messages
+0246 Found %1 files=%1 bestanden gevonden
+0247 Found %1 archives=%1 archieven gevonden
+0248 Analyzed %1 files=%1 bestanden geanalyzeerd
+0249 Reading archive directory=Inlezen archiefmap
+0250 Sorting filelist=Sorteren bestandslijst
+
+File overwrite dialog
+0078 Confirm File Replace=Bevestigen overschijven bestand
+0162 Destination folder already contains processed file.=Doelmap bevat het huidige bestand al.
+0163 Would you like to replace the existing file=Wilt u het bestaande bestand vervangen
+0164 with this one?=door dit bestand?
+0165 %1\n%2 bytes\nmodified on %3=%1\n%2 bytes\ngewijzigd op %3
+0079 &Yes=&Ja
+0080 &No=&Nee
+0081 &Cancel=&Annuleren
+0082 Yes to &All=Ja op &alles
+0083 No to A&ll=Nee op a&lles
+0084 &Update all=Alles &Bijwerken
+
+Enter password dialog
+0076 Enter encryption password=Encryptie wachtwoord ingeven
+0077 Enter decryption password=Decryptie wachtwoord ingeven
+0074 Enter password:=Wachtwoord &ingeven:
+0075 Reenter password:=Wachtwoord bevestigen:
+
+Archive comment dialog
+0073 Enter archive comment=Opmerkingen ingeven
+
+
+=== Infoline messages ====================================================
+0228 Deleting from %1=Bezig met verwijderen uit %1
+0229 FILES SUCCESFULLY DELETED FROM %1=BESTANDEN VANUIT %1 SUCCESVOL VERWIJDERD
+0230 %2 WARNINGS WHILE DELETING FROM %1=%2 WAARSCHIJWINGEN TIJDENS VERWIJDEREN
+
+0231 Testing %1=TESTEN VAN %1
+0232 SUCCESFULLY TESTED %1=%1 SUCCESVOL GETEST
+0233 %2 WARNINGS WHILE TESTING %1=%2 WAARSCHUWINGEN TIJDENS TESTEN
+
+0234 Extracting files from %1=UITPAKKEN BESTANDEN VANUIT %1
+0235 FILES SUCCESFULLY EXTRACTED FROM %1=BESTANDEN SUCCESVOL UITGEPAKT VANUIT %1
+0236 %2 WARNINGS WHILE EXTRACTING FILES FROM %1=%2 WAARSCHUWINGEN TIJDENS UITPAKKEN BESTANDEN VANUIT %1
+
+0237 Modifying %1=Bezig met wijzigen %1
+0238 SUCCESFULLY MODIFIED %1=%1 SUCCESVOL GEWIJZIGD
+0239 %2 WARNINGS WHILE MODIFYING %1=%2 WAARSCHUWINGEN TIJDENS WIJZIGEN %1
+
+0240 Joining archives to %1=Samenvoegen archieven naar %1
+0241 SUCCESFULLY JOINED ARCHIVES TO %1=SUCCESVOL ARCHIEVEN NAAR %1 SAMENGEVOEGD
+0242 %2 WARNINGS WHILE JOINING ARCHIVES TO %1=%2 WAARSCHUWINGEN TIJDENS SAMENVOEGEN ARCHIEVEN NAAR %2
+
+0243 Adding to %1=Toevoegen naar %1
+0244 FILES SUCCESFULLY ADDED TO %1=BESTANDEN SUCCESVOEG TOEGEVOEGD AAN %1
+0245 %2 WARNINGS WHILE ADDING TO %1=%2 WAARSCHUWINGEN TIJDENS TOEVOEGEN AAN %1
+
+
+=== Standard profiles ====================================================
+Compression
+0727 Maximum (1gb decompression)=Maximum (1GB decompressie)
+0728 Maximum (192mb decompression)=Maximum (192MB decompressie)
+0729 Maximum (fast, low-memory decompression)=Maximum (snel, minimum-gehegengebruik)
+0752 No compression=geen compressie
+
+Encryption
+0730 Standard=Standaard
+0731 Fast=Snel
+0732 Strong=Sterk
+0733 Strongest=Sterkst
+
+Protection
+0734 Add=Toevoegen
+0735 Remove=Verwijderen
+0736 Internet-only (4kb blocks)=Alleen internet (4KB blokken)
+0737 Internet-only (64kb blocks)=Alleen internet (64KB blokken)
+0738 Percents, example=Procenten, voorbeeld
+0739 Fixed-size, example=Vaste grootte, voorbeeld
+
+Comment
+0740 Add from textbox=Toevoegen vanuit tekstvak
+0741 Remove=Verwijderen
+0742 Add short comment, example=Toevoegen korte opmerking, voorbeeld
+0743 Add from a file, example=Toevoegen vanuit een bestand, voorbeeld
+
+SFX
+0765 Windows GUI=Windows Grafisch
+0766 Windows console=Windows tekstconsole
+0767 Linux console=Linux tekstconcole
+0768 Convert EXE back to ARC=Converteer .exe terug naar .arc
+
+Sorting
+0744 No sorting=Geen sortering
+0745 Standard=Standaard
+0746 Advanced=Geavanceerd
+0747 Smart+Path=Slim+Pad
+0748 Smart+Name=Slim+Naam
+0750 Extension+Path=Extensie+Pad
+0749 Extension+Name=Extensie+Naam
+0751 Extension+Size=Extensie+Grootte
+
+Archive name template
+0754 Date+Time=Datum+Tijd
+0755 Date=Datum
+0756 Time=Tijd
+0757 Month=Maand
+0758 Monthday=Maand Dag
+0759 Weekday=Week Dag
+
+Exclude
+0760 Backup files=Backup bestanden
+
+
+=== Tooltips (index=N+1000) ===========================================
+
+******************************************************************************************
+***  DON'T FORGET THAT THIS SECTION SHOULD PROVIDE TOOLTIPS, NOT DIRECT TRANSLATIONS.  ***
+***  You may find some tooltips in arc.english.txt                                     ***
+******************************************************************************************
+
+Add dialog
+--
+1183 Compression=??
+1184 Encryption=??
+1185 Protection:=Voegt een stuk data toe aan het archief (standaard ongeveer 1% van de archiefgrootte), hierdoor kunnen kleine fouten in het archiefbestand worden hersteld (bijvoorbeeld een beschadigde diskette of een beschadigde download)
+1186 Comment=??
+1227 Make EXE:=??
+1128 Test archive after operation=??
+1122 Delete files successfully archived=??
+1187 Finalize archive=??
+1072 Additional options:=??
+--
+1201 Compress each file into separate archive=??
+1202 Add to archive name=??
+--
+1207 Delete previous archive contents=??
+1208 Order of files in archive=??
+--
+1222 Include only files=??
+1223 Exclude files=??
+
+--Compression settings
+1113 Fast, low-memory decompression=Uitschakelen van algoritmes die traag zijn of veel geheugen verbruiken tijdens decomprimeren. Een bij-effect hiervan is wel dat het comprimeren trager word en tevens een groter archief opleverd.
+1176 Filetype auto-detection=Als deze is ingeschakeld, analyzeerd FreeArc de inhoud van elk bestand en selecteerd hier een optimale compressiemethode voor. Als deze uitgeschakeld is zal FreeArc compressiemethoden toepassen zoals beschreven in 'arc.groups'.
+1138 Bytes, no more than:=??
+1139 Files, no more than:=??
+1140 Split by extension=??
+
+--Encryption settings
+1120 Encrypt archive directory=Past encryptie toe op archief meta-informatie (bestandsnamen, groottes en CRC informatie). Om het bestand in te zien dient u eerst het wachtwoord in te geven. Het word sterk aangeraden deze optie te gebruiken om goede beveiliging van de gegevens te waarborgen.
+1123 Keyfile:=Een sleutelbestand is een standaard bestand waarvan de inhoud aan het wachtwoord word toegevoegd. Zonder sleutelbestand en wachtwoord is het onmogelijk het archief te openen. Gebruik van een sleutelbestand versterkt de beveiliging van een bestand enorm bij gebruik van AES en vergelijkbare encryptiesystemen
+1125 Generate new keyfile=Genereer een nieuw sleutelbestand met zelfgekozen naam welke 1KB aan cryptografisch gegenereerde willekeurige data bevat
+1181 Use password=??
+
+
+=== Everything else ====================================================
+Common words
+0101 Yes=&Ja
+0102 No=&Nee
+0103 May be=Misschien
+
+Failure messages
+0010 Operation interrupted!=Bewerking onderbroken!
+0011 No threads to run: infinite loop or deadlock?=Geen opdrachten te starten: Oneindige lus of vastloper?

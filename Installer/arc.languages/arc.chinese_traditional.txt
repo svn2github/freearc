@@ -1,0 +1,448 @@
+﻿******************************************************************************
+***  This is a language file for FreeArc (http://freearc.org).             ***
+***  You may improve it by providing new translations.                     ***
+***  Messages that need translation are marked by "??",                    ***
+***  You just need to find all those question signs and replace them with  ***
+***  appropriate translations of the text at left side.                    ***
+***                                                                        ***
+***  Please note that Tooltips section should include not direct           ***
+***  translations but TOOLTIPS diplayed at the top of appropriate labels.  ***
+***  You may assign tooltip to any label - just use its number +1000 at    ***
+***  the left side. For example, label:                                    ***
+***    0185 Protection:=Protection: (written in your language, of course)  ***
+***  It's tooltip:                                                         ***
+***    1185 Protection:=Appends recovery information to archive            ***
+******************************************************************************
+
+Language name in english and mother tongue
+0000 Language=Chinese Traditional (正體中文)
+0159 Copyright=語言包由"穿睡衣的忍者"和"SuperDark"製作\n我們兩個都是翻譯白痴,翻譯不好請見諒\n我們都是大陆的,所以對正體中文的用語不是很清楚
+
+=== Menu ========================================================================
+Main menu
+0050 File=檔案(&F)
+0066 Edit=編輯(&E)
+
+File menu/toolbar 
+0030 Add=添加 
+0040 Add files to archive(s)=添加選取的檔案到壓縮包
+0031 Modify=修改
+0041 Modify archive(s)=修改壓縮包
+0032 Join=加入
+0042 Join archives together=加入到壓縮包
+0033 Delete=刪除(&D)
+0043 Delete files (from archive)=刪除壓縮包中的檔案
+0034 Test=測試 
+0044 Test files in archive(s)=測試選取的檔案
+0035 Extract=解壓縮
+0045 Extract files from archive(s)=從選取的壓縮包中解壓檔案
+0064 Settings=設定
+0065 Edit program settings=修改程式設定
+0036 Exit=結束(&X)
+0046 Quit application=結束程式
+
+Edit menu/toolbar 
+0037 Select=選取
+0047 Select files=選取檔案
+0038 Unselect=取消選取
+0048 Unselect files=取消選取檔案
+0039 Refresh=重新整理(&R)
+0049 Reread archive/directory=重新讀取壓縮包或目錄
+0086 ArcInfo=資訊 
+0087 Information about archive=壓縮包資訊
+
+
+=== File manager ==================================================================
+
+Navibar
+0006 Up=向上
+0007 Save=保存
+0008 Select files=選取檔案
+0009 Unselect files=取消選取檔案
+
+Filelist
+0015 Name=名稱
+0016 Size=大小
+0017 Modified=修改時間
+0018 DIRECTORY=<資料夾>
+
+Statusbar
+0022 Selected %1 bytes in %2 file(s)=選取 %2 個物件, %1 位元組
+0023 Total %1 bytes in %2 file(s)=%2 個物件, %1 位元組
+
+Messages
+0012 There are no files selected!=沒有選取檔案!
+0013 There are no archives selected!=沒有選取壓縮包!
+0071 %1: no such file or directory!=沒有這樣的檔案或目錄!
+0133 You can't compress files directly from archive!=您無法從壓縮包壓縮檔案!
+0145 You can't join archives directly from archive!=您無法把壓縮檔案加入到壓縮包!
+0251 Abort operation?=??
+
+
+=== Dialogs =======================================================================
+Add dialog
+--Title
+0134 Add %1 to archive=添加選取物件到壓縮包
+0135 Add %2 files to archive=添加選取物件到壓縮包
+0136 Add all files to archive=添加選取物件到壓縮包
+0146 Modify all archives=變更全部檔案
+0147 Modify %1=變更“%1”
+0148 Modify %2 archives=變更“%2”檔案
+0149 Join all archives=合併全部檔案
+0150 Join %1 with another archive=合併“%1”到壓縮包
+0151 Join %2 archives=合併“%2”壓縮檔案
+---------
+0182 Main=首選項
+0131 Output archive:=輸出檔案(&A):
+0132 Select output archive=選取並輸出檔案
+0141 Base directory inside archive:=以壓縮包內的目錄為基礎
+--
+0188 Store file paths:=保存檔案路徑
+0189 No=不保存路徑
+0190 Relative to compressed dir=相對壓縮路徑
+0191 Relative to curdir (default)=相對當前的路徑(預設)
+0192 Absolute (relative to root dir)=絕對路徑(相對根路徑)
+0193 Full (including drive letter)=完整路徑(包含磁碟機代號)
+--
+0194 Update mode:=更新模式(&U):
+0195 Add and replace files (default)=添加並取代檔案
+0196 Add and update files=添加並更新檔案
+0197 Fresh existing files=重新整理現有檔案
+0198 Synchronize archive with disk contents=同步壓縮檔案與磁碟內容
+--
+0183 Compression:=壓縮
+0184 Encryption:=加密
+0185 Protection:=保護
+0186 Comment:=註解(&C):
+0227 Make EXE:=創建自釋放檔案(&X)
+0128 Test archive after operation=操作後的測試壓縮檔案
+0122 Delete files successfully archived=刪除已壓縮檔案
+0187 Finalize archive=關閉壓縮檔案
+---------
+0200 Archive=壓縮檔案
+0201 Compress each file into separate archive=壓縮每個檔案至獨立壓縮檔案
+0202 Add to archive name:=添加到壓縮檔案的名稱:
+--
+0203 Set archive time to:=設定壓縮時間為
+0204 Current system time=目前系統時間
+0205 Original archive time=原始壓縮包時間
+0206 Latest file time=最新的檔案時間
+--
+0207 Delete previous archive contents=刪除原先的壓縮包內容
+0208 Order of files in archive:=壓縮包中的檔案順序
+--
+0209 Recompression mode:=重新壓縮模式
+0210 Quickly append new files=快速附加新檔案
+0211 Smart recompression of solid blocks (default)=固實區塊的智慧重新壓縮(預設)
+0212 Recompress all files=重新壓縮所有檔案
+0213 Store only fileinfo=僅保存檔案資訊
+0214 Store only fileinfo & crcs=僅保存壓縮檔案的檔案資訊以及修覆資訊
+0215 No archive headers=無壓縮包標題
+--
+0216 Backup mode:=備份模式
+0217 No (default)=不備份(預設)
+0218 Full: clear \"Archive\" attribute of files succesfully archived=全部:確定"壓縮檔案"檔案內容,存檔
+0219 Differential: select only files with \"Archive\" attribute set=獨特:只選取"壓縮檔案"檔案內容的集合
+0220 Incremental: select by \"Archive\" attribute & clear it after compression=增加,選取"壓縮檔案"內容和清除它後,壓縮
+---------
+0221 Files=檔案
+0222 Include only files:=僅包括檔案
+0223 Exclude files:=排除檔案
+0224 Include only files larger than:=僅包括大於:
+0225 Include only files smaller than:=僅包括小於:
+---------
+0199 Comment=註解
+
+
+Delete dialog
+0160 Delete %1 from archive?=從壓縮包刪除 “%1”?
+0161 Delete %1?=刪除 “%1”嗎?
+0019 Delete %2 file(s) from archive?=從壓縮包刪除這 %2 項?
+0020 Delete %2 file(s)?=刪除這 %2 項?
+
+
+Extract dialog
+0024 Extract files from %3=從 %3 解壓縮檔案
+0025 Extract %1 from %3=從 %3 解壓縮 %1 
+0026 Extract %2 files from %3=從 %3 解壓縮 %2 檔案
+0027 Extract files from %4 archives=從%4 壓縮包解壓縮檔案
+0158 Extract all archives=解壓所有壓縮包
+0152 Test %3=測試壓縮檔案 %3
+0153 Test %1 from %3=測試壓縮檔案 %3 中的 %1 
+0154 Test %2 files from %3=測試壓縮檔案 %3 中的 %2 項檔案
+0155 Test %4 archives=測試 %4 壓縮包
+0157 Test all archives=測試所有壓縮包
+--Overwrite mode
+0005 Overwrite mode=覆寫模式
+0001 Ask before overwrite=覆寫前先詢問我
+0002 Overwrite without prompt=覆寫時不詢問
+0003 Update old files=更新舊的檔案
+0051 Skip existing files=略過現有的檔案
+--Output directory
+0004 Output directory:=解壓縮至(&X):
+0021 Select output directory=請指定存放暫存壓縮檔的位置
+0014 Append archive name to the output directory=添加壓縮包的名字到解壓目錄
+--Other
+0072 Additional options:=其他選項
+
+
+Archive information dialog
+0085 All about %1=所有與 %1相關的
+0173 Directories:=資料夾:
+0088 Files:=檔案:
+0089 Total bytes:=總大小:
+0090 Compressed bytes:=壓縮後大小:
+0091 Ratio:=壓縮率:
+--
+0104 Directory blocks:=目錄區
+0092 Solid blocks:=固實區塊
+0093 Avg. size:=平均大小
+--
+0099 Compression memory:=壓縮時記憶體使用:
+0100 Decompression memory:=解壓縮時記憶體使用:
+0105 Dictionary:=字典大小(&D):
+--
+0094 Archive locked:=壓縮包密碼
+0095 Recovery info:=恢覆資訊
+0096 SFX size:=自解壓檔案大小
+0156 Headers encrypted:=加密檔名(&N)
+--
+0097 Encryption algorithms:=加密方法:
+0098 Archive comment:=註解(&C):
+
+
+Settings dialog
+0067 Settings=設定
+0174 Main=首選項
+0068 Language:=介面語言:
+0069 Edit=編輯(&E)
+0070 Import=輸入
+0168 You should restart FreeArc in order for a language settings to take effect.=重新啟動FreeArc後,語言設定才能生效
+0169 Passwords need to be entered again after restart.=程式重新啟動後,密碼必須重新輸入
+0170 Full name:=全稱
+0171 Copyright:=版權
+0166 Logfile:=日誌檔案
+0167 Select logfile=選取日誌檔案
+0172 Associate FreeArc with .arc files=使 FreeArc 與 .arc 產生關聯
+
+
+=== Profile settings ============================================================
+--Compression settings
+0106 Compression=壓縮
+0175 Compression profile:=壓縮簡介
+0178 Save=保存
+0107 Compression level=壓縮層級:
+0108 Maximum=最大壓縮
+0109 High=高壓縮
+0110 Normal=標準壓縮
+0111 Fast=快速壓縮
+0112 Very fast=最快壓縮
+0127 HDD-speed=高速
+0113 Fast, low-memory decompression=快速,低記憶體解壓縮
+0226 (fast, low-memory decompression)=(快速,低記憶體解壓縮)
+0176 Filetype auto-detection=自動檢測檔案類型
+--Description of compression method selected
+0114 Compression level: %1=壓縮層級(&L): %1
+0115 Compression speed: %1, memory: %2=壓縮所需記憶體: %2, 速度: %1
+0116 Decompression speed: %1, memory: %2=解壓縮所需記憶體: %2, 速度: %1
+0117 All speeds were measured on 1GHz single-core Duron,=所有的速度測定都在1GHz的單核心鑽龍上進行
+0118 and your horse will probably run faster=而您的電腦也許會更快地運行
+--Solid block size
+0177 Limit solid blocks=限制固實區塊
+0138 Bytes, no more than:=位元組,不多於:
+0139 Files, no more than:=檔案,不多於:
+0140 Split by extension=延伸
+
+--Encryption settings
+0119 Encryption=加密
+0179 Encryption profile:=加密技術
+0180 Save=保存
+0120 Encrypt archive directory=加密檔名(&N)
+0181 Use password=使用密碼
+0123 Keyfile:=密碼檔案
+0124 Select keyfile=選取密碼檔案
+0125 Create=創建
+0126 Create new keyfile=創建新的關鍵檔案
+0121 Encryption algorithm:=加密演算法:
+--Decryption settings
+0144 Decryption=解密
+
+
+=== Execution dialogs ============================================================
+Progress indicator
+--Buttons
+0052 Background=背景作業(&B)
+0053 Pause=暫停(&P)
+0054 Continue=繼續(&C)
+0055 Cancel=取消(&C)
+--Labels
+0056 Files=檔案數:
+0057 Total files=總檔案數:
+0058 Bytes=已處理位元組:
+0059 Total bytes=總位元組:
+0060 Ratio=壓縮率:
+0061 Speed=速度:
+0062 Time=經過時間:
+0063 Total time=剩餘時間:
+--Messages
+0246 Found %1 files=發現 %1個檔案
+0247 Found %1 archives=?發現 %1個壓縮包
+0248 Analyzed %1 files=分析 %1個檔案
+0249 Reading archive directory=讀壓縮包目錄
+0250 Sorting filelist=整理檔案清單
+
+File overwrite dialog
+0078 Confirm File Replace=確認檔案取代
+0162 Destination folder already contains processed file.=目的資料夾已包含要處理的檔案
+0163 Would you like to replace the existing file=您要取代現有的檔案
+0164 with this one?=而改用這個檔案嗎?
+0165 %1\n%2 bytes\nmodified on %3=%1\n%2 位元組\n修改日期 %3
+0079 &Yes=是(&Y)
+0080 &No=否(&N)
+0081 &Cancel=取消(&C)
+0082 Yes to &All=全是(&A)
+0083 No to A&ll=全否(&L)
+0084 &Update all=取代全部(&U)
+
+Enter password dialog
+0076 Enter encryption password=輸入密碼
+0077 Enter decryption password=再次輸入密碼
+0074 Enter password:=輸入密碼:
+0075 Reenter password:=重新輸入密碼:
+
+Archive comment dialog
+0073 Enter archive comment=進入檔案評論
+
+
+=== Infoline messages ====================================================
+0228 Deleting from %1=正在從 ％1刪除
+0229 FILES SUCCESFULLY DELETED FROM %1=檔案已成功從 ％1刪除
+0230 %2 WARNINGS WHILE DELETING FROM %1=在刪除 ％1時, %2發出警告
+
+0231 Testing %1=正在測試 ％1
+0232 SUCCESFULLY TESTED %1=已成功測試 ％1
+0233 %2 WARNINGS WHILE TESTING %1=在測試 ％1時, %2發出警告
+
+0234 Extracting files from %1=正在從 ％1中解壓檔案
+0235 FILES SUCCESFULLY EXTRACTED FROM %1=已成功從 ％1中解壓檔案
+0236 %2 WARNINGS WHILE EXTRACTING FILES FROM %1=從 ％1中解壓檔案時, %2發出警告
+
+0237 Modifying %1=修正 %1
+0238 SUCCESFULLY MODIFIED %1=已成功修正 %1
+0239 %2 WARNINGS WHILE MODIFYING %1=在修正 ％1時, %2發出警告
+
+0240 Joining archives to %1=加入壓縮包到 %1
+0241 SUCCESFULLY JOINED ARCHIVES TO %1=已成功加入壓縮包到 %1
+0242 %2 WARNINGS WHILE JOINING ARCHIVES TO %1=在加入壓縮包到 %1時, %2發出警告
+
+0243 Adding to %1=添加到 %1
+0244 FILES SUCCESFULLY ADDED TO %1=已成功添加到 %1
+0245 %2 WARNINGS WHILE ADDING TO %1=在添加到 %1時, %2發出警告
+
+
+=== Standard profiles ====================================================
+Compression
+0727 Maximum (1gb decompression)=最大(1gb的解壓縮)
+0728 Maximum (192mb decompression)=最大(192mb的解壓縮)
+0729 Maximum (fast, low-memory decompression)=最大(快速,低記憶體解壓縮)
+0752 No compression=沒有壓縮
+
+Encryption
+0730 Standard=標準
+0731 Fast=快
+0732 Strong=很快
+0733 Strongest=最快
+
+Protection
+0734 Add=添加
+0735 Remove=移除
+0736 Internet-only (4kb blocks)=僅限網際網路(4kb blocks)
+0737 Internet-only (64kb blocks)=僅限網際網路(64kb blocks)
+0738 Percents, example=百分比,例如
+0739 Fixed-size, example=固定大小,例如
+
+Comment
+0740 Add from textbox=從文字添加
+0741 Remove=移除 
+0742 Add short comment, example=新增短期的評論,例如
+0743 Add from a file, example=從檔案添加,例如
+
+SFX
+0765 Windows GUI=Windows圖形介面
+0766 Windows console=Windows命令提示字元
+0767 Linux console=Linux 終端
+0768 Convert EXE back to ARC=將EXE轉換回ARC
+
+Sorting
+0744 No sorting=不排序
+0745 Standard=標準
+0746 Advanced=進階
+0747 Smart+Path=自動的路徑
+0748 Smart+Name=自動的名稱
+0750 Extension+Path=延長的路徑
+0749 Extension+Name=延長的名稱
+0751 Extension+Size=延長的大小
+
+Archive name template
+0754 Date+Time=日前和時間
+0755 Date=日期
+0756 Time=時間
+0757 Month=月份
+0758 Monthday=某個月的天數
+0759 Weekday=工作天
+
+Exclude
+0760 Backup files=備份檔案
+
+
+=== Tooltips (index=N+1000) ===========================================
+
+******************************************************************************************
+***  DON'T FORGET THAT THIS SECTION SHOULD PROVIDE TOOLTIPS, NOT DIRECT TRANSLATIONS.  ***
+***  You may find some tooltips in arc.english.txt                                     ***
+******************************************************************************************
+
+Add dialog
+--
+1183 Compression=??
+1184 Encryption=??
+1185 Protection:=保護
+1186 Comment=??
+1227 Make EXE:=??
+1128 Test archive after operation=??
+1122 Delete files successfully archived=??
+1187 Finalize archive=??
+1072 Additional options:=??
+--
+1201 Compress each file into separate archive=??
+1202 Add to archive name=??
+--
+1207 Delete previous archive contents=??
+1208 Order of files in archive=??
+--
+1222 Include only files=??
+1223 Exclude files=??
+
+--Compression settings
+1113 Fast, low-memory decompression=快速,低記憶體解壓縮
+1176 Filetype auto-detection=自動檢測檔案類型
+1138 Bytes, no more than:=??
+1139 Files, no more than:=??
+1140 Split by extension=??
+
+--Encryption settings
+1120 Encrypt archive directory=加密存檔目錄
+1123 Keyfile:=密碼檔案
+1125 Generate new keyfile=創建新的密碼檔案
+1181 Use password=??
+
+
+=== Everything else ====================================================
+Common words
+0101 Yes=是(&Y)
+0102 No=否(&N)
+0103 May be=可能
+
+Failure messages
+0010 Operation interrupted!=操作被中斷! 
+0011 No threads to run: infinite loop or deadlock?=沒有執行緒運行:僵局或無限循環?

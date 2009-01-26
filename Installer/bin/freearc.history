@@ -1,0 +1,95 @@
+compression=0110 Normal: -m4 -s64m
+compression=0727 Maximum (1gb decompression): -mx -ld=1gb
+compression=0728 Maximum (192mb decompression): -mx -ld=192m
+compression=0729 Maximum (fast, low-memory decompression): -m9x
+compression=0109 High: -m5 -s128m
+compression=0111 Fast: -m3 -s32m
+compression=0112 Very fast: -m2 -s16m
+compression=0127 HDD-speed: -m1 -s8m
+compression=0752 No compression: -m0
+
+encryption=0730 Standard: aes-256 -p? -hp
+encryption=0731 Fast: twofish-256 -p? -hp
+encryption=0732 Strong: aes+serpent/cfb+twofish -p? -hp
+encryption=0733 Strongest: aes:r100+serpent/cfb:r100+twofish:r100 -p? -hp
+
+encryptor=0730 Standard: aes-256
+encryptor=0731 Fast: twofish-256
+encryptor=0732 Strong: aes+serpent/cfb+twofish
+encryptor=0733 Strongest: aes:r100+serpent/cfb:r100+twofish:r100
+encryptor=blowfish-448
+encryptor=serpent-256
+encryptor=twofish-256
+encryptor=aes+blowfish/cfb+serpent/cfb+twofish
+encryptor=aes-128
+encryptor=aes/cfb
+encryptor=aes-128/cfb
+encryptor=aes:r100
+
+protection=0734 Add: +
+protection=0735 Remove: -
+protection=0736 Internet-only (4kb blocks): 0.1%
+protection=0737 Internet-only (64kb blocks): 0.01%
+protection=0738 Percents, example: 5%
+protection=0739 Fixed-size, example: 1mb
+
+comment=0740 Add from textbox:
+comment=0741 Remove: -z-
+comment=0742 Add short comment, example: Viva Kalman!
+comment=0743 Add from a file, example: -z=c:\path\filename.txt
+
+sfx=0765 Windows GUI: freearc.sfx
+sfx=0766 Windows console: arc.sfx
+sfx=0767 Linux console: arc.linux.sfx
+sfx=0768 Convert EXE back to ARC: -sfx-
+
+sort=0744 No sorting:
+sort=0745 Standard: gerpn
+sort=0746 Advanced: gercpn
+sort=0747 Smart+Path: geipn
+sort=0748 Smart+Name: geinp
+sort=0749 Extension+Name: genp
+sort=0750 Extension+Path: gepn
+sort=0751 Extension+Size: ges
+
+ag=0754 Date+Time:
+ag=0755 Date: %Y-%m-%d
+ag=0756 Time: %H-%M-%S
+ag=0757 Month: %Y-%m
+ag=0758 Monthday: %d
+ag=0759 Weekday: %w%A
+
+exclude=0753 Backup files: *.~* *.bak
+
+larger=10kb
+larger=100kb
+larger=1mb
+larger=10mb
+larger=100mb
+larger=1gb
+
+smaller=10kb
+smaller=100kb
+smaller=1mb
+smaller=10mb
+smaller=100mb
+smaller=1gb
+
+files=1
+files=10
+files=100
+files=1000
+
+bytes=1mb
+bytes=8mb
+bytes=64mb
+bytes=1gb
+
+options=0760 Perform full backup: -ep3 -ac
+options=0761 Full archive test before and after operation: -tp3 -t3
+
+xoptions=0762 Remove pathnames: -ep
+xoptions=0763 Restore absolute pathnames: -ep3
+xoptions=0764 Full archive test before performing operation: -tp3
+
+mask=*

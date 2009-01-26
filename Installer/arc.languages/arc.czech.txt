@@ -1,0 +1,456 @@
+******************************************************************************
+***  This is a language file for FreeArc (http://freearc.org).             ***
+***  You may improve it by providing new translations.                     ***
+***  Messages that need translation are marked by "??",                    ***
+***  You just need to find all those question signs and replace them with  ***
+***  appropriate translations of the text at left side.                    ***
+***                                                                        ***
+***  Please note that Tooltips section should include not direct           ***
+***  translations but TOOLTIPS diplayed at the top of appropriate labels.  ***
+***  You may assign tooltip to any label - just use its number +1000 at    ***
+***  the left side. For example, label:                                    ***
+***    0185 Protection:=Protection: (written in your language, of course)  ***
+***  Its tooltip:                                                          ***
+***    1185 Protection:=Appends recovery information to archive            ***
+******************************************************************************
+
+Language name in english and mother tongue
+0000 Language=Czech (Čeština)
+0159 Copyright=Radek "Black_Fox" Liška\nDodatky k překladu: Jan Ondruš, Milan Hrubý, Michal Molhanec
+
+=== Menu ========================================================================
+Main menu
+0050 File=Soubor
+0066 Edit=Úpravy
+
+File menu/toolbar 
+0030 Add=Přidat
+0040 Add files to archive(s)=Přidá vybrané položky do archivu
+0031 Modify=Upravit
+0041 Modify archive(s)=Upraví archiv(y)
+0032 Join=Spojit
+0042 Join archives together=Spojí archivy dohromady
+0033 Delete=Vymazat
+0043 Delete files (from archive)=Vymaže soubory (z archivu)
+0034 Test=Test
+0044 Test files in archive(s)=Otestuje integritu vybraného archivu
+0035 Extract=Rozbalit
+0045 Extract files from archive(s)=Rozbalí soubory z vybraného archivu
+0064 Settings=Nastavení
+0065 Edit program settings=Upraví nastavení programu
+0036 Exit=Konec
+0046 Quit application=Ukončí program
+
+Edit menu/toolbar 
+0037 Select=Vybrat
+0047 Select files=Vybere soubory
+0038 Unselect=Odvybrat
+0048 Unselect files=Odvybere soubory
+0039 Refresh=Obnovit
+0049 Reread archive/directory=Znovu načte archiv/složku
+0086 ArcInfo=Informace
+0087 Information about archive=Zobrazí informace o archivu
+
+
+=== File manager ==================================================================
+
+Navibar
+0006 Up=Nahoru
+0007 Save=Uložit
+0008 Select files=Vybrat...
+0009 Unselect files=Odvybrat...
+
+Filelist
+0015 Name=Název
+0016 Size=Velikost
+0017 Modified=Upraven
+0018 DIRECTORY=<Složka>
+
+Statusbar
+0022 Selected %1 bytes in %2 file(s)=%2 objekt(ů) vybraných, %1 bajtů
+0023 Total %1 bytes in %2 file(s)=%2 objekt(ů), %1 bajtů
+
+Messages
+0012 There are no files selected!=Nebyly vybrány žádné soubory!
+0013 There are no archives selected!=Nebyly vybrány žádné archivy!
+0071 %1: no such file or directory!=Soubor nebo složka %1 neexistuje!
+0133 You can't compress files directly from archive!=Nelze komprimovat přímo z archivu!
+0145 You can't join archives directly from archive!=Nelze spojovat archivy přímo z archivu!
+0251 Abort operation?=Přerušit operaci?
+
+
+=== Dialogs =======================================================================
+Add dialog
+--Title
+0134 Add %1 to archive=Přidat %1 do archivu
+0135 Add %2 files to archive=Přidat vybrané položky do archivu
+0136 Add all files to archive=Přidat všechny položky do archivu
+0146 Modify all archives=Upravit všechny archivy
+0147 Modify %1=Upravit %1
+0148 Modify %2 archives=Upravit vybrané archivy
+0149 Join all archives=Spojit všechny archivy
+0150 Join %1 with another archive=Spojit %1 s jiným archivem
+0151 Join %2 archives=Spojit vybrané archivy
+---------
+0182 Main=Hlavní
+0131 Output archive:=Uložit do archivu:
+0132 Select output archive=Vybrat archiv
+0141 Base directory inside archive:=Umístit archiv do složky:
+--
+0188 Store file paths:=Uložit cesty souborů:
+0189 No=Ne
+0190 Relative to compressed dir=Relativně ke komprimované složce
+0191 Relative to curdir (default)=Relativně k současné složce (implicitní)
+0192 Absolute (relative to root dir)=Absolutně (relativní ke kořenovému adresáři)
+0193 Full (including drive letter)=Kompletně (včetně písmene jednotky)
+--
+0194 Update mode:=Mód aktualizace:
+0195 Add and replace files (default)=Přidat a nahradit soubory (implicitní)
+0196 Add and update files=Přidat a aktualizovat soubory
+0197 Fresh existing files=Aktualizovat existující soubory
+0198 Synchronize archive with disk contents=Synchronizovat soubory s obsahem disku
+--
+0183 Compression:=Komprese:
+0184 Encryption:=Šifrování:
+0185 Protection:=Ochrana:
+0186 Comment:=Poznámka:
+0227 Make EXE:=Vytvořit EXE:
+0128 Test archive after operation=Otestovat archiv po provedení operace
+0122 Delete files successfully archived=Smazat úspěšně archivované soubory
+0187 Finalize archive=Uzavřít archiv
+---------
+0200 Archive=Archiv
+0201 Compress each file into separate archive=Komprimovat každý soubor do zvláštního archivu
+0202 Add to archive name:=Připojit k názvu archivu:
+--
+0203 Set archive time to:=Nastavit čas archivu na:
+0204 Current system time=Současný systémový čas
+0205 Original archive time=Původní čas archivu
+0206 Latest file time=Čas nejaktuálnějšího souboru
+--
+0207 Delete previous archive contents=Smazat předchozí obsah archivu
+0208 Order of files in archive:=Pořadí souborů v archivu:
+--
+0209 Recompression mode:=Rekompresní mód:
+0210 Quickly append new files=Rychle připojit nové soubory
+0211 Smart recompression of solid blocks (default)=Chytrá rekomprese solid bloků (implicitní)
+0212 Recompress all files=Rekomprimovat všechny soubory
+0213 Store only fileinfo=Uložit jen info o souboru
+0214 Store only fileinfo & crcs=Uložit jen info o souboru a CRC součty
+0215 No archive headers=Žádné hlavičky archivu
+--
+0216 Backup mode:=Zálohovací mód:
+0217 No (default)=Ne (implicitní)
+0218 Full: clear \"Archive\" attribute of files succesfully archived=Kompletní: odstranit z úspěšně archivovaných souborů atribut \"Archivovat\"
+0219 Differential: select only files with \"Archive\" attribute set=Rozdílový: vybrat jen soubory s nastaveným atributem \"Archivovat\"
+0220 Incremental: select by \"Archive\" attribute & clear it after compression=Inkrementální: vybrat podle atributu \"Archivovat\" a vymazat po archivaci
+---------
+0221 Files=Soubory
+0222 Include only files:=Zahrnout jen soubory:
+0223 Exclude files:=Vynechat soubory:
+0224 Include only files larger than:=Zahrnout jen soubory větší než:
+0225 Include only files smaller than:=Zahrnout jen soubory menší než:
+---------
+0199 Comment=Poznámka
+
+
+Delete dialog
+0160 Delete %1 from archive?=Určitě z archivu vymazat '%1'?
+0161 Delete %1?=Určitě vymazat '%1'?
+0019 Delete %2 file(s) from archive?=Určitě vymazat tyto %2 položky?
+0020 Delete %2 file(s)?=Určitě vymazat tyto %2 položky?
+
+
+Extract dialog
+0024 Extract files from %3=Rozbalit %3
+0025 Extract %1 from %3=Rozbalit %1 z %3
+0026 Extract %2 files from %3=Rozbalit %2 souborů z %3
+0027 Extract files from %4 archives=Rozbalit %4 archivů
+0158 Extract all archives=Rozbalit všechny archivy
+0152 Test %3=Testovat archiv %3
+0153 Test %1 from %3=Testovat %1 z %3
+0154 Test %2 files from %3=Testovat %2 souborů z %3
+0155 Test %4 archives=Testovat %4 archivů
+0157 Test all archives=Testovat všechny archivy
+--Overwrite mode
+0005 Overwrite mode=Mód přepisování
+0001 Ask before overwrite=Zeptat se před přepisem
+0002 Overwrite without prompt=Přepsat bez výzvy
+0003 Update old files=Obnovit staré soubory
+0051 Skip existing files=Přeskočit existující soubory
+--Output directory
+0004 Output directory:=Rozbalit do:
+0021 Select output directory=Specifikujte umístění pro rozbalené soubory
+0014 Append archive name to the output directory=Připojit název archivu ke složce
+--Other
+0072 Additional options:=Další nastavení:
+
+
+Archive information dialog
+0085 All about %1=Informace o %1
+0173 Directories:=Adresářů:
+0088 Files:=Souborů:
+0089 Total bytes:=Velikost:
+0090 Compressed bytes:=Sbalená velikost:
+0091 Ratio:=Kompresní poměr:
+--
+0104 Directory blocks:=Adresářových bloků:
+0092 Solid blocks:=Solid bloků:
+0093 Avg. size:=Průměrná velikost:
+--
+0099 Compression memory:=Spotřeba paměti pro zabalení:
+0100 Decompression memory:=Spotřeba paměti pro rozbalení:
+0105 Dictionary:=Velikost slovníku:
+--
+0094 Archive locked:=Archiv uzamčen:
+0095 Recovery info:=Záznam pro opravu:
+0096 SFX size:=Velikost SFX:
+0156 Headers encrypted:=Zašifrované názvy souborů:
+--
+0097 Encryption algorithms:=Šifrovací algoritmus:
+0098 Archive comment:=Poznámka:
+
+
+Settings dialog
+0067 Settings=Nastavení
+0174 Main=Hlavní
+0068 Language:=Jazyk:
+0069 Edit=Upravit
+0070 Import=Importovat
+0168 You should restart FreeArc in order for a language settings to take effect.=Aby se změna jazyka projevila, musí být FreeArc restartován.
+0169 Passwords need to be entered again after restart.=Hesla musí být po restartu znovu zadána.
+0170 Full name:=Celý název:
+0171 Copyright:=Copyright:
+0166 Logfile:=Soubor záznamu:
+0167 Select logfile=Vybrat záznam
+0172 Associate FreeArc with .arc files=Asociovat FreeArc se soubory .arc
+
+
+=== Profile settings ============================================================
+--Compression settings
+0106 Compression=Komprese
+0175 Compression profile:=Kompresní profil:
+0178 Save=Uložit
+0107 Compression level=Úroveň komprese
+0108 Maximum=Maximální
+0109 High=Vysoká
+0110 Normal=Normální
+0111 Fast=Rychlá
+0112 Very fast=Nejrychlejší
+0127 HDD-speed=Reálný čas
+0113 Fast, low-memory decompression=Rychlá, paměťově nenáročná dekomprese
+0226 (fast, low-memory decompression)=(rychlá, paměťově nenáročná dekomprese)
+0176 Filetype auto-detection=Autodetekce typu souboru
+--Description of compression method selected
+0114 Compression level: %1=Úroveň komprese: %1
+0115 Compression speed: %1, memory: %2=Spotřeba paměti pro zabalení: %2  Rychlost: %1
+0116 Decompression speed: %1, memory: %2=Spotřeba paměti pro rozbalení: %2  Rychlost: %1
+0117 All speeds were measured on 1GHz single-core Duron,=Všechny rychlosti byly měřeny na 1GHz Duronu,
+0118 and your horse will probably run faster=tento stroj pravděpodobně poběží rychleji
+--Solid block size
+0177 Limit solid blocks=Limitovat solid bloky
+0138 Bytes, no more than:=Bajtů, ne více než
+0139 Files, no more than:=Souborů, ne více než
+0140 Split by extension=Rozdělit podle přípony
+
+--Encryption settings
+0119 Encryption=Šifrování
+0179 Encryption profile:=Šifrovací profil
+0180 Save=Uložit
+0120 Encrypt archive directory=Zašifrovat hlavičku archivu
+0181 Use password=Použít heslo
+0123 Keyfile:=Klíč:
+0124 Select keyfile=Vybrat klíč
+0125 Create=Vytvořit
+0126 Create new keyfile=Vytvoří nový klíč
+0121 Encryption algorithm:=Šifrovací algoritmus:
+--Decryption settings
+0144 Decryption=Dešifrování
+
+
+=== Execution dialogs ============================================================
+Progress indicator
+--Buttons
+0052 Background=Na pozadí
+0053 Pause=Pozastavit
+0054 Continue=Pokračovat
+0055 Cancel=Zrušit
+--Labels
+0056 Files=Souborů:
+0057 Total files=Celkem souborů:
+0058 Bytes=Bajtů
+0059 Total bytes=Velikost:
+0060 Ratio=Kompresní poměr:
+0061 Speed=Rychlost:
+0062 Time=Uplynulý čas:
+0063 Total time=Celkový čas:
+--Messages
+0246 Found %1 files=Nalezeno %1 souborů
+0247 Found %1 archives=Nalezeno %1 archivů
+0248 Analyzed %1 files=Analyzováno %1 souborů
+0249 Reading archive directory=Načítám hlavičku archivu
+0250 Sorting filelist=Třídím seznam souborů
+
+File overwrite dialog
+0078 Confirm File Replace=Potvrzení nahrazení souboru
+0162 Destination folder already contains processed file.=Cílová složka již obsahuje zpracovaný soubor.
+0163 Would you like to replace the existing file=Chcete nahradit existující soubor
+0164 with this one?=tímto?
+0165 %1\n%2 bytes\nmodified on %3=%1\n%2 bajtů\nupraveno %3
+0079 &Yes=&Ano
+0080 &No=&Ne
+0081 &Cancel=&Zrušit
+0082 Yes to &All=Ano na &všechno
+0083 No to A&ll=N&e na všechno
+0084 &Update all=&Obnovit všechno
+
+Enter password dialog
+0076 Enter encryption password=Vložit heslo
+0077 Enter decryption password=Vložit heslo
+0074 Enter password:=Vložte heslo:
+0075 Reenter password:=Vložte znovu:
+
+Archive comment dialog
+0073 Enter archive comment=Vložit komentář k archivu
+
+
+=== Infoline messages ====================================================
+0228 Deleting from %1=Mažu z %1
+0229 FILES SUCCESFULLY DELETED FROM %1=SOUBORY Z %1 BYLY ÚSPĚŠNĚ SMAZÁNY
+0230 %2 WARNINGS WHILE DELETING FROM %1=%2 VAROVÁNÍ BĚHEM MAZÁNÍ Z %1
+
+0231 Testing %1=Testuji %1
+0232 SUCCESFULLY TESTED %1=%1 ÚSPĚŠNĚ OTESTOVÁNO
+0233 %2 WARNINGS WHILE TESTING %1=%2 VAROVÁNÍ BĚHEM TESTOVÁNÍ %1
+
+0234 Extracting files from %1=Extrahuji soubory z %1
+0235 FILES SUCCESFULLY EXTRACTED FROM %1=SOUBORY BYLY ÚSPĚŠNĚ EXTRAHOVÁNY Z %1
+0236 %2 WARNINGS WHILE EXTRACTING FILES FROM %1=%2 VAROVÁNÍ BĚHEM EXTRAHOVÁNÍ SOUBORŮ Z %1
+
+0237 Modifying %1=Upravuji %1
+0238 SUCCESFULLY MODIFIED %1=%1 ÚSPĚŠNĚ UPRAVENO
+0239 %2 WARNINGS WHILE MODIFYING %1=%2 VAROVÁNÍ BĚHEM UPRAVOVÁNÍ %1
+
+0240 Joining archives to %1=Spojuji archivy do %1
+0241 SUCCESFULLY JOINED ARCHIVES TO %1=ARCHIVY BYLY ÚSPĚŠNĚ SPOJENY DO %1
+0242 %2 WARNINGS WHILE JOINING ARCHIVES TO %1=%2 VAROVÁNÍ BĚHEM SPOJOVÁNÍ ARCHIVŮ DO %1
+
+0243 Adding to %1=Přidávám do %1
+0244 FILES SUCCESFULLY ADDED TO %1=SOUBORY BYLY ÚSPĚŠNĚ PŘIDÁNY DO %1
+0245 %2 WARNINGS WHILE ADDING TO %1=%2 VAROVÁNÍ BĚHEM PŘIDÁVÁNÍ DO %1
+
+
+=== Standard profiles ====================================================
+Compression
+0727 Maximum (1gb decompression)=Maximum (1 GB paměti pro dekompresi)
+0728 Maximum (192mb decompression)=Maximum (192 MB paměti pro dekompresi)
+0729 Maximum (fast, low-memory decompression)=Maximum (rychlá, paměťově nenáročná dekomprese)
+0752 No compression=Žádná komprese
+
+Encryption
+0730 Standard=Standardní
+0731 Fast=Rychlé
+0732 Strong=Silné
+0733 Strongest=Nejsilnější
+
+Protection
+0734 Add=Přidat
+0735 Remove=Odstranit
+0736 Internet-only (4kb blocks)=Internetová (4kB bloky)
+0737 Internet-only (64kb blocks)=Internetová (64kB bloky)
+0738 Percents, example=Procenta, příklad
+0739 Fixed-size, example=Pevná velikost, příklad
+
+Comment
+0740 Add from textbox=Přidat z textboxu
+0741 Remove=Odstranit
+0742 Add short comment, example=Přidat krátký komentář, příklad
+0743 Add from a file, example=Přidat ze souboru, příklad
+
+SFX
+0765 Windows GUI=Grafické pro Windows
+0766 Windows console=Textové pro Windows
+0767 Linux console=Textové pro Linux
+0768 Convert EXE back to ARC=Zkonvertovat EXE zpět na ARC
+
+Sorting
+0744 No sorting=Bez řazení
+0745 Standard=Standardní
+0746 Advanced=Pokročilé
+0747 Smart+Path=Chytré+Cesta
+0748 Smart+Name=Chytré+Jméno
+0750 Extension+Path=Přípona+Cesta
+0749 Extension+Name=Přípona+Název
+0751 Extension+Size=Přípona+Velikost
+
+Archive name template
+0754 Date+Time=Datum+Čas
+0755 Date=Datum
+0756 Time=Čas
+0757 Month=Měsíc
+0758 Monthday=Den v měsíci
+0759 Weekday=Den v týdnu
+
+Exclude
+0760 Backup files=Zálohovat soubory
+
+
+=== Tooltips (index=N+1000) ===========================================
+
+******************************************************************************************
+***  DON'T FORGET THAT THIS SECTION SHOULD PROVIDE TOOLTIPS, NOT DIRECT TRANSLATIONS.  ***
+***  You may find some tooltips in arc.english.txt                                     ***
+******************************************************************************************
+
+--Other
+1072 Additional options:=Další ručně nastavitelné možnosti (pro pokročilé uživatele)
+
+--Add dialog
+1183 Compression=Zde lze zvolit nastavení komprese.\nPro pokročilá nastavení zvolte kartu \"Komprese\"
+1184 Encryption=Je-li zaškrtnuto, použije se šifrování.\nPro pokročilá nastavení zvolte kartu \"Šifrování\"
+1185 Protection:=Připojí k archivu data (implicitně o velikosti 1% archivu), která dovolují obnovit obsah archivu v případě poškození úložiště či chyb při přenosu
+1186 Comment=Zvolený komentář bude přidán do archivu
+1122 Delete files successfully archived=Je-li tato položka zaškrtnuta, archivované soubory budou po úspěšné kompresi smazány
+1227 Make EXE:=Je-li tato položka zaškrtnuta, bude vytvořen samorozbalovací archiv\n(FreeArc pak nemusí být nainstalován na počítači, kde se bude archiv rozbalovat)
+1128 Test archive after operation=Otestuje, zda komprese proběhla bez chyb
+1187 Finalize archive=Archiv bude po kompresi uzavřen\n(nebudou možné jeho následné změny)
+--
+1201 Compress each file into separate archive=Je-li tato položka zaškrtnuta, každý soubor bude zvlášť zkomprimován do samostatného archivu
+1202 Add to archive name=Připojí vybraný parametr k názvu archivu (např. datum a čas)
+--
+1207 Delete previous archive contents=Pozor! Je-li tato položka zaškrtnuta, obsah archivu bude před přidáním nového obsahu vymazán. Tento krok nelze vrátit!
+1208 Order of files in archive=Zaškrtnutím této položky může být zefektivněna komprese závisle na metodě řazení (také závisí na typu archivovaných souborů)
+--
+1222 Include only files=Je-li tato položka zaškrtnuta, budou archivovány jen zadané typy souborů (např. *.txt)
+1223 Exclude files=Je-li tato položka zaškrtnuta, budou zadané typy souborů z archivace vynechány (např *.dll)
+1224 Include only files larger than:=Soubory, které jsou menší než je zadaná velikost, budou z archivace vynechány
+1225 Include only files smaller than:=Soubory, které jsou větší než je zadaná velikost, budou z archivace vynechány
+--
+
+
+
+--Compression settings
+1113 Fast, low-memory decompression=Nepoužijí se algoritmy s pomalou nebo paměťově náročnou dekompresí, nicméně tato volba může zpomalit a zhoršit kompresi
+1176 Filetype auto-detection=Je-li zaškrtnuto, FreeArc analyzuje obsah každého souboru a zvolí optimální kompresní metodu. Je-li vypnuto, kompresní metody se vybírají podle arc.groups
+1138 Bytes, no more than:=Specifikuje maximální velikost solid bloků
+1139 Files, no more than:=Specifikuje maximální počet souborů, které může solid blok obsahovat
+1140 Split by extension=Roztřídí soubory podle přípony (každý solid blok poté bude obsahovat pouze jeden typ souborů)
+
+-- Encryption settings
+1120 Encrypt archive directory=Zašifruje metadata archivu (názvy, velikosti a CRC souborů v archivu), takže heslo bude muset být zadáno i pro otevření archivu. Tuto volbu výrazně doporučujeme pro zajištění opravdové bezpečnosti dat
+1123 Keyfile:=Klíč je dodatečné heslo uložené do souboru na disku, které bude vyžadováno při otevření archivu. Doporučuje se používat klíč pro maximální využití potenciálu AES a dalších bezpečnostních algoritmů
+1125 Generate new keyfile=Vytvoří nový klíč s uživatelsky vybraným názvem obsahující 1 kB kryptograficky generovaných náhodných dat
+1181 Use password=Je-li tato položka zaškrtnuta, bude použito zadané heslo. Udržujte heslo v bezpečí!\n(Je možné použít klíč a heslo zároveň)
+
+
+
+
+=== Everything else ====================================================
+Common words
+0101 Yes=Ano
+0102 No=Ne
+0103 May be=Možná
+
+Failure messages
+0010 Operation interrupted!=Operace přerušena!
+0011 No threads to run: infinite loop or deadlock?=Žádná vlákna ke spuštění: nekonečná smyčka nebo zamrznutí?

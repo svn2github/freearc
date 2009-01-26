@@ -1,0 +1,28 @@
+REGEDIT4
+
+[HKEY_CLASSES_ROOT\.arc]
+@="FreeArc.arc"
+
+[HKEY_CLASSES_ROOT\.arc\ShellNew]
+"FileName"="C:\\Program Files\\FreeArc\\bin\\empty.arc"
+
+[HKEY_CLASSES_ROOT\FreeArc.arc]
+@="FreeArc archive"
+
+[HKEY_CLASSES_ROOT\FreeArc.arc\DefaultIcon]
+@="C:\\Program Files\\FreeArc\\bin\\FreeArc.ico,0"
+
+[HKEY_CLASSES_ROOT\FreeArc.arc\shell]
+@="open"
+
+[HKEY_CLASSES_ROOT\FreeArc.arc\shell\extract-here]
+@="Extract here"
+
+[HKEY_CLASSES_ROOT\FreeArc.arc\shell\extract-here\command]
+@="\"C:\\Program Files\\FreeArc\\bin\\FreeArc.exe\" x \"%1\""
+
+[HKEY_CLASSES_ROOT\FreeArc.arc\shell\open]
+@=""
+
+[HKEY_CLASSES_ROOT\FreeArc.arc\shell\open\command]
+@="\"C:\\Program Files\\FreeArc\\bin\\FreeArc.exe\" \"%1\""

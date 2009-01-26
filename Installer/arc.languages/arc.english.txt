@@ -1,0 +1,38 @@
+﻿Language name in english and mother tongue
+0000 Language=English
+
+=== Tooltips (index=N+1000) ===========================================
+Add dialog
+--
+1183 Compression=Choosing compression profile.\nFor advanced settings choose the \"Compression\" tab.
+1184 Encryption=Choosing encryption profile.\nFor advanced settings choose the \"Encryption\" tab.
+1185 Protection:=Appends to archive information (by default 1% of archive size), which allows to restore its contents in case of magnetic storage damages or transmission failures.
+1186 Comment=Here you can add comment describing archive contents.
+1227 Make EXE:=Activate this option if you want to make a self-extracting archive\nSuch archives don't need FreeArc to extract
+1128 Test archive after operation=Test the archives after compression.
+1122 Delete files successfully archived=If you activate this option, the archived files will be deleted after compression.
+1187 Finalize archive=Archive will be sealed after compression\n(no more changes of content possible).
+1072 Additional options:=Additional options to be set manually (for advanced users).
+--
+1201 Compress each file into separate archive=If you activate this option each file will be compressed into a single archive.
+1202 Add to archive name=Appends the choosen parameter to the name of the archive (for instance: date and time).
+--
+1207 Delete previous archive contents=Caution! If you activate this option the content of this archive will be deleted before new content will be added. This can't be undone!
+1208 Order of files in archive=By activating this option compression can be increased, depending on sorting-method (also depending on type of files to be archived).
+--
+1222 Include only files=Activate this option if you explicitly want to specify the type of files to be archived, for instance *.txt
+1223 Exclude files=Activate this option if you want to exclude a special type of files.
+
+--Compression settings
+1113 Fast, low-memory decompression=Disables use of algorithms having slow or memory-hungry decompression. OTOH using this option makes compression slower and worse.
+1176 Filetype auto-detection=When enabled, FreeArc analyzes contents of each file and selects optimal compression method for it. When disabled, compression algorithms are selected according to arc.groups
+1138 Bytes, no more than:=Specify the size of solid blocks.
+1139 Files, no more than:=Specify the maximum amount of files a solid block can contain.
+1140 Split by extension=Additionally split solid blocks by extension (after that, a solid block only contains a single type of files).
+
+--Encryption settings
+1120 Encrypt archive directory=Encrypts archive meta-information (names, sizes, CRS of files in archive), so one will need to enter password/keyfile even to open archive. It's highly recommended to enable this option to ensure real security of your data.
+1123 Keyfile:=Keyfile is just an additional password saved to diskfile, which will be required to open archive. It's highly recommended to use keyfile in order to fully utilize security potential of AES and other algorithms.
+1125 Generate new keyfile=Create new keyfile with user-choosen name containing 1 kb of cryptographically-generated random data
+1181 Use password=Mark this option to specify a password. Keep this password safe!\n(You even can use a keyfile AND a password simultaneously in order to increase security!)
+

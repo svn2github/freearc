@@ -1,0 +1,448 @@
+﻿******************************************************************************
+***  This is a language file for FreeArc (http://freearc.org).             ***
+***  You may improve it by providing new translations.                     ***
+***  Messages that need translation are marked by "??",                    ***
+***  You just need to find all those question signs and replace them with  ***
+***  appropriate translations of the text at left side.                    ***
+***                                                                        ***
+***  Please note that Tooltips section should include not direct           ***
+***  translations but TOOLTIPS diplayed at the top of appropriate labels.  ***
+***  You may assign tooltip to any label - just use its number +1000 at    ***
+***  the left side. For example, label:                                    ***
+***    0185 Protection:=Protection: (written in your language, of course)  ***
+***  It's tooltip:                                                         ***
+***    1185 Protection:=Appends recovery information to archive            ***
+******************************************************************************
+
+Language name in english and mother tongue
+0000 Language=Ukrainian (Українська)
+0159 Copyright=Google translation from russian language file edited by chornobyl
+
+=== Menu ========================================================================
+Main menu
+0050 File=Файл
+0066 Edit=Редагування
+
+File menu/toolbar 
+0030 Add=Додати
+0040 Add files to archive(s)=Додати файли до архів(ів)
+0031 Modify=Модифікувати
+0041 Modify archive(s)=Модифікувати архів(и)
+0032 Join=Об'єднати
+0042 Join archives together=Об'єднати архів(и)
+0033 Delete=Видалити
+0043 Delete files (from archive)=Видалити файли з архіву
+0034 Test=Тестувати
+0044 Test files in archive(s)=Тестувати файли в архів(ах)
+0035 Extract=Розпакувати
+0045 Extract files from archive(s)=Розпакувати файли з архів(ів)
+0064 Settings=Налаштування
+0065 Edit program settings=Редагувати налаштування програми
+0036 Exit=Вихід
+0046 Quit application=Вийти з програми
+
+Edit menu/toolbar 
+0037 Select=Вибрати
+0047 Select files=Вибрати файли за маскою
+0038 Unselect=Зняти вибір
+0048 Unselect files=Зняти вибір з файлів за маскою
+0039 Refresh=Оновити
+0049 Reread archive/directory=Оновити зміст папки/архіву
+0086 ArcInfo=Інформація
+0087 Information about archive=Інформація про архів
+
+
+=== File manager ==================================================================
+
+Navibar
+0006 Up=Вверх
+0007 Save=Зберегти
+0008 Select files=Вибрати файли
+0009 Unselect files=Зняти вибір з файлів
+
+Filelist
+0015 Name=Ім'я
+0016 Size=Розмір
+0017 Modified=Змінено
+0018 DIRECTORY=Папка
+
+Statusbar
+0022 Selected %1 bytes in %2 file(s)=Вибрано %1 байт у %2 файл(ах)
+0023 Total %1 bytes in %2 file(s)=Всьго %1 байт у %2 файл(ах)
+
+Messages
+0012 There are no files selected!=Жоден файл не вибраний!
+0013 There are no archives selected!=Жоден архів не вибраний!
+0071 %1: no such file or directory!=немає такого файлу чи каталогу!
+0133 You can't compress files directly from archive!=Ви не можете пакувати файли прямо із архіву!
+0145 You can't join archives directly from archive!=Ви не можете об'єднувати архіви прямо із архіву
+0251 Abort operation?=??
+
+
+=== Dialogs =======================================================================
+Add dialog
+--Title
+0134 Add %1 to archive=Додає вибрані елементи до архіву.
+0135 Add %2 files to archive=Додає вибрані елементи до архіву.
+0136 Add all files to archive=Додає вибрані елементи до архіву.
+0146 Modify all archives=Модифікувати всі архіви
+0147 Modify %1=Модифікувати %1
+0148 Modify %2 archives=Модифікувати %2 архівів
+0149 Join all archives=Обєднати всі архівіи
+0150 Join %1 with another archive=Обєднати %1 з іншим архівом
+0151 Join %2 archives=Обєднати %2 архівів
+---------
+0182 Main=Головне
+0131 Output archive:=Вихідний архів:
+0132 Select output archive=Виберіть вихідний архів
+0141 Base directory inside archive:=Базова папка всередині архіву:
+--
+0188 Store file paths:=Зберігати в архіві шляхи до файлів
+0189 No=Ні
+0190 Relative to compressed dir=Відносно папки, що стискається
+0191 Relative to curdir (default)=Відносно текучої папки (за замовчуванням)
+0192 Absolute (relative to root dir)=Абсолютні (відносно кореневої папки)
+0193 Full (including drive letter)=Повні (включаючи ім'я диску)
+--
+0194 Update mode:=Метод оновлення:
+0195 Add and replace files (default)=Додати та замінити файли (за замовчуванням)
+0196 Add and update files=Оновити та замінити файли
+0197 Fresh existing files=Оновити існуючі файли
+0198 Synchronize archive with disk contents=Синхронізувати вміст архіву з диском
+--
+0183 Compression:=Стискання:
+0184 Encryption:=Шифрування:
+0185 Protection:=Захист:
+0186 Comment:=Коментар:
+0227 Make EXE:=Зробити Створити EXE:
+0128 Test archive after operation=Тестувати архів після завершення операції
+0122 Delete files successfully archived=Видалити файли, що були вдало упаковані
+0187 Finalize archive=Закрит архів від подальших змін
+---------
+0200 Archive=Архів
+0201 Compress each file into separate archive=Стиснути кожен файл в окремий архів
+0202 Add to archive name:=Додати до імені архіву
+--
+0203 Set archive time to:=Встановити час архіву
+0204 Current system time=Поточний системний час
+0205 Original archive time=Час вихідного архіву
+0206 Latest file time=Час найновішого файлу
+--
+0207 Delete previous archive contents=Видалити попередній вміст архіву
+0208 Order of files in archive:=Сортування файлів у архіві:
+--
+0209 Recompression mode:=Режим перепакування:
+0210 Quickly append new files=Швидко додати нові файли в кінці архіву
+0211 Smart recompression of solid blocks (default)=Інтелектульне перепакування солід-блоків (за замовчуванням)
+0212 Recompress all files=Перепакувати усі файли
+0213 Store only fileinfo=Зберегти лише зміст архіву
+0214 Store only fileinfo & crcs=Зберегти лише зміст архіву і CRC файлів
+0215 No archive headers=Не зберігати зміст архіву
+--
+0216 Backup mode:=Режим створення резервних копій
+0217 No (default)=Ні (за замовчуванням)
+0218 Full: clear \"Archive\" attribute of files succesfully archived=Повний архів: очистити атрибут "Архівація" у вдало запакованих файлів
+0219 Differential: select only files with \"Archive\" attribute set=Диференційний архів: включити до архіву лише файли зі встановленим атрибутом "Архівація"
+0220 Incremental: select by \"Archive\" attribute & clear it after compression=Інкрементальний вібирати файли за атрибутом "Архівація" і очищувати його наприкінці
+---------
+0221 Files=Файли
+0222 Include only files:=Включити лише файли:
+0223 Exclude files:=Виключити файли:
+0224 Include only files larger than:=Включити лише файли більші ніж:
+0225 Include only files smaller than:=Включити лише файли менші ніж:
+---------
+0199 Comment=Коментар
+
+
+Delete dialog
+0160 Delete %1 from archive?=Видалити %1 зі архіву?
+0161 Delete %1?=Видалити %1?
+0019 Delete %2 file(s) from archive?=Видалити %2 файл(ів) із архіву?
+0020 Delete %2 file(s)?=Видалити %2 файл(ів)?
+
+
+Extract dialog
+0024 Extract files from %3=Розпакувати файли із %3
+0025 Extract %1 from %3=Р
+0026 Extract %2 files from %3=Розпакувати %1 із %3
+0027 Extract files from %4 archives=Розпакувати файли із %4 архівів
+0158 Extract all archives=Розпакувати всі архіви
+0152 Test %3=Потестувати %3
+0153 Test %1 from %3=Протестувати %1 із %3
+0154 Test %2 files from %3=Протестувати %2 файлів із %3
+0155 Test %4 archives=Протестувати %4 архівів
+0157 Test all archives=Протестувати всі архіви
+--Overwrite mode
+0005 Overwrite mode=Перезапис
+0001 Ask before overwrite=З підтвердженням
+0002 Overwrite without prompt=Без попередження
+0003 Update old files=Оновити новими файлами
+0051 Skip existing files=Пропускати існуючі файли
+--Output directory
+0004 Output directory:=Видобути до:
+0021 Select output directory=Вибір вихідного каталогу
+0014 Append archive name to the output directory=Додати ім'я архіву до вихідного каталогу
+--Other
+0072 Additional options:=Додаткові опції
+
+
+Archive information dialog
+0085 All about %1=Усе про %1
+0173 Directories:=Каталогів:
+0088 Files:=Файлів:
+0089 Total bytes:=Оригінальний розмір:
+0090 Compressed bytes:=Стиснутий розмір:
+0091 Ratio:=Ступінь стискання:
+--
+0104 Directory blocks:=Блоків каталогу:
+0092 Solid blocks:=Солід-блоків:
+0093 Avg. size:=Середній розмір:
+--
+0099 Compression memory:=Необхідно пам'яті для стискання:
+0100 Decompression memory:=Необхідно пам'яті для розпакування:
+0105 Dictionary:=Словник:
+--
+0094 Archive locked:=Заборона модифікації архіву:
+0095 Recovery info:=Інформація для відновлення:
+0096 SFX size:=Розмір SFX:
+0156 Headers encrypted:=Каталог а зашифрований:
+--
+0097 Encryption algorithms:=Метод шифрування:
+0098 Archive comment:=Опис архіву:
+
+
+Settings dialog
+0067 Settings=Налаштування програми
+0174 Main=Основне
+0068 Language:=Мова:
+0069 Edit=Редагувати
+0070 Import=Імпорт
+0168 You should restart FreeArc in order for a language settings to take effect.=Ви маєте перезапустити FreeArc щоб активувати нові налаштування локалізації
+0169 Passwords need to be entered again after restart.=Паролі мають бути ведені знову після перезапуску
+0170 Full name:=Повне ім'я:
+0171 Copyright:=Авторство:
+0166 Logfile:=Логфайл:
+0167 Select logfile=Выберіть логфайл
+0172 Associate FreeArc with .arc files=Асоціювати FreeArc з файлами .arc
+
+
+=== Profile settings ============================================================
+--Compression settings
+0106 Compression=Стиснення
+0175 Compression profile:=Профіль упаковки:
+0178 Save=Зберегти
+0107 Compression level=Рівень стиснення
+0108 Maximum=Максимальне
+0109 High=Високе
+0110 Normal=Нормальне
+0111 Fast=Швидке
+0112 Very fast=Дуже швидке
+0127 HDD-speed=Зі швидкістю HDD
+0113 Fast, low-memory decompression=Швидке, потребуюче мало пам'яті розпакування
+0226 (fast, low-memory decompression)=з швидкою розпаковкою
+0176 Filetype auto-detection=Авто-визначення типів файлів
+--Description of compression method selected
+0114 Compression level: %1=Ступінь стиснення: %1
+0115 Compression speed: %1, memory: %2=Упаковка: швидкість %1, пам'ять %2
+0116 Decompression speed: %1, memory: %2=Розпакування: швидкість %1, пам'ять %2
+0117 All speeds were measured on 1GHz single-core Duron,=Усі швидкості виміряні на 1ГГц одноядерному Duron,
+0118 and your horse will probably run faster=отож ваша конячка, напевно, буде швидше
+--Solid block size
+0177 Limit solid blocks=Обмежити солід-блоки
+0138 Bytes, no more than:=Байтів, не більше:
+0139 Files, no more than:=Файлів, не більше:
+0140 Split by extension=Розділити по розширенню
+
+--Encryption settings
+0119 Encryption=Шифрування
+0179 Encryption profile:=Профіль шифрування:
+0180 Save=Зберегти
+0120 Encrypt archive directory=Зашифрування каталог архіву
+0181 Use password=Використовувати пароль
+0123 Keyfile:=Файл-ключ:
+0124 Select keyfile=Вкажіть файл-ключ
+0125 Create=Створити
+0126 Create new keyfile=Створити новий файл-ключ
+0121 Encryption algorithm:=Алгоритм шифрування:
+--Decryption settings
+0144 Decryption=Дешифрування
+
+
+=== Execution dialogs ============================================================
+Progress indicator
+--Buttons
+0052 Background=&У Фоні
+0053 Pause=&Пауза
+0054 Continue=&Продовжити
+0055 Cancel=&Скасувати
+--Labels
+0056 Files=Файлів
+0057 Total files=Всього файлів
+0058 Bytes=Байтів
+0059 Total bytes=Всього байтів
+0060 Ratio=Стиснення
+0061 Speed=Швидкість
+0062 Time=Час
+0063 Total time=Загальний час
+--Messages
+0246 Found %1 files=Знайдено %1 файлів
+0247 Found %1 archives=Знайдено %1 архівів
+0248 Analyzed %1 files=Проаналізовано %1 файлів
+0249 Reading archive directory=Читання змісту архіву
+0250 Sorting filelist=Сортування списку файлів
+
+File overwrite dialog
+0078 Confirm File Replace=Підтвердження заміни файлу
+0162 Destination folder already contains processed file.=Папка вже містить цей файл.
+0163 Would you like to replace the existing file=Замінити існуючий файл
+0164 with this one?=наступним файлом?
+0165 %1\n%2 bytes\nmodified on %3=%1\n%2 байтів\nзмінений %3
+0079 &Yes=&Так
+0080 &No=&Ні
+0081 &Cancel=&Скасувати
+0082 Yes to &All=Так для &всіх
+0083 No to A&ll=Ні для в &сіх
+0084 &Update all=Оновити всі
+
+Enter password dialog
+0076 Enter encryption password=Введення паролю шифрування
+0077 Enter decryption password=Введення паролю розшифровки
+0074 Enter password:=&Введіть пароль:
+0075 Reenter password:=&Повторіть пароль:
+
+Archive comment dialog
+0073 Enter archive comment=Введіть коментар до архіву
+
+
+=== Infoline messages ====================================================
+0228 Deleting from %1=Видалення із %1
+0229 FILES SUCCESFULLY DELETED FROM %1=ФАЙЛИ УСПІШНО ВИДАЛЕНІ ІЗ %1
+0230 %2 WARNINGS WHILE DELETING FROM %1=%2 ПОПЕРЕДЖЕНЬ ПРИ ВИДАЛЕННІ ІЗ %1
+
+0231 Testing %1=Тестування %1
+0232 SUCCESFULLY TESTED %1=УСПІШНО ПРОТЕСТОВАНИЙ %1
+0233 %2 WARNINGS WHILE TESTING %1=%2 ПОПЕРЕДЖЕНЬ ПРИ ТЕСТУВАННІ %1
+
+0234 Extracting files from %1=Розпакування %1
+0235 FILES SUCCESFULLY EXTRACTED FROM %1=УСПІШНО РОЗПАКОВАНИЙ %1
+0236 %2 WARNINGS WHILE EXTRACTING FILES FROM %1= %2 ПОПЕРЕДЖЕНЬ ПРИ РОЗПАКУВАННІ %1
+
+0237 Modifying %1=Модифікація %1
+0238 SUCCESFULLY MODIFIED %1=УСПІШНО МОДИФІКОВАНИЙ %1
+0239 %2 WARNINGS WHILE MODIFYING %1= %2 ПОПЕРЕДЖЕНЬ ПРИ МОДІФІКАЦІІ %1
+
+0240 Joining archives to %1=Об'єднання архівів у %1
+0241 SUCCESFULLY JOINED ARCHIVES TO %1=АРХІВИ УСПІШНО ОБ'ЄДНАНІ У %1
+0242 %2 WARNINGS WHILE JOINING ARCHIVES TO %1= %2 ПОПЕРЕДЖЕНЬ ПРИ ОБ'ЕДНАННІ АРХІВІВ У %1
+
+0243 Adding to %1=Додавання до 1%
+0244 FILES SUCCESFULLY ADDED TO %1=ФАЙЛИ УСПІШНО ДОДАНІ ДО %1
+0245 %2 WARNINGS WHILE ADDING TO %1= %2 ПОПЕРЕДЖЕНЬ ПРИ ДОДАВАННІ ДО %1
+
+
+=== Standard profiles ====================================================
+Compression
+0727 Maximum (1gb decompression)=Максимальне (1Гб для розпакування)
+0728 Maximum (192mb decompression)=Максимальне (192Мб для розпакування)
+0729 Maximum (fast, low-memory decompression)=Максимальне з швидкою распаковкою
+0752 No compression=Без стиснення
+
+Encryption
+0730 Standard=Стандартне
+0731 Fast=Швидке
+0732 Strong=Сильне
+0733 Strongest=Максимальне
+
+Protection
+0734 Add=Додати
+0735 Remove=Видалити
+0736 Internet-only (4kb blocks)=Тільки для відновлення через Internet (4кб блоки)
+0737 Internet-only (64kb blocks)=Тільки для відновлення через Internet (64кб блоки)
+0738 Percents, example=У відсотках, приклад
+0739 Fixed-size, example=Фіксованого розміру, приклад
+
+Comment
+0740 Add from textbox=Додати введений на закладці текст
+0741 Remove=Видалити
+0742 Add short comment, example=Додати короткий коментар, приклад
+0743 Add from a file, example=Додати з файлу, приклад
+
+SFX
+0765 Windows GUI=Графічний для Windows
+0766 Windows console=Консольний для Windows
+0767 Linux console=Консольний для Linux
+0768 Convert EXE back to ARC=Перетворити EXE назад у ARC
+
+Sorting
+0744 No sorting=Без сортування
+0745 Standard=Стандартне
+0746 Advanced=Покращене
+0747 Smart+Path=Інтелектуальне + Каталог
+0748 Smart+Name=Інтелектуальне + Ім'я
+0750 Extension+Path=Розширення + Каталог
+0749 Extension+Name=Розширення + Ім'я
+0751 Extension+Size=Розширення + Размір
+
+Archive name template
+0754 Date+Time=Дата + Час
+0755 Date=Дата
+0756 Time=Час
+0757 Month=Місяць
+0758 Monthday=День місяця
+0759 Weekday=День тижня
+
+Exclude
+0760 Backup files=Резервні копії файлів
+
+
+=== Tooltips (index=N+1000) ===========================================
+
+******************************************************************************************
+***  DON'T FORGET THAT THIS SECTION SHOULD PROVIDE TOOLTIPS, NOT DIRECT TRANSLATIONS.  ***
+***  You may find some tooltips in arc.english.txt                                     ***
+******************************************************************************************
+
+Add dialog
+--
+1183 Compression=??
+1184 Encryption=??
+1185 Protection:=Додає до архіву додаткову інформацію (за замовчуванням 1% від розміру архіву), що дозволяє відновити його від збоїв у магнітних носіях або при передачі даних
+1186 Comment=??
+1227 Make EXE:=??
+1128 Test archive after operation=??
+1122 Delete files successfully archived=??
+1187 Finalize archive=??
+1072 Additional options:=??
+--
+1201 Compress each file into separate archive=??
+1202 Add to archive name=??
+--
+1207 Delete previous archive contents=??
+1208 Order of files in archive=??
+--
+1222 Include only files=??
+1223 Exclude files=??
+
+--Compression settings
+1113 Fast, low-memory decompression=Відключає використання алгоритмів, які вимагають багато часу чи пам'яті при розпакуванні. Використання цієї опції трохи сповільнює й погіршує стискання
+1176 Filetype auto-detection=При включенні цієї опції FreeArc аналізує вміст кожного файлу, а потім вибирає для нього оптимальний алгоритм стиснення, при її відключенні алгоритми вибираються згідно з arc.groups
+1138 Bytes, no more than:=??
+1139 Files, no more than:=??
+1140 Split by extension=??
+
+--Encryption settings
+1120 Encrypt archive directory=Зашифровує мета-інформацію архіву (імена, розміри, CRC файлів, що містяться в ньому), так що навіть для відкриття архіву потрібно вказати пароль/файл-ключ. Особливо рекомендується включити цю опцію для отримання реального захисту даних
+1123 Keyfile:=Файл-ключ - це додатковий пароль, що записаний у файл на диску, без якого неможливо відкрити архів. Особливо рекомендується використовувати його для повної реалізації потенціалу криптостойкості AES
+1125 Generate new keyfile=Створити новий файл-ключ, записав криптографічні випадкові дані в зазначений користувачем файл
+1181 Use password=??
+
+
+=== Everything else ====================================================
+Common words
+0101 Yes=&Так
+0102 No=Ні
+0103 May be=Не впевнений
+
+Failure messages
+0010 Operation interrupted!=Операція перервана!
+0011 No threads to run: infinite loop or deadlock?=Немає що виконувати: нескінченний цикл або зависання?
