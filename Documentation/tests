@@ -1,0 +1,69 @@
+Результаты тестирования версии от 14.12.2005 на диске C, содержащем 252 тысячи файлов.
+Время и память, необходимые различным архиваторам для того, чтобы найти все файлы
+и приготовиться к сжатию (en/gen - тип сортировки; -c == +RTS -c - алгоритм уплотнения памяти)
+
+7z   en     150 mb  40 sec  (из них 17 сек/80 mb - собственно поиск, из них 8 сек. - в ОС)
+
+rar          50 mb  60 sec  (из них 14 сек. - собственно поиск, из них 8 сек. - в ОС)
+rar  en      50 mb  80 sec
+rar gen      50 mb 120 sec
+
+ARC 16.12  (c sortOn')
+arc     -c   57 mb  37 sec  (64m/47s с записью каталога)
+arc  en -c   65 mb  47 sec
+arc gen -c   65 mb  55 sec  (65m/63s с записью каталога)
+arc l   -c   59 mb  42 sec  (13m/16s=6+10gc - листинг несуществующего файла)
+
+ARC 16.12  (c UTF8Z и case-sensitive path/name sorting)
+arc     -c   58 mb  38 sec
+arc  en -c   86 mb  48 sec
+arc gen -c   79 mb  58 sec
+
+ARC 14.12  (c PackedString)
+arc     -c   60 mb  35 sec  (из них 27 сек. - собственно поиск, 5.5 сек - удаление дубликатов в списке файлов и 2.5 сек - создание пустого архива)
+arc  en -c  120 mb  59 sec
+arc gen -c   81 mb  68 sec
+
+с записью каталога по частям без сжатия ("-s64mb -dm0"):
+arc     -c   69 mb  50 sec
+arc gen -c   82 mb  82 sec
+arc          99 mb  49 sec
+arc gen     114 mb  75 sec
+
+Старый arc (до оптимизации по памяти)
+arc     -c  185 mb  46 sec  (из них 31 сек. - собственно поиск, 8 сек - удаление дубликатов в списке файлов)
+
+
+======= C:\Base\Compiler (62 тысячи файлов + 5 тысяч каталогов) ==============================
+
+uharc gs-   4.5 mb  6.5 sec  (из них 4.5 сек. - в ОС)
+
+7z   en      39 mb    6 sec  (из них 4.4 сек/28 mb - собственно поиск, из них 1.4 сек. - в ОС)
+
+rar          11 mb    4 sec  (из них 2.7 сек. - собственно поиск)
+rar  en      11 mb    7 sec
+rar gen      11 mb   18 sec
+
+ARC 16.12  (c UTF8Z + case-sensitive sortOn')
+arc  en -c   20 mb   10 sec  (6.5+3.5gc)
+
+ARC 14.12  (c PackedString)
+arc     -c   18 mb  7.5 sec  (5+2.5gc) (из них 1.2 сек. - удаление дубликатов в списке файлов)
+arc  es -c   21 mb   10 sec  (6.3+3.8gc)
+arc  en -c   34 mb   12 sec  (7+5gc)
+arc gen -c   33 mb 13.3 sec  (8.3+5gc)
+
+ARC 9.12 (c wfindfiles)
+arc     -c   43 mb  8.8 sec  (5+3.8gc)
+arc  en -c   58 mb   14 sec  (7.5+6.5gc)
+arc gen -c   53 mb 15.5 sec  (9+6.5gc)
+
+arc          48 mb  8.2 sec  (5.2+3gc)
+arc  en      79 mb   13 sec  (7+6gc)
+arc gen      77 mb   14 sec  (9+5gc)
+
+ARC 18.05
+arc          58 mb 18.5 sec  (15.5+3gc) (из них 8.5 сек. - в ОС, 2 сек. - удаление дубликатов в списке файлов)
+arc  en      81 mb   24 sec  (19+5gc)
+arc gen      74 mb   25 sec  (20+5gc)
+

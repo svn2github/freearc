@@ -1,0 +1,16 @@
+#Run Freearc "compile" first to establish compilation environment
+exe=4x4
+ctempdir=/tmp/out/FreeArc
+tempdir=$ctempdir$1$2$3
+defines="-DFREEARC_UNIX -DFREEARC_INTEL_BYTE_ORDER -optc-DFREEARC_UNIX -optc-DFREEARC_INTEL_BYTE_ORDER"
+# ****** -DFREEARC_MOTOROLA_BYTE_ORDER -DFREEARC_ONLY_ALIGNED_ACCESS *******
+mkdir $ctempdir
+cd ..
+chmod +x compile
+./compile
+cd _Examples
+c_modules="$ctempdir/Common.o $ctempdir/CompressionLibrary.o $ctempdir/C_LZMA.o $ctempdir/C_GRZip.o $ctempdir/C_Tornado.o $ctempdir/C_External.o -lstdc++ -lrt"
+options="-fglasgow-exts -cpp -i.. -i../.. -threaded"
+ghc --make $* 4x4.hs $options $defines $c_modules -odir $tempdir -hidir $tempdir -o $exe -H20m
+strip $exe
+rm ../CompressionLib_stub.?

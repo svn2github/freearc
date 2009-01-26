@@ -1,0 +1,41 @@
+; -----------------------------------------------------------------------
+; TotalCommander MultiArc config addon for FreeArc archives.
+; To install it, append contents of this file to multiarc.ini
+; Arc.exe and unarc.exe should be in your PATH - or write paths here.
+; -----------------------------------------------------------------------
+; Version: FreeArc 0.50
+; Available at: http://freearc.org
+; Comments: none
+; WARNINGS: none
+; -----------------------------------------------------------------------
+;
+[FreeArc]
+ID=41 72 43 01
+IDPos = 0, -38, -39, -40, <SeekID>
+Extension=arc
+Description="FreeArc 0.50"
+Archiver=Arc.exe
+List="unarc v --noarcext -- %AQA"
+Format0="yyyy tt dd hh mm ss aaaaaaa zzzzzzzzzzzzzzz ppppppppppppppp rrrrrrrr nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn"
+Start="^--"
+End="^--"
+Test="%P t --noarcext -sclANSI -- %AQA @%LA"
+Add="%P a {-ap%RA} --noarcext -sclANSI {%S} -- %AQA @%LA"
+Move="%P m {-ap%RA} --noarcext -sclANSI {%S} -- %AQA @%LA"
+Extract="%P e -y --noarcext -sclANSI -- %AQA @%LA"
+ExtractWithPath="%P x -y --noarcext -sclANSI -- %AQA @%LA"
+Delete="%P d --noarcext -sclANSI -- %AQA @%LA"
+AskHistory0=-m2
+AskHistory1=-mx
+AskHistory2=-max
+IgnoreErrors=0
+Debug=0
+UnixPath=1
+SkipDirsInFileList=0
+SkipEmptyNames=1
+BatchUnpack=1
+SearchForUglyDirs=0
+AskMode=2
+SkipLIST=1
+SkipSfxHeader=1
+

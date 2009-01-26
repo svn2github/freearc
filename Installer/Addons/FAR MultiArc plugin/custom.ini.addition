@@ -1,0 +1,30 @@
+
+; If freearc.fmt don't work, then use these settings (and copy unarc.exe to your PATH):
+;
+; FreeArc support for FAR MultiArc plugin
+; Append the following strings to file
+; ...\Program Files\Far\Plugins\MultiArc\Formats\Custom.ini
+
+[FreeArc]
+TypeName=FreeArc
+ID=41 72 43 01
+Extension=arc
+List=unarc v --noarcext --
+Start="^--"
+End="^--"
+Format0="yyyy tt dd hh mm ss aaaaaaa zzzzzzzzzzzzzzz ppppppppppppppp rrrrrrrr nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn"
+Extract=arc x --noarcext -y -fn {-p%%P} -kb {-ap%%R} {%%S} -- %%A @%%LNM
+ExtractWithoutPath=arc e --noarcext -y -fn {-p%%P} -kb {%%S} -- %%A @%%LNM
+Test=arc t --noarcext -y -fn {-p%%P} {%%S} -- %%A @%%LNM
+Delete=arc d --noarcext -y -fn {-p%%P} {-w%%W} {%%S} -- %%A @%%LNM
+Comment=arc c --noarcext -y {-p%%P} {-w%%W} {%%S} -- %%A
+CommentFiles=
+SFX=arc s --noarcext -y {-p%%P} {-w%%W} {%%S} -- %%A
+Lock=arc k --noarcext -y {-p%%P} {-w%%W} {%%S} -- %%A
+Protect=arc rr --noarcext -y {-p%%P} {-w%%W} {%%S} -- %%A
+Recover=arc r --noarcext -y {-p%%P} {-w%%W} {%%S} -- %%A
+Add=arc a --noarcext -y {-p%%P} {-w%%W} {-ap%%R} {%%S} -- %%A @%%LN
+Move=arc mf --noarcext -y {-p%%P} {-w%%W} {-ap%%R} {%%S} -- %%A @%%LN
+AddRecurse=arc a --noarcext -y {-p%%P} {-w%%W} {-ap%%R} {%%S} -- %%A @%%LN
+MoveRecurse=arc m --noarcext -y {-p%%P} {-w%%W} {-ap%%R} {%%S} -- %%A @%%LN
+AllFilesMask="*"

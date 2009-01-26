@@ -1,0 +1,4 @@
+#!/bin/sh -x
+g++ -D_FILE_OFFSET_BITS=64 -DFREEARC_UNIX -DFREEARC_INTEL_BYTE_ORDER -g -lrt "$@" main.cpp -otor
+# -DSTATS -DDEBUG -DFULL_COMPILE -DFREEARC_NO_TIMING
+#valgrind --leak-check=yes ./tor tor -o -q 2>tor.valgrind
