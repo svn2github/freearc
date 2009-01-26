@@ -1,0 +1,4 @@
+#For Unix:
+DEFINES = -DFREEARC_UNIX -DFREEARC_INTEL_BYTE_ORDER
+TEMPDIR = /tmp/out/FreeArc
+GCC=g++

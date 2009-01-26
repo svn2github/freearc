@@ -1,0 +1,45 @@
+Welcome to FreeArc 0.50 alpha (June 23 2008)
+
+Main changes in this version:
+* GUI: WinArc executable renamed to FreeArc; a lot of usability improvements
+* Windows: added "Extract here" to .arc files context menu; added "FreeArc archive" to Explorer New command; added "Change skin" shortcut; config files are searched first in user-specific "Application Data\FreeArc" directory
+* Linux: fixed archive navigation & Unicode filenames support
+* SFX: support for non-English filenames; WinRAR-compatible options with help displayed by "/?"
+* -sfx option by default adds GUI module freearc.sfx (instead of arc.sfx)
+* Total Commander addon: support for filenames with spaces and SFX archives
+* FAR Plugin: added "Convert to SFX" command
+* Improved filetype detection for large heterogenous files
+* Fixed bug in REP that was preventing decompression of some archives created in -mx mode
+
+Main changes in FreeArc 0.50 alpha (June 3 2008):
+* Creation of self-extracting archives with Windows GUI, Windows console and Linux console interfaces
+* Support of RTF files used as comments in GUI self-extractors
+* WinArc: message combobox at the window bottom
+* WinArc: registers icon for .arc files
+* New format of archive comments with ability to read old comments
+* Linux: multithreading for LZMA (1.5x faster compression)
+* Fixed bug in -m1 mode implementation; old archives created in this mode need to be recompressed to -m2 before upgarding to new program version
+
+Main changes in FreeArc 0.50 alpha (May 15 2008):
+* Improved automatic filetype detection
+* Improved -m3/m4 compression methods
+* Initial support for scripting FreeArc using Lua (see scripts directory)
+* -di+% for displaying memory status
+* lzma: changed default settings; :h parameter allows to change size of hash; new HT4 matchfinder allows to use dictionary up to 1gb
+* GUI: BackSpace jumps to the parent directory
+
+Main changes in FreeArc 0.50 alpha (Feb 8 2008):
+* Improved automatic filetype detection and ability to disable it using -ma- option and in GUI
+* Ability to create Compression/Encryption profiles
+* Significantly improved Add dialog, now supports almost all features of cmdline version
+* Localization for names of standard settings/profiles
+* Tooltips can be assigned to any GUI control using the same number+1000. Please yell me if some controls don't appreciate tooltips
+
+Main changes in FreeArc 0.50 alpha (Jan 28 2008):
+* GUI version, localized to 70 languages ;)
+* Automatic detection of filetype by file contents - still unfinished
+* Fixed all the memory-allocation problems (thanks to Egor!)
+* By default, -ld=1gb (limit decompression memory to 1gb) is used
+* With "-lc- -ld-" options and 64-bit Windows, algorithm limits now are: lzma:255m, lzma:fast:511m, ppmd:2047m, rep:2047m, lzp:1675m
+* Archive listing commands now include "Compressed" sizes and mark encrypted files with "*"
+* By default, solid blocks now have unlimited size (in 0.40, 1gb was the default)

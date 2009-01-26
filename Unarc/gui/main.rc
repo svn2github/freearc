@@ -1,0 +1,221 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Neutral (Default) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEUD)
+#ifdef _WIN32
+LANGUAGE LANG_NEUTRAL, SUBLANG_DEFAULT
+#pragma code_page(1251)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DIALOG_MAIN DIALOGEX 0, 0, 316, 226
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "FreeArc SFX"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "Destination folder:",IDC_STATIC_DESTINATION_DIRECTORY,7,185,60,9
+    EDITTEXT        IDC_EDIT_PATH,73,183,182,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "Browse",IDBROWSE,259,183,50,14
+    DEFPUSHBUTTON   "OK",IDOK,205,205,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,259,205,50,14
+    CONTROL         "",IDC_RICHEDIT,"RichEdit20W",WS_BORDER | WS_VSCROLL | WS_TABSTOP | 0x280c,73,7,236,169,WS_EX_CLIENTEDGE
+    CONTROL         104,IDC_STATIC_LOGO,"Static",SS_BITMAP | SS_REALSIZEIMAGE,7,7,63,90,WS_EX_CLIENTEDGE
+    LTEXT           "http://freearc.org",IDC_STATIC_URL,7,211,59,8,SS_NOTIFY
+END
+
+IDD_DIALOG_PROGRESS DIALOGEX 0, 0, 252, 106
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Extraction"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    PUSHBUTTON      "Cancel",IDCANCEL,195,85,50,14
+    LTEXT           "",IDC_STATIC_FILENAME,7,7,238,8,SS_PATHELLIPSIS
+    CONTROL         "",IDC_PROGRESS,"msctls_progress32",WS_BORDER,7,85,184,14
+    CONTROL         "",IDC_ANIMATE_COPY,"SysAnimate32",ACS_CENTER | ACS_TRANSPARENT | ACS_AUTOPLAY | WS_TABSTOP,7,20,238,38
+    LTEXT           "",IDC_STATIC_TIME,7,64,238,8
+    LTEXT           "",IDC_STATIC_SPEED,7,73,238,8
+END
+
+IDD_DIALOG_CONFIRM DIALOGEX 0, 0, 288, 142
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Confirm file replace"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "This folder",IDC_STATIC_ALREADY_EXISTS,7,7,34,8
+    LTEXT           "FILENAME.EXT",IDC_STATIC_FILENAME,7,40,274,8
+    LTEXT           "Would you like to replace the existing file",IDC_STATIC_Q1,7,51,132,8
+    LTEXT           "0 bytes",IDC_STATIC_SIZE1,38,62,243,8
+    LTEXT           "modified:",IDC_STATIC_DATETIME1,38,73,243,8
+    LTEXT           "with this one?",IDC_STATIC_Q2,7,84,45,8
+    ICON            "",IDC_STATIC_ICON1,7,60,20,20
+    LTEXT           "0 bytes",IDC_STATIC_SIZE2,38,95,243,8
+    LTEXT           "modified:",IDC_STATIC_DATETIME2,38,106,243,8
+    ICON            "",IDC_STATIC_ICON2,7,95,20,20
+    PUSHBUTTON      "Yes",IDC_BUTTON_YES,7,121,50,14
+    PUSHBUTTON      "Yes to All",IDC_BUTTON_YESALL,63,121,50,14
+    PUSHBUTTON      "No",IDC_BUTTON_NO,119,121,50,14
+    PUSHBUTTON      "No to All",IDC_BUTTON_NOALL,175,121,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,231,121,50,14
+    LTEXT           "FOLDER",IDC_STATIC_FOLDER,7,18,274,8,SS_PATHELLIPSIS
+    LTEXT           "already contains a file named",IDC_STATIC,7,29,94,8
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_DIALOG_MAIN, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 309
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 219
+    END
+
+    IDD_DIALOG_PROGRESS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 245
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 99
+    END
+
+    IDD_DIALOG_CONFIRM, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 281
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 135
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_BITMAP_LOGO         BITMAP                  "logo.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// RT_RTF
+//
+
+IDR_RTF_COMMENTS        RT_RTF                  "comments.rtf"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// RT_MANIFEST
+//
+
+1                       RT_MANIFEST             "sfx.exe.manifest"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_STRING_CANCEL_CONFIRM_CAPTION "Cancel confirmation"
+    IDS_STRING_CANCEL_CONFIRM_TEXT "Do you want to cancel the extraction?"
+    IDS_STRING_BYTES        "bytes"
+    IDS_STRING_MODIFIED     "modified:"
+    IDS_STRING_SELECT_FOLDER "Select folder to extract the SFX archive"
+    IDS_STRING_TIME         "Elapsed time %02d:%02d:%02d.  Remaining time %02d:%02d:%02d."
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_STRING_SPEED        "Extraction speed %I64u Kb/sec."
+    IDS_STRING_PROGRESS_CAPTION "%d%% of %s extracted"
+    IDS_STRING_MAIN_CAPTION "%s - FreeArc self-extractor"
+END
+
+#endif    // Neutral (Default) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// Russian resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_RUS)
+#ifdef _WIN32
+LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
+#pragma code_page(1251)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_ICON_FREEARC        ICON                    "freearc.ico"
+#endif    // Russian resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
