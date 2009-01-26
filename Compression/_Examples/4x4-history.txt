@@ -1,0 +1,83 @@
+Date        Version  New features compared to previous version
+
+2008-04-13  0.1      Multithreaded compression
+                     Overlapped I/O
+                     Tornado and LZMA:ht4 are used
+                     Blockwise compression
+
+2008-04-17  0.2      Fast compression modes made even faster
+                       * direct i/o to compression buffers
+                       * larger blocks to avoid disk trashing
+                       * MM tables disabled in -2/-3 modes
+                     Multi-threaded decompression, also with direct i/o
+                     Fast text compression modes 1t..4t using grzip
+                       * now 4x4 is 10x faster than lzturbo on ENWIK9!
+                     Win32 & Linux versions
+
+2008-06-02  0.2a     Fixed bug in Tornado
+
+??          0.3      Fixed bug in Tornado that made results unstable and losing ~1% of compression
+                     Reimplemented in C++
+
+
+linux
+grzip now can be called only in 1 instance
+cmdline, including old options and progress indicator
+
+automatic per-block datatype detection
+filters
+ppmd
+
+
+
+On average, 4x4 is 18 times faster than lzturbo! Below are detailed results from
+http://www.metacompressor.com/uploads.aspx
+
+
+file1 - big text 1,552,758,784
+                  mode  size          compression/decompression time
+    4x4     0.2   1t    354,958,849   24   29
+    lzturbo 0.92  -59   322,372,806   219  21
+    4x4     0.2   4t    311,810,707   41   36
+    4x4     0.2   9     300,944,001   117  20
+* 4x4 is 5 times faster than lzturbo!
+
+
+file2 - windows 2008 server virtual disk 1,489,400,832
+                  mode  size          compression/decompression time
+    lzturbo 0.92  -59   352,723,630   1343
+    4x4     0.2   6     344,522,813   25   24
+    4x4     0.2   9     268,639,166   97   19
+* 4x4 is 53 times faster than lzturbo!!!
+
+
+file3 - big apache log 2,072,612,014
+                  mode  size          compression/decompression time
+    lzturbo 0.92  -59   103,156,939   313
+    4x4     0.2   4t    80,941,237    24   28
+* 4x4 is 13 times faster than lzturbo!
+
+
+file4 - enwik9 part wikipedia export 1,000,000,000
+                  mode  size          compression/decompression time
+    4x4     0.2   1t    233,368,003   14   18
+    lzturbo 0.92  -59   232,701,587   155  14
+    4x4     0.2   4t    208,787,642   34   26
+* 4x4 is 11 times faster than lzturbo!
+
+
+file6 - source code linux, apache, mysql, php and firefox 729,287,225
+                  mode  size          compression/decompression time
+    lzturbo 0.92  -59   156,185,652   109
+    4x4     0.2   1t    151,456,761   14   12
+    4x4     0.2   9     151,252,453   51   9
+* 4x4 is 8 times faster than lzturbo!
+
+
+file7 - big db index 1,066,160,748
+                  mode  size          compression/decompression time
+    lzturbo 0.92  -59   406,358,090   4405 20
+    4x4     0.2   1t    390,897,470   35   34
+    4x4     0.2   9     359,413,561   145  13
+* 4x4 is 125 times faster than lzturbo! no comments :)
+
