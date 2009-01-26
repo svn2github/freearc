@@ -7,7 +7,7 @@
 //   - fast semi-adaptive arithmetic codec
 // Here semi-adaptive means that statistics collected on previous symbols are
 // used to encode new ones, but encoding tables are updated with some intervals
-// (after each 30k-50k symbols encoded)
+// (after each 10k-20k symbols encoded)
 
 // Selects either encoder or decoder
 enum CodecDirection {Encoder, Decoder};
@@ -252,14 +252,14 @@ InputBitStream::InputBitStream (CALLBACK_FUNC *callback, void *auxdata, UINT buf
 #define FAST_BITS 11    /* symbols with shorter codes (<=FAST_BITS bits) are decoded much faster */
 
 // This structure used for intermediate data when building huffman tree
-struct Node {int cnt, left, right, bits; uint code;};
+struct Node {uint32 cnt, code; uint16 left, right; uint8 bits;};
 // Simplified Node structure, saving counter in higher bits and index in lower ones (in order to allow stable sorting by counter!)
 typedef uint Node0;
 #define make_node(i,cnt)  ((cnt)*MAXHUF+(i))
 #define index0(node)      ((node)%MAXHUF)
 #define cnt0(node)        ((node)/MAXHUF)
 // For stable sorting Nodes by counters
-int by_cnt (const void* a, const void* b)   {return *(const Node0*)a - *(const Node0*)b;}
+int by_cnt_and_index (const void* a, const void* b)   {return *(const Node0*)a - *(const Node0*)b;}
 
 // Huffman tree for dynamic encoding.
 // If you want to work with block-wise static encoding, you need to
@@ -269,7 +269,6 @@ struct HuffmanTree
     CodecDirection type;              // Determines whether this tree used for encoding or decoding
     int    n;                         // Number of symbols in huffman tree
     uint   counter[MAXHUF];           // Symbol counters used to build huffman tree
-    Node   buf[MAXHUF*2+4];           // Intermediate data used to build huffman tree
                                       // Built huffman tree:
     int    maxbits;                   //   Maximum number of bits in any code of current table
     int    maxbits_so_far;            //   Maximum maxbits encountered so far
@@ -307,29 +306,6 @@ HuffmanTree::HuffmanTree (CodecDirection _type, int _n)
     build_tree(0);                   // STATIC: remove this line
 }
 
-// Stable sorting of Node0[] by counter
-void sort_by_counter (Node0 *orig, int size, Node0 *sorted)
-{
-    // Nodes with small counters (<CHUNKS) sorted by counting, remaining nodes (<10%) sorted by STL sort()
-    const int CHUNKS = 80;
-    int places[CHUNKS+1];
-    iterate_var(i,CHUNKS+1)
-        places[i] = 0;
-    iterate_var(i,size)
-        if (cnt0(orig[i]) < CHUNKS)
-             places[ cnt0(orig[i])+1 ]++;
-    iterate_var(i,CHUNKS)
-        places[i+1] += places[i];
-    Node0 *rest = sorted + places[CHUNKS];
-    iterate_var(i,size)
-        if (cnt0(orig[i]) < CHUNKS)
-             sorted[ places[ cnt0(orig[i]) ]++ ] = orig[i];
-        else *rest++ = orig[i];
-    // Stable sorting of nodes by counter
-    qsort (sorted+places[CHUNKS], size - places[CHUNKS], sizeof(*sorted), by_cnt);
-    //Alternatively: std::sort (sorted + places[CHUNKS], rest);
-}
-
 // It seems this is the only original implementation of "build huffman tree"
 // procedure, all other compressors borrow zip's one :)
 // The algorithm is obvious - instead of using heap for searching of nodes with
@@ -346,15 +322,41 @@ void sort_by_counter (Node0 *orig, int size, Node0 *sorted)
 void HuffmanTree::build_tree (int rescale_mode)
 {
     debug (printf ("=== BUILD_TREE rescale_mode=%d ===\n", rescale_mode));
-    int b=0;   // This var will contain count of non-zero symbols
 
-    // Put into buf[] nodes sorted by counter
-    Node0 unsorted_buf[MAXHUF], sorted_buf[MAXHUF];
-    iterate_var(i,n)   unsorted_buf[b] = make_node(i,counter[i]), b++;    // STATIC: add "if (counter[i])"
-    sort_by_counter (unsorted_buf, b, sorted_buf);
-    iterate_var(i,b)  buf[i].left = index0(sorted_buf[i]), buf[i].cnt = cnt0(sorted_buf[i]);
+    Node buf [2*MAXHUF+4];              // Intermediate data used to build huffman tree
+    int *places = (int*) (buf+MAXHUF);  // Part of the buffer reused for better caching
+    int b = 0;                          // This var will contain count of non-zero symbols
 
-    iterate_var(i,b+4)  buf[b+i].cnt = INT_MAX;
+    // Nodes with small counters (<CHUNKS) sorted by counting, remaining nodes (<10%) sorted by STL sort()
+    const int CHUNKS = 250;
+    iterate_var(i,CHUNKS+1)
+        places[i] = 0;
+    iterate_var(i,n) {               // STATIC: add "if (counter[i])"
+        if (counter[i] < CHUNKS)
+            places[counter[i] + 1]++;
+        b++;
+    }
+    iterate_var(i,CHUNKS)
+        places[i + 1] += places[i];
+    // code[] is reused here as a temporary buffer for better caching  (== Node0 rest[b - places[CHUNKS]])
+    Node0 *rest = (Node0 *)code, *r = rest;
+    iterate_var(i,n)                 // STATIC: add "if (counter[i])"
+        if (counter[i] < CHUNKS) {
+            int p = places[counter[i]]++;
+            buf[p].cnt = counter[i];
+            buf[p].left = i;
+        } else
+            *r++ = make_node(i, counter[i]);
+    // Stable sorting of nodes by counter (== std::sort (rest, r))
+    qsort (rest, r - rest, sizeof(*rest), by_cnt_and_index);
+    iterate_var(i, r - rest) {
+        int p = i + places[CHUNKS];
+        buf[p].cnt = cnt0(rest[i]);
+        buf[p].left = index0(rest[i]);
+    }
+    // Now buf[0..b-1] contains nodes stable-sorted by counter.
+
+    iterate_var(i,b+4)  buf[b+i].cnt = INT_MAX;  // maximum possible int value used here as a fence
     int p1 = 0,    // Index of first remaining original node
         p2 = b+2,  // Index of first remaining combined node
         p3 = b+2;  // Index of next combined node to create

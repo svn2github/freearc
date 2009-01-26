@@ -46,7 +46,9 @@ Date        Version  New features compared to previous version
 
 shift buffer by 1/8, 1/16... for large -l
 -h512m:64, -ah512m:64, -h -ah -b<128m
-remove CHECK_FOR_DATA_TABLE(2) in faster modes, increase hufblock size in fast modes & for texts/compressed
+remove CHECK_FOR_DATA_TABLE(2) in -3/-4
+hufblock=50.000 in -3 & for texts/compressed
+no rep codes in -3
 
 skip 0/32 when calculating hash
 check matches at REP_DIST first	(should improve compression for binary files)
@@ -67,7 +69,7 @@ chunked hash (15 elements + pointer to the next chunk)
 
 ускорение lazy parsing благодаря одновременной проверке двух позиций
 1. tor -5/-6: ищем матчи для p+1, в хеш-таблице сохраняем p[0,4,5,6],
-              проверяем сразу матчи на p и p+1, 
+              проверяем сразу матчи на p и p+1,
               если НИЧЕГО не найдено - ищем матчи для p до дистанции 48к
 2. в старших режимах - после нахождения матча размером N+4 переключаемся на поиск
         матчей для p+4 (или p+1..p+3). или просто ищем на шару :)
