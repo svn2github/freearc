@@ -1,0 +1,30 @@
+Name: hslua
+Version: 0.3
+Stability: alpha
+Exposed-modules: Scripting.Lua
+License: BSD3
+License-File: COPYRIGHT
+Copyright: 2007-2007, Gracjan Polak
+Author: Gracjan Polak <gracjanpolak@gmail.com>
+Maintainer: Gracjan Polak <gracjanpolak@gmail.com>
+Synopsis: A Lua language interpreter embedding in Haskell
+Description:
+        The Scripting.Lua module is a wrapper of Lua language interpreter
+        as described in www.lua.org.
+        .
+        The package is standalone: full Lua interpreter is distributed in this
+        package as well.
+Category: Scripting
+Build-depends: base
+Hs-source-dirs: src
+C-sources: src/lapi.c, src/lauxlib.c, src/lbaselib.c, src/lcode.c, src/ldblib.c,
+           src/ldebug.c, src/ldo.c, src/ldump.c, src/lfunc.c, src/lgc.c,
+           src/linit.c, src/liolib.c, src/llex.c, src/lmathlib.c, src/lmem.c,
+           src/loadlib.c, src/lobject.c, src/lopcodes.c, src/loslib.c,
+           src/lparser.c, src/lstate.c, src/lstring.c, src/lstrlib.c,
+           src/ltable.c, src/ltablib.c, src/ltm.c, src/lundump.c, src/lvm.c,
+           src/lzio.c,
+           src/ntrljmp.c
+Ghc-options: -O2
+CC-options: -O2
+Include-dirs: src
