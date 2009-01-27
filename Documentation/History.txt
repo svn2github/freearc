@@ -240,7 +240,7 @@
     default=-o10 -m48
   Initial CLS support (external compressors in cls-*.dll)
   Tornado 0.5:
-    better compression in -m1; faster -m3xt; modified -m1xx..-m4xx definitions; :t
+.   better compression in -m1; faster -m3xt; modified -m1xx..-m4xx definitions; :t
     tor:7:c1 .. tor:11:c3; support for :l not power of 2
     checks at decoding in order to prevent segfaults
   GRZip multithreading!
@@ -295,13 +295,13 @@
   -ilog a-la RAR
 
 
-  GUI: зависания при ArcInfo/входе в неархив, ArcInfo/Up при выделенных файлах
-         проверять что отмеченные файлы действительно архивы и пропускать не-архивы (для test/extract)
-         работа с неархивами (arcinfo, double click)
+  GUI: проверять что отмеченные файлы действительно архивы и пропускать не-архивы (для test/extract)
+       работа с неархивами (double click)
        shortcut keys for add/extract/... commands
        центрировать индикатор прогресса относительно окна программы, а не всего экрана
 
   mm/tta/ppmd/lzp/dict: BigAlloc
+  URL support: dynamic dlls in order to cutoff rep:1g errors
   testmem and correct method before starting single_compress (?? - параллельно работающим тредам
     компрессии может не хватить памяти)
   для полной реализации многопоточности нужно:
