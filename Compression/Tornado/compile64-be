@@ -1,4 +1,0 @@
-#!/bin/sh -x
-#Compile script for big-endian cpus, such as PowerPC
-g++ -D_FILE_OFFSET_BITS=64 -DFREEARC_64BIT -DFREEARC_UNIX -DFREEARC_MOTOROLA_BYTE_ORDER -O3 --param inline-unit-growth=999 -funroll-loops -fno-exceptions -fno-rtti -fomit-frame-pointer -fstrict-aliasing -ffast-math -fforce-addr -fwhole-program -combine -lrt "$@" main.cpp -s -otor
-# -DSTATS -DDEBUG -DFULL_COMPILE -DFREEARC_NO_TIMING
