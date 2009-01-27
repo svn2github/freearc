@@ -14,6 +14,7 @@ import Data.List
 import Data.Maybe
 import System.IO.Unsafe
 import System.Cmd
+import System.Process
 #if defined(FREEARC_WIN)
 import System.Win32
 #endif
@@ -205,16 +206,34 @@ myGUI run args = do
 
 --  for [upButton,saveDirButton] (`buttonSetFocusOnClick` False)
 
-  -- ѕри нажатии Enter на строке в списке открываем выбранный архив/каталог
-  listView `New.onRowActivated` \path _ -> do
-    fm <- val fm'
-    chdir fm' =<< fmFilenameAt fm' path
-    New.treeViewScrollToPoint (fm_view fm) 0 0
-    --New.treeViewSetCursor (fm_view fm) [0] Nothing
+  -- ѕерейти в заданный каталог/архив или выполнить команду
+  let select filename = do
+        fm <- val fm'
+        let run file | all isAscii file && all (not.isSpace) file
+                                  =  forkIO (system ((isWindows &&& "start ")++file) >> return ()) >> return ()
+                     | otherwise  =  fmErrorMsg fm' "1000 Filename shouldn't contain spaces or non-ascii chars!"
+        handle (\e -> run filename) $ do    -- при неудаче перехода запустим файл :)
+          chdir fm' filename
+          New.treeViewScrollToPoint (fm_view fm) 0 0
+          --New.treeViewSetCursor (fm_view fm) [0] Nothing
 
+  -- ѕереход в родительский каталог
+  let goParentDir = do
+        fm <- val fm'
+        let path = fm_current fm
+        chdir fm' ".."
+        -- ¬ыбираем каталог/архив, из которого мы только что вышли
+        fmSetCursor fm' (takeFileName path)
+
+  -- «апись текущего каталога в историю
   let saveCurdirToHistory = do
         fm <- val fm'
         fmAddHistory fm' (isFM_Archive fm.$bool "dir" "arcname") =<< fmCanonicalizePath fm' =<< val curdir
+
+
+  -- ѕри нажатии Enter на строке в списке открываем выбранный архив/каталог
+  listView `New.onRowActivated` \path _ -> do
+    select =<< fmFilenameAt fm' path
 
   -- ѕри переходе в другой каталог/архив отобразить его им€ в строке ввода
   fm' `fmOnChdir` do
@@ -224,14 +243,6 @@ myGUI run args = do
     isFM_Archive fm  &&&  fm_arcdir fm==""  &&&  saveCurdirToHistory
     -- ѕеречитаем историю с диска
     rereadHistory curdir
-
-  -- ѕереход в родительский каталог
-  let goParentDir = do
-        fm <- val fm'
-        let path = fm_current fm
-        chdir fm' ".."
-        -- ¬ыбираем каталог/архив, из которого мы только что вышли
-        fmSetCursor fm' (takeFileName path)
 
   -- ѕереходим в род. каталог по кнопке Up или нажатию BackSpace в списке файлов
   upButton `onClick` goParentDir
@@ -247,13 +258,13 @@ myGUI run args = do
   -- ќткрытие другого каталога или архива (Enter в строке ввода)
   entry curdir `onEntryActivate` do
     saveCurdirToHistory
-    chdir fm' =<< val curdir
+    select =<< val curdir
 
   -- ќткрытие другого каталога или архива (выбор из истории)
   widget curdir `New.onChanged` do
     whenJustM_ (New.comboBoxGetActive$ widget curdir) $ \_ -> do
     saveCurdirToHistory
-    chdir fm' =<< val curdir
+    select =<< val curdir
 
   -- Select/unselect files by mask
   let sel method msg = do
