@@ -24,9 +24,9 @@ void print_match (int pos, int len, int dist)
     printf ("%08x: %3d %6d\n", pos, len, -dist);
 }
 #else
-#define check_match(p,q,len)         (0)
-#define print_literal(pos,c)         (0)
-#define print_match(pos,len,dist)    (0)
+#define check_match(p,q,len)
+#define print_literal(pos,c)
+#define print_match(pos,len,dist)
 #endif
 
 
@@ -392,7 +392,7 @@ struct CachingMatchFinder : BaseMatchFinder
             PtrVal x0=x1;  x1 = *table;  *table++ = x0;   \
             UINT   v0=v1;  v1 = *table;  *table++ = v0;   \
             UINT t = v1 ^ key(p);
-len0:
+//len0:
         while (table!=tabend) {
             next_pair();
             if ((t&0xff) == 0) {
@@ -542,7 +542,8 @@ struct CycledCachingMatchFinder : BaseMatchFinder
             if (table==rowend)  table = rowstart;                      \
             UINT t = v1 ^ key(p);
 
-len0:   while (table!=tabend) {
+//len0:
+        while (table!=tabend) {
             next_pair();
             if ((t&0xff) == 0) {
                      if (t==0)        goto len7;
