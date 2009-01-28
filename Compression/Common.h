@@ -61,7 +61,7 @@ typedef unsigned long        ulong;
 typedef unsigned int         uint,   UINT;
 typedef unsigned short int   ushort;
 typedef unsigned char        uchar;
-#ifdef FREEARC_UNIX
+#ifdef __GNUC__
 #include <stdint.h>
 typedef          uint64_t    uint64;
 typedef          uint32_t    uint32;
@@ -72,24 +72,15 @@ typedef          int32_t     sint32, int32;
 typedef          int16_t     sint16, int16;
 typedef          int8_t      sint8,  int8;
 #else
-typedef unsigned long        uint32;
-typedef unsigned short int   uint16;
-typedef unsigned char        uint8,  byte, BYTE;
-typedef   signed long        sint32, int32;
-typedef   signed short int   sint16, int16;
-typedef   signed char        sint8,  int8;
-
-#ifdef __GNUC__
-typedef          long long   sint64, int64;
-typedef unsigned long long   uint64;
-#elif _MSC_EXTENSIONS || _VISUALC || __INTEL_COMPILER || __BORLANDC__ || __WATCOMC__
 typedef          __int64     sint64, int64;
 typedef unsigned __int64     uint64;
-#else
-typedef          long long   sint64, int64;
-typedef unsigned long long   uint64;
+typedef          __int32     sint32, int32;
+typedef unsigned __int32     uint32;
+typedef          __int16     sint16, int16;
+typedef unsigned __int16     uint16;
+typedef          __int8      sint8,  int8;
+typedef unsigned __int8      uint8,  byte, BYTE;
 #endif
-#endif //FREEARC_UNIX
 
 typedef unsigned             MemSize;          // מבת¸ל ןאלÿעט
 typedef char*                FILENAME;         // טלÿ פאיכא
