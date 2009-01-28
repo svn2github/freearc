@@ -628,6 +628,7 @@ len7:   len = MINLEN-1;
 template <uint N>
 CycledCachingMatchFinder<N>::CycledCachingMatchFinder (BYTE *buf, uint hashsize, int _hash_row_width, uint auxhash_size, int auxhash_row_width)
 {
+    base      = buf;
     hash_row_width = _hash_row_width;
     // Simulate 2gb:256 hash with 2040mb:255 one :)
     if (hashsize==2*gb  &&  hash_row_width == 1<<lb(hash_row_width))

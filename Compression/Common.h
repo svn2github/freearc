@@ -57,10 +57,24 @@ extern "C" {
 /******************************************************************************
 ** Синонимы для простых типов, используемых в программе ***********************
 ******************************************************************************/
+typedef unsigned long        ulong;
 typedef unsigned int         uint,   UINT;
-typedef unsigned long        uint32, ulong;
-typedef unsigned short int   uint16, ushort;
-typedef unsigned char        uint8,  uchar, byte, BYTE;
+typedef unsigned short int   ushort;
+typedef unsigned char        uchar;
+#ifdef FREEARC_UNIX
+#include <stdint.h>
+typedef          uint64_t    uint64;
+typedef          uint32_t    uint32;
+typedef          uint16_t    uint16;
+typedef          uint8_t     uint8,  byte, BYTE;
+typedef          int64_t     sint64, int64;
+typedef          int32_t     sint32, int32;
+typedef          int16_t     sint16, int16;
+typedef          int8_t      sint8,  int8;
+#else
+typedef unsigned long        uint32;
+typedef unsigned short int   uint16;
+typedef unsigned char        uint8,  byte, BYTE;
 typedef   signed long        sint32, int32;
 typedef   signed short int   sint16, int16;
 typedef   signed char        sint8,  int8;
@@ -75,6 +89,7 @@ typedef unsigned __int64     uint64;
 typedef          long long   sint64, int64;
 typedef unsigned long long   uint64;
 #endif
+#endif //FREEARC_UNIX
 
 typedef unsigned             MemSize;          // объём памяти
 typedef char*                FILENAME;         // имя файла
