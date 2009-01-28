@@ -99,10 +99,10 @@ int ReadWriteCallback (const char *what, void *buf, int size, void *r_)
     } else {
       r.qoutsize += size;
     }
+#ifndef FREEARC_NO_TIMING
     double after = GetSomeTime();
     //r.start_time -= after-before;   // Don't take into account I/O times
 
-#ifndef FREEARC_NO_TIMING
     // Update progress indicator every 0.1 seconds
     if (!r.quiet_progress && r.insize && mymax(r.outsize,r.qoutsize) && after > r.lasttime+0.1)
     {
@@ -138,21 +138,23 @@ int ReadWriteCallback (const char *what, void *buf, int size, void *r_)
       }
       r.lasttime = after;
     }
-#endif
     //r.start_time -= GetSomeTime()-after;   // Don't take into account I/O times
+#endif
     return size;
 
   } else if (strequ(what,"done")) {
     // Print final compression statistics
     if (!r.quiet_result && r.insize && r.outsize)
     {
+#ifndef FREEARC_NO_TIMING
       double time = GetSomeTime() - r.start_time;     // Time spent for (de)compression
+#endif
       double insizeMB  = double(r.insize)/1000/1000;
       double outsizeMB = double(r.outsize)/1000/1000;
       double ratio     = (r.mode==COMPRESS? outsizeMB/insizeMB : insizeMB/outsizeMB) * 100;
-      double speed     = (r.mode==COMPRESS? insizeMB : outsizeMB) / mymax(time,0.001);
       fprintf (stderr, "\r%s%s %.3lf -> %.3lf mb (%.1lf%%)", r.method_name, r.mode==COMPRESS? "compressed":"Unpacked", insizeMB, outsizeMB, ratio);
 #ifndef FREEARC_NO_TIMING
+      double speed = (r.mode==COMPRESS? insizeMB : outsizeMB) / mymax(time,0.001);
       if (time>0.001)  fprintf (stderr, ", time %.3lf secs, speed %.3lf mb/sec", time, speed);
 #endif
       fprintf (stderr, "\n");
