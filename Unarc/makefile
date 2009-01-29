@@ -41,12 +41,12 @@ freearc.sfx: $(OBJDIR)/FreeArcSFX.o $(LINKOBJ)
 	$(GCC) $< $(LINKOBJ)      $(LINK_FLAGS) gui\res.o -lcomctl32 -mwindows -o freearc.sfx
 	$(GCC) $< $(LINKOBJ_MINI) $(LINK_FLAGS) gui\res.o -lcomctl32 -mwindows -o freearc-mini.sfx
 	$(GCC) $< $(LINKOBJ_TINY) $(LINK_FLAGS) gui\res.o -lcomctl32 -mwindows -o freearc-tiny.sfx
-	upx.exe -9 --lzma --compress-icons=2 freearc*.sfx
+	upx.exe -9 --lzma --compress-icons=2 freearc.sfx freearc-mini.sfx freearc-tiny.sfx
 
 freearc-installer.sfx: $(OBJDIR)/FreeArcInstaller.o $(LINKOBJ)
 	$(WINDRES) -Igui gui\main.rc gui\res.o
 	$(GCC) $< $(LINKOBJ)      $(LINK_FLAGS) gui\res.o -lcomctl32 -mwindows -o freearc-installer.sfx
-	upx.exe -9 --lzma --compress-icons=2 freearc*.sfx
+	upx.exe -9 --lzma --compress-icons=2 freearc-installer.sfx
 
 FreeArc.fmt: $(OBJDIR)/FarPlugin.o FarPlugin.def $(LINKOBJ_FAR_PLUGIN)
 	$(DLLWRAP) --driver-name c++ $< $(LINKOBJ_FAR_PLUGIN) -L$(LIBDIR) -def FarPlugin.def -s -o FreeArc.fmt

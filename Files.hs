@@ -171,6 +171,15 @@ runProgram cmd = do
     waitForProcess ph
     return result
 
+-- |Execute file `filename` in the directory `curdir` optionally waiting until it finished
+runFile filename curdir wait_finish = do
+  withCFilePath filename $ \c_filename -> do
+  withCFilePath curdir   $ \c_curdir   -> do
+  c_RunFile c_filename c_curdir (i$fromEnum wait_finish)
+
+foreign import ccall safe "Environment.h RunFile"
+  c_RunFile :: CFilePath -> CFilePath -> CInt -> IO ()
+
 
 #if defined(FREEARC_WIN)
 -- |Записать в Registry значение типа REG_SZ

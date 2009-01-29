@@ -283,7 +283,7 @@ aARCHIVE_VERSION = make4byte 0 0 4 9
 {-# NOINLINE aARC_HEADER #-}
 -- |Краткое наименование программы, выводимое в начале работы
 aARC_HEADER = aARC_NAME++" 0.50 alpha ("++aARC_DATE++") "
-aARC_DATE   = "Jan 24 2009"
+aARC_DATE   = "Jan 29 2009"
 aARC_NAME   = "FreeArc"
 
 {-# NOINLINE aHELP #-}

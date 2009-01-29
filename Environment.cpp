@@ -192,6 +192,28 @@ void SetFileDateTime (const CFILENAME Filename, time_t mtime)
   _wutime (Filename, &times);
 }
 
+// Execute program `filename` in the directory `curdir` optionally waiting until it finished
+void RunProgram (const CFILENAME filename, const CFILENAME curdir, int wait_finish)
+{
+  STARTUPINFO si;
+  PROCESS_INFORMATION pi;
+  ZeroMemory (&si, sizeof(si));
+  si.cb = sizeof(si);
+  ZeroMemory (&pi, sizeof(pi));
+  BOOL setup_works = CreateProcessW (filename, NULL, NULL, NULL, FALSE, 0, NULL, curdir, &si, &pi);
+
+  if (wait_finish && setup_works)
+      WaitForSingleObject (pi.hProcess, INFINITE);
+}
+
+// Execute file `filename` in the directory `curdir` optionally waiting until it finished
+void RunFile (const CFILENAME filename, const CFILENAME curdir, int wait_finish)
+{
+  ShellExecuteW (NULL, _T("open"), filename, NULL, curdir, SW_SHOWNORMAL);
+}
+
+
+
 
 #else // For Unix:
 

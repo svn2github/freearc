@@ -277,7 +277,7 @@ void ListFiles (DIRECTORY_BLOCK *dirblock, COMMAND &command)
       if (command.cmd=='l')
           printf (dirblock->isdir[i]? "%s       -dir-" : "%s %11.0lf", timestr, double(filesize));
       else
-          printf ("%s %s %15.0lf %15.0lf %08lx", timestr, dirblock->isdir[i]? ".D.....":".......", double(filesize), double(packed), dirblock->crc[i]);
+          printf ("%s %s %15.0lf %15.0lf %08x", timestr, dirblock->isdir[i]? ".D.....":".......", double(filesize), double(packed), dirblock->crc[i]);
       printf ("%c", Encrypted? '*':' ');
 
       // Print filename using console encoding
@@ -516,20 +516,11 @@ void ProcessArchive (COMMAND &command)
       CFILENAME tmp2 = (TCHAR*) malloc (MY_FILENAME_MAX * sizeof(TCHAR));
 
       // Execute command.runme in the directory command.outpath
-      STARTUPINFO si;
-      PROCESS_INFORMATION pi;
-      ZeroMemory (&si, sizeof(si));
-      si.cb = sizeof(si);
-      ZeroMemory (&pi, sizeof(pi));
-      BOOL setup_works = CreateProcessW (utf8_to_utf16 (command.runme, tmp), NULL, NULL, NULL, FALSE, 0, NULL, utf8_to_utf16 (command.outpath, tmp2), &si, &pi);
+      RunProgram (utf8_to_utf16 (command.runme, tmp), utf8_to_utf16 (command.outpath, tmp2), command.wipeoutdir);
 
       // Wipe outdir after installation was completed
       if (command.wipeoutdir)
-      {
-          if (setup_works)
-              WaitForSingleObject (pi.hProcess, INFINITE);
           wipedir (utf8_to_utf16 (command.outpath, tmp));
-      }
 
       free(tmp); free(tmp2);
   }

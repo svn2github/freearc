@@ -127,7 +127,7 @@ myGUI run args = do
   (Just menuBar) <- uiManagerGetWidget ui "/ui/menubar"
   (Just toolBar) <- uiManagerGetWidget ui "/ui/toolbar"
 
-  (listUI, listView, listModel, listSelection) <- myList
+  (listUI, listView, listModel, listSelection, onColumnTitleClicked) <- createFilePanel
   statusLabel  <- labelNew Nothing
   miscSetAlignment statusLabel 0 0.5
   messageCombo <- New.comboBoxNewText
@@ -153,6 +153,7 @@ myGUI run args = do
   boxPackStart naviBar (widget curdir)         PackGrow    0
   boxPackStart naviBar (widget saveDirButton)  PackNatural 0
 
+  -- Целиком окно файл-менеджера
   vBox <- vBoxNew False 0
   set vBox [boxHomogeneous := False]
   boxPackStart vBox menuBar   PackNatural 0
@@ -162,6 +163,14 @@ myGUI run args = do
   boxPackStart vBox hBox      PackNatural 0
 
   containerAdd window vBox
+
+  -- Выводить errors/warnings внизу окна FreeArc
+  showErrors' <- ref True
+  errorHandlers   ++= [whenM (val showErrors') . postGUIAsync . fmStackMsg fm']
+  warningHandlers ++= [whenM (val showErrors') . postGUIAsync . fmStackMsg fm']
+
+  -- Отключает вывод сообщений об ошибках на время выполнения action
+  let hideErrors action  =  bracket (showErrors' <=> False)  (showErrors' =: )  (\_ -> action)
 
 
 ----------------------------------------------------------------------------------------------------
@@ -209,13 +218,11 @@ myGUI run args = do
   -- Перейти в заданный каталог/архив или выполнить команду
   let select filename = do
         fm <- val fm'
-        let run file | all isAscii file && all (not.isSpace) file
-                                  =  forkIO (system ((isWindows &&& "start ")++file) >> return ()) >> return ()
-                     | otherwise  =  fmErrorMsg fm' "1000 Filename shouldn't contain spaces or non-ascii chars!"
-        handle (\e -> run filename) $ do    -- при неудаче перехода запустим файл :)
-          chdir fm' filename
-          New.treeViewScrollToPoint (fm_view fm) 0 0
-          --New.treeViewSetCursor (fm_view fm) [0] Nothing
+        handle (\e -> runFile filename (fm_curdir fm) False) $ do    -- при неудаче перехода запустим файл :)
+          hideErrors $ do
+            chdir fm' filename
+            New.treeViewScrollToPoint (fm_view fm) 0 0
+            --New.treeViewSetCursor (fm_view fm) [0] Nothing
 
   -- Переход в родительский каталог
   let goParentDir = do
@@ -283,6 +290,15 @@ myGUI run args = do
   settingsAct `onActionActivate` do
     settingsDialog fm'
 
+  -- При нажатии заголовка столбца в списке файлов - сортировать по этому столбцу (в обратном порядке)
+  onColumnTitleClicked =: \colname -> do
+    fm <- val fm'
+    let (order, new_sort_column) | fm.$fm_sort_column==colname  =  (SortDescending, "-"++colname)
+                                 | otherwise                    =  (SortAscending,       colname)
+    fm' =: fm {fm_sort_column = new_sort_column}
+    refreshCommand fm'
+    return order
+
 
 ----------------------------------------------------------------------------------------------------
 ---- Исполнительная часть файл-менеджера -----------------------------------------------------------
@@ -316,10 +332,6 @@ myGUI run args = do
         -- Сообщение об успешном выполнении либо кол-ве допущенных ошибок
         msgFinish <- i18n (if w==0  then formatSuccess  else formatFail)
         postGUIAsync$ fmStackMsg fm' (formatn msgFinish (msgArgs++[show w]))
-
-  -- Выводить errors/warnings внизу окна FreeArc
-  errorHandlers   ++= [postGUIAsync . fmStackMsg fm']
-  warningHandlers ++= [postGUIAsync . fmStackMsg fm']
 
   -- Commands executed by various buttons
   cmdChan <- newChan
@@ -384,7 +396,8 @@ myGUI run args = do
     rereadHistory curdir
 
   -- Выход из программы
-  exitAct `onActionActivate` mainQuit
+  exitAct `onActionActivate`
+    mainQuit
 
   return window
 

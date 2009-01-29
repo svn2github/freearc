@@ -239,6 +239,7 @@
     unpackcmd=thor e{option} ...
     default=-o10 -m48
   Initial CLS support (external compressors in cls-*.dll)
+. -m1xx..-m4xx modes for fast decompression
   Tornado 0.5:
 .   better compression in -m1; faster -m3xt; modified -m1xx..-m4xx definitions; :t
     tor:7:c1 .. tor:11:c3; support for :l not power of 2
@@ -255,6 +256,7 @@
   Fixed GUI bugs:
     first file in directory was selected after any operation if nothing was selected before
     ArcInfo on empty.arc or non-archive was terminated program
+    DoubleClick/Enter on non-archives was terminated program, but now executes them
 
 
   aARCHIVE_VERSION = make4byte 0 0 5 0
@@ -281,22 +283,38 @@
       исключение из архивации целого каталога работает только в виде "-xhelp/*"
     -xКАТАЛОГ ?
   bugs
+	arc a -t aa cls.zip -mprecomp+6pt
     tempfile: проверять отсутствие ошибок при чтении/записи
       precomp: не проверяет код возврата так что архивирует частичный файл если precomp fails
+    -if you encrypt the files (content) AND filenames and then try to open the archiv winarc seems to do nothing (but it start, as you can see in the taskmanager);if you encrypt just the filecontent it works
+      вход в архивы с зашифрованным каталогом
+    пароли не должны попадать в лог-файл (-p/-op/-di$); длинные комментарии/списки файлов - тоже
+    separate & no files selected
     "arc a a ../file" - не удаляется ".." из имени; аналогично при распаковке
     *.* и makefile.* должны включать makefile
     обновление архива, содержащего xxx: если не удалось открыть xxx с диска, то файл из архива исчезнет вообще
     bcj+dict creates corrupted archives.
     tta: float32 badly compressed (vs wavpack), int32 isn't compressed at all
     +RTS -S - processed by arc.exe itself too :)
-  GRZip multithreading!
+  GUI  
+    использовать "arc:dir" вместо "arc/dir" чтобы не иметь проблем с разделением пути на архив и каталог в нём
+    -WinArc is missing an "open archive" button
+    перевод tooltips:
+	  1004
+	  Englist text
+	  second line
+	  =
+	  Русский текст
+	  вторая строка
+	  (пустая строка в конце)
+	перевод сообщений об ошибках (errormsg) и интернализация cmdline
+  GRZip multithreading!   
     ?fixing SyncQueue
     limiting memory
   -ilog a-la RAR
 
 
   GUI: проверять что отмеченные файлы действительно архивы и пропускать не-архивы (для test/extract)
-       работа с неархивами (double click) - русские имена, пробелы, remove warning "bad archive"
        shortcut keys for add/extract/... commands
        центрировать индикатор прогресса относительно окна программы, а не всего экрана
 
@@ -331,6 +349,7 @@
       Installer
     External compressor options
     CLS
+    описание того, как можно увеличить сжатие, увеличив или отменив ограничение -ld
 
   рус. документация (4gb)
   англ. документация (future plans)
@@ -353,26 +372,22 @@
 
     проблемы
       Please, Bulat, can be PPMonstr's output limited to one row?
-      пароли не должны попадать в лог-файл (-p/-op/-di$); длинные комментарии/списки файлов - тоже
       несколько паролей/keyfiles расшифровки
       "all ok" после каждой команды
       использовать при вычислении cmem/dmem parseCmdline или по крайней мере полный код из неё
       ArcRecover при выполнении команды напрямую
       команда "ch" должна применять переупаковку/перешифровку только к файлам, указанным в cmdline
       tatarcha: заголовок Add 1 file, Extract 1 archive..
-      separate & no files selected
       добавлять tempfile в начало метода сжатия если не хватает памяти (ppmd:2gb перепаковка)
+      Настройки: Профиль упаковки: можно сохранить, а удалить нельзя
       Ежели выбрать архив, и в нём есть длинный комментарий, то окно с информацией растягивает по длине комментария.
       Снятие пароля с заголовков:
         -hp-- - сохранять зашифрованность каталога
         -hp-  - снять шифрование
         -hpxx - включить шифрование
     -if you test an archiv, there is no message given back, there should be some kind of "archiv OK" at the end of the test
-    -if you encrypt the files (content) AND filenames and then try to open the archiv winarc seems to do nothing (but it start, as you can see in the taskmanager);if you encrypt just the filecontent it works
-      вход в архивы с зашифрованным каталогом
-    -WinArc is missing an "open archive" button
-    использовать "arc:dir" вместо "arc/dir" чтобы не иметь проблем с разделением пути на архив и каталог в нём
     an additional progressbar for big files, like in Winrar
+    DoubleClick->Run inside archive
     медленное открытие/закрытие диалога Add (многократное чтение из history/запись в него)
     сохранение опций -m -s -ds в архиве рядом с -rr
     в основном окне, рядом с кнопкой "сохранить", так и просится кнопка "обзор"
@@ -439,6 +454,7 @@
     lzp: p=HTable[k] - не выполнять при c!=LZP_MATCH_FLAG
     lzp: ускорить выч. хэша, пропускать по 4-8 байт когда долго ничего не находится (+tor)
     $bmp/$wav - group solid block by 64kb?
+    для решения проблемы -ld1gb - выделять память небольшими блоками (при распаковке в lzma, rep, ppmd, tor)
   Compressor: лучше всего для толстых алгоритмов использовать внешние компрессоры. уже сейчас можно взять compressor.exe и использовать его подобным образом. в будущем же
     compressor будет совместим по формату данных с внутренними алгоритмами так, что к примеру можно будет упаковать внешним lzma со словарём в 1 гиг, а распаковывать внутренним
     понятно, будут 32 и 64-разрядные версии, причём компилироваться они будут ICC, что увеличит скорость на 10-20%

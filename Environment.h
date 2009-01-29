@@ -10,6 +10,8 @@ extern "C" {
 #define INIT_CRC 0xffffffff
 
 void SetFileDateTime (const CFILENAME Filename, time_t t); // Установить время/дату модификации файла
+void RunProgram (const CFILENAME filename, const CFILENAME curdir, int wait_finish);  // Execute program `filename` in the directory `curdir` optionally waiting until it finished
+void RunFile    (const CFILENAME filename, const CFILENAME curdir, int wait_finish);  // Execute file `filename` in the directory `curdir` optionally waiting until it finished
 void FormatDateTime (char *buf, int bufsize, time_t t);    // Отформатировать время/дату для команды листинга
 CFILENAME GetExeName (CFILENAME buf, int bufsize);         // Вернуть имя исполняемого файла программы
 unsigned GetPhysicalMemory (void);                         // Объём физической памяти компьютера

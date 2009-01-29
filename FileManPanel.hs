@@ -53,6 +53,7 @@ newFM window view model selection statusLabel messageCombo = do
                        , fm_history_file = historyFile
                        , fm_history      = Nothing
                        , fm_onChdir      = []
+                       , fm_sort_column  = "Name"
                        , subfm           = FM_Directory {subfm_dir=curdir}}
   selection `New.onSelectionChanged` fmStatusBarTotals fm'
   return fm'
@@ -93,9 +94,20 @@ chdir fm' filename' = do
                               then return ((fm.$subfm) {subfm_arcdir=arcdir})
                               else newFMArc fm' arcname arcdir
                        return (arc.$subfm_filetree.$ftFilesIn arcdir fdArtificialDir, arc)
+  -- Выбор функции сортировки по имени колонки
+  let sortOnColumn "Name"      =  sortOn (\fd -> (not$ fdIsDir fd, strLower$ fmname fd))
+      sortOnColumn "-Name"     =  sortOn (\fd -> (     fdIsDir fd, strLower$ fmname fd))  >>> reverse
+      --
+      sortOnColumn "Size"      =  sortOn (\fd -> (     fdIsDir fd, fdSize fd))            >>> reverse
+      sortOnColumn "-Size"     =  sortOn (\fd -> (not$ fdIsDir fd, fdSize fd))
+      --
+      sortOnColumn "Modified"  =  sortOn fdTime                                           >>> reverse
+      sortOnColumn "-Modified" =  sortOn fdTime
+      --
+      sortOnColumn _          =  id
   -- Запишем текущий каталог/архив в fm и выведем на экран новый список файлов
   fm' =: fm {subfm = sub}
-  fmSetFilelist fm' (files.$ sortOn (\fd->(not$ fdIsDir fd, strLower$ fmname fd)))
+  fmSetFilelist fm' (files.$ sortOnColumn (fm_sort_column fm))
   -- Обновим статусбар и выполним все остальные запрограммированные действия.
   --fmStatusBarTotals fm'
   sequence_ (fm_onChdir fm)
@@ -417,7 +429,7 @@ fmDialog fm' title action = do
 ---- Список файлов в архиве ------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------
 
-myList = do
+createFilePanel = do
   -- Scrolled window where this list will be put
   scrwin <- scrolledWindowNew Nothing Nothing
   scrolledWindowSetPolicy scrwin PolicyAutomatic PolicyAutomatic
@@ -429,10 +441,14 @@ myList = do
   model <- New.listStoreNew []
   set view [New.treeViewModel := model]
   -- Создаём колонки для её отображения.
-  s <- i18ns ["0015 Name", "0016 Size", "0017 Modified", "0018 DIRECTORY"]
-  addColumn view model (s!!0) fmname                                                       []
-  addColumn view model (s!!1) (\fd -> if (fdIsDir fd) then (s!!3) else (show3$ fdSize fd)) [cellXAlign := 1]
-  addColumn view model (s!!2) (formatDateTime.fdTime)                                      []
+  let columnTitles = ["0015 Name", "0016 Size", "0017 Modified", "0018 DIRECTORY"]
+      n = map (drop 5) columnTitles
+  s <- i18ns columnTitles
+  onColumnTitleClicked <- ref (\_ -> return SortAscending)
+  columns <- ref []
+  addColumn columns view model onColumnTitleClicked (n!!0) (s!!0) fmname                                                       []
+  addColumn columns view model onColumnTitleClicked (n!!1) (s!!1) (\fd -> if (fdIsDir fd) then (s!!3) else (show3$ fdSize fd)) [cellXAlign := 1]
+  addColumn columns view model onColumnTitleClicked (n!!2) (s!!2) (formatDateTime.fdTime)                                      []
   -- Включаем поиск по первой колонке
   -- treeViewSetSearchColumn treeViewSetSearchEqualFunc treeViewSetEnableSearch
   -- Enable multiple selection
@@ -440,7 +456,7 @@ myList = do
   set selection [New.treeSelectionMode := SelectionMultiple]
   -- Pack list into scrolled window and return window
   containerAdd scrwin view
-  return (scrwin,view,model,selection)
+  return (scrwin,view,model,selection,onColumnTitleClicked)
 
 -- |Задать новый список отображаемых файлов
 changeList model filelist = do
@@ -449,8 +465,9 @@ changeList model filelist = do
   for filelist (New.listStoreAppend model)
 
 -- |Добавить во view колонку, отображающую field, с заголовком title
-addColumn view model title field attrs = do
+addColumn columns view model onColumnTitleClicked colname title field attrs = do
   col1 <- New.treeViewColumnNew
+  columns ++= [col1]
   New.treeViewColumnSetTitle col1 title
   renderer1 <- New.cellRendererTextNew
   New.cellLayoutPackStart col1 renderer1 True
@@ -459,11 +476,13 @@ addColumn view model title field attrs = do
   -- set col1 [New.treeViewColumnSizing := TreeViewColumnAutosize] `on` expand
   -- set col1 [New.treeViewColumnSizing := TreeViewColumnFixed] `on` not expand
   set col1 [ New.treeViewColumnResizable   := True
-           --, New.treeViewColumnClickable   := True
+           , New.treeViewColumnClickable   := True
            , New.treeViewColumnReorderable := True]
-  --New.treeViewColumnSetSortColumnId col1 1
+  -- При нажатии на заголовок столбца отсортировать по нему и установить индикатор сортировки
   col1 `New.onColClicked` do
-    return ()   -- отсортировать
+    val columns >>= mapM_ (`New.treeViewColumnSetSortIndicator` False)
+    New.treeViewColumnSetSortIndicator col1 True
+    val onColumnTitleClicked >>= ($colname) >>= New.treeViewColumnSetSortOrder col1
   New.cellLayoutSetAttributes col1 renderer1 model $ \row -> [New.cellText := field row] ++ attrs
   New.treeViewAppendColumn view col1
 
