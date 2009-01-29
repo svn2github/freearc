@@ -43,19 +43,19 @@ static void undiff_table (int N, BYTE *table_start, int table_len)
 // after subtraction of subsequent elements
 // ¬ычитание начинаетс€ со следующего элемента чтобы сохранить валидными данные в match finders
 static uint64 table_count=0, table_sumlen=0;     // Total stats for sucessfully processed tables
-#define addptr(t,n)  ((int16*) ((byte*)(t) + (n)))
+#define value16s(t)  ((int16) value16(t))
 static bool check_for_data_table (int N, int &type, int &items, byte *p, byte *bufend, byte *&table_end, byte *buf, uint64 &offset, byte *(&last_checked)[MAX_TABLE_ROW][MAX_TABLE_ROW])
 {
     CHECK (N<MAX_TABLE_ROW,  (s,"Fatal error: check_for_data_table() called with N=%d that is larger than maximum allowed %d", N, MAX_TABLE_ROW-1));
     byte *&last = last_checked[N][(p-buf)%N];
     if (last > p)    return FALSE;
 
-    int16 *t=(int16*)p-1, *lastpoint;
+    byte *t = p - 2, *lastpoint;
     //printf ("\nStarted  %x    ", p-buf+offset);
-    int lensum=600, len=0, dir = *addptr(t,N) - *t < 0? -1:1, lenminus=0;
-    for (t=lastpoint=addptr(t,N); t+1<=(int16*)bufend; t = addptr(t,N)) {
-        int diff = *t - *addptr(t,-N);
-        double itemlb = logb(1 + abs(*t));
+    int lensum=600, len=0, dir = value16s(t + N) - value16s(t) < 0? -1:1, lenminus=0;
+    for (t = lastpoint = t + N; t + 2 <= bufend; t += N) {
+        int diff = value16s(t) - value16s(t - N);
+        double itemlb = logb(1 + abs(value16s(t)));
         double difflb = logb(1 + abs(diff));
              if (dir<0 && diff<0 && difflb < itemlb/1.1)  len++;
         else if (dir>0 && diff>0 && difflb < itemlb/1.1)  len++;
@@ -67,10 +67,10 @@ static bool check_for_data_table (int N, int &type, int &items, byte *p, byte *b
         }
     }
 
-    last = (byte*)t;
+    last = t;
 
-    if ((byte*)t-p > N*(40+lenminus)  &&  (byte*)lastpoint-p > mymax(N,20)) {
-        type = N; items = ((byte*)lastpoint-p)/type;
+    if (t-p > N*(40+lenminus) && lastpoint-p > mymax(N,20)) {
+        type = N; items = (lastpoint-p)/type;
         diff_table (type, p, items);
         table_end = p+type*items;
         table_count++;  table_sumlen += type*items;
