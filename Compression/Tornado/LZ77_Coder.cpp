@@ -32,7 +32,8 @@ struct LZ77_ByteCoder : OutputByteStream
         if ((flagbit<<=2) == 0) {   // 1u<<32 for 64-bit systems
             debug (printf (" flags %x\n", flags));
             // Flags are filled now, save the old value and start a new one
-            *(uint32*)get_anchor()=flags, flags=0, flagbit=1;
+            setvalue32(get_anchor(), flags);
+            flags=0, flagbit=1;
             set_anchor(output), output+=4;
         }
 
@@ -85,7 +86,7 @@ void LZ77_ByteCoder::finish()
     printf ("\rLiterals %d, matches %d = %d + %d + %d                   \n",
         chars/1000, (matches2+matches3+matches4)/1000, matches2/1000, matches3/1000, matches4/1000);
 #endif
-    *(uint32*)get_anchor() = flags;
+    setvalue32(get_anchor(), flags);
     OutputByteStream::finish();
 }
 
