@@ -221,7 +221,7 @@ static inline int dir_exists (const TCHAR *name)
 #define value64(p)               (*(uint64*)(p))
 // Write unsigned 16/24/32-bit value to given address
 #define setvalue16(p,x)          (*(uint16*)(p) = (x))
-#define setvalue24(p,x)          (*(uint32*)(p) = ((x)&0xffffff)+(*(uint*)(p)&0xff000000))
+#define setvalue24(p,x)          (*(uint32*)(p) = ((x) & 0xffffff) + (*(uint32*)(p) & 0xff000000))
 #define setvalue32(p,x)          (*(uint32*)(p) = (x))
 #define setvalue64(p,x)          (*(uint64*)(p) = (x))
 
@@ -231,7 +231,7 @@ static inline int dir_exists (const TCHAR *name)
 static inline uint16 value16 (void *p)
 {
   uint16 x;
-#if defined(__GNUC__) && defined(__powerpc__)
+#if _ARCH_PPC
   uint16 *m = (uint16 *)p;
   asm volatile ("lhbrx %0,0,%1" : "=r" (x) : "r" (m));
 #else
@@ -244,7 +244,7 @@ static inline uint16 value16 (void *p)
 static inline uint32 value24 (void *p)
 {
   uint32 x;
-#if defined(__GNUC__) && defined(__powerpc__)
+#if _ARCH_PPC
   uint32 *m = (uint32 *)p;
   asm volatile ("lwbrx %0,0,%1" : "=r" (x) : "r" (m));
   x &= 0xffffff;
@@ -258,7 +258,7 @@ static inline uint32 value24 (void *p)
 static inline uint32 value32 (void *p)
 {
   uint32 x;
-#if defined(__GNUC__) && defined(__powerpc__)
+#if _ARCH_PPC
   uint32 *m = (uint32 *)p;
   asm volatile ("lwbrx %0,0,%1" : "=r" (x) : "r" (m));
 #else
@@ -271,7 +271,7 @@ static inline uint32 value32 (void *p)
 static inline uint64 value64 (void *p)
 {
   uint64 x;
-#if defined(__GNUC__) && defined(__powerpc64__)
+#if _ARCH_PPC64
   uint64 *m = (uint64 *)p;
   asm volatile ("ldbrx %0,0,%1" : "=r" (x) : "r" (m));
 #else
@@ -283,7 +283,7 @@ static inline uint64 value64 (void *p)
 
 static inline void setvalue16 (void *p, uint16 x)
 {
-#if defined(__GNUC__) && defined(__powerpc__)
+#if _ARCH_PPC
   uint16 *m = (uint16 *)p;
   asm volatile ("sthbrx %1,0,%2" : "=m" (m) : "r" (x), "r" (m));
 #else
@@ -293,9 +293,17 @@ static inline void setvalue16 (void *p, uint16 x)
 #endif
 }
 
+static inline void setvalue24 (void *p, uint32 x)
+{
+  uint8 *m = (uint8 *)p;
+  m[0] = x;
+  m[1] = x >> 8;
+  m[2] = x >> 16;
+}
+
 static inline void setvalue32 (void *p, uint32 x)
 {
-#if defined(__GNUC__) && defined(__powerpc__)
+#if _ARCH_PPC
   uint32 *m = (uint32 *)p;
   asm volatile ("stwbrx %1,0,%2" : "=m" (m) : "r" (x), "r" (m));
 #else
@@ -309,7 +317,7 @@ static inline void setvalue32 (void *p, uint32 x)
 
 static inline void setvalue64 (void *p, uint64 x)
 {
-#if defined(__GNUC__) && defined(__powerpc64__)
+#if _ARCH_PPC64
   uint64 *m = (uint64 *)p;
   asm("stdbrx %1,0,%2" : "=m" (m) : "r" (x), "r" (m));
 #else
