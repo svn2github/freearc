@@ -517,6 +517,9 @@ strLower = map toLower
 -- |Сравнить две строки, игнорируя регистр
 strLowerEq a b  =  strLower a == strLower b
 
+-- |break начиная со второго элемента
+break1 f (x:xs)  =  mapFst (x:) (break f xs)
+
 -- |Возвратить значение по умолчанию вместо головы списка, если он пуст
 head1 [] = defaultValue
 head1 xs = head xs

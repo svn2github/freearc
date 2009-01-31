@@ -283,12 +283,14 @@
       исключение из архивации целого каталога работает только в виде "-xhelp/*"
     -xКАТАЛОГ ?
   bugs
-	arc a -t aa cls.zip -mprecomp+6pt
+	dict bug: arc a -t aa cls.zip -mprecomp+6pt
+	tor -7 dll700.dll
     tempfile: проверять отсутствие ошибок при чтении/записи
       precomp: не проверяет код возврата так что архивирует частичный файл если precomp fails
     -if you encrypt the files (content) AND filenames and then try to open the archiv winarc seems to do nothing (but it start, as you can see in the taskmanager);if you encrypt just the filecontent it works
       вход в архивы с зашифрованным каталогом
     пароли не должны попадать в лог-файл (-p/-op/-di$); длинные комментарии/списки файлов - тоже
+    GUI: виснет по "c:", нет списка дисков на верхнем уровне, нет ".."
     separate & no files selected
     "arc a a ../file" - не удаляется ".." из имени; аналогично при распаковке
     *.* и makefile.* должны включать makefile

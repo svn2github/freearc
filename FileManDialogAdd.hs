@@ -209,7 +209,7 @@ addDialog fm' exec cmd = do
       saveCompressionHistories
       encryptionOptions <- encryptionOnOk (encryptionEnabled &&& encryptionMethod')
       -- Global settings
-      logfile'        <- fmGetHistory fm' "logfile" >>== head1
+      logfile'        <- fmGetHistory1 fm' "logfile" ""
 {-
       -- Запомним настройки в истории
       fmAddHistory fm' "acmd"$ joinWith "," [ "simpleMethod="  ++simpleMethod'

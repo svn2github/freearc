@@ -146,6 +146,7 @@ reANY_FILE = "*"
 -- Типы данных для..
 type FileCount = Int              -- количества файлов
 type FileSize  = Integer          -- размера файла или позиции чтения/записи в нём
+aFILESIZE_MIN  = -(2^63)          -- очень маленькое значение типа FileSize
 type FileTime  = CTime            -- времени создания/модификации/чтения файла
 type FileAttr  = FileAttributes   -- досовских атрибутов файла
 type FileGroup = Int              -- номера группы в arc.groups

@@ -127,7 +127,13 @@ myGUI run args = do
   (Just menuBar) <- uiManagerGetWidget ui "/ui/menubar"
   (Just toolBar) <- uiManagerGetWidget ui "/ui/toolbar"
 
-  (listUI, listView, listModel, listSelection, onColumnTitleClicked) <- createFilePanel
+  -- Список действий, выполняемых при закрытии окна файл-менеджера
+  onExit <- newList
+  window `onDestroy` do
+    sequence_ =<< listVal onExit
+    mainQuit
+
+  (listUI, listView, listModel, listSelection, showSortOrder, onColumnTitleClicked) <- createFilePanel
   statusLabel  <- labelNew Nothing
   miscSetAlignment statusLabel 0 0.5
   messageCombo <- New.comboBoxNewText
@@ -164,14 +170,6 @@ myGUI run args = do
 
   containerAdd window vBox
 
-  -- Выводить errors/warnings внизу окна FreeArc
-  showErrors' <- ref True
-  errorHandlers   ++= [whenM (val showErrors') . postGUIAsync . fmStackMsg fm']
-  warningHandlers ++= [whenM (val showErrors') . postGUIAsync . fmStackMsg fm']
-
-  -- Отключает вывод сообщений об ошибках на время выполнения action
-  let hideErrors action  =  bracket (showErrors' <=> False)  (showErrors' =: )  (\_ -> action)
-
 
 ----------------------------------------------------------------------------------------------------
 ---- Сохранение/восстановление размера и положения главного окна -----------------------------------
@@ -192,20 +190,18 @@ myGUI run args = do
     return False
 
   -- При закрытии программы сохранить размер главного окна
-  window `onDestroy` do
+  onExit <<= do
     (w,h) <- widgetGetSize window
     fmReplaceHistory fm' "MainWindowSize" (show w++" "++show h)
     (w,h) <- val pos'
     fmReplaceHistory fm' "MainWindowPos" (show w++" "++show h)
-    mainQuit
 
   -- Восстановить сохранённый размер окна
-  sz <- fmGetHistory fm' "MainWindowSize"
-  let (w,h) = (sz ++ ["720 500"]).$ head.$ split2 ' '
+  (w,h) <- split2 ' '  `fmap`  fmGetHistory1 fm' "MainWindowSize" "720 500"
   windowResize window (readInt w) (readInt h)
-  sz <- fmGetHistory fm' "MainWindowPos"
-  when (sz>[]) $ do
-    let (w,h) = sz.$ head.$ split2 ' '
+  sz <- fmGetHistory1 fm' "MainWindowPos" ""
+  when (sz>"") $ do
+    let (w,h) = sz.$ split2 ' '
     windowMove window (readInt w) (readInt h)
 
 
@@ -214,6 +210,15 @@ myGUI run args = do
 ----------------------------------------------------------------------------------------------------
 
 --  for [upButton,saveDirButton] (`buttonSetFocusOnClick` False)
+
+  -- Выводить errors/warnings внизу окна FreeArc
+  showErrors' <- ref True
+  errorHandlers   ++= [whenM (val showErrors') . postGUIAsync . fmStackMsg fm']
+  warningHandlers ++= [whenM (val showErrors') . postGUIAsync . fmStackMsg fm']
+
+  -- Отключает вывод сообщений об ошибках на время выполнения action
+  let hideErrors action  =  bracket (showErrors' <=> False)  (showErrors' =: )  (\_ -> action)
+
 
   -- Перейти в заданный каталог/архив или выполнить команду
   let select filename = do
@@ -276,11 +281,9 @@ myGUI run args = do
   -- Select/unselect files by mask
   let sel method msg = do
         whenJustM_ (fmInputString fm' "mask" msg (const$ return True) return) $ \mask -> do
-        method fm' ((match mask).fdBasename)
-  selectAct `onActionActivate` do
-    sel fmSelectFilenames "0008 Select files"
-  unselectAct `onActionActivate` do
-    sel fmUnselectFilenames "0009 Unselect files"
+          method fm' ((match mask).fdBasename)
+  selectAct   `onActionActivate`  sel fmSelectFilenames   "0008 Select files"
+  unselectAct `onActionActivate`  sel fmUnselectFilenames "0009 Unselect files"
 
   -- Обновить список файлов актуальными данными
   refreshAct `onActionActivate` do
@@ -290,22 +293,23 @@ myGUI run args = do
   settingsAct `onActionActivate` do
     settingsDialog fm'
 
-  -- При нажатии заголовка столбца в списке файлов - сортировать по этому столбцу (в обратном порядке)
-  onColumnTitleClicked =: \colname -> do
-    fm <- val fm'
-    let (order, new_sort_column) | fm.$fm_sort_column==colname  =  (SortDescending, "-"++colname)
-                                 | otherwise                    =  (SortAscending,       colname)
-    fm' =: fm {fm_sort_column = new_sort_column}
+  -- При нажатии заголовка столбца в списке файлов - сортировать по этому столбцу
+  --   (при повторном нажатии - сортировать в обратном порядке)
+  onColumnTitleClicked =: \column -> do
+    fmModifySortOrder fm' showSortOrder (calcNewSortOrder column)
     refreshCommand fm'
-    return order
+
+  -- Отсортируем файлы по сохранённому критерию
+  fmSetSortOrder fm' showSortOrder =<< fmRestoreSortOrder fm'
+
+  -- При закрытии главного окна сохраним порядок сортировки
+  onExit <<= do
+    fmSaveSortOrder  fm' =<< fmGetSortOrder fm'
 
 
 ----------------------------------------------------------------------------------------------------
----- Исполнительная часть файл-менеджера -----------------------------------------------------------
+---- Выполнение команд файл-менеджера --------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------
-
-  -- Инициализируем состояние файл-менеджера каталогом/архивом, заданным в командной строке
-  chdir fm' (head (args++["."]))
 
   -- При выполнении операций не выходим по исключениям, а печатаем сообщения о них в логфайл
   let handleErrors action x  =  do programTerminated =: False
@@ -398,6 +402,9 @@ myGUI run args = do
   -- Выход из программы
   exitAct `onActionActivate`
     mainQuit
+
+  -- Инициализируем состояние файл-менеджера каталогом/архивом, заданным в командной строке
+  chdir fm' (head (args++["."]))
 
   return window
 

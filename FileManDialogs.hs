@@ -100,7 +100,7 @@ extractDialog fm' exec cmd arcnames arcdir files = do
       dir'               <- val dir;         saveHistory dir
       isAddDir           <- val addDirButton
       decryptionOptions  <- decryptionOnOK
-      logfile'           <- fmGetHistory fm' "logfile" >>== head1
+      logfile'           <- fmGetHistory1 fm' "logfile" ""
       optionsEnabled     <- val options
       ; optionsStr'        <- val optionsStr;  saveHistory optionsStr  `on`  optionsEnabled
       let msgs = case cmd of

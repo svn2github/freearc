@@ -53,7 +53,7 @@ newFM window view model selection statusLabel messageCombo = do
                        , fm_history_file = historyFile
                        , fm_history      = Nothing
                        , fm_onChdir      = []
-                       , fm_sort_column  = "Name"
+                       , fm_sort_order   = ""
                        , subfm           = FM_Directory {subfm_dir=curdir}}
   selection `New.onSelectionChanged` fmStatusBarTotals fm'
   return fm'
@@ -61,7 +61,7 @@ newFM window view model selection statusLabel messageCombo = do
 -- |Открыть архив и возвратить его как объект состояния файл-менеджера
 newFMArc fm' arcname arcdir = do
   xpwd'     <- val decryptionPassword
-  xkeyfile' <- fmGetHistory fm' "keyfile" >>== take 1 >>== concat
+  xkeyfile' <- fmGetHistory1 fm' "keyfile" ""
   [command] <- io$ parseCmdline$ ["l", arcname]++(xpwd' &&& ["-op"++xpwd'])
                                                ++(xkeyfile' &&& ["--OldKeyfile="++xkeyfile'])
   command <- (command.$ opt_cook_passwords) command ask_passwords  -- подготовить пароли в команде к использованию
@@ -94,20 +94,9 @@ chdir fm' filename' = do
                               then return ((fm.$subfm) {subfm_arcdir=arcdir})
                               else newFMArc fm' arcname arcdir
                        return (arc.$subfm_filetree.$ftFilesIn arcdir fdArtificialDir, arc)
-  -- Выбор функции сортировки по имени колонки
-  let sortOnColumn "Name"      =  sortOn (\fd -> (not$ fdIsDir fd, strLower$ fmname fd))
-      sortOnColumn "-Name"     =  sortOn (\fd -> (     fdIsDir fd, strLower$ fmname fd))  >>> reverse
-      --
-      sortOnColumn "Size"      =  sortOn (\fd -> (     fdIsDir fd, fdSize fd))            >>> reverse
-      sortOnColumn "-Size"     =  sortOn (\fd -> (not$ fdIsDir fd, fdSize fd))
-      --
-      sortOnColumn "Modified"  =  sortOn fdTime                                           >>> reverse
-      sortOnColumn "-Modified" =  sortOn fdTime
-      --
-      sortOnColumn _          =  id
   -- Запишем текущий каталог/архив в fm и выведем на экран новый список файлов
   fm' =: fm {subfm = sub}
-  fmSetFilelist fm' (files.$ sortOnColumn (fm_sort_column fm))
+  fmSetFilelist fm' (files.$ sortOnColumn (fm_sort_order fm))
   -- Обновим статусбар и выполним все остальные запрограммированные действия.
   --fmStatusBarTotals fm'
   sequence_ (fm_onChdir fm)
@@ -171,7 +160,7 @@ fmSetCursor fm' filename = do
 -- |Возвратить курсор для файла с заданным именем
 fmFindCursor fm' filename = do
   fm <- val fm'
-  let fullList  = fm_filelist  fm
+  let fullList  =  fm_filelist  fm
   return (fmap (:[])$  findIndex ((filename==).fmname) fullList)
 
 -- |Отметить/разотметить файлы, удовлетворяющие заданному предикату
@@ -221,6 +210,49 @@ fmErrorMsg fm' msg = do
 
 
 ----------------------------------------------------------------------------------------------------
+---- Сортировка списка файлов ----------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+
+-- |Возвратить текущий порядок сортировки
+fmGetSortOrder fm'  =  fm_sort_order `fmap` val fm'
+-- |Установить порядок сортировки
+fmSetSortOrder fm' showSortOrder  =  fmModifySortOrder fm' showSortOrder . const
+-- |Модифицировать порядок сортировки в fm' и показать индикатор сортировки над соответствующим столбцом
+fmModifySortOrder fm' showSortOrder f_order = do
+  fm <- val fm'
+  let sort_order = f_order (fm_sort_order fm)
+  fm' =: fm {fm_sort_order = sort_order}
+  -- Модифицируем индикатор сортировки
+  let (column, order)  =  break1 isUpper sort_order
+  showSortOrder column (if order == "Asc"  then SortDescending  else SortAscending)  -- Gtk имеет своё мнение о том, как рисовать стрелочки ;)
+
+-- |Сохранить порядок сортировки в историю
+fmSaveSortOrder    fm'  =  fmReplaceHistory fm' "SortOrder"
+-- |Восстановить порядок сортировки из истории
+fmRestoreSortOrder fm'  =  fmGetHistory1    fm' "SortOrder" "NameAsc"
+
+-- | (ClickedColumnName, OldSortOrder) -> NewSortOrder
+calcNewSortOrder "Name"     "NameAsc"      = "NameDesc"
+calcNewSortOrder "Name"     _              = "NameAsc"
+calcNewSortOrder "Size"     "SizeDesc"     = "SizeAsc"
+calcNewSortOrder "Size"     _              = "SizeDesc"
+calcNewSortOrder "Modified" "ModifiedDesc" = "ModifiedAsc"
+calcNewSortOrder "Modified" _              = "ModifiedDesc"
+
+-- |Выбор функции сортировки по имени колонки
+sortOnColumn "NameAsc"       =  sortOn (\fd -> (not$ fdIsDir fd, strLower$ fmname fd))
+sortOnColumn "NameDesc"      =  sortOn (\fd -> (     fdIsDir fd, strLower$ fmname fd))  >>> reverse
+--
+sortOnColumn "SizeAsc"       =  sortOn (\fd -> if fdIsDir fd  then -1             else  fdSize fd)
+sortOnColumn "SizeDesc"      =  sortOn (\fd -> if fdIsDir fd  then aFILESIZE_MIN  else -fdSize fd)
+--
+sortOnColumn "ModifiedAsc"   =  sortOn       fdTime
+sortOnColumn "ModifiedDesc"  =  sortOn ((0-).fdTime)
+--
+sortOnColumn _               =  id
+
+
+----------------------------------------------------------------------------------------------------
 ---- Операции с файлом истории ---------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------
 
@@ -235,7 +267,8 @@ fmAddHistory fm' tags text = ignoreErrors $ do
 fmReplaceHistory = fmAddHistory
 
 -- |Извлечь список истории по заданному тэгу/тэгам
-fmGetHistory fm' tags = handle (\_ -> return []) $ do
+fmGetHistory1 fm' tags deflt = do x <- fmGetHistory fm' tags; return (head (x++[deflt]))
+fmGetHistory  fm' tags       = handle (\_ -> return []) $ do
   fm <- val fm'
   hist <- fmGetConfigFile fm'
   hist.$ map (split2 '=')                           -- разбить каждую строку на тэг+значение
@@ -444,11 +477,11 @@ createFilePanel = do
   let columnTitles = ["0015 Name", "0016 Size", "0017 Modified", "0018 DIRECTORY"]
       n = map (drop 5) columnTitles
   s <- i18ns columnTitles
-  onColumnTitleClicked <- ref (\_ -> return SortAscending)
-  columns <- ref []
-  addColumn columns view model onColumnTitleClicked (n!!0) (s!!0) fmname                                                       []
-  addColumn columns view model onColumnTitleClicked (n!!1) (s!!1) (\fd -> if (fdIsDir fd) then (s!!3) else (show3$ fdSize fd)) [cellXAlign := 1]
-  addColumn columns view model onColumnTitleClicked (n!!2) (s!!2) (formatDateTime.fdTime)                                      []
+  onColumnTitleClicked <- ref doNothing
+  columns <- sequence [
+     addColumn view model onColumnTitleClicked (n!!0) (s!!0) fmname                                                       []
+    ,addColumn view model onColumnTitleClicked (n!!1) (s!!1) (\fd -> if (fdIsDir fd) then (s!!3) else (show3$ fdSize fd)) [cellXAlign := 1]
+    ,addColumn view model onColumnTitleClicked (n!!2) (s!!2) (formatDateTime.fdTime)                                      [] ]
   -- Включаем поиск по первой колонке
   -- treeViewSetSearchColumn treeViewSetSearchEqualFunc treeViewSetEnableSearch
   -- Enable multiple selection
@@ -456,7 +489,7 @@ createFilePanel = do
   set selection [New.treeSelectionMode := SelectionMultiple]
   -- Pack list into scrolled window and return window
   containerAdd scrwin view
-  return (scrwin,view,model,selection,onColumnTitleClicked)
+  return (scrwin, view, model, selection, showOrder columns, onColumnTitleClicked)
 
 -- |Задать новый список отображаемых файлов
 changeList model filelist = do
@@ -465,9 +498,8 @@ changeList model filelist = do
   for filelist (New.listStoreAppend model)
 
 -- |Добавить во view колонку, отображающую field, с заголовком title
-addColumn columns view model onColumnTitleClicked colname title field attrs = do
+addColumn view model onColumnTitleClicked colname title field attrs = do
   col1 <- New.treeViewColumnNew
-  columns ++= [col1]
   New.treeViewColumnSetTitle col1 title
   renderer1 <- New.cellRendererTextNew
   New.cellLayoutPackStart col1 renderer1 True
@@ -478,11 +510,17 @@ addColumn columns view model onColumnTitleClicked colname title field attrs = do
   set col1 [ New.treeViewColumnResizable   := True
            , New.treeViewColumnClickable   := True
            , New.treeViewColumnReorderable := True]
-  -- При нажатии на заголовок столбца отсортировать по нему и установить индикатор сортировки
+  -- При нажатии на заголовок столбца вызвать колбэк
   col1 `New.onColClicked` do
-    val columns >>= mapM_ (`New.treeViewColumnSetSortIndicator` False)
-    New.treeViewColumnSetSortIndicator col1 True
-    val onColumnTitleClicked >>= ($colname) >>= New.treeViewColumnSetSortOrder col1
+    val onColumnTitleClicked >>= ($colname)
   New.cellLayoutSetAttributes col1 renderer1 model $ \row -> [New.cellText := field row] ++ attrs
   New.treeViewAppendColumn view col1
+  return (colname,col1)
+
+-- |Показать индикатор сортировки над столбцом colname в направлении order
+showOrder columns colname order = do
+  for (map snd columns) (`New.treeViewColumnSetSortIndicator` False)
+  let Just col1  =  colname `lookup` columns
+  New.treeViewColumnSetSortIndicator col1 True
+  New.treeViewColumnSetSortOrder     col1 order
 
