@@ -489,7 +489,7 @@ createFilePanel = do
   set selection [New.treeSelectionMode := SelectionMultiple]
   -- Pack list into scrolled window and return window
   containerAdd scrwin view
-  return (scrwin, view, model, selection, showOrder columns, onColumnTitleClicked)
+  return (scrwin, view, model, selection, columns, onColumnTitleClicked)
 
 -- |Задать новый список отображаемых файлов
 changeList model filelist = do
@@ -508,6 +508,7 @@ addColumn view model onColumnTitleClicked colname title field attrs = do
   -- set col1 [New.treeViewColumnSizing := TreeViewColumnAutosize] `on` expand
   -- set col1 [New.treeViewColumnSizing := TreeViewColumnFixed] `on` not expand
   set col1 [ New.treeViewColumnResizable   := True
+           , New.treeViewColumnSizing      := TreeViewColumnFixed
            , New.treeViewColumnClickable   := True
            , New.treeViewColumnReorderable := True]
   -- При нажатии на заголовок столбца вызвать колбэк
@@ -518,7 +519,7 @@ addColumn view model onColumnTitleClicked colname title field attrs = do
   return (colname,col1)
 
 -- |Показать индикатор сортировки над столбцом colname в направлении order
-showOrder columns colname order = do
+showSortOrder columns colname order = do
   for (map snd columns) (`New.treeViewColumnSetSortIndicator` False)
   let Just col1  =  colname `lookup` columns
   New.treeViewColumnSetSortIndicator col1 True

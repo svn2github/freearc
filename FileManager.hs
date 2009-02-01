@@ -133,7 +133,7 @@ myGUI run args = do
     sequence_ =<< listVal onExit
     mainQuit
 
-  (listUI, listView, listModel, listSelection, showSortOrder, onColumnTitleClicked) <- createFilePanel
+  (listUI, listView, listModel, listSelection, columns, onColumnTitleClicked) <- createFilePanel
   statusLabel  <- labelNew Nothing
   miscSetAlignment statusLabel 0 0.5
   messageCombo <- New.comboBoxNewText
@@ -172,7 +172,7 @@ myGUI run args = do
 
 
 ----------------------------------------------------------------------------------------------------
----- Сохранение/восстановление размера и положения главного окна -----------------------------------
+---- Сохранение/восстановление размера и положения главного окна и колонок в нём -------------------
 ----------------------------------------------------------------------------------------------------
 
   window `windowSetPosition` WinPosCenter
@@ -182,27 +182,39 @@ myGUI run args = do
   --window `windowSetPosition` WinPosNone
   --windowSetDefaultSize window 200 100
 
-  -- Запомним положение главного окна после перемещения
+  -- Запомним положение главного окна после его перемещения
   pos' <- ref (50,50)
   window `onConfigure` \e -> do
     pos <- windowGetPosition window
     pos' =: pos
     return False
 
-  -- При закрытии программы сохранить размер главного окна
+  -- При закрытии программы сохраним размер главного окна
   onExit <<= do
     (w,h) <- widgetGetSize window
     fmReplaceHistory fm' "MainWindowSize" (show w++" "++show h)
     (w,h) <- val pos'
     fmReplaceHistory fm' "MainWindowPos" (show w++" "++show h)
 
-  -- Восстановить сохранённый размер окна
+  -- При старте восстановим сохранённый размер окна
   (w,h) <- split2 ' '  `fmap`  fmGetHistory1 fm' "MainWindowSize" "720 500"
   windowResize window (readInt w) (readInt h)
   sz <- fmGetHistory1 fm' "MainWindowPos" ""
   when (sz>"") $ do
     let (w,h) = sz.$ split2 ' '
     windowMove window (readInt w) (readInt h)
+
+
+  -- При закрытии программы сохраним ширину колонок
+  onExit <<= do
+    for columns $ \(name,col1) -> do
+      w <- New.treeViewColumnGetWidth col1
+      fmReplaceHistory fm' (name++"ColumnWidth") (show w)
+
+  -- При старте восстановим сохранённую ширину колонок
+  for columns $ \(name,col1) -> do
+    w <- readInt  `fmap`  fmGetHistory1 fm' (name++"ColumnWidth") "150"
+    New.treeViewColumnSetFixedWidth col1 w
 
 
 ----------------------------------------------------------------------------------------------------
@@ -296,11 +308,11 @@ myGUI run args = do
   -- При нажатии заголовка столбца в списке файлов - сортировать по этому столбцу
   --   (при повторном нажатии - сортировать в обратном порядке)
   onColumnTitleClicked =: \column -> do
-    fmModifySortOrder fm' showSortOrder (calcNewSortOrder column)
+    fmModifySortOrder fm' (showSortOrder columns) (calcNewSortOrder column)
     refreshCommand fm'
 
   -- Отсортируем файлы по сохранённому критерию
-  fmSetSortOrder fm' showSortOrder =<< fmRestoreSortOrder fm'
+  fmSetSortOrder fm' (showSortOrder columns) =<< fmRestoreSortOrder fm'
 
   -- При закрытии главного окна сохраним порядок сортировки
   onExit <<= do
