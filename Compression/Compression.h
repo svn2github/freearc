@@ -132,6 +132,12 @@ typedef int CALLBACK_FUNC (const char *what, void *data, int size, void *auxdata
     callback ("quasiwrite", &localSize, size, auxdata);                    \
 }
 
+#define ReturnErrorCode(x)                                                 \
+{                                                                          \
+    errcode = (x);                                                         \
+    goto finished;                                                         \
+}                                                                          \
+
 
 // Buffered data output
 #define FOPEN()   Buffer fbuffer(BUFFER_SIZE)
