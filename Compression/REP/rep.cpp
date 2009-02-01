@@ -344,6 +344,9 @@ struct Buffer
 #define PRIME          153191           /* or any other prime number */
 #define POWER_PRIME_L  power(PRIME,L)
 
+const int MAX_READ = 8*mb;  // Макс. объём входных данных, читаемых за раз
+
+
 // Вычислить количество элементов хеша
 MemSize CalcHashSize (MemSize HashBits, MemSize BlockSize, MemSize k)
 {
@@ -367,7 +370,6 @@ int rep_compress (unsigned BlockSize, int MinCompression, int MinMatchLen, int B
     if (buf==NULL)  return FREEARC_ERRCODE_NOT_ENOUGH_MEMORY;    // Error: not enough memory
     FOPEN();
 
-    int MAX_READ = 8*mb;  // Макс. объём входных данных, читаемых за раз
     int bsize = (mymin(BlockSize,MAX_READ)/SmallestLen+1) * sizeof(int32);    // Макс. объём данных, который может быть записан в буфер длин или смещений
     Buffer lens(bsize), offsets(bsize), datalens(bsize), dataOffsets(bsize);  // Буфера для отдельного хранения длин, смещений совпадений, длин несжатых блоков и самих этих блоков. Эта группировка позволяет увеличить конечную степень сжатия
 
@@ -493,28 +495,35 @@ finished:
 #endif // FREEARC_DECOMPRESS_ONLY
 
 
-#define ReturnErrorCode(n)  { BigFree(data0); BigFree(buf0); return (n); }
-
 // Classical LZ77 decoder with sliding window
 int rep_decompress (unsigned BlockSize, int MinCompression, int MinMatchLen, int Barrier, int SmallestLen, int HashBits, int Amplifier, CALLBACK_FUNC *callback, void *auxdata)
 {
-    // Фактический размер буфера сохранён во входных данных
-    if (callback ("read", &BlockSize, sizeof(int32), auxdata) != sizeof(int32))   return FREEARC_ERRCODE_IO;  // Error: can't read input data
-    byte *data = (byte*) BigAlloc (BlockSize), *data0=data;
-    if (data==NULL)  return FREEARC_ERRCODE_NOT_ENOUGH_MEMORY;       // Error: not enough memory
+    int errcode, bufsize, ComprSize; byte *data0=NULL, *data, *buf0=NULL;
+
+    // Фактический размер словаря сохранён во входных данных
+    READ4(BlockSize);
+    data = data0 = (byte*) BigAlloc (BlockSize);
+
+    // Буфер, куда будут помещаться входные данные
+    bufsize = mymin(BlockSize,MAX_READ)+1024;
+    buf0 = (byte*) BigAlloc (bufsize);
+    if (data0==NULL || buf0==NULL)  ReturnErrorCode (FREEARC_ERRCODE_NOT_ENOUGH_MEMORY);
 
     // Цикл, каждая итерация которого обрабатывает один блок сжатых данных
     for (byte *last_data=data; ; last_data=data) {
 
         // Прочитаем один блок сжатых данных
-        int32 ComprSize;
-        if (callback ("read", &ComprSize, sizeof(int32), auxdata) != sizeof(int32))   return FREEARC_ERRCODE_IO;  // Error: can't read input data
+        READ4(ComprSize);
         if (ComprSize == 0)  break;    // EOF flag (see above)
 
-        byte *buf = (byte*) BigAlloc(ComprSize), *buf0=buf;   // Буфер, куда будут помещены входные данные
-        if (buf==NULL)           ReturnErrorCode (FREEARC_ERRCODE_NOT_ENOUGH_MEMORY);       // Error: not enough memory
-        int Size = callback ("read", buf, ComprSize, auxdata);
-        if (Size != ComprSize)   ReturnErrorCode (FREEARC_ERRCODE_IO);       // Error: can't read input data
+        if (ComprSize > bufsize)
+        {
+            BigFree(buf0); bufsize=ComprSize; buf0 = (byte*) BigAlloc(bufsize);
+            if (buf0==NULL)  ReturnErrorCode (FREEARC_ERRCODE_NOT_ENOUGH_MEMORY);       // Error: not enough memory
+        }
+        byte *buf = buf0;
+
+        READ(buf, ComprSize);
 
         // Заголовок блока содержит размер таблиц lens/offsets/datalens; затем идут сами эти таблицы и наконец несжавшиеся данные
         int         num = *(int32*)buf;  buf += sizeof(int32);           // Количество совпадений (= количеству записей в таблицах lens/offsets/datalens)
@@ -534,14 +543,14 @@ int rep_decompress (unsigned BlockSize, int MinCompression, int MinMatchLen, int
         memcpy (data, buf, datalens[num]);  buf += datalens[num];  data += datalens[num];
 
         // Вывод распакованных данных, печать отладочной статистики и подготовка к следующей итерации цикла
-        int x = callback ("write", last_data, data-last_data, auxdata);  if (x<0)  ReturnErrorCode(x);
+        WRITE(last_data, data-last_data);
         debug (verbose>0 && printf( " Decompressed: %u => %u bytes\n", ComprSize+sizeof(int32), data-last_data) );
-        if (data==data0+BlockSize)  data=data0;
-        BigFree(buf0);
+        if (data==data0+BlockSize)  data=data0;   // оборачивание через границу буфера может произойти только в конце блока
         // NB! check that buf==buf0+Size, data==data0+UncomprSize, and add buffer overflowing checks inside cycle
     }
-    BigFree(data0);
-    return FREEARC_OK;
+    errcode = FREEARC_OK;
+finished:
+    BigFree(data0);  BigFree(buf0);  return errcode;
 }
 
 
