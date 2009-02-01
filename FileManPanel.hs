@@ -246,8 +246,8 @@ sortOnColumn "NameDesc"      =  sortOn (\fd -> (     fdIsDir fd, strLower$ fmnam
 sortOnColumn "SizeAsc"       =  sortOn (\fd -> if fdIsDir fd  then -1             else  fdSize fd)
 sortOnColumn "SizeDesc"      =  sortOn (\fd -> if fdIsDir fd  then aFILESIZE_MIN  else -fdSize fd)
 --
-sortOnColumn "ModifiedAsc"   =  sortOn       fdTime
-sortOnColumn "ModifiedDesc"  =  sortOn ((0-).fdTime)
+sortOnColumn "ModifiedAsc"   =  sortOn (\fd -> (not$ fdIsDir fd,  fdTime fd))
+sortOnColumn "ModifiedDesc"  =  sortOn (\fd -> (not$ fdIsDir fd, -fdTime fd))
 --
 sortOnColumn _               =  id
 
