@@ -65,9 +65,6 @@ struct OutputByteStream
     void put24  (uint c)      {setvalue32(output, c); advance(3);}
     void put32  (uint c)      {setvalue32(output, c); advance(4);}
     void put64  (uint64 c)    {setvalue64(output, c); advance(8);}
-    // Writes machine-size word
-    void putword(uint c)      {*(uint  *)output = c; advance(sizeof(uint));}
-
     // Writes len bytes pointed by ptr
     void putbuf (void *ptr, uint len);
 };
@@ -158,33 +155,31 @@ struct InputByteStream
 
 // Bit-aligned I/O streams ***********************************************************************
 
-#define CHUNK          4    /* 64-bit computers may be faster with sizeof(uint) and putword() */
-
 // It's an output bit stream
 struct OutputBitStream : OutputByteStream
 {
-    uint  bitbuf;      // Bit buffer - written to outstream when filled
-    int   bitcount;    // Count of lower bits already filled in current bitbuf
+    uint32 bitbuf;   // Bit buffer - written to outstream when filled, 64-bit computers may be faster with uint64 and put64()
+    int    bitcount; // Count of lower bits already filled in current bitbuf
 
     // Init and finish bit stream
     OutputBitStream (CALLBACK_FUNC *callback, void *auxdata, UINT chunk, UINT pad);
     void finish();
 
     // Write n lower bits of x
-    void putbits (int n, uint x)
+    void putbits (int n, uint32 x)
     {
         //Tracevv((stderr,"\nPut %2d bits of %04x",n,x));
         bitbuf |= x << bitcount;
         bitcount += n;
-        if( bitcount >= CHAR_BIT*CHUNK ) {
+        if (bitcount >= CHAR_BIT * sizeof(bitbuf)) {
             put32 (bitbuf);
-            bitcount -= CHAR_BIT*CHUNK;
+            bitcount -= CHAR_BIT * sizeof(bitbuf);
             bitbuf = x >> (n-bitcount);
         }
     }
 
     // Write n lower bits of x
-    void putlowerbits (int n, uint x)
+    void putlowerbits (int n, uint32 x)
     {
         putbits (n, mask(x,n));
     }
@@ -496,7 +491,7 @@ struct HuffmanDecoder : InputBitStream
 class TRangeCoder : public OutputByteStream
 {
 private:
-  long long low; // 64-bit extended integer
+  int64 low;
   unsigned int range;
   unsigned int buffer;
   unsigned int help;

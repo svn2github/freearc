@@ -72,8 +72,8 @@ if [ "$PARM_PROF" = '-fprofile-use' ]; then
 	$CC $PARM -fprofile-generate || exit 1
 	for M in `seq 1 11`; do
 		echo "profiling method $M..."
-		./tor -$M -q <$TEST_FILE >temp.tor && \
-		./tor -d -q <temp.tor >/dev/null || exit 1
+		./tor -$M -q <"$TEST_FILE" >temp.tor && \
+		./tor -d -q <temp.tor | cmp "$TEST_FILE" - || exit 1
 	done
 	rm -f temp.tor
 fi
