@@ -8,7 +8,10 @@ extern "C" {
 int external_program (bool IsCompressing, CALLBACK_FUNC *callback, void *auxdata, char *infile, char *outfile, char *cmd, char *name, int MinCompression, double *addtime)
 {
     BYTE* Buf = (BYTE*) BigAlloc(LARGE_BUFFER_SIZE);  // буфер, используемый для чтения/записи данных
-    int x;                                          // код, возвращённый последней операцией чтения/записи
+    int x;                                            // код, возвращённый последней операцией чтения/записи
+    int ExitCode = 0;                                 // код возврата внешней программы (увы, только в Unix)
+    if (!Buf)  {return FREEARC_ERRCODE_NOT_ENOUGH_MEMORY;}
+
 
     // TRUE, если в начало сжатого потока записывается 0/1 - данные несжаты/сжаты
     bool useHeader = !strequ(name,"tempfile");
@@ -23,18 +26,21 @@ int external_program (bool IsCompressing, CALLBACK_FUNC *callback, void *auxdata
     while ( (x = callback ("read", Buf, LARGE_BUFFER_SIZE, auxdata)) > 0 )
     {
         if (f==NULL)  {f = fopen (infile, "wb");  // Не открываем файл пока не прочтём хоть сколько-нибудь данных (для решения проблем с перепаковкой солид-блоков)
+        	       if (!f)  {x=FREEARC_ERRCODE_IO; break;}
                        registerTemporaryFile (infile,f);}
         if (runCmd!=0 && runCmd!=1) {            // Для совместимости со старыми версиями FreeArc, которые не добавляли 1 перед сжатыми данными (убрать из FreeArc 0.80!)
             outfile = "data7777";
-            file_write (f, &runCmd, 1);   bytes+=1;
-            runCmd=1;
+            bytes += 1;
+            if (file_write(f,&runCmd,1) != 1)   {x=FREEARC_ERRCODE_IO; break;}
+            runCmd = 1;
         }
-        file_write (f, Buf, x);   bytes+=x;
+        bytes += x;
+        if (file_write(f,Buf,x) != x)           {x=FREEARC_ERRCODE_IO; break;}
     }
-    BigFree(Buf);
+    BigFree(Buf);  Buf = NULL;
     unregisterTemporaryFile (infile);
-    fclose (f);
-    if (x)  {remove (infile); return x;}   // Если при чтении произошла ошибка - выходим
+    fclose (f);    f = NULL;
+    if (x)  {remove (infile); return x;}   // Если при чтении/записи произошла ошибка - выходим
 
 
     // Если cmd пусто - диск используется просто для буферизации данных перед дальнейшим сжатием.
@@ -44,15 +50,15 @@ int external_program (bool IsCompressing, CALLBACK_FUNC *callback, void *auxdata
     if (*cmd && runCmd) {
         printf ("\n%s %d bytes with %s\n", IsCompressing? "Compressing":"Unpacking", bytes, cmd);
         double time0 = GetGlobalTime();
-        system (cmd);
+        ExitCode = system (cmd);
         if (addtime)  *addtime += GetGlobalTime() - time0;
     } else {
         rename (infile, outfile);
     }
 
 
-    // Прочитаем выходные данные из временного файла
-    f = fopen (outfile, "rb" );
+    // Прочитаем выходные данные из временного файла, если команда завершилась успешно и его можно открыть
+    if(ExitCode==0)  f = fopen (outfile, "rb" );
     if (f) {
         registerTemporaryFile (outfile,f);
         unregisterTemporaryFile (infile);
@@ -63,9 +69,10 @@ int external_program (bool IsCompressing, CALLBACK_FUNC *callback, void *auxdata
         unregisterTemporaryFile (outfile);
         unregisterTemporaryFile (infile);
         if (IsCompressing && !useHeader)    {remove (infile); return FREEARC_ERRCODE_GENERAL;}
+        remove (outfile);
         outfile = infile;
         f = fopen (outfile, "rb" );
-        if (!f)                             {remove (outfile); return FREEARC_ERRCODE_GENERAL;}
+        if (!f)                             {remove (outfile); return FREEARC_ERRCODE_IO;}
         registerTemporaryFile (outfile,f);
         BYTE uncompressed[1] = {0};
         if (IsCompressing)                  checked_write(uncompressed,1);

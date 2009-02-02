@@ -255,6 +255,7 @@
     showing "increase +RTS -Ksize" on huge files
     reporting "Bad password" with errcode 21 when archive/file cannot be decrypted using supplied password
     program was terminated when trying to detect filetype of locked file (such as pagefile.swp)
+    tempfile: проверять отсутствие ошибок при чтении/записи
   Fixed GUI bugs:
     first file in directory was selected after any operation if nothing was selected before
     ArcInfo on empty.arc or non-archive was terminated program
@@ -287,8 +288,7 @@
   bugs
 	dict bug: arc a -t aa cls.zip -mprecomp+6pt
 	tor -7 dll700.dll
-    tempfile: проверять отсутствие ошибок при чтении/записи
-      precomp: не проверяет код возврата так что архивирует частичный файл если precomp fails
+    External: не проверяет код возврата так что архивирует частичный файл если precomp fails
     -if you encrypt the files (content) AND filenames and then try to open the archiv winarc seems to do nothing (but it start, as you can see in the taskmanager);if you encrypt just the filecontent it works
       вход в архивы с зашифрованным каталогом
     пароли не должны попадать в лог-файл (-p/-op/-di$); длинные комментарии/списки файлов - тоже
