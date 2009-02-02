@@ -795,6 +795,8 @@ modifyIORefIO var action = do
 -- |Ещё одна полезная управляющая структура
 with' init finish action  =  do a <- init;  action a;  finish a
 
+inside init finish action  =  do init;  x <- action;  finish; return x
+
 
 -- JIT-переменные инициализируются только в момент их первого использовани
 newJIT init        = ref (Left init)

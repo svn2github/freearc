@@ -93,7 +93,7 @@ extractDialog fm' exec cmd arcnames arcdir files = do
 
 
     widgetShowAll upbox
-    choice <- dialogRun dialog
+    choice <- fmDialogRun fm' dialog "ExtractDialog"
     windowPresent (fm_window fm)
     when (choice==ResponseOk) $ do
       overwriteOption    <- val overwrite
@@ -203,7 +203,7 @@ arcinfoDialog fm' arcnames arcdir files = do
       boxPackStart upbox comment     PackGrow  0
 
     widgetShowAll upbox
-    choice <- dialogRun dialog
+    choice <- fmDialogRun fm' dialog "ArcInfoDialog"
     windowPresent (fm_window fm)
 
 
@@ -223,7 +223,7 @@ settingsDialog fm' = do
     vbox <- newPage "0174 Main";  let pack x = boxPackStart vbox x PackNatural 1
     aboutLabel         <- labelNewWithMnemonic aARC_HEADER
     langLabel          <- label "0068 Language:"
-    langComboBox       <- New.comboBoxNewText
+    langComboBox       <- New.comboBoxNewText;
     editLangButton     <- button "0069 Edit"
     convertLangButton  <- button "0070 Import"
     -- Логфайл
@@ -277,7 +277,13 @@ settingsDialog fm' = do
     -- Заполнить список языков именами файлов в каталоге arc.languages и выбрать активный язык
     langDir   <- io$ findDir configFilePlaces aLANG_DIR
     langFiles <- langDir &&& (io(dir_list langDir) >>== map baseName >>== sort >>== filter (match "arc.*.txt"))
-    for langFiles (New.comboBoxAppendText langComboBox . mapHead toUpper . replace '_' ' ' . dropEnd 4.drop 4)
+    -- Отобразим языки в 5 столбцов, с сортировкой по столбцам
+    let cols = 5
+    ;   langComboBox `New.comboBoxSetWrapWidth` cols
+    let rows = (length langFiles) `divRoundUp` cols;  add = rows*cols - length langFiles
+        sortOnColumn x  =  r*cols+c  where (c,r) = x `divMod` rows  -- пересчитать из поколоночных позиций в построчные
+    ;   langFiles <- return$ map snd $ sort $ zip (map sortOnColumn [0..]) (langFiles ++ replicate add "")
+    for langFiles (New.comboBoxAppendText langComboBox . mapHead toUpper . replace '_' ' ' . dropEnd 4 . drop 4)
     whenJust_ (elemIndex (takeFileName langFile) langFiles)
               (New.comboBoxSetActive langComboBox)
 
@@ -340,9 +346,9 @@ settingsDialog fm' = do
     boxPackStart vbox         logfileBox       PackNatural 5
     boxPackStart vbox (widget registerButton)  PackNatural 5           `on` isWindows
     boxPackStart vbox (widget notes)           PackNatural 5
-    widgetShowAll upbox
 
-    choice <- dialogRun dialog
+    widgetShowAll upbox
+    choice <- fmDialogRun fm' dialog "SettingsDialog"
     windowPresent (fm_window fm)
     when (choice==ResponseOk) $ do
       -- Сохраняем настройки в INI-файл, пароли - в глоб. переменных, keyfile - в истории

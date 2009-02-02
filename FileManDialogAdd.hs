@@ -154,10 +154,9 @@ addDialog fm' exec cmd = do
 
 
 ------ „тение значений полей и сохранение их дл€ истории ------------------------------------------
-    windowSetGeometryHints dialog (Just dialog) (Just (1,1)) (Just (-1,-1)) Nothing Nothing Nothing
     widgetShowAll upbox
     --current_time  <- getClockTime;  debugMsg (show$ diffTimes current_time start_time)
-    choice <- dialogRun dialog
+    choice <- fmDialogRun fm' dialog "AddDialog"
     windowPresent (fm_window fm)
     when (choice==ResponseOk) $ do
       -- Main settings

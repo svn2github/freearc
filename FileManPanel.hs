@@ -293,6 +293,20 @@ fmCacheConfigFile fm' =
                fm' =: fm {fm_history = Just history})
            (fm' .= \fm -> fm {fm_history = Nothing})
 
+-- |Сохранить размеры и положение окна в истории
+saveSizePos fm' window name = do
+    (x,y) <- windowGetPosition window
+    (w,h) <- widgetGetSize     window
+    fmReplaceHistory fm' (name++"Pos" ) (show x++" "++show y)
+    fmReplaceHistory fm' (name++"Size") (show w++" "++show h)
+
+-- |Восстановить размеры и положение окна из истории
+restoreSizePos fm' window name deflt = do
+    (x,y) <- split2 ' '  `fmap`  fmGetHistory1 fm' (name++"Pos" ) ""
+    (w,h) <- split2 ' '  `fmap`  fmGetHistory1 fm' (name++"Size") deflt
+    windowMove   window (readInt x) (readInt y)   `on` x>""
+    windowResize window (readInt w) (readInt h)   `on` w>""
+
 
 ----------------------------------------------------------------------------------------------------
 ---- Вспомогательные определения -------------------------------------------------------------------
@@ -457,6 +471,10 @@ fmDialog fm' title action = do
     tooltips =:: tooltipsNew
     action (dialog,okButton)
 
+fmDialogRun fm' dialog name = do
+    inside (restoreSizePos fm' dialog name "")
+           (saveSizePos    fm' dialog name)
+      (dialogRun dialog)
 
 ----------------------------------------------------------------------------------------------------
 ---- Список файлов в архиве ------------------------------------------------------------------------

@@ -101,24 +101,24 @@ myGUI run args = do
   editAct <- actionNew "EditAction" (i18menu!!1) Nothing Nothing
   mapM_ (actionGroupAddAction standardGroup) [fileAct, editAct]
   -- Menus and toolbars
-  let anew name comment icon = do
+  let anew name comment icon accel = do
         [i18name,i18comment] <- i18ns [name,comment]
         act <- actionNew (drop 5 name++"Action") i18name (Just i18comment) icon
-        actionGroupAddActionWithAccel standardGroup act Nothing
+        actionGroupAddActionWithAccel standardGroup act (Just "")  -- accel
         return act
-  addAct      <- anew "0030 Add"        "0040 Add files to archive(s)"        (Just stockMediaRecord)
-  modifyAct   <- anew "0031 Modify"     "0041 Modify archive(s)"              (Just stockEdit)
-  joinAct     <- anew "0032 Join"       "0042 Join archives together"         (Just stockCopy)
-  arcinfoAct  <- anew "0086 ArcInfo"    "0087 Information about archive"      (Just stockInfo)
-  deleteAct   <- anew "0033 Delete"     "0043 Delete files (from archive)"    (Just stockDelete)
-  testAct     <- anew "0034 Test"       "0044 Test files in archive(s)"       (Just stockSpellCheck)
-  extractAct  <- anew "0035 Extract"    "0045 Extract files from archive(s)"  (Just stockMediaPlay)
-  settingsAct <- anew "0064 Settings"   "0065 Edit program settings"          (Just stockPreferences)
-  exitAct     <- anew "0036 Exit"       "0046 Quit application"               (Just stockQuit)
+  addAct      <- anew "0030 Add"        "0040 Add files to archive(s)"        (Just stockMediaRecord)     "<Alt>A"
+  modifyAct   <- anew "0031 Modify"     "0041 Modify archive(s)"              (Just stockEdit)            "<Alt>M"
+  joinAct     <- anew "0032 Join"       "0042 Join archives together"         (Just stockCopy)            "<Alt>J"
+  arcinfoAct  <- anew "0086 ArcInfo"    "0087 Information about archive"      (Just stockInfo)            "<Alt>I"
+  deleteAct   <- anew "0033 Delete"     "0043 Delete files (from archive)"    (Just stockDelete)          "Delete"
+  testAct     <- anew "0034 Test"       "0044 Test files in archive(s)"       (Just stockSpellCheck)      "<Alt>T"
+  extractAct  <- anew "0035 Extract"    "0045 Extract files from archive(s)"  (Just stockMediaPlay)       "<Alt>E"
+  settingsAct <- anew "0064 Settings"   "0065 Edit program settings"          (Just stockPreferences)     "<Alt>S"
+  exitAct     <- anew "0036 Exit"       "0046 Quit application"               (Just stockQuit)            "<Alt>Q"
 
-  selectAct   <- anew "0037 Select"     "0047 Select files"                   (Just stockAdd)
-  unselectAct <- anew "0038 Unselect"   "0048 Unselect files"                 (Just stockRemove)
-  refreshAct  <- anew "0039 Refresh"    "0049 Reread archive/directory"       (Just stockRefresh)
+  selectAct   <- anew "0037 Select"     "0047 Select files"                   (Just stockAdd)             "+"
+  unselectAct <- anew "0038 Unselect"   "0048 Unselect files"                 (Just stockRemove)          "-"
+  refreshAct  <- anew "0039 Refresh"    "0049 Reread archive/directory"       (Just stockRefresh)         "F5"
   ui <- uiManagerNew
   mid <- uiManagerAddUiFromString ui uiDef
   uiManagerInsertActionGroup ui standardGroup 0
@@ -197,12 +197,7 @@ myGUI run args = do
     fmReplaceHistory fm' "MainWindowPos" (show w++" "++show h)
 
   -- При старте восстановим сохранённый размер окна
-  (w,h) <- split2 ' '  `fmap`  fmGetHistory1 fm' "MainWindowSize" "720 500"
-  windowResize window (readInt w) (readInt h)
-  sz <- fmGetHistory1 fm' "MainWindowPos" ""
-  when (sz>"") $ do
-    let (w,h) = sz.$ split2 ' '
-    windowMove window (readInt w) (readInt h)
+  restoreSizePos fm' window "MainWindow" "720 500"
 
 
   -- При закрытии программы сохраним ширину колонок
@@ -274,6 +269,9 @@ myGUI run args = do
     let doit = (name=="BackSpace")
     when doit goParentDir
     return doit
+    --let doit = ((take 2$ reverse$ name)/="L_")
+    --when doit$ debugMsg name
+    --return doit
 
   -- Сохранение выбранного архива/каталога в истории
   saveDirButton `onClick` do
