@@ -202,8 +202,14 @@ myregCreateStringValue root bracnch key val =
 #if defined(FREEARC_WIN)
 -- |Список дисков в системе
 getDrives = getLogicalDrives >>== unfoldr (\n -> Just (n `mod` 2, n `div` 2))
-                             >>== zipWith (\c n -> n>0 &&& [c:":\\"]) ['A'..'Z']
+                             >>== zipWith (\c n -> n>0 &&& [c:":"]) ['A'..'Z']
                              >>== concat
+                             >>=  mapM (\d -> do x <- withCString d c_GetDriveType; return (d++"\t"++(driveTypes!!i x)))
+
+driveTypes = ["", ""]++split ',' "Removable,Fixed,Network,CD/DVD,Ramdisk"
+
+foreign import stdcall unsafe "windows.h GetDriveTypeA"
+  c_GetDriveType :: LPCSTR -> IO CInt
 #endif
 
 

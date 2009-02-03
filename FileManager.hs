@@ -158,15 +158,15 @@ myGUI run args = do
   boxPackStart naviBar (widget upButton)       PackNatural 0
 #if defined(FREEARC_WIN)
   -- Меню выбора диска
-  driveButton <- button "C:\\"
-  driveMenu   <- makePopupMenu (chdir fm') =<< getDrives
+  driveButton <- button "C:"
+  driveMenu   <- makePopupMenu (chdir fm'.(++"\\").head.words) =<< getDrives
   driveButton `onClick` (widgetShowAll driveMenu >> menuPopup driveMenu Nothing)
   boxPackStart naviBar (widget driveButton)    PackNatural 0
   -- Менять надпись на кнопке выбора диска при переходе на другой диск
   fm' `fmOnChdir` do
     fm <- val fm'
     let drive = takeDrive (fm_current fm)
-    setTitle driveButton drive  `on` drive
+    setTitle driveButton (take 2 drive)  `on` drive
 #endif
   boxPackStart naviBar (widget curdir)         PackGrow    0
   boxPackStart naviBar (widget saveDirButton)  PackNatural 0
