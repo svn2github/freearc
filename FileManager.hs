@@ -156,19 +156,20 @@ myGUI run args = do
   curdir   <- fmEntryWithHistory fm' "dir/arcname" (const$ return True) (fmCanonicalizePath fm')
   saveDirButton <- button "0007   Save  "
   boxPackStart naviBar (widget upButton)       PackNatural 0
-
 #if defined(FREEARC_WIN)
   -- Меню выбора диска
   driveButton <- button "C:\\"
   driveMenu   <- makePopupMenu (chdir fm') =<< getDrives
   driveButton `onClick` (widgetShowAll driveMenu >> menuPopup driveMenu Nothing)
   boxPackStart naviBar (widget driveButton)    PackNatural 0
+  -- Менять надпись на кнопке выбора диска при переходе на другой диск
+  fm' `fmOnChdir` do
+    fm <- val fm'
+    let drive = takeDrive (fm_current fm)
+    setTitle driveButton drive  `on` drive
 #endif
-
   boxPackStart naviBar (widget curdir)         PackGrow    0
   boxPackStart naviBar (widget saveDirButton)  PackNatural 0
-
-
 
   -- Целиком окно файл-менеджера
   vBox <- vBoxNew False 0
@@ -202,10 +203,10 @@ myGUI run args = do
 
   -- При закрытии программы сохраним размер главного окна
   onExit <<= do
+    (x,y) <- val pos'
     (w,h) <- widgetGetSize window
+    fmReplaceHistory fm' "MainWindowPos"  (show x++" "++show y)
     fmReplaceHistory fm' "MainWindowSize" (show w++" "++show h)
-    (w,h) <- val pos'
-    fmReplaceHistory fm' "MainWindowPos" (show w++" "++show h)
 
   -- При старте восстановим сохранённый размер окна
   restoreSizePos fm' window "MainWindow" "720 500"

@@ -610,8 +610,10 @@ label title   =  do (hbox, _) <- boxed labelNewWithMnemonic title
 -- |Êíîïêà
 button title  =  do
   (hbox, control) <- boxed buttonNewWithMnemonic title
-  return gtkWidget { gwWidget  = hbox
-                   , gwOnClick = \action -> onClicked control action >> return ()
+  return gtkWidget { gwWidget   = hbox
+                   , gwOnClick  = \action -> onClicked control action >> return ()
+                   , gwSetTitle = buttonSetLabel control
+                   , gwGetTitle = buttonGetLabel control
                    }
 
 
