@@ -287,8 +287,9 @@
     -xКАТАЛОГ ?
   bugs
 	dict bug: arc a -t aa cls.zip -mprecomp+6pt
+      bcj+dict creates corrupted archives
 	tor -7 dll700.dll
-    External: не проверяет код возврата так что архивирует частичный файл если precomp fails
+    External: под Windows не проверяет код возврата так что архивирует частичный файл если precomp fails
     -if you encrypt the files (content) AND filenames and then try to open the archiv winarc seems to do nothing (but it start, as you can see in the taskmanager);if you encrypt just the filecontent it works
       вход в архивы с зашифрованным каталогом
     пароли не должны попадать в лог-файл (-p/-op/-di$); длинные комментарии/списки файлов - тоже
@@ -298,7 +299,6 @@
     arc a dir/ - создаёт архив dir/.arc
     *.* и makefile.* должны включать makefile
     обновление архива, содержащего xxx: если не удалось открыть xxx с диска, то файл из архива исчезнет вообще
-    bcj+dict creates corrupted archives.
     tta: float32 badly compressed (vs wavpack), int32 isn't compressed at all
     +RTS -S - processed by arc.exe itself too :)
   GUI

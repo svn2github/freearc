@@ -199,6 +199,14 @@ myregCreateStringValue root bracnch key val =
 ---- Операции с неоткрытыми файлами и каталогами ---------------------------------------------------
 ----------------------------------------------------------------------------------------------------
 
+#if defined(FREEARC_WIN)
+-- |Список дисков в системе
+getDrives = getLogicalDrives >>== unfoldr (\n -> Just (n `mod` 2, n `div` 2))
+                             >>== zipWith (\c n -> n>0 &&& [c:":\\"]) ['A'..'Z']
+                             >>== concat
+#endif
+
+
 -- |Create a hierarchy of directories
 createDirectoryHierarchy :: FilePath -> IO ()
 createDirectoryHierarchy dir = do

@@ -151,13 +151,24 @@ myGUI run args = do
   fmStackMsg fm' "              "
 
   -- Полоска навигации
-  naviBar <- hBoxNew False 0
+  naviBar  <- hBoxNew False 0
   upButton <- button "0006   Up  "
   curdir   <- fmEntryWithHistory fm' "dir/arcname" (const$ return True) (fmCanonicalizePath fm')
   saveDirButton <- button "0007   Save  "
   boxPackStart naviBar (widget upButton)       PackNatural 0
+
+#if defined(FREEARC_WIN)
+  -- Меню выбора диска
+  driveButton <- button "C:\\"
+  driveMenu   <- makePopupMenu (chdir fm') =<< getDrives
+  driveButton `onClick` (widgetShowAll driveMenu >> menuPopup driveMenu Nothing)
+  boxPackStart naviBar (widget driveButton)    PackNatural 0
+#endif
+
   boxPackStart naviBar (widget curdir)         PackGrow    0
   boxPackStart naviBar (widget saveDirButton)  PackNatural 0
+
+
 
   -- Целиком окно файл-менеджера
   vBox <- vBoxNew False 0

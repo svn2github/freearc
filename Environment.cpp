@@ -200,9 +200,9 @@ void RunProgram (const CFILENAME filename, const CFILENAME curdir, int wait_fini
   ZeroMemory (&si, sizeof(si));
   si.cb = sizeof(si);
   ZeroMemory (&pi, sizeof(pi));
-  BOOL setup_works = CreateProcessW (filename, NULL, NULL, NULL, FALSE, 0, NULL, curdir, &si, &pi);
+  BOOL process_created = CreateProcessW (filename, NULL, NULL, NULL, FALSE, 0, NULL, curdir, &si, &pi);
 
-  if (wait_finish && setup_works)
+  if (process_created && wait_finish)
       WaitForSingleObject (pi.hProcess, INFINITE);
 }
 
@@ -211,7 +211,6 @@ void RunFile (const CFILENAME filename, const CFILENAME curdir, int wait_finish)
 {
   ShellExecuteW (NULL, _T("open"), filename, NULL, curdir, SW_SHOWNORMAL);
 }
-
 
 
 

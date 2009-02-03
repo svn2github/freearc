@@ -223,7 +223,7 @@ settingsDialog fm' = do
     vbox <- newPage "0174 Main";  let pack x = boxPackStart vbox x PackNatural 1
     aboutLabel         <- labelNewWithMnemonic aARC_HEADER
     langLabel          <- label "0068 Language:"
-    langComboBox       <- New.comboBoxNewText;
+    langComboBox       <- New.comboBoxNewText
     editLangButton     <- button "0069 Edit"
     convertLangButton  <- button "0070 Import"
     -- Логфайл
@@ -283,6 +283,7 @@ settingsDialog fm' = do
     let rows = (length langFiles) `divRoundUp` cols;  add = rows*cols - length langFiles
         sortOnColumn x  =  r*cols+c  where (c,r) = x `divMod` rows  -- пересчитать из поколоночных позиций в построчные
     ;   langFiles <- return$ map snd $ sort $ zip (map sortOnColumn [0..]) (langFiles ++ replicate add "")
+    --
     for langFiles (New.comboBoxAppendText langComboBox . mapHead toUpper . replace '_' ' ' . dropEnd 4 . drop 4)
     whenJust_ (elemIndex (takeFileName langFile) langFiles)
               (New.comboBoxSetActive langComboBox)

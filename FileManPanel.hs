@@ -457,7 +457,7 @@ fmInputString fm' tag title filter_p process = do
 
 
 {-# NOINLINE fmDialog #-}
--- Диалог со стандартными кнопками OK/Cancel
+-- |Диалог со стандартными кнопками OK/Cancel
 fmDialog fm' title action = do
   fm <- val fm'
   title <- i18n title
@@ -471,6 +471,8 @@ fmDialog fm' title action = do
     tooltips =:: tooltipsNew
     action (dialog,okButton)
 
+{-# NOINLINE fmDialogRun #-}
+-- |Отработать диалог с сохранением его положения и размеро в истории
 fmDialogRun fm' dialog name = do
     inside (restoreSizePos fm' dialog name "")
            (saveSizePos    fm' dialog name)

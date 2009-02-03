@@ -641,6 +641,27 @@ comboBox title labels = do
                    }
 
 
+{-# NOINLINE simpleComboBox #-}
+-- |Создаёт комбобокс, содержащий заданный набор альтернатив
+simpleComboBox labels = do
+  combo <- New.comboBoxNewText
+  for labels (New.comboBoxAppendText combo)
+  return combo
+
+{-# NOINLINE makePopupMenu #-}
+-- |Создаёт popup menu
+makePopupMenu action labels = do
+  m <- menuNew
+  mapM_ (mkitem m) labels
+  return m
+    where
+        mkitem menu label =
+            do i <- menuItemNewWithLabel label
+               menuShellAppend menu i
+               i `onActivateLeaf` (action label)
+
+
+
 {-# NOINLINE radioFrame #-}
 -- |Создаёт фрейм, содержащий набор радиокнопок и возвращает этот фрейм
 --  плюс процедуру для чтения текущей выбранной кнопки
