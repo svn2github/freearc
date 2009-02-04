@@ -256,15 +256,22 @@ sortOnColumn _               =  id
 ---- Операции с файлом истории ---------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------
 
--- |Добавить значение в список истории
-fmAddHistory fm' tags text = ignoreErrors $ do
+-- |Добавить значение в список истории (удалив предыдущие точно такие же строки)
+fmAddHistory fm' tags text     =   fmModifyHistory fm' tags text (\tag line -> (line==))
+-- |Заменить значение в списке истории (удалив предыдущие значения с этим тегом)
+fmReplaceHistory fm' tags text  =  fmModifyHistory fm' tags text (\tag line -> (tag==).fst.split2 '=')
+-- |Добавить/Заменить значение в списке истории
+fmModifyHistory fm' tags text deleteCond = ignoreErrors $ do
   fm <- val fm'
   -- Занесём новый элемент в голову списка и избавимся от дублирующих значений
-  let newItem  =  join2 "=" (head (split '/' tags), text)
-  modifyConfigFile (fm_history_file fm) ((newItem:) . deleteIf (==newItem))
+  let newItem  =  join2 "=" (mainTag, text)
+      mainTag  =  head (split '/' tags)
+  modifyConfigFile (fm_history_file fm) ((newItem:) . deleteIf (deleteCond mainTag newItem))
 
--- |todo: Заменить значение в списке истории
-fmReplaceHistory = fmAddHistory
+-- |Удалить тег из списка истории
+fmDeleteTagFromHistory fm' tag = ignoreErrors $ do
+  fm <- val fm'
+  modifyConfigFile (fm_history_file fm) (deleteIf ((tag==).fst.split2 '='))
 
 -- |Извлечь список истории по заданному тэгу/тэгам
 fmGetHistory1 fm' tags deflt = do x <- fmGetHistory fm' tags; return (head (x++[deflt]))
@@ -297,15 +304,15 @@ fmCacheConfigFile fm' =
 saveSizePos fm' window name = do
     (x,y) <- windowGetPosition window
     (w,h) <- widgetGetSize     window
-    fmReplaceHistory fm' (name++"Pos" ) (show x++" "++show y)
-    fmReplaceHistory fm' (name++"Size") (show w++" "++show h)
+    fmReplaceHistory fm' (name++"Coord") (unwords$ map show [x,y,w,h])
 
 -- |Восстановить размеры и положение окна из истории
 restoreSizePos fm' window name deflt = do
-    (x,y) <- split2 ' '  `fmap`  fmGetHistory1 fm' (name++"Pos" ) ""
-    (w,h) <- split2 ' '  `fmap`  fmGetHistory1 fm' (name++"Size") deflt
-    windowMove   window (readInt x) (readInt y)   `on` x>""
-    windowResize window (readInt w) (readInt h)   `on` w>""
+    a <- split ' '  `fmap`  fmGetHistory1 fm' (name++"Coord" ) deflt
+    when (length(a)==4  &&  all (all isDigit) a) $ do  -- проверим что a состоит ровно из 4 чисел
+      let [x,y,w,h] = map readInt a
+      windowMove   window x y  `on` x>0
+      windowResize window w h  `on` w>0
 
 
 ----------------------------------------------------------------------------------------------------

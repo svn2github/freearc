@@ -194,22 +194,16 @@ myGUI run args = do
   --window `windowSetPosition` WinPosNone
   --windowSetDefaultSize window 200 100
 
-  -- «апомним положение главного окна после его перемещени€
-  pos' <- ref (50,50)
+  -- —охраним размер и положение главного окна после его перемещени€
   window `onConfigure` \e -> do
-    pos <- windowGetPosition window
-    pos' =: pos
+    saveSizePos fm' window "MainWindow"
     return False
 
-  -- ѕри закрытии программы сохраним размер главного окна
-  onExit <<= do
-    (x,y) <- val pos'
-    (w,h) <- widgetGetSize window
-    fmReplaceHistory fm' "MainWindowPos"  (show x++" "++show y)
-    fmReplaceHistory fm' "MainWindowSize" (show w++" "++show h)
-
   -- ѕри старте восстановим сохранЄнный размер окна
-  restoreSizePos fm' window "MainWindow" "720 500"
+  restoreSizePos fm' window "MainWindow" "0 0 720 500"
+
+  -- temporary: удалим старые теги :)
+  mapM_ (fmDeleteTagFromHistory fm') $ words "MainWindowPos MainWindowSize ExtractDialogPos ExtractDialogSize AddDialogPos AddDialogSize SettingsDialogPos SettingsDialogSize ArcInfoPos ArcInfoSize"
 
 
   -- ѕри закрытии программы сохраним ширину колонок
