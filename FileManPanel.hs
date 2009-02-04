@@ -91,8 +91,8 @@ chdir fm' filename' = do
     -- Список файлов в архиве
     ArcPath arcname arcdir -> do
                        arc <- if isFM_Archive fm && arcname==fm_arcname fm
-                              then return ((fm.$subfm) {subfm_arcdir=arcdir})
-                              else newFMArc fm' arcname arcdir
+                                then return ((fm.$subfm) {subfm_arcdir=arcdir})
+                                else newFMArc fm' arcname arcdir
                        return (arc.$subfm_filetree.$ftFilesIn arcdir fdArtificialDir, arc)
   -- Запишем текущий каталог/архив в fm и выведем на экран новый список файлов
   fm' =: fm {subfm = sub}

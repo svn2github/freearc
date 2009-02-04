@@ -293,8 +293,7 @@
     dict bug: arc a aa cls.zip -mprecomp+6pt -t
       bcj+dict creates corrupted archives
     tor -6/-7 dll700.dll
-    -if you encrypt the files (content) AND filenames and then try to open the archiv winarc seems to do nothing (but it start, as you can see in the taskmanager);if you encrypt just the filecontent it works
-      вход в архивы с зашифрованным каталогом
+    вход в архивы с зашифрованным каталогом
     пароли не должны попадать в лог-файл (-p/-op/-di$); длинные комментарии/списки файлов - тоже
     separate & no files selected
     "arc a a ../file" - не удаляется ".." из имени; аналогично при распаковке
@@ -546,7 +545,6 @@
   unixify long option names (keep old names for compatibility?)
   External: удаление временных файлов при ^Break
   dict: уменьшить время init (1/15 sec) для небольших файлов?
-  tor:7:16m:u2 вместо lzma:fast для -m3xt?
 
 
 0.41a:
