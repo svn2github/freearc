@@ -421,6 +421,7 @@ myGUI run args = do
 
   -- Инициализируем состояние файл-менеджера каталогом/архивом, заданным в командной строке
   chdir fm' (head (args++["."]))
+  fmStatusBarTotals fm'
 
   return window
 

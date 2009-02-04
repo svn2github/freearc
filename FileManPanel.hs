@@ -98,7 +98,6 @@ chdir fm' filename' = do
   fm' =: fm {subfm = sub}
   fmSetFilelist fm' (files.$ sortOnColumn (fm_sort_order fm))
   -- Обновим статусбар и выполним все остальные запрограммированные действия.
-  --fmStatusBarTotals fm'
   sequence_ (fm_onChdir fm)
   widgetGrabFocus (fm_view fm)
   -- Выведем текущий каталог/архив в заголовке окна
