@@ -75,7 +75,7 @@ uint tornado_compressor_outbuf_size (uint buffer, int bytes_to_compress = -1)
     if (p[-1]==p[N-1]                                                                                   \
     &&  uint(p[  N-1] - p[2*N-1] + 4) <= 2*4                                                            \
     &&  uint(p[2*N-1] - p[3*N-1] + 4) <= 2*4                                                            \
-    &&  *(int32*)(p+2*N-4) != *(int32*)(p+N-4))                                                         \
+    &&  !val32equ(p+2*N-4, p+N-4))                                                                      \
     {                                                                                                   \
         int type, items;                                                                                \
         if (check_for_data_table (N, type, items, p, bufend, table_end, buf, offset, last_checked)) {   \

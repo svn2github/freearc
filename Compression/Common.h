@@ -329,6 +329,12 @@ static inline void setvalue64 (void *p, uint64 x)
 
 #endif //FREEARC_MOTOROLA_BYTE_ORDER
 
+// Check for equality
+#define val16equ(p,q)             (*(uint16*)(p) == *(uint16*)(q))
+#define val24equ(p,q)             (   value24(p) ==    value24(q))
+#define val32equ(p,q)             (*(uint32*)(p) == *(uint32*)(q))
+#define val64equ(p,q)             (*(uint64*)(p) == *(uint64*)(q))
+
 // Free memory block and set pointer to NULL
 #ifndef FreeAndNil
 #define FreeAndNil(p)            ((p) && (free(p), (p)=NULL))
