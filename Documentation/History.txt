@@ -262,6 +262,7 @@
     first file in directory was selected after any operation if nothing was selected before
     ArcInfo on empty.arc or non-archive was terminated program
     DoubleClick/Enter on non-archives was terminated program, but now executes them
+    freezing on chdir "c:"
 
 
   aARCHIVE_VERSION = make4byte 0 0 5 0
@@ -290,11 +291,10 @@
   bugs
     dict bug: arc a -t aa cls.zip -mprecomp+6pt
       bcj+dict creates corrupted archives
-    tor -7 dll700.dll
+    tor -6/-7 dll700.dll
     -if you encrypt the files (content) AND filenames and then try to open the archiv winarc seems to do nothing (but it start, as you can see in the taskmanager);if you encrypt just the filecontent it works
       вход в архивы с зашифрованным каталогом
     пароли не должны попадать в лог-файл (-p/-op/-di$); длинные комментарии/списки файлов - тоже
-    GUI: виснет по "c:", нет списка дисков на верхнем уровне, нет ".."
     separate & no files selected
     "arc a a ../file" - не удаляется ".." из имени; аналогично при распаковке
     arc a dir/ - создаёт архив dir/.arc
@@ -390,6 +390,7 @@
       Окно с ошибкой: должно быть дочерним основного окна
       FreeArc не реагирует на закрыть из панели задач, когда открыто какое-нибудь окно, например настройки.
       Если открыто окно в FreeArc (например настройки), то при клике в панеле задач на FreeArc, основное окно FreeArc сворачивается, окно же настройки остаётся, при повторном клике, основное окно не разворачивается.
+      нет списка дисков на верхнем уровне, нет ".."
       Снятие пароля с заголовков:
         -hp-- - сохранять зашифрованность каталога
         -hp-  - снять шифрование

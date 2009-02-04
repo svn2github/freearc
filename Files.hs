@@ -243,7 +243,7 @@ myCanonicalizePath fpath | isURL fpath = return fpath
   allocaBytes (long_path_size*4) $ \pOutPath ->
   alloca $ \ppFilePart ->
     do c_GetFullPathName pInPath (fromIntegral long_path_size*2) pOutPath ppFilePart
-       peekCFilePath pOutPath
+       peekCFilePath pOutPath >>== dropTrailingPathSeparator
 
 foreign import stdcall unsafe "GetFullPathNameW"
             c_GetFullPathName :: CWString
@@ -255,7 +255,7 @@ foreign import stdcall unsafe "GetFullPathNameW"
   withCFilePath fpath $ \pInPath ->
   allocaBytes (long_path_size*4) $ \pOutPath ->
     do c_realpath pInPath pOutPath
-       peekCFilePath pOutPath
+       peekCFilePath pOutPath >>== dropTrailingPathSeparator
 
 foreign import ccall unsafe "realpath"
                    c_realpath :: CString

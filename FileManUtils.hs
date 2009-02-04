@@ -116,11 +116,11 @@ fmCanonicalizeDiskPath fm' relname = do
 -- |ѕеревести путь, записанный относительно текущего положени€ в FM, в абсолютный
 fmCanonicalizePath fm' relname = do
   fm <- val fm'
-  if isURL relname || isAbsolute relname
-    then return relname
-    else if isURL (fm_current fm) || isFM_Archive fm  -- »спользовать свой Normalize дл€ навигацуи внутри архивов и по URL
-            then return$ urlNormalize (fm_current fm) relname
-            else io$ myCanonicalizePath (fm_current fm </> relname)
+  case () of
+   _ | isURL relname                              ->  return relname
+     | isAbsolute relname                         ->  myCanonicalizePath relname
+     | isURL (fm_current fm) || isFM_Archive fm   ->  return$ urlNormalize (fm_current fm) relname    -- »спользовать свой Normalize дл€ навигацуи внутри архивов и по URL
+     | otherwise                                  ->  myCanonicalizePath (fm_current fm </> relname)
 
 -- |Ќормализовать путь, записанный относительно некоего URL
 urlNormalize url relname =  dropTrailingPathSeparator$ concat$ reverse$ remove$ reverse$ splitPath (url++[pathSeparator]) ++ splitPath relname
