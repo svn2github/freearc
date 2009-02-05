@@ -528,19 +528,21 @@ addColumn view model onColumnTitleClicked colname title field attrs = do
   col1 <- New.treeViewColumnNew
   New.treeViewColumnSetTitle col1 title
   renderer1 <- New.cellRendererTextNew
-  New.cellLayoutPackStart col1 renderer1 True
+  New.cellLayoutPackStart col1 renderer1 False
   -- Попытки сделать поле имени автоматически увеличивающимся при увеличении окна программы
   -- (bool New.cellLayoutPackStart New.cellLayoutPackEnd expand) col1 renderer1 expand
   -- set col1 [New.treeViewColumnSizing := TreeViewColumnAutosize] `on` expand
   -- set col1 [New.treeViewColumnSizing := TreeViewColumnFixed] `on` not expand
+  -- cellLayoutSetAttributes  [New.cellEditable := True]
   set col1 [ New.treeViewColumnResizable   := True
            , New.treeViewColumnSizing      := TreeViewColumnFixed
            , New.treeViewColumnClickable   := True
-           , New.treeViewColumnReorderable := True]
+           , New.treeViewColumnReorderable := True ]
   -- При нажатии на заголовок столбца вызвать колбэк
   col1 `New.onColClicked` do
     val onColumnTitleClicked >>= ($colname)
-  New.cellLayoutSetAttributes col1 renderer1 model $ \row -> [New.cellText := field row] ++ attrs
+  New.cellLayoutSetAttributes col1 renderer1 model $ \row -> [ New.cellText      := field row
+                                                          {- , New.cellEllipsize := EllipsizeEnd -} ] ++ attrs
   New.treeViewAppendColumn view col1
   return (colname,col1)
 

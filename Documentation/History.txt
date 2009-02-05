@@ -325,9 +325,9 @@
   -ilog a-la RAR
 
 
-  GUI: проверять что отмеченные файлы действительно архивы и пропускать не-архивы (для test/extract)
-       shortcut keys for add/extract/... commands
+  GUI: shortcut keys for add/extract/... commands
        центрировать индикатор прогресса относительно окна программы, а не всего экрана
+       TC: при распаковке FreeArc.exe извлекается также no-url\FreeArc.exe
 
   mm/tta/ppmd/lzp/dict: BigAlloc
   URL support: dynamic dlls in order to cutoff rep:1g errors
