@@ -106,7 +106,7 @@ runIndicators = do
         (if active then id else syncUI) $ do
           pauseTiming $ do
             whenM (askYesNo window "0251 Abort operation?") $ do
-              terminateOperation
+              ignoreErrors$ terminateOperation
 
   window `onDelete` \e -> do
     askProgramClose

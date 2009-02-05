@@ -95,7 +95,6 @@ failOnTerminated = do
 -- установке спец. флага, который проверяется коллбэками, вызываемыми из Си
 onBreak event = terminateOperation
 terminateOperation = do
-  programTerminated =: True
   isFM <- val fileManagerMode
   registerError$ iif isFM OP_TERMINATED TERMINATED
 
@@ -378,13 +377,14 @@ display_option' = unsafePerformIO$ newIORef$ error "undefined display_option"
 
 -- |Запись сообщения об ошибке в логфайл и аварийное завершение программы с этим сообщением
 registerError err = do
+  programTerminated =: True
   let msg = errormsg err
   val errorHandlers >>= mapM_ ($msg)
   -- Если мы в режиме файл-менеджера, то придётся ждать завершения всех тредов компрессии,
   -- иначе - просто совершаем аварийный выход из программы
   unlessM (val fileManagerMode) $ do
     shutdown ("ERROR: "++msg) (errcode err)
-  return undefined
+  fail ""
 
 -- |Запись предупреждения в логфайл и вывод его на экран
 registerWarning warn = do
