@@ -48,7 +48,7 @@ aHISTORY_FILE = "freearc.history"
 ----------------------------------------------------------------------------------------------------
 
 -- |Инициализирует Gtk и создаёт начальное окно программы
-startGUI action = do
+startGUI action = runInBoundThread $ do
   unsafeInitGUIForThreadedRTS
   action >>= widgetShowAll
   mainGUI
@@ -293,7 +293,7 @@ ask title question ref_answer answer_on_u =  do
     _   -> return (new_answer `elem` ["y","a"])
 
 -- |Собственно общение с пользователем происходит здесь
-ask_user title question  =  postGUISync $ do
+ask_user title question  =  gui $ do
   -- Создадим диалог
   bracketCtrlBreak (messageDialogNew Nothing [] MessageQuestion ButtonsNone question) widgetDestroy $ \dialog -> do
   set dialog [windowTitle          := title,
@@ -346,7 +346,7 @@ ask_passwords = ( ask_password_dialog "0076 Enter encryption password" 2
                 )
 
 -- |Диалог запроса пароля.
-ask_password_dialog title' amount opt_parseData = postGUISync $ do
+ask_password_dialog title' amount opt_parseData = gui $ do
   -- Создадим диалог со стандартными кнопками OK/Cancel
   bracketCtrlBreak dialogNew widgetDestroy $ \dialog -> do
   title <- i18n title'
@@ -409,7 +409,7 @@ pwdBox amount = do
 uiPrintArcComment = doNothing
 
 {-# NOINLINE uiInputArcComment #-}
-uiInputArcComment old_comment = postGUISync$ do
+uiInputArcComment old_comment = gui$ do
   bracketCtrlBreak dialogNew widgetDestroy $ \dialog -> do
   title <- i18n"0073 Enter archive comment"
   set dialog [windowTitle := title,
@@ -432,6 +432,15 @@ uiInputArcComment old_comment = postGUISync$ do
 ----------------------------------------------------------------------------------------------------
 ---- Библиотека ------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------
+
+-- |Выполнить операцию в GUI-треде (пользуемся тем, что единственный bound thread у нас - гуишный)
+gui action = do
+  bound <- isCurrentThreadBound
+  if bound  then action else do
+  x <- ref Nothing
+  y <- postGUISync (action `catch` (\e -> do x=:Just e; return undefined))
+  whenJustM (val x) throwIO
+  return y
 
 -- |Глобальная переменная, хранящая тултипы контролов на текущей форме
 tooltips :: IORef Tooltips = unsafePerformIO$ ref$ error "undefined GUI::tooltips"

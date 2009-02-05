@@ -58,7 +58,7 @@ main         =  (doMain =<< myGetArgs) >> shutdown "" aEXIT_CODE_SUCCESS
 arc cmdline  =  doMain (words cmdline)
 
 -- |Превратить командную строку в набор команд и выполнить их
-doMain args  =  do
+doMain args  =  bg $ do             -- выполняем в новом треде, не являющемся bound thread
   setUncaughtExceptionHandler handler
   setCtrlBreakHandler $ do          -- Организуем обработку ^Break
   ensureCtrlBreak (resetConsoleTitle) $ do

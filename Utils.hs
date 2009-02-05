@@ -253,7 +253,7 @@ recursiveM action x  =  action x >>= mapM_ (recursiveM action)
 -- |Выполнить рекурсивно, если верно условие `cond`, и однократно в противном случае
 recursiveIfM cond action x  =  if cond  then recursiveM action x  else (action x >> return ())
 
--- |Выполняет действие `action` над элементами списка `list` поочерёдно, возвраща
+-- |Выполняет действие `action` над элементами списка `list` поочерёдно, возвращая
 -- список результатов, возвращённых `action` - в общем, аналогично mapM.
 -- Но дополнительно к этому проверяет обработанные данные по критерию `crit_f` и выходит из цикла,
 -- если этот критерий удовлетворён. Поэтому дополнительно возвращается список необработанных
@@ -271,10 +271,21 @@ mapMConditional (init,map_f,sum_f,crit_f) action list = do
 -- |Execute action with background computation
 withThread thread  =  bracket (forkIO thread) killThread . const
 
+-- |Выполнить действие в другом треде и возвратить конечный результат или перевозбудить исключение
+bg action = do
+  v <- newEmptyMVar
+  forkIO ( (action >>= (v=:).Left) `catch` ((v=:).Right))
+  res <- val v
+  case res of
+    Left  x -> return  x
+    Right e -> throwIO e
+
+
 {-# NOINLINE foreverM #-}
 {-# NOINLINE repeat_while #-}
 {-# NOINLINE repeat_until #-}
 {-# NOINLINE mapMConditional #-}
+{-# NOINLINE bg #-}
 
 
 -- |Отфильтровать список с помощью монадического (выполняемого) предиката
@@ -795,6 +806,7 @@ modifyIORefIO var action = do
 -- |Ещё одна полезная управляющая структура
 with' init finish action  =  do a <- init;  action a;  finish a
 
+-- |Выполнить операцию и возвратить её результат внутри обрамления init/finish операций
 inside init finish action  =  do init;  x <- action;  finish; return x
 
 
