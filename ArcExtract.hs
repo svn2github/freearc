@@ -65,15 +65,14 @@ arcExtract command arcinfo = do
   uiUnpackedBytes   (arcDirBytes  arcinfo)
   uiCompressedBytes (arcDirCBytes arcinfo)
   uiStartFiles 0
-  -- Создать процесс для распаковки файлов
-  decompress_pipe <- runAsyncP$ decompress_PROCESS command (uiCompressedBytes.i)
+  -- Создадим процесс для распаковки файлов и гарантируем его корректное завершение
+  bracketCtrlBreak (runAsyncP$ decompress_PROCESS command (uiCompressedBytes.i))
+                   ( \decompress_pipe -> do sendP decompress_pipe Nothing; joinP decompress_pipe)
+                   $ \decompress_pipe -> do
   -- Распаковать каждый распаковываемый файл и выругаться на нераспаковываемые
   let (filesToSkip, filesToExtract)  =  partition isCompressedFake (arcDirectory arcinfo)
   for filesToExtract (process_file decompress_pipe)   -- runP$ enum_files |> decompress |> write_files
   unless (null filesToSkip)$  do registerWarning$ SKIPPED_FAKE_FILES (length filesToSkip)
-  -- Завершить работу подпроцесса распаковки
-  sendP decompress_pipe Nothing
-  joinP decompress_pipe
 
 -- |Тестирование одного файла из архива
 test_file decompress_pipe compressed_file = do

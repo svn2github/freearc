@@ -57,7 +57,7 @@ create_archive_structure_AND_read_files_PROCESS command archive oldarc files pro
   initPos <- archiveGetPos archive
   -- При возникновении ошибки установим флаг для прерывания работы c_compress()
   handleCtrlBreak (programTerminated =: True) $ do
-  -- Создадим процесс для распаковки файлов из входных архивов и обеспечим его корректное завершение
+  -- Создадим процесс для распаковки файлов из входных архивов и гарантируем его корректное завершение
   bracketCtrlBreak (runAsyncP$ decompress_PROCESS command doNothing)
                    ( \decompress_pipe -> do sendP decompress_pipe Nothing; joinP decompress_pipe)
                    $ \decompress_pipe -> do
