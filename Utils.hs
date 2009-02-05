@@ -271,14 +271,11 @@ mapMConditional (init,map_f,sum_f,crit_f) action list = do
 -- |Execute action with background computation
 withThread thread  =  bracket (forkIO thread) killThread . const
 
--- |Выполнить действие в другом треде и возвратить конечный результат или перевозбудить исключение
+-- |Выполнить действие в другом треде и возвратить конечный результат
 bg action = do
-  v <- newEmptyMVar
-  forkIO ( (action >>= (v=:).Left) `catch` ((v=:).Right))
-  res <- val v
-  case res of
-    Left  x -> return  x
-    Right e -> throwIO e
+  resultVar <- newEmptyMVar
+  forkIO (action >>= putMVar resultVar)
+  takeMVar resultVar
 
 
 {-# NOINLINE foreverM #-}
