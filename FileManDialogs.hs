@@ -93,7 +93,7 @@ extractDialog fm' exec cmd arcnames arcdir files = do
 
 
     widgetShowAll upbox
-    choice <- fmDialogRun fm' dialog "ExtractDialog"
+    choice <- fmDialogRun fm' dialog (if cmd/="t" then "ExtractDialog" else "TestDialog")
     windowPresent (fm_window fm)
     when (choice==ResponseOk) $ do
       overwriteOption    <- val overwrite
