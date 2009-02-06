@@ -293,21 +293,21 @@
     filetype detection: check for MM on large files
     Priorityio.doc
   bugs
+    GUI: если текущий файл не отмечен - он отмечается после Refresh
+    tor -6/-7 dll700.dll
+    пароли не должны попадать в лог-файл (-p/-op/-di$); длинные комментарии/списки файлов - тоже
     dict bug: arc a aa cls.zip -mprecomp+6pt -t
       bcj+dict creates corrupted archives
-    tor -6/-7 dll700.dll
     остались проблемы: удаление пустых каталогов из архива (TC), копирование пустых каталогов из
       архива (FAR), копирование в каталоги/из каталогов внутри архива (-ap)
-    пароли не должны попадать в лог-файл (-p/-op/-di$); длинные комментарии/списки файлов - тоже
     separate & no files selected
     "arc a a ../file" - не удаляется ".." из имени; аналогично при распаковке
-    arc a dir/ - создаёт архив dir/.arc
+    arc a dir/ - создаёт архив dir/.arc; имена архивов кончающиеся на :/\ или содержащие их
     *.* и makefile.* должны включать makefile
     обновление архива, содержащего xxx: если не удалось открыть xxx с диска, то файл из архива исчезнет вообще
     tta: float32 badly compressed (vs wavpack), int32 isn't compressed at all
     +RTS -S - processed by arc.exe itself too :)
   GUI
-    если текущий файл не отмечен - он отмечается после Refresh
     использовать "arc:dir" вместо "arc/dir" чтобы не иметь проблем с разделением пути на архив и каталог в нём
     -WinArc is missing an "open archive" button
     перевод tooltips:
@@ -359,7 +359,7 @@
       русские имена файлов в архиве (mkdir/BuildPathTo/exists/displayname with unicode names)
       RTF в комментарии
       Installer
-    External compressor options
+    External compressor options ({options}...)
     CLS
     описание того, как можно увеличить сжатие, увеличив или отменив ограничение -ld
     описание ht4

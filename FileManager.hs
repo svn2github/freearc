@@ -43,28 +43,39 @@ import FileManDialogAdd
 ----------------------------------------------------------------------------------------------------
 ---- Главное меню программы и тулбар под ним -------------------------------------------------------
 ----------------------------------------------------------------------------------------------------
+--      File: New Archive, Open Archive, New SFX, Change Drive, Select All, Select Group, Deselect Group, Invert Selection
+--      Commands (или Actions): Add, Extract, Test, ArcInfo, View, Delete, Rename
+--      Tools: Wizard (если таковой будет), Protect, Comment, Convert to EXE, Encrypt, Add Recovery record, Repair
+--      Options: Configuration, Save settings, Load settings, View log, Clear log
+--      Help: собственно сам Help, Goto Homepage (и / или Check for update), About
 
 uiDef =
   "<ui>"++
   "  <menubar>"++
-  "    <menu name=\"File\" action=\"FileAction\">"++
-  "      <menuitem name=\"Add\"      action=\"AddAction\" />"++
-  "      <menuitem name=\"Modify\"   action=\"ModifyAction\" />"++
-  "      <menuitem name=\"Join\"     action=\"JoinAction\" />"++
-  "      <menuitem name=\"ArcInfo\"  action=\"ArcInfoAction\" />"++
-  "      <menuitem name=\"Delete\"   action=\"DeleteAction\" />"++
-  "      <menuitem name=\"Test\"     action=\"TestAction\" />"++
-  "      <menuitem name=\"Extract\"  action=\"ExtractAction\" />"++
+  "    <menu name=\"File\"     action=\"FileAction\">"++
   "      <separator/>"++
-  "      <menuitem name=\"Settings\" action=\"SettingsAction\" />"++
-  "      <menuitem name=\"Exit\"     action=\"ExitAction\"/>"++
-  "      <placeholder name=\"FileMenuAdditions\" />"++
-  "    </menu>"++
-  "    <menu name=\"Edit\" action=\"EditAction\">"++
   "      <menuitem name=\"Select\"   action=\"SelectAction\" />"++
   "      <menuitem name=\"Unselect\" action=\"UnselectAction\" />"++
   "      <menuitem name=\"Refresh\"  action=\"RefreshAction\" />"++
-  "      <placeholder name=\"EditMenuAdditions\" />"++
+  "      <separator/>"++
+  "      <placeholder name=\"FileMenuAdditions\" />"++
+  "      <menuitem name=\"Exit\"     action=\"ExitAction\"/>"++
+  "    </menu>"++
+  "    <menu name=\"Commands\" action=\"CommandsAction\">"++
+  "      <menuitem name=\"Add\"      action=\"AddAction\" />"++
+  "      <menuitem name=\"Extract\"  action=\"ExtractAction\" />"++
+  "      <menuitem name=\"Test\"     action=\"TestAction\" />"++
+  "      <menuitem name=\"ArcInfo\"  action=\"ArcInfoAction\" />"++
+  "      <menuitem name=\"Delete\"   action=\"DeleteAction\" />"++
+  "    </menu>"++
+  "    <menu name=\"Tools\"    action=\"ToolsAction\">"++
+  "      <menuitem name=\"Modify\"   action=\"ModifyAction\" />"++
+  "      <menuitem name=\"Join\"     action=\"JoinAction\" />"++
+  "    </menu>"++
+  "    <menu name=\"Options\"  action=\"OptionsAction\">"++
+  "      <menuitem name=\"Settings\" action=\"SettingsAction\" />"++
+  "    </menu>"++
+  "    <menu name=\"Help\"     action=\"HelpAction\">"++
   "    </menu>"++
   "  </menubar>"++
   "  <toolbar>"++
@@ -96,10 +107,10 @@ myGUI run args = do
   (windowProgress, clearStats) <- runIndicators
   -- Main menu
   standardGroup <- actionGroupNew "standard"
-  i18menu <- i18ns$ split '_' "0050 File_0066 Edit"
-  fileAct <- actionNew "FileAction" (i18menu!!0) Nothing Nothing
-  editAct <- actionNew "EditAction" (i18menu!!1) Nothing Nothing
-  mapM_ (actionGroupAddAction standardGroup) [fileAct, editAct]
+  let names = split ',' "0050 File,9999 Commands,9999 Tools,9999 Tools,9999 Options,9999 Help"
+  labels <- i18ns names
+  for (zip names labels) $ \(name,label) -> do
+    actionGroupAddAction standardGroup  =<<  actionNew (drop 5 name++"Action") label Nothing Nothing
   -- Menus and toolbars
   let anew name comment icon accel = do
         [i18name,i18comment] <- i18ns [name,comment]
