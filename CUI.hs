@@ -98,15 +98,15 @@ ask question ref_answer answer_on_u =  do
     _   -> return (new_answer `elem` ["y","a"])
 
 -- |—обственно общение с пользователем происходит здесь
-ask_user question = syncUI $ pauseTiming $ do
-  myPutStr$ "\n  "++question++" ("++valid_answers++")? "
-  hFlush stdout
-  answer  <-  getLine >>== strLower
-  when (answer=="q") $ do
-      terminateOperation
-  if (answer `elem` (split '/' valid_answers))
-    then return answer
-    else myPutStr askHelp >> ask_user question
+ask_user question = syncUI $ pauseTiming go  where
+  go = do myPutStr$ "\n  "++question++" ("++valid_answers++")? "
+          hFlush stdout
+          answer  <-  getLine >>== strLower
+          when (answer=="q") $ do
+              terminateOperation
+          if (answer `elem` (split '/' valid_answers))
+            then return answer
+            else myPutStr askHelp >> go
 
 -- |ѕодсказка, выводима€ на экран при недопустимом ответе
 askHelp = unlines [ "  Valid answers are:"

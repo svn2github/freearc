@@ -328,6 +328,7 @@
   GUI: shortcut keys for add/extract/... commands
        центрировать индикатор прогресса относительно окна программы, а не всего экрана
        TC: при распаковке FreeArc.exe извлекается также no-url\FreeArc.exe
+         arc x a FreeArc.exe  -  rar извлекает только один файл (*.exe извлекает все файлы)
 
   mm/tta/ppmd/lzp/dict: BigAlloc
   URL support: dynamic dlls in order to cutoff rep:1g errors
