@@ -507,7 +507,9 @@ createFilePanel = do
   columns <- sequence [
      addColumn view model onColumnTitleClicked (n!!0) (s!!0) fmname                                                       []
     ,addColumn view model onColumnTitleClicked (n!!1) (s!!1) (\fd -> if (fdIsDir fd) then (s!!3) else (show3$ fdSize fd)) [cellXAlign := 1]
-    ,addColumn view model onColumnTitleClicked (n!!2) (s!!2) (formatDateTime.fdTime)                                      [] ]
+    ,addColumn view model onColumnTitleClicked (n!!2) (s!!2) (formatDateTime.fdTime)                                      []
+    ,addColumn view model onColumnTitleClicked ("")   ("")   (const "")                                                   []
+    ]
   -- Включаем поиск по первой колонке
   -- treeViewSetSearchColumn treeViewSetSearchEqualFunc treeViewSetEnableSearch
   -- Enable multiple selection
@@ -533,16 +535,16 @@ addColumn view model onColumnTitleClicked colname title field attrs = do
   -- (bool New.cellLayoutPackStart New.cellLayoutPackEnd expand) col1 renderer1 expand
   -- set col1 [New.treeViewColumnSizing := TreeViewColumnAutosize] `on` expand
   -- set col1 [New.treeViewColumnSizing := TreeViewColumnFixed] `on` not expand
-  -- cellLayoutSetAttributes  [New.cellEditable := True]
-  set col1 [ New.treeViewColumnResizable   := True
-           , New.treeViewColumnSizing      := TreeViewColumnFixed
-           , New.treeViewColumnClickable   := True
-           , New.treeViewColumnReorderable := True ]
+  -- cellLayoutSetAttributes  [New.cellEditable := True, New.cellEllipsize := EllipsizeEnd]
+  when (colname/="") $ do
+    set col1 [ New.treeViewColumnResizable   := True
+             , New.treeViewColumnSizing      := TreeViewColumnFixed
+             , New.treeViewColumnClickable   := True
+             , New.treeViewColumnReorderable := True ]
   -- При нажатии на заголовок столбца вызвать колбэк
   col1 `New.onColClicked` do
     val onColumnTitleClicked >>= ($colname)
-  New.cellLayoutSetAttributes col1 renderer1 model $ \row -> [ New.cellText      := field row
-                                                          {- , New.cellEllipsize := EllipsizeEnd -} ] ++ attrs
+  New.cellLayoutSetAttributes col1 renderer1 model $ \row -> [New.cellText := field row] ++ attrs
   New.treeViewAppendColumn view col1
   return (colname,col1)
 
