@@ -626,6 +626,15 @@ archiveOperation fm' action = do
     else do fullnames <- mapM (fmCanonicalizePath fm') files
             action fullnames "" []
 
+-- |Выполняет операцию, которой нужно передать только имена архивов
+multiArchiveOperation fm' action = do
+  fm <- val fm'
+  if isFM_Archive fm
+    then action [fm_arcname fm]
+    else do files <- getSelection fm' (const [])
+            fullnames <- mapM (fmCanonicalizePath fm') files
+            action fullnames
+
 -- |Обновить содержимое панели файл-менеджера актуальными данными
 refreshCommand fm' = do
   fm <- val fm'

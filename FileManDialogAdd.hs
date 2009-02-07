@@ -42,7 +42,7 @@ import FileManDialogs
 ---- Диалог упаковки файлов и модификации/слияния архивов ------------------------------------------
 ----------------------------------------------------------------------------------------------------
 
-addDialog fm' exec cmd = do
+addDialog fm' exec cmd mode = do
   --start_time  <- getClockTime
   fm <- val fm'
   if isFM_Archive fm && cmd=="a"  then fmErrorMsg fm' "0133 You can't compress files directly from archive!" else do
@@ -137,6 +137,10 @@ addDialog fm' exec cmd = do
 
 ------ Инициализация полей --------------------------------------------------------------------------
     compression     =: cmd=="a"   -- Раздел Compression при старте открыт для команды 'a' и закрыт для остальных команд
+    encryption      =: mode==EncryptionMode
+    protection      =: mode==ProtectionMode
+    comment         =: mode==CommentMode
+    makeSFX         =: mode==MakeSFXMode
     ep              =: 2
     updateMode      =: 0
     archiveTimeMode =: 0
@@ -298,4 +302,9 @@ fmUpdateMode =
            , "0196 Add and update files"
            , "0197 Fresh existing files"
            , "0198 Synchronize archive with disk contents" ]
+
+
+-- |Режим диалога сжатия
+data AddDialogMode = EncryptionMode | ProtectionMode | CommentMode | MakeSFXMode | NoMode  deriving Eq
+
 

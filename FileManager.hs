@@ -47,15 +47,17 @@ import FileManDialogAdd
 --      Commands (или Actions): Add, Extract, Test, ArcInfo, View, Delete, Rename
 --      Tools: Wizard (если таковой будет), Protect, Comment, Convert to EXE, Encrypt, Add Recovery record, Repair
 --      Options: Configuration, Save settings, Load settings, View log, Clear log
---      Help: собственно сам Help, Goto Homepage (и / или Check for update), About
+--      Help: собственно сам Help, Goto Homepage (и/или Check for update), About
 
 uiDef =
   "<ui>"++
   "  <menubar>"++
   "    <menu name=\"File\"     action=\"FileAction\">"++
   "      <separator/>"++
+--  "      <menuitem name=\"Select all\"   action=\"SelectAllAction\" />"++
   "      <menuitem name=\"Select\"   action=\"SelectAction\" />"++
   "      <menuitem name=\"Unselect\" action=\"UnselectAction\" />"++
+--  "      <menuitem name=\"Invert selection\"   action=\"InvertSelectionAction\" />"++
   "      <menuitem name=\"Refresh\"  action=\"RefreshAction\" />"++
   "      <separator/>"++
   "      <placeholder name=\"FileMenuAdditions\" />"++
@@ -69,8 +71,13 @@ uiDef =
   "      <menuitem name=\"Delete\"   action=\"DeleteAction\" />"++
   "    </menu>"++
   "    <menu name=\"Tools\"    action=\"ToolsAction\">"++
-  "      <menuitem name=\"Modify\"   action=\"ModifyAction\" />"++
-  "      <menuitem name=\"Join\"     action=\"JoinAction\" />"++
+  "      <menuitem name=\"Lock\"             action=\"LockAction\" />"++
+--  "      <menuitem name=\"Comment\"          action=\"CommentAction\" />"++
+  "      <menuitem name=\"Convert to SFX\"   action=\"ConvertToSFXAction\" />"++
+  "      <menuitem name=\"Encrypt\"          action=\"EncryptAction\" />"++
+  "      <menuitem name=\"Add RR\"           action=\"AddRRAction\" />"++
+  "      <menuitem name=\"Modify\"           action=\"ModifyAction\" />"++
+  "      <menuitem name=\"Join\"             action=\"JoinAction\" />"++
   "    </menu>"++
   "    <menu name=\"Options\"  action=\"OptionsAction\">"++
   "      <menuitem name=\"Settings\" action=\"SettingsAction\" />"++
@@ -107,29 +114,38 @@ myGUI run args = do
   (windowProgress, clearStats) <- runIndicators
   -- Main menu
   standardGroup <- actionGroupNew "standard"
+  let action name  =  (concat$ map (mapHead toUpper)$ words$ drop 5 name)++"Action"   -- "the name" -> "TheNameAction"
   let names = split ',' "0050 File,9999 Commands,9999 Tools,9999 Tools,9999 Options,9999 Help"
   labels <- i18ns names
   for (zip names labels) $ \(name,label) -> do
-    actionGroupAddAction standardGroup  =<<  actionNew (drop 5 name++"Action") label Nothing Nothing
+    actionGroupAddAction standardGroup  =<<  actionNew (action name) label Nothing Nothing
   -- Menus and toolbars
   let anew name comment icon accel = do
         [i18name,i18comment] <- i18ns [name,comment]
-        act <- actionNew (drop 5 name++"Action") i18name (Just i18comment) icon
+        act <- actionNew (action name) i18name (Just i18comment) icon
         actionGroupAddActionWithAccel standardGroup act (Just "")  -- accel
         return act
-  addAct      <- anew "0030 Add"        "0040 Add files to archive(s)"        (Just stockMediaRecord)     "<Alt>A"
-  modifyAct   <- anew "0031 Modify"     "0041 Modify archive(s)"              (Just stockEdit)            "<Alt>M"
-  joinAct     <- anew "0032 Join"       "0042 Join archives together"         (Just stockCopy)            "<Alt>J"
-  arcinfoAct  <- anew "0086 ArcInfo"    "0087 Information about archive"      (Just stockInfo)            "<Alt>I"
-  deleteAct   <- anew "0033 Delete"     "0043 Delete files (from archive)"    (Just stockDelete)          "Delete"
-  testAct     <- anew "0034 Test"       "0044 Test files in archive(s)"       (Just stockSpellCheck)      "<Alt>T"
-  extractAct  <- anew "0035 Extract"    "0045 Extract files from archive(s)"  (Just stockMediaPlay)       "<Alt>E"
-  settingsAct <- anew "0064 Settings"   "0065 Edit program settings"          (Just stockPreferences)     "<Alt>S"
-  exitAct     <- anew "0036 Exit"       "0046 Quit application"               (Just stockQuit)            "<Alt>Q"
+  addAct      <- anew "0030 Add"              "0040 Add files to archive(s)"        (Just stockMediaRecord)     "<Alt>A"
+  modifyAct   <- anew "0031 Modify"           "0041 Modify archive(s)"              (Just stockEdit)            "<Alt>M"
+  joinAct     <- anew "0032 Join"             "0042 Join archives together"         (Just stockCopy)            "<Alt>J"
+  arcinfoAct  <- anew "0086 ArcInfo"          "0087 Information about archive"      (Just stockInfo)            "<Alt>I"
+  deleteAct   <- anew "0033 Delete"           "0043 Delete files (from archive)"    (Just stockDelete)          "Delete"
+  testAct     <- anew "0034 Test"             "0044 Test files in archive(s)"       (Just stockSpellCheck)      "<Alt>T"
+  extractAct  <- anew "0035 Extract"          "0045 Extract files from archive(s)"  (Just stockMediaPlay)       "<Alt>E"
+  settingsAct <- anew "0064 Settings"         "0065 Edit program settings"          (Just stockPreferences)     "<Alt>S"
+  exitAct     <- anew "0036 Exit"             "0046 Quit application"               (Just stockQuit)            "<Alt>Q"
 
-  selectAct   <- anew "0037 Select"     "0047 Select files"                   (Just stockAdd)             "+"
-  unselectAct <- anew "0038 Unselect"   "0048 Unselect files"                 (Just stockRemove)          "-"
-  refreshAct  <- anew "0039 Refresh"    "0049 Reread archive/directory"       (Just stockRefresh)         "F5"
+  lockAct     <- anew "9999 Lock"             "9999 Lock archive from further changes"    (Nothing)                   ""
+  commentAct  <- anew "9999 Comment"          "9999 Add comment to archive"               (Nothing)                   ""
+  toSfxAct    <- anew "9999 Convert to SFX"   "9999 Convert archive to EXE"               (Nothing)                   ""
+  encryptAct  <- anew "9999 Encrypt"          "9999 Encrypt archive contents"             (Nothing)                   ""
+  addRrAct    <- anew "9999 Add RR"           "9999 Add Recovery record"                  (Nothing)                   ""
+
+  selectAllAct<- anew "9999 Select all"       "9999 Select all files"               (Nothing)                   ""
+  selectAct   <- anew "0037 Select"           "0047 Select files"                   (Just stockAdd)             "+"
+  unselectAct <- anew "0038 Unselect"         "0048 Unselect files"                 (Just stockRemove)          "-"
+  invertAct   <- anew "9999 Invert selection" "9999 Invert selection"               (Nothing)                   ""
+  refreshAct  <- anew "0039 Refresh"          "0049 Reread archive/directory"       (Just stockRefresh)         "F5"
   ui <- uiManagerNew
   mid <- uiManagerAddUiFromString ui uiDef
   uiManagerInsertActionGroup ui standardGroup 0
@@ -377,15 +393,15 @@ myGUI run args = do
 
   -- Упаковка данных
   addAct `onActionActivate` do
-    addDialog fm' exec "a"
+    addDialog fm' exec "a" NoMode
 
   -- Модификация архивов
   modifyAct `onActionActivate` do
-    addDialog fm' exec "ch"
+    addDialog fm' exec "ch" NoMode
 
   -- Объединение архивов
   joinAct `onActionActivate` do
-    addDialog fm' exec "j"
+    addDialog fm' exec "j" NoMode
 
   -- Информация об архиве
   arcinfoAct `onActionActivate` do
@@ -429,6 +445,36 @@ myGUI run args = do
   -- Выход из программы
   exitAct `onActionActivate`
     mainQuit
+
+  -- Защитить архив от записи
+  lockAct `onActionActivate` do
+    multiArchiveOperation fm' $ \archives -> do
+      let msg = "9999 Lock archive(s)?"
+      whenM (askOkCancel window (formatn msg [head archives, show3$ length archives])) $ do
+        closeFMArc fm'
+        for archives $ \arcname -> do
+          exec [(["9999 Locking archive(s)",
+                  "9999 ARCHIVE(S) SUCCESFULLY LOCKED",
+                  "9999 %2 WARNINGS WHILE LOCKING ARCHIVE(S)"],
+                 [takeFileName arcname],
+                 ["ch", "--noarcext", "-k", "--", arcname])]
+
+  -- Изменить комментарий архива
+  commentAct `onActionActivate` do
+    return ()  -- CommentMode
+
+  -- Преобразовать архив в SFX
+  toSfxAct `onActionActivate` do
+    addDialog fm' exec "ch" MakeSFXMode
+
+  -- Зашифровать архив
+  encryptAct `onActionActivate` do
+    addDialog fm' exec "ch" EncryptionMode
+
+  -- Добавить RR в архив
+  addRrAct `onActionActivate` do
+    addDialog fm' exec "ch" ProtectionMode
+
 
   -- Инициализируем состояние файл-менеджера каталогом/архивом, заданным в командной строке
   chdir fm' (head (args++["."]))
