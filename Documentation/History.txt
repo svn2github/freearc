@@ -226,8 +226,8 @@
     При операциях над существующими архивами (ch,d,x...) в ком. строку добавляется "--noarcext"
     "Abort operation?" - локализация и pause_timing
     Progress indicator now shows current compressed/estimated total compressed sizes
-    Сортировка нажатием на заголовок столбца с сохранением порядка между запусками
-    Сохранение размера/положения дилогов и ширины столбцов в файлменеджере
+    Сортировка нажатием на заголовок столбца
+    Сохранение размера/положения диалогов и порядка/ширины/сортировки столбцов в файлменеджере
     "Change drive" button
     Single-click on the empty space at right clears selection, double-click selects all files
   Linux: "chmod +x" при создании sfx-архива, "chmod -x" при -sfx-

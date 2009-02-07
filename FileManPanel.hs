@@ -504,12 +504,11 @@ createFilePanel = do
       n = map (drop 5) columnTitles
   s <- i18ns columnTitles
   onColumnTitleClicked <- ref doNothing
-  columns <- sequence [
+  columns <- fmap (dropEnd 1) $ sequence [
      addColumn view model onColumnTitleClicked (n!!0) (s!!0) fmname                                                       []
     ,addColumn view model onColumnTitleClicked (n!!1) (s!!1) (\fd -> if (fdIsDir fd) then (s!!3) else (show3$ fdSize fd)) [cellXAlign := 1]
     ,addColumn view model onColumnTitleClicked (n!!2) (s!!2) (formatDateTime.fdTime)                                      []
-    ,addColumn view model onColumnTitleClicked ("")   ("")   (const "")                                                   []
-    ]
+    ,addColumn view model onColumnTitleClicked ("")   ("")   (const "")                                                   [] ]
   -- Включаем поиск по первой колонке
   -- treeViewSetSearchColumn treeViewSetSearchEqualFunc treeViewSetEnableSearch
   -- Enable multiple selection

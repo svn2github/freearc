@@ -233,13 +233,19 @@ myGUI run args = do
   mapM_ (fmDeleteTagFromHistory fm') $ words "MainWindowPos MainWindowSize ExtractDialogPos ExtractDialogSize AddDialogPos AddDialogSize SettingsDialogPos SettingsDialogSize ArcInfoPos ArcInfoSize"
 
 
-  -- При закрытии программы сохраним ширину колонок
+  -- При закрытии программы сохраним порядок и ширину колонок
   onExit <<= do
+    colnames  <-  New.treeViewGetColumns listView  >>=  mapM New.treeViewColumnGetTitle
+    fmReplaceHistory fm' "ColumnOrder" (unwords$ catMaybes colnames)
     for columns $ \(name,col1) -> do
       w <- New.treeViewColumnGetWidth col1
       fmReplaceHistory fm' (name++"ColumnWidth") (show w)
 
-  -- При старте восстановим сохранённую ширину колонок
+  -- При старте восстановим сохранённые порядок и ширину колонок
+  order <- (reverse.words) `fmap` fmGetHistory1 fm' "ColumnOrder" ""
+  for order $ \colname -> do
+    whenJust (lookup colname columns) $
+      New.treeViewMoveColumnFirst listView
   for columns $ \(name,col1) -> do
     w <- readInt  `fmap`  fmGetHistory1 fm' (name++"ColumnWidth") "150"
     New.treeViewColumnSetFixedWidth col1 w
@@ -288,7 +294,7 @@ myGUI run args = do
     select =<< fmFilenameAt fm' path
 
   -- При single-click на свободном пространстве справа снимаем отметку со всех файлов,
-  -- при double-click выбираем все файлы
+  -- при double-click там же выбираем все файлы
   listView `onButtonPress` \e -> do
     Just (_,column,_) <- New.treeViewGetPathAtPos listView (round$ eventX e, round$ eventY e)
     Just coltitle     <- New.treeViewColumnGetTitle column
