@@ -162,6 +162,22 @@ fmFindCursor fm' filename = do
   let fullList  =  fm_filelist  fm
   return (fmap (:[])$  findIndex ((filename==).fmname) fullList)
 
+-- |Вывести на экран новый список файлов
+fmSetFilelist fm' files = do
+  fm <- val fm'
+  fm' =: fm {fm_filelist = files}
+  changeList (fm_model fm) files
+
+-- |Вывести сообщение об ошибке
+fmErrorMsg fm' msg = do
+  fm <- val fm'
+  msgBox (fm_window fm) MessageError =<< i18n msg
+
+
+----------------------------------------------------------------------------------------------------
+---- Выделение файлов ------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+
 -- |Отметить/разотметить файлы, удовлетворяющие заданному предикату
 fmSelectFilenames   = fmSelUnselFilenames New.treeSelectionSelectPath
 fmUnselectFilenames = fmSelUnselFilenames New.treeSelectionUnselectPath
@@ -171,6 +187,19 @@ fmSelUnselFilenames selectOrUnselect fm' filter_p = do
   let selection = fm_selection fm
   for (findIndices filter_p fullList)
       (selectOrUnselect selection.(:[]))
+
+-- |Отметить/разотметить все файлы
+fmSelectAll   fm' = New.treeSelectionSelectAll   . fm_selection =<< val fm'
+fmUnselectAll fm' = New.treeSelectionUnselectAll . fm_selection =<< val fm'
+
+-- |Инвертировать выделение
+fmInvertSelection fm' = do
+  fm <- val fm'
+  let files     = length$ fm_filelist fm
+  let selection = fm_selection fm
+  for [0..files-1] $ \i -> do
+    selected <- New.treeSelectionPathIsSelected selection [i]
+    (if selected  then New.treeSelectionUnselectPath  else New.treeSelectionSelectPath) selection [i]
 
 -- |Список имён избранных файлов + имён каталогов в отображении mapDirName
 getSelection fm' mapDirName = do
@@ -195,17 +224,6 @@ fmDeleteSelected fm' = do
   rows <- getSelectionRows fm'
   fm <- val fm'
   fmSetFilelist fm' (fm_filelist fm `deleteElems` rows)
-
--- |Вывести на экран новый список файлов
-fmSetFilelist fm' files = do
-  fm <- val fm'
-  fm' =: fm {fm_filelist = files}
-  changeList (fm_model fm) files
-
--- |Вывести сообщение об ошибке
-fmErrorMsg fm' msg = do
-  fm <- val fm'
-  msgBox (fm_window fm) MessageError =<< i18n msg
 
 
 ----------------------------------------------------------------------------------------------------

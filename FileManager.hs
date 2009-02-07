@@ -54,10 +54,10 @@ uiDef =
   "  <menubar>"++
   "    <menu name=\"File\"     action=\"FileAction\">"++
   "      <separator/>"++
---  "      <menuitem name=\"Select all\"   action=\"SelectAllAction\" />"++
+  "      <menuitem name=\"Select all\"   action=\"SelectAllAction\" />"++
   "      <menuitem name=\"Select\"   action=\"SelectAction\" />"++
   "      <menuitem name=\"Unselect\" action=\"UnselectAction\" />"++
---  "      <menuitem name=\"Invert selection\"   action=\"InvertSelectionAction\" />"++
+  "      <menuitem name=\"Invert selection\"   action=\"InvertSelectionAction\" />"++
   "      <menuitem name=\"Refresh\"  action=\"RefreshAction\" />"++
   "      <separator/>"++
   "      <placeholder name=\"FileMenuAdditions\" />"++
@@ -144,7 +144,7 @@ myGUI run args = do
   selectAllAct<- anew "9999 Select all"       "9999 Select all files"               (Nothing)                   ""
   selectAct   <- anew "0037 Select"           "0047 Select files"                   (Just stockAdd)             "+"
   unselectAct <- anew "0038 Unselect"         "0048 Unselect files"                 (Just stockRemove)          "-"
-  invertAct   <- anew "9999 Invert selection" "9999 Invert selection"               (Nothing)                   ""
+  invertSelAct<- anew "9999 Invert selection" "9999 Invert selection"               (Nothing)                   ""
   refreshAct  <- anew "0039 Refresh"          "0049 Reread archive/directory"       (Just stockRefresh)         "F5"
   ui <- uiManagerNew
   mid <- uiManagerAddUiFromString ui uiDef
@@ -299,7 +299,15 @@ myGUI run args = do
     Just (_,column,_) <- New.treeViewGetPathAtPos listView (round$ eventX e, round$ eventY e)
     Just coltitle     <- New.treeViewColumnGetTitle column
     coltitle=="" &&& e.$eventButton==LeftButton &&&
-      ((if e.$eventClick==SingleClick  then fmUnselectFilenames  else fmSelectFilenames) fm' (const True)  >>  return True)
+      ((if e.$eventClick==SingleClick  then fmUnselectAll  else fmSelectAll) fm'  >>  return True)
+
+  -- Выделить все файлы
+  selectAllAct `onActionActivate` do
+    fmSelectAll fm'
+
+  -- Инвертировать выделение
+  invertSelAct `onActionActivate` do
+    fmInvertSelection fm'
 
   -- При переходе в другой каталог/архив отобразить его имя в строке ввода
   fm' `fmOnChdir` do
