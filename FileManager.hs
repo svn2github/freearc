@@ -284,12 +284,16 @@ myGUI run args = do
 
 
   -- ѕри нажатии Enter на строке в списке открываем выбранный архив/каталог
-  -- (при double-click на свободном пространстве справа выбираем все файлы)
   listView `New.onRowActivated` \path column -> do
-    Just coltitle <- New.treeViewColumnGetTitle column
-    case coltitle of
-      "" -> fmSelectFilenames fm' (const True)  -- pseudo-column
-      _  -> select =<< fmFilenameAt fm' path
+    select =<< fmFilenameAt fm' path
+
+  -- ѕри single-click на свободном пространстве справа снимаем отметку со всех файлов,
+  -- при double-click выбираем все файлы
+  listView `onButtonPress` \e -> do
+    Just (_,column,_) <- New.treeViewGetPathAtPos listView (round$ eventX e, round$ eventY e)
+    Just coltitle     <- New.treeViewColumnGetTitle column
+    coltitle=="" &&& e.$eventButton==LeftButton &&&
+      ((if e.$eventClick==SingleClick  then fmUnselectFilenames  else fmSelectFilenames) fm' (const True)  >>  return True)
 
   -- ѕри переходе в другой каталог/архив отобразить его им€ в строке ввода
   fm' `fmOnChdir` do
