@@ -284,8 +284,12 @@ myGUI run args = do
 
 
   -- ѕри нажатии Enter на строке в списке открываем выбранный архив/каталог
-  listView `New.onRowActivated` \path _ -> do
-    select =<< fmFilenameAt fm' path
+  -- (при double-click на свободном пространстве справа выбираем все файлы)
+  listView `New.onRowActivated` \path column -> do
+    Just coltitle <- New.treeViewColumnGetTitle column
+    case coltitle of
+      "" -> fmSelectFilenames fm' (const True)  -- pseudo-column
+      _  -> select =<< fmFilenameAt fm' path
 
   -- ѕри переходе в другой каталог/архив отобразить его им€ в строке ввода
   fm' `fmOnChdir` do
