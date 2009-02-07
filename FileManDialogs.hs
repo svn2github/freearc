@@ -644,7 +644,8 @@ refreshCommand fm' = do
   chdir fm' (fm_current fm)
   when (selected>[]) $ do
     fmSetCursor fm' curfile
-  fmSelectFilenames fm' ((`elem` selected).fmname)
+  fmUnselectFilenames fm' (const True)
+  fmSelectFilenames   fm' ((`elem` selected).fmname)
 
 -- |ќпредел€ет то, как имена каталогов подставл€ютс€ в команды
 addCmdFiles dirname =  [dirname++"/"]
