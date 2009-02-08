@@ -318,7 +318,8 @@ writeSFX sfxname archive old_archive = do
 -- |Новое имя архива в соответствии с тем, что мы добавили или наоборот убрали из него SFX-модуль
 changeSfxExt arcname command =
   case (opt_noarcext command, opt_sfx command) of
-    (True, _)     -> arcname                -- Не менять расширение, если указана опция --noarcext
+--  Отключено, поскольку мешало конвертировать в SFX архивы изнутри GUI
+--  (True, _)     -> arcname                -- Не менять расширение, если указана опция --noarcext
     (_   , "--")  -> arcname                --   или не указана опция "-sfx"
                                             -- При "-sfx-" расширение меняется на ".arc"
     (_   , "-")   -> if takeExtension arcname == aDEFAULT_SFX_EXTENSION

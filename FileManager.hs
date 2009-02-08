@@ -301,14 +301,6 @@ myGUI run args = do
     coltitle=="" &&& e.$eventButton==LeftButton &&&
       ((if e.$eventClick==SingleClick  then fmUnselectAll  else fmSelectAll) fm'  >>  return True)
 
-  -- Выделить все файлы
-  selectAllAct `onActionActivate` do
-    fmSelectAll fm'
-
-  -- Инвертировать выделение
-  invertSelAct `onActionActivate` do
-    fmInvertSelection fm'
-
   -- При переходе в другой каталог/архив отобразить его имя в строке ввода
   fm' `fmOnChdir` do
     fm <- val fm'
@@ -342,6 +334,14 @@ myGUI run args = do
     whenJustM_ (New.comboBoxGetActive$ widget curdir) $ \_ -> do
     saveCurdirToHistory
     select =<< val curdir
+
+  -- Выделить все файлы
+  selectAllAct `onActionActivate` do
+    fmSelectAll fm'
+
+  -- Инвертировать выделение
+  invertSelAct `onActionActivate` do
+    fmInvertSelection fm'
 
   -- Select/unselect files by mask
   let sel method msg = do

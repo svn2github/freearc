@@ -259,6 +259,7 @@
     program was terminating when trying to detect filetype of locked file (such as pagefile.swp)
     external compressors/tempfile: проверяет отсутствие ошибок при чтении/записи
     external compressors: проверяет код возврата вызванной программы
+    -sfx --noarcext: не меняло расширения архива
   Fixed GUI bugs:
     first file in directory was selected after any operation if nothing was selected before
     ArcInfo on empty.arc or non-archive was terminatihg program
@@ -302,8 +303,9 @@
       архива (FAR), копирование в каталоги/из каталогов внутри архива (-ap)
     separate & no files selected
     "arc a a ../file" - не удаляется ".." из имени; аналогично при распаковке
-    arc a dir/ - создаёт архив dir/.arc; имена архивов кончающиеся на :/\ или содержащие их
+    arc a dir/ - создаёт архив dir/.arc; нужно отсекать имена архивов кончающиеся на :/\ или содержащие :
     *.* и makefile.* должны включать makefile
+      gui: так он должен папки выделять по *.* или нет?
     обновление архива, содержащего xxx: если не удалось открыть xxx с диска, то файл из архива исчезнет вообще
     tta: float32 badly compressed (vs wavpack), int32 isn't compressed at all
     +RTS -S - processed by arc.exe itself too :)

@@ -223,7 +223,7 @@ getSelectionRows fm' = do
 fmDeleteSelected fm' = do
   rows <- getSelectionRows fm'
   fm <- val fm'
-  fmSetFilelist fm' (fm_filelist fm `deleteElems` rows)
+  fmSetFilelist fm' (fm_filelist fm `deleteElems` rows)     -- O(n^2)!
 
 
 ----------------------------------------------------------------------------------------------------
