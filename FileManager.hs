@@ -114,7 +114,7 @@ myGUI run args = do
   (windowProgress, clearStats) <- runIndicators
   -- Main menu
   standardGroup <- actionGroupNew "standard"
-  let action name  =  (concat$ map (mapHead toUpper)$ words$ drop 5 name)++"Action"   -- "the name" -> "TheNameAction"
+  let action name  =  (concat$ map (mapHead toUpper)$ words$ drop 5 name)++"Action"   -- "9999 the name" -> "TheNameAction"
   let names = split ',' "0050 File,9999 Commands,9999 Tools,9999 Tools,9999 Options,9999 Help"
   labels <- i18ns names
   for (zip names labels) $ \(name,label) -> do

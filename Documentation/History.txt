@@ -252,6 +252,7 @@
   Prints CPU time and Real time for operation
   Installer SFX (extracts into tempdir, runs setup.exe and then deletes extracted files)
   -m2b made faster on modern cpus; -m3b - fixed speed loss on multi-core cpus & 1% better compression
+  "lt" command: technical archive listing
   Fixed bugs:
     in Delta filter (leading to crashes)
     showing "increase +RTS -Ksize" on multi-gigabyte files
@@ -391,6 +392,7 @@
       "all ok" после каждой команды
       использовать при вычислении cmem/dmem parseCmdline или по крайней мере полный код из неё
       ArcRecover при выполнении команды напрямую
+      при распаковке/тестировании архива без паролей они всё равно запрашиваются в диалоге
       команда "ch" должна применять переупаковку/перешифровку только к файлам, указанным в cmdline
       tatarcha: заголовок Add 1 file, Extract 1 archive..
       добавлять tempfile в начало метода сжатия если не хватает памяти (ppmd:2gb перепаковка)

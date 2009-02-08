@@ -245,6 +245,7 @@ commandsList = [
   , "k        lock archive"
   , "l        list files in archive"
   , "lb       bare list of files in archive"
+  , "lt       technical archive listing"
   , "m        move files and dirs to archive"
   , "mf       move files to archive"
   , "r        recover archive using recovery record"
@@ -272,6 +273,7 @@ cmdType "x"  = EXTRACT_CMD
 cmdType "cw" = EXTRACT_CMD
 cmdType "l"  = LIST_CMD
 cmdType "lb" = LIST_CMD
+cmdType "lt" = LIST_CMD
 cmdType "v"  = LIST_CMD
 cmdType "r"  = RECOVER_CMD
 cmdType  _   = ADD_CMD
@@ -283,7 +285,7 @@ aARCHIVE_VERSION = make4byte 0 0 4 9
 {-# NOINLINE aARC_HEADER #-}
 -- |Краткое наименование программы, выводимое в начале работы
 aARC_HEADER = aARC_NAME++" 0.50 alpha ("++aARC_DATE++") "
-aARC_DATE   = "Feb 7 2009"
+aARC_DATE   = "Feb 8 2009"
 aARC_NAME   = "FreeArc"
 
 {-# NOINLINE aHELP #-}

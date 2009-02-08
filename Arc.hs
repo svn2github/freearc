@@ -110,6 +110,7 @@ run command @ Command
     "t"      -> find_archives  scan_subdirs    run_test    command
     "l"      -> find_archives  scan_subdirs    run_list    command
     "lb"     -> find_archives  scan_subdirs    run_list    command
+    "lt"     -> find_archives  scan_subdirs    run_list    command
     "v"      -> find_archives  scan_subdirs    run_list    command
     _ -> registerError$ UNKNOWN_CMD cmd aLL_COMMANDS
 

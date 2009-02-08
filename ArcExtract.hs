@@ -24,7 +24,7 @@ import Files
 import FileInfo
 import Charsets            (i18n)
 import Errors
-import Compression         (aINIT_CRC, updateCRC, finishCRC)
+import Compression         (aINIT_CRC, updateCRC, finishCRC, join_compressor)
 import Options
 import UI
 import ArhiveStructure
@@ -186,7 +186,7 @@ runArchiveList pretestArchive
                               } = do
   command <- (command.$ opt_cook_passwords) command ask_passwords  -- подготовить пароли в команде к использованию
   bracket (archiveReadInfo command arc_basedir "" archive_filter (pretestArchive command) arcname) (arcClose) $
-      archiveList command (length arclist==1)
+      archiveList command (null$ tail arclist)
 
 -- |Листинг архива
 archiveList command @ Command{ cmd_name = cmd, cmd_arcname = arcname }
@@ -201,23 +201,29 @@ archiveList command @ Command{ cmd_name = cmd, cmd_arcname = arcname }
                 uiPrintArcComment (arcComment arc)
                 myPutStrLn line1
                 myPutStrLn line2
-                compsize <- myMapM list_func directory
+                compsize <- list_func
                 myPutStrLn linelast
                 myPutStr$   show3 files ++ " files, " ++ show3 bytes ++ " bytes, " ++ show3 compsize ++ " compressed"
     case cmd of
       "l" -> list "Date/time                  Size Filename"
                   "----------------------------------------"
-                  terse_list
+                  (myMapM terse_list directory)
                   "----------------------------------------"
-
-      "lb"-> myPutStr$ joinWith "\n"$ map filename directory
 
       "v" -> list "Date/time              Attr            Size          Packed      CRC Filename"
                   "-----------------------------------------------------------------------------"
-                  verbose_list
+                  (myMapM verbose_list directory)
                   "-----------------------------------------------------------------------------"
 
+      "lb"-> myPutStr$ joinWith "\n"$ map filename directory
+
+      "lt"-> list "              Pos            Size      Compressed   Files Method"
+                  "-----------------------------------------------------------------------------"
+                  (do mapM_ data_block_list (arcDataBlocks arc)
+                      return (sum$ map blCompSize (arcDataBlocks arc)))
+                  "-----------------------------------------------------------------------------"
   return (1, files, bytes, -1)
+
 
 -- |Имя файла
 filename = fpFullname . fiStoredName . cfFileInfo
@@ -238,7 +244,7 @@ myMapM f = go 0 True undefined
 -- |Однострочный простой листинг файла
 terse_list direntry compsize = do
   let fi = cfFileInfo direntry
-  myPutStrLn$       (formatDateTime$ fiTime fi)
+  myPutStrLn$        (formatDateTime$ fiTime fi)
            ++ " " ++ right_justify 11 (if (fiIsDir fi) then ("-dir-") else (show3$ fiSize fi))
                   ++ (if (cfIsEncrypted direntry)  then "*"  else " ")
                   ++ filename direntry
@@ -246,7 +252,7 @@ terse_list direntry compsize = do
 -- |Однострочный подробный листинг файла
 verbose_list direntry compsize = do
   let fi = cfFileInfo direntry
-  myPutStrLn$       (formatDateTime$ fiTime fi)
+  myPutStrLn$        (formatDateTime$ fiTime fi)
            ++ " " ++ (if (fiIsDir fi)  then ".D....."  else ".......")
            ++ " " ++ right_justify 15 (show$ fiSize fi)
            ++ " " ++ right_justify 15 (show$ compsize)
@@ -266,4 +272,13 @@ technical_list direntry = do
   myPutStrLn$ "CRC: "       ++ showHex (cfCRC direntry) ""
   myPutStrLn$ "Type: "      ++ if (fiIsDir fi) then "directory" else "file"
 -}
+
+-- |Описание солид-блока
+data_block_list bl = do
+  myPutStrLn$        (if (blIsEncrypted bl)  then "*"  else " ")
+           ++ " " ++ right_justify 15 (show3$ blPos      bl)
+           ++ " " ++ right_justify 15 (show3$ blOrigSize bl)
+           ++ " " ++ right_justify 15 (show3$ blCompSize bl)
+           ++ " " ++ right_justify  7 (show3$ blFiles    bl)
+           ++ " " ++ join_compressor (blCompressor bl)
 
