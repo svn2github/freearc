@@ -65,7 +65,7 @@ addDialog fm' exec cmd mode = do
     fmCacheConfigFile fm' $ do
     upbox <- dialogGetUpper dialog
     -- Поместим все контролы в симпатичный notebook и упростим процедуру создания новых страниц
-    nb <- notebookNew;  boxPackStart upbox nb PackNatural 0
+    nb <- notebookNew;  boxPackStart upbox nb PackGrow 0
     let newPage name = do vbox <- vBoxNew False 0; notebookAppendPage nb vbox =<< i18n name
                           return vbox
 
@@ -131,8 +131,8 @@ addDialog fm' exec cmd mode = do
     onEncryptionChanged (encryptionMethod =:)
 
 ------ Закладка архивного комментария --------------------------------------------------------------------------
-    vbox <- newPage "0199 Comment";  let pack x = boxPackStart vbox x PackNatural 1
-    commentText <- newTextViewWithText "";  pack commentText
+    vbox <- newPage "0199 Comment";  let pack x = boxPackStart vbox x PackGrow 1
+    commentText <- scrollableTextView "" [];  pack (widget commentText)
 
 
 ------ Инициализация полей --------------------------------------------------------------------------
@@ -185,7 +185,7 @@ addDialog fm' exec cmd mode = do
       ; protectionMethod'  <- val protectionMethod;   saveHistory protectionMethod  `on` protectionEnabled
       commentEnabled     <- val comment
       ; commentFile'       <- val commentFile;        saveHistory commentFile       `on` commentEnabled
-      ; commentText'       <- textViewGetText commentText
+      ; commentText'       <- val commentText
       sfxEnabled  <- val makeSFX
       ; sfxFile'  <- val sfxFile;   saveHistory sfxFile  `on` sfxEnabled
       -- Archive settings

@@ -483,13 +483,19 @@ instance Variable Expander Bool where
   val  = expanderGetExpanded
   (=:) = expanderSetExpanded
 
+-- |This instance allows to get/set expander state using standard =:/val interface
+instance Variable TextView String where
+  new  = undefined
+  val  = textViewGetText
+  (=:) = textViewSetText
+
 -- |This instance allows to get/set value displayed by widget using standard =:/val interface
 instance GtkWidgetClass w gw a => Variable w a where
   new  = undefined
   val  = getValue
   (=:) = setValue
 
--- |Universal interface to arbitrary GTK widget `w` which controls value of type `a`
+-- |Universal interface to arbitrary GTK widget `w` that controls value of type `a`
 class GtkWidgetClass w gw a | w->gw, w->a where
   widget      :: w -> gw                 -- ^The GTK widget by itself
   getTitle    :: w -> IO String          -- ^Read current widget's title
@@ -530,25 +536,6 @@ gtkWidget = GtkWidget { gwWidget      = undefined
 
 -- Использовать жирный Pango Markup для переданного текста
 bold text = "<b>"++text++"</b>"
-
-
--- |Создаёт новый объект TextView с заданным текстом
-newTextViewWithText s = do
-  textView <- textViewNew
-  textViewSetText textView s
-  return textView
-
--- |Задаёт текст, отображаемый в TextView
-textViewSetText textView s = do
-  buffer <- textViewGetBuffer textView
-  textBufferSetText buffer s
-
--- |Считывает текст, отображаемый в TextView
-textViewGetText textView = do
-  buffer <- textViewGetBuffer      textView
-  start  <- textBufferGetStartIter buffer
-  end    <- textBufferGetEndIter   buffer
-  textBufferGetText buffer start end False
 
 
 {-# NOINLINE eventKey #-}
@@ -736,4 +723,36 @@ emptyTwoColumnTable dataset = do
       -- Возвратим операцию, устанавливающую текст второй метки (предназначенной для вывода данных)
       return$ \text -> labelSetMarkup label$ bold$ text
   return (table, setLabels)
+
+{-# NOINLINE scrollableTextView #-}
+-- |Прокручиваемый TextView
+scrollableTextView s attributes = do
+  control <- newTextViewWithText s
+  set control attributes
+  -- Scrolled window where the TextView will be placed
+  scrwin <- scrolledWindowNew Nothing Nothing
+  scrolledWindowSetPolicy scrwin PolicyAutomatic PolicyAutomatic
+  containerAdd scrwin control
+  return gtkWidget { gwWidget   = scrwin
+                   , gwGetValue = val control
+                   , gwSetValue = (control=:)
+                   }
+
+-- |Создаёт новый объект TextView с заданным текстом
+newTextViewWithText s = do
+  textView <- textViewNew
+  textViewSetText textView s
+  return textView
+
+-- |Задаёт текст, отображаемый в TextView
+textViewSetText textView s = do
+  buffer <- textViewGetBuffer textView
+  textBufferSetText buffer s
+
+-- |Считывает текст, отображаемый в TextView
+textViewGetText textView = do
+  buffer <- textViewGetBuffer      textView
+  start  <- textBufferGetStartIter buffer
+  end    <- textBufferGetEndIter   buffer
+  textBufferGetText buffer start end False
 

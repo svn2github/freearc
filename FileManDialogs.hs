@@ -198,9 +198,8 @@ arcinfoDialog fm' arcnames arcdir files = do
 
     -- Выводим TextView c содержанием комментария к архиву только если комментарий непуст
     when (ftComment footer>"") $ do
-      comment <- newTextViewWithText (ftComment footer)
-      set comment [textViewEditable := False]
-      boxPackStart upbox comment     PackGrow  0
+      comment <- scrollableTextView (ftComment footer) [textViewEditable := False]
+      boxPackStart upbox (widget comment) PackGrow  0
 
     widgetShowAll upbox
     choice <- fmDialogRun fm' dialog "ArcInfoDialog"
