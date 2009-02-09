@@ -552,14 +552,14 @@ textViewGetText textView = do
 
 
 {-# NOINLINE eventKey #-}
--- |Возвращает полное имя клавиши, например Alt-Ctrl-M
+-- |Возвращает полное имя клавиши, например <Alt><Ctrl>M
 eventKey (Key {eventKeyName = name, eventModifier = modifier}) =
-  let mshow Shift   = "Shift"
-      mshow Control = "Ctrl"
-      mshow Alt     = "Alt"
-      mshow _       = "_"
+  let mshow Shift   = "<Shift>"
+      mshow Control = "<Ctrl>"
+      mshow Alt     = "<Alt>"
+      mshow _       = "<_>"
   --
-  in joinWith "-" ((sort$ map mshow modifier)++[mapHead toUpper name])
+  in concat ((sort$ map mshow modifier)++[mapHead toUpper name])
 
 {-# NOINLINE debugMsg #-}
 -- |Диалог с отладочным сообщением

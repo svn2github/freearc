@@ -65,6 +65,7 @@ uiDef =
   "    </menu>"++
   "    <menu name=\"Commands\" action=\"CommandsAction\">"++
   "      <menuitem name=\"Add\"      action=\"AddAction\" />"++
+  "      <menuitem name=\"Modify\"   action=\"ModifyAction\" />"++
   "      <menuitem name=\"Extract\"  action=\"ExtractAction\" />"++
   "      <menuitem name=\"Test\"     action=\"TestAction\" />"++
   "      <menuitem name=\"ArcInfo\"  action=\"ArcInfoAction\" />"++
@@ -76,8 +77,7 @@ uiDef =
   "      <menuitem name=\"Convert to SFX\"   action=\"ConvertToSFXAction\" />"++
   "      <menuitem name=\"Encrypt\"          action=\"EncryptAction\" />"++
   "      <menuitem name=\"Add RR\"           action=\"AddRRAction\" />"++
-  "      <menuitem name=\"Modify\"           action=\"ModifyAction\" />"++
-  "      <menuitem name=\"Join\"             action=\"JoinAction\" />"++
+  "      <menuitem name=\"Join archives\"    action=\"JoinArchivesAction\" />"++
   "    </menu>"++
   "    <menu name=\"Options\"  action=\"OptionsAction\">"++
   "      <menuitem name=\"Settings\" action=\"SettingsAction\" />"++
@@ -110,6 +110,9 @@ myGUI run args = do
   fileManagerMode =: True
   startGUI $ do
   io$ parseCmdline ["l", "a"]   -- инициализация: display, логфайл
+  -- Список ассоциаций клавиша->действие
+  onKeyActions <- newList
+  let onKey = curry (onKeyActions <<=)
   -- Создадим окно индикатора прогресса и загрузим настройки/локализацию
   (windowProgress, clearStats) <- runIndicators
   -- Main menu
@@ -122,32 +125,33 @@ myGUI run args = do
   -- Menus and toolbars
   let anew name comment icon accel = do
         [i18name,i18comment] <- i18ns [name,comment]
-        act <- actionNew (action name) i18name (Just i18comment) icon
-        actionGroupAddActionWithAccel standardGroup act (Just "")  -- accel
-        return act
-  addAct      <- anew "0030 Add"              "0040 Add files to archive(s)"        (Just stockMediaRecord)     "<Alt>A"
-  modifyAct   <- anew "0031 Modify"           "0041 Modify archive(s)"              (Just stockEdit)            "<Alt>M"
-  joinAct     <- anew "0032 Join"             "0042 Join archives together"         (Just stockCopy)            "<Alt>J"
-  arcinfoAct  <- anew "0086 ArcInfo"          "0087 Information about archive"      (Just stockInfo)            "<Alt>I"
-  deleteAct   <- anew "0033 Delete"           "0043 Delete files (from archive)"    (Just stockDelete)          "Delete"
-  testAct     <- anew "0034 Test"             "0044 Test files in archive(s)"       (Just stockSpellCheck)      "<Alt>T"
-  extractAct  <- anew "0035 Extract"          "0045 Extract files from archive(s)"  (Just stockMediaPlay)       "<Alt>E"
-  settingsAct <- anew "0064 Settings"         "0065 Edit program settings"          (Just stockPreferences)     "<Alt>S"
-  exitAct     <- anew "0036 Exit"             "0046 Quit application"               (Just stockQuit)            "<Alt>Q"
+        action <- actionNew (action name) i18name (Just i18comment) icon
+        actionGroupAddActionWithAccel standardGroup action (Just accel)
+        accel `onKey` actionActivate action
+        return action
+  addAct      <- anew "0030 Add"              "0040 Add files to archive(s)"            (Just stockMediaRecord)     "<Alt>A"
+  modifyAct   <- anew "0031 Modify"           "0041 Modify archive(s)"                  (Just stockEdit)            "<Alt>M"
+  joinAct     <- anew "0032 Join archives"    "0042 Join archives together"             (Just stockCopy)            "<Alt>J"
+  arcinfoAct  <- anew "0086 ArcInfo"          "0087 Information about archive"          (Just stockInfo)            "<Alt>I"
+  deleteAct   <- anew "0033 Delete"           "0043 Delete files (from archive)"        (Just stockDelete)          "Delete"
+  testAct     <- anew "0034 Test"             "0044 Test files in archive(s)"           (Just stockSpellCheck)      "<Alt>T"
+  extractAct  <- anew "0035 Extract"          "0045 Extract files from archive(s)"      (Just stockMediaPlay)       "<Alt>E"
+  settingsAct <- anew "0064 Settings"         "0065 Edit program settings"              (Just stockPreferences)     ""
+  exitAct     <- anew "0036 Exit"             "0046 Quit application"                   (Just stockQuit)            "<Alt>Q"
 
-  lockAct     <- anew "9999 Lock"             "9999 Lock archive from further changes"    (Nothing)                   ""
-  commentAct  <- anew "9999 Comment"          "9999 Add comment to archive"               (Nothing)                   ""
-  toSfxAct    <- anew "9999 Convert to SFX"   "9999 Convert archive to EXE"               (Nothing)                   ""
-  encryptAct  <- anew "9999 Encrypt"          "9999 Encrypt archive contents"             (Nothing)                   ""
-  addRrAct    <- anew "9999 Add RR"           "9999 Add Recovery record"                  (Nothing)                   ""
+  lockAct     <- anew "9999 Lock"             "9999 Lock archive from further changes"  (Nothing)                   "<Alt>L"
+  commentAct  <- anew "9999 Comment"          "9999 Add comment to archive"             (Nothing)                   "<Alt>C"
+  toSfxAct    <- anew "9999 Convert to SFX"   "9999 Convert archive to EXE"             (Nothing)                   "<Alt>S"
+  encryptAct  <- anew "9999 Encrypt"          "9999 Encrypt archive contents"           (Nothing)                   ""
+  addRrAct    <- anew "9999 Add RR"           "9999 Add Recovery record"                (Nothing)                   "<Alt>P"
 
-  selectAllAct<- anew "9999 Select all"       "9999 Select all files"               (Nothing)                   ""
-  selectAct   <- anew "0037 Select"           "0047 Select files"                   (Just stockAdd)             "+"
-  unselectAct <- anew "0038 Unselect"         "0048 Unselect files"                 (Just stockRemove)          "-"
-  invertSelAct<- anew "9999 Invert selection" "9999 Invert selection"               (Nothing)                   ""
-  refreshAct  <- anew "0039 Refresh"          "0049 Reread archive/directory"       (Just stockRefresh)         "F5"
+  selectAllAct<- anew "9999 Select all"       "9999 Select all files"                   (Nothing)                   "<Ctrl>A"
+  selectAct   <- anew "0037 Select"           "0047 Select files"                       (Just stockAdd)             "KP_Add"
+  unselectAct <- anew "0038 Unselect"         "0048 Unselect files"                     (Just stockRemove)          "KP_Subtract"
+  invertSelAct<- anew "9999 Invert selection" "9999 Invert selection"                   (Nothing)                   "KP_Multiply"
+  refreshAct  <- anew "0039 Refresh"          "0049 Reread archive/directory"           (Just stockRefresh)         "F5"
   ui <- uiManagerNew
-  mid <- uiManagerAddUiFromString ui uiDef
+  uiManagerAddUiFromString ui uiDef
   uiManagerInsertActionGroup ui standardGroup 0
 
   window <- windowNew
@@ -211,9 +215,6 @@ myGUI run args = do
     mainQuit
 
   -- Список ассоциаций клавиша->действие
-  onKeyActions <- newList
-  let onKey = curry (onKeyActions <<=)
-
   listView `onKeyPress` \event -> do
     x <- lookup (eventKey event) `fmap` listVal onKeyActions
     case x of
