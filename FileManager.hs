@@ -76,7 +76,7 @@ uiDef =
 --  "      <menuitem name=\"Comment\"          action=\"CommentAction\" />"++
   "      <menuitem name=\"Convert to SFX\"   action=\"ConvertToSFXAction\" />"++
   "      <menuitem name=\"Encrypt\"          action=\"EncryptAction\" />"++
-  "      <menuitem name=\"Add RR\"           action=\"AddRRAction\" />"++
+  "      <menuitem name=\"Protect\"          action=\"ProtectAction\" />"++
   "      <menuitem name=\"Join archives\"    action=\"JoinArchivesAction\" />"++
   "    </menu>"++
   "    <menu name=\"Options\"  action=\"OptionsAction\">"++
@@ -143,7 +143,7 @@ myGUI run args = do
   commentAct  <- anew "9999 Comment"          "9999 Add comment to archive"             (Nothing)                   "<Alt>C"
   toSfxAct    <- anew "9999 Convert to SFX"   "9999 Convert archive to EXE"             (Nothing)                   "<Alt>S"
   encryptAct  <- anew "9999 Encrypt"          "9999 Encrypt archive contents"           (Nothing)                   ""
-  addRrAct    <- anew "9999 Add RR"           "9999 Add Recovery record"                (Nothing)                   "<Alt>P"
+  addRrAct    <- anew "9999 Protect"          "9999 Add Recovery record to archive"     (Nothing)                   "<Alt>P"
 
   selectAllAct<- anew "9999 Select all"       "9999 Select all files"                   (Nothing)                   "<Ctrl>A"
   selectAct   <- anew "0037 Select"           "0047 Select files"                       (Just stockAdd)             "KP_Add"
