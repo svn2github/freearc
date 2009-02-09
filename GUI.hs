@@ -3,11 +3,11 @@
 ----------------------------------------------------------------------------------------------------
 module GUI where
 
-import Prelude hiding (catch)
+import Prelude    hiding (catch)
 import Control.Monad
 import Control.Concurrent
 import Control.Exception
-import Data.Char
+import Data.Char  hiding (Control)
 import Data.IORef
 import Data.List
 import Data.Maybe
@@ -550,6 +550,16 @@ textViewGetText textView = do
   end    <- textBufferGetEndIter   buffer
   textBufferGetText buffer start end False
 
+
+{-# NOINLINE eventKey #-}
+-- |Возвращает полное имя клавиши, например Alt-Ctrl-M
+eventKey (Key {eventKeyName = name, eventModifier = modifier}) =
+  let mshow Shift   = "Shift"
+      mshow Control = "Ctrl"
+      mshow Alt     = "Alt"
+      mshow _       = "_"
+  --
+  in joinWith "-" ((sort$ map mshow modifier)++[mapHead toUpper name])
 
 {-# NOINLINE debugMsg #-}
 -- |Диалог с отладочным сообщением

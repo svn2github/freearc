@@ -154,12 +154,6 @@ myGUI run args = do
   (Just menuBar) <- uiManagerGetWidget ui "/ui/menubar"
   (Just toolBar) <- uiManagerGetWidget ui "/ui/toolbar"
 
-  -- Список действий, выполняемых при закрытии окна файл-менеджера
-  onExit <- newList
-  window `onDestroy` do
-    sequence_ =<< listVal onExit
-    mainQuit
-
   (listUI, listView, listModel, listSelection, columns, onColumnTitleClicked) <- createFilePanel
   statusLabel  <- labelNew Nothing
   miscSetAlignment statusLabel 0 0.5
@@ -208,6 +202,23 @@ myGUI run args = do
   boxPackStart vBox hBox      PackNatural 0
 
   containerAdd window vBox
+
+
+  -- Список действий, выполняемых при закрытии окна файл-менеджера
+  onExit <- newList
+  window `onDestroy` do
+    sequence_ =<< listVal onExit
+    mainQuit
+
+  -- Список ассоциаций клавиша->действие
+  onKeyActions <- newList
+  let onKey = curry (onKeyActions <<=)
+
+  listView `onKeyPress` \event -> do
+    x <- lookup (eventKey event) `fmap` listVal onKeyActions
+    case x of
+      Just action -> do action; return True
+      Nothing     -> return False
 
 
 ----------------------------------------------------------------------------------------------------
@@ -311,14 +322,8 @@ myGUI run args = do
     rereadHistory curdir
 
   -- Переходим в род. каталог по кнопке Up или нажатию BackSpace в списке файлов
-  upButton `onClick` goParentDir
-  listView `onKeyPress` \(Key {eventKeyName = name}) -> do
-    let doit = (name=="BackSpace")
-    when doit goParentDir
-    return doit
-    --let doit = ((take 2$ reverse$ name)/="L_")
-    --when doit$ debugMsg name
-    --return doit
+  upButton  `onClick` goParentDir
+  "BackSpace" `onKey` goParentDir
 
   -- Сохранение выбранного архива/каталога в истории
   saveDirButton `onClick` do
