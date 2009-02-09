@@ -349,12 +349,25 @@ myGUI run args = do
   invertSelAct `onActionActivate` do
     fmInvertSelection fm'
 
-  -- Select/unselect files by mask
-  let sel method msg = do
+  -- Выполнить action над файлами, состоящими в соотношении makeRE с именем файла под курсором
+  let byFile action makeRE = do
+        filename <- fmGetCursor fm'
+        action fm' ((match$ makeRE filename).fdBasename)
+
+  -- Клавиши Shift/Ctrl/Alt-Plus/Minus с теми же операциями как в FAR
+  "<Shift>KP_Add"      `onKey` fmSelectAll   fm'
+  "<Shift>KP_Subtract" `onKey` fmUnselectAll fm'
+  "<Ctrl>KP_Add"       `onKey` byFile fmSelectFilenames   (("*" ++).takeExtension)
+  "<Ctrl>KP_Subtract"  `onKey` byFile fmUnselectFilenames (("*" ++).takeExtension)
+  "<Alt>KP_Add"        `onKey` byFile fmSelectFilenames   ((++".*").dropExtension)
+  "<Alt>KP_Subtract"   `onKey` byFile fmUnselectFilenames ((++".*").dropExtension)
+
+  -- Select/unselect files by user-supplied mask
+  let byDialog method msg = do
         whenJustM_ (fmInputString fm' "mask" msg (const$ return True) return) $ \mask -> do
           method fm' ((match mask).fdBasename)
-  selectAct   `onActionActivate`  sel fmSelectFilenames   "0008 Select files"
-  unselectAct `onActionActivate`  sel fmUnselectFilenames "0009 Unselect files"
+  selectAct   `onActionActivate`  byDialog fmSelectFilenames   "0008 Select files"
+  unselectAct `onActionActivate`  byDialog fmUnselectFilenames "0009 Unselect files"
 
   -- Обновить список файлов актуальными данными
   refreshAct `onActionActivate` do
