@@ -55,10 +55,11 @@ static bool check_for_data_table (int N, int &type, int &items, byte *p, byte *b
     int lensum=600, len=0, dir = value16s(t + N) - value16s(t) < 0? -1:1, lenminus=0;
     for (t = lastpoint = t + N; t + 2 <= bufend; t += N) {
         int diff = value16s(t) - value16s(t - N);
-        double itemlb = logb(1 + abs(value16s(t)));
-        double difflb = logb(1 + abs(diff));
-             if (dir<0 && diff<0 && difflb < itemlb/1.1)  len++;
-        else if (dir>0 && diff>0 && difflb < itemlb/1.1)  len++;
+        uint itemlb = int_logb(1 + abs(value16s(t)));
+        uint difflb = int_logb(1 + abs(diff));
+        itemlb -= itemlb > 10;
+             if (dir<0 && diff<0 && difflb < itemlb) len++;
+        else if (dir>0 && diff>0 && difflb < itemlb) len++;
         else if (diff==0) lenminus++;
         else {
             if (len>3)  lastpoint=t;

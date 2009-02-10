@@ -487,6 +487,16 @@ static inline char *replace (char *str, char* from, char to)
 // Возращает числовое значение символа, рассматриваемого как шестнадцатеричная цифра
 static inline int char2int(char c) {return isdigit(c)? c-'0' : tolower(c)-'a';}
 
+// Use a fast integer replacement for logb(), if possible
+static inline uint int_logb (uint x)
+{
+#if __GNUC__ == 3 && __GNUC_MINOR__ > 3 || __GNUC__ > 3
+    return __builtin_clz(x) ^ (8 * sizeof(x) - 1);
+#else
+    return logb(x);
+#endif
+}
+
 #ifdef FREEARC_WIN
 // Windows charset conversion routines
 WCHAR *utf8_to_utf16 (const char  *utf8,  WCHAR *utf16);  // Converts UTF-8 string to UTF-16

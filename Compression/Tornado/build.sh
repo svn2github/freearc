@@ -65,7 +65,7 @@ for P; do
 		esac
 	fi
 done
-PARM="$PARM$PARM_ENDIANNES $PARM_ADDR $PARM_TIME $CFLAGS -D_FILE_OFFSET_BITS=64 -DFREEARC_UNIX -lm -otor main.cpp"
+PARM="-pipe $PARM$PARM_ENDIANNES $PARM_ADDR $PARM_TIME $CFLAGS -D_FILE_OFFSET_BITS=64 -DFREEARC_UNIX -otor main.cpp"
 
 if [ "$PARM_PROF" = '-fprofile-use' ]; then
 	echo 'compiling binary for profiling...'
