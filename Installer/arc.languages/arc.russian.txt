@@ -196,7 +196,7 @@ Archive information dialog
 --
 0104 Directory blocks:=Блоков каталога:
 0092 Solid blocks:=Солид-блоков:
-0093 Avg. size:=Средний размер:
+0093 Avg. blocksize:=Средний размер солид-блока:
 --
 0099 Compression memory:=ОЗУ упаковки:
 0100 Decompression memory:=ОЗУ распаковки:
