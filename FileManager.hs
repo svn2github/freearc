@@ -73,7 +73,7 @@ uiDef =
   "    </menu>"++
   "    <menu name=\"Tools\"    action=\"ToolsAction\">"++
   "      <menuitem name=\"Lock\"             action=\"LockAction\" />"++
---  "      <menuitem name=\"Comment\"          action=\"CommentAction\" />"++
+  "      <menuitem name=\"Comment\"          action=\"CommentAction\" />"++
   "      <menuitem name=\"Convert to SFX\"   action=\"ConvertToSFXAction\" />"++
   "      <menuitem name=\"Encrypt\"          action=\"EncryptAction\" />"++
   "      <menuitem name=\"Protect\"          action=\"ProtectAction\" />"++
@@ -140,7 +140,7 @@ myGUI run args = do
   exitAct     <- anew "0036 Exit"             "0046 Quit application"                   (Just stockQuit)            "<Alt>Q"
 
   lockAct     <- anew "9999 Lock"             "9999 Lock archive from further changes"  (Nothing)                   "<Alt>L"
-  commentAct  <- anew "9999 Comment"          "9999 Add comment to archive"             (Nothing)                   "<Alt>C"
+  commentAct  <- anew "9999 Comment"          "9999 Edit archive comment"               (Nothing)                   "<Alt>C"
   toSfxAct    <- anew "9999 Convert to SFX"   "9999 Convert archive to EXE"             (Nothing)                   "<Alt>S"
   encryptAct  <- anew "9999 Encrypt"          "9999 Encrypt archive contents"           (Nothing)                   ""
   addRrAct    <- anew "9999 Protect"          "9999 Add Recovery record to archive"     (Nothing)                   "<Alt>P"
@@ -447,7 +447,7 @@ myGUI run args = do
   -- Информация об архиве
   arcinfoAct `onActionActivate` do
     archiveOperation fm' $
-      arcinfoDialog fm' exec
+      arcinfoDialog fm' exec NoMode
 
   -- Удаление файлов (из архива)
   deleteAct `onActionActivate` do
@@ -502,7 +502,8 @@ myGUI run args = do
 
   -- Изменить комментарий архива
   commentAct `onActionActivate` do
-    return ()  -- CommentMode
+    archiveOperation fm' $
+      arcinfoDialog fm' exec CommentMode
 
   -- Преобразовать архив в SFX
   toSfxAct `onActionActivate` do

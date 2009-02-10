@@ -303,8 +303,3 @@ fmUpdateMode =
            , "0197 Fresh existing files"
            , "0198 Synchronize archive with disk contents" ]
 
-
--- |Режим диалога сжатия
-data AddDialogMode = EncryptionMode | ProtectionMode | CommentMode | MakeSFXMode | NoMode  deriving Eq
-
-

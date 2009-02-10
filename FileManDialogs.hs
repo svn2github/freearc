@@ -129,7 +129,7 @@ extractDialog fm' exec cmd arcnames arcdir files = do
 ---- ƒиалог информации об архиве -------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------
 
-arcinfoDialog fm' exec arcnames arcdir files = do
+arcinfoDialog fm' exec mode arcnames arcdir files = do
   handle (\e -> fmErrorMsg fm' "0013 There are no archives selected!") $ do
   fm <- val fm'
   let arcname = head arcnames
@@ -205,6 +205,7 @@ arcinfoDialog fm' exec arcnames arcdir files = do
     boxPackStart vbox (widget comment) PackGrow 0
 
     widgetShowAll upbox
+    notebookSetCurrentPage nb 1    `on` mode==CommentMode
     choice <- fmDialogRun fm' dialog "ArcInfoDialog"
     windowPresent (fm_window fm)
     when (choice==ResponseOk) $ do
@@ -666,4 +667,7 @@ refreshCommand fm' = do
 -- |ќпредел€ет то, как имена каталогов подставл€ютс€ в команды
 addCmdFiles dirname =  [dirname++"/"]
 xCmdFiles   dirname =  [dirname++"/*"]
+
+-- |–ежимы диалогов
+data DialogMode = EncryptionMode | ProtectionMode | CommentMode | MakeSFXMode | NoMode  deriving Eq
 
