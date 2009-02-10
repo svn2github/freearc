@@ -414,7 +414,7 @@
       Tools: Wizard (если таковой будет), Protect, Comment, Convert to EXE, Encrypt, Add Recovery record, Repair
       Options: Configuration, Save settings, Load settings, View log, Clear log
       Help: собственно сам Help, Goto Homepage (и / или Check for update), About
-    -if you test an archiv, there is no message given back, there should be some kind of "archiv OK" at the end of the test
+    -if you test an archiv, there is no message given back, there should be some kind of "Archive OK" at the end of the test
     an additional progressbar for big files, like in Winrar
     DoubleClick->Run inside archive
     нет списка дисков на верхнем уровне, нет ".."

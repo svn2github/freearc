@@ -283,14 +283,22 @@ cmdType  _   = ADD_CMD
 aARCHIVE_VERSION = make4byte 0 0 4 9
 
 {-# NOINLINE aARC_HEADER #-}
+{-# NOINLINE aARC_VERSION #-}
+{-# NOINLINE aARC_AUTHOR #-}
+{-# NOINLINE aARC_EMAIL #-}
+{-# NOINLINE aARC_WEBSITE #-}
 -- |Краткое наименование программы, выводимое в начале работы
-aARC_HEADER = aARC_NAME++" 0.50 alpha ("++aARC_DATE++") "
-aARC_DATE   = "Feb 8 2009"
-aARC_NAME   = "FreeArc"
+aARC_HEADER  = aARC_NAME++" "++aARC_VERSION++" "
+aARC_VERSION = "0.50 alpha ("++aARC_DATE++")"
+aARC_DATE    = "Feb 8 2009"
+aARC_NAME    = "FreeArc"
+aARC_AUTHOR  = "Bulat Ziganshin"
+aARC_EMAIL   = "Bulat.Ziganshin@gmail.com"
+aARC_WEBSITE = "http://freearc.org"
 
 {-# NOINLINE aHELP #-}
 -- |HELP, выводимый при вызове программы без параметров
-aHELP = aARC_HEADER++" http://freearc.org  "++aARC_DATE++"\n"++
+aHELP = aARC_HEADER++" "++aARC_WEBSITE++"  "++aARC_DATE++"\n"++
         "Usage: Arc command [options...] archive [files... @listfiles...]\n" ++
         joinWith "\n  " ("Commands:":commandsList) ++ "\nOptions:\n" ++ optionsHelp
 

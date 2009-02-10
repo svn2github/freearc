@@ -83,6 +83,7 @@ uiDef =
   "      <menuitem name=\"Settings\" action=\"SettingsAction\" />"++
   "    </menu>"++
   "    <menu name=\"Help\"     action=\"HelpAction\">"++
+  "      <menuitem name=\"About\" action=\"AboutAction\" />"++
   "    </menu>"++
   "  </menubar>"++
   "  <toolbar>"++
@@ -144,6 +145,7 @@ myGUI run args = do
   toSfxAct    <- anew "9999 Convert to SFX"   "9999 Convert archive to EXE"             (Nothing)                   "<Alt>S"
   encryptAct  <- anew "9999 Encrypt"          "9999 Encrypt archive contents"           (Nothing)                   ""
   addRrAct    <- anew "9999 Protect"          "9999 Add Recovery record to archive"     (Nothing)                   "<Alt>P"
+  aboutAct    <- anew "9999 About"            "9999 About"                              (Nothing)                   ""
 
   selectAllAct<- anew "9999 Select all"       "9999 Select all files"                   (Nothing)                   "<Ctrl>A"
   selectAct   <- anew "0037 Select"           "0047 Select files"                       (Just stockAdd)             "KP_Add"
@@ -376,6 +378,19 @@ myGUI run args = do
   -- Окно настроек программы
   settingsAct `onActionActivate` do
     settingsDialog fm'
+
+  -- Диалог About
+  aboutAct `onActionActivate` do
+    bracketCtrlBreak aboutDialogNew widgetDestroy $ \dialog -> do
+    dialog `set` [aboutDialogName      := aARC_NAME
+                 ,aboutDialogVersion   := aARC_VERSION
+                 ,aboutDialogCopyright := "(c) "++aARC_EMAIL
+                 ,aboutDialogComments  := "High-performance archiver"
+                 ,aboutDialogWebsite   := aARC_WEBSITE
+--               ,aboutDialogAuthors   := [aARC_EMAIL]
+                 ]
+    dialogRun dialog
+    return ()
 
   -- При нажатии заголовка столбца в списке файлов - сортировать по этому столбцу
   --   (при повторном нажатии - сортировать в обратном порядке)

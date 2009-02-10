@@ -104,7 +104,7 @@ chdir fm' filename' = do
   fm <- val fm'
   let title | isFM_Archive fm  =  takeFileName (fm_arcname fm) </> fm_arcdir fm
             | otherwise        =  takeFileName (fm_dir fm)  |||  fm_dir fm
-  set (fm_window fm) [windowTitle := title++" - FreeArc"]
+  set (fm_window fm) [windowTitle := title++" - "++aARC_NAME]
 
 
 -- |Добавить action в список операций, выполняемых при переходе в другой каталог/архив
