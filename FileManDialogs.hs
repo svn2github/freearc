@@ -215,7 +215,8 @@ arcinfoDialog fm' exec arcnames arcdir files = do
                     "0239 %2 WARNINGS WHILE MODIFYING %1"]
         let cmd  = ["ch"
                    ,"--noarcext"
-                   ,"--archive-comment="++newComment
+                   ,newComment &&& ("--archive-comment="++newComment)
+                               ||| "-z-"
                    ,"--"
                    ,arcname]
         --
