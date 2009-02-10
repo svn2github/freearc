@@ -447,7 +447,7 @@ myGUI run args = do
   -- Информация об архиве
   arcinfoAct `onActionActivate` do
     archiveOperation fm' $
-      arcinfoDialog fm'
+      arcinfoDialog fm' exec
 
   -- Удаление файлов (из архива)
   deleteAct `onActionActivate` do

@@ -129,7 +129,7 @@ extractDialog fm' exec cmd arcnames arcdir files = do
 ---- Диалог информации об архиве -------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------
 
-arcinfoDialog fm' arcnames arcdir files = do
+arcinfoDialog fm' exec arcnames arcdir files = do
   handle (\e -> fmErrorMsg fm' "0013 There are no archives selected!") $ do
   fm <- val fm'
   let arcname = head arcnames
@@ -207,6 +207,19 @@ arcinfoDialog fm' arcnames arcdir files = do
     widgetShowAll upbox
     choice <- fmDialogRun fm' dialog "ArcInfoDialog"
     windowPresent (fm_window fm)
+    when (choice==ResponseOk) $ do
+      newComment <- val comment
+      when (newComment /= ftComment footer) $ do
+        let msgs = ["0237 Modifying %1",
+                    "0238 SUCCESFULLY MODIFIED %1",
+                    "0239 %2 WARNINGS WHILE MODIFYING %1"]
+        let cmd  = ["ch"
+                   ,"--noarcext"
+                   ,"--archive-comment="++newComment
+                   ,"--"
+                   ,arcname]
+        --
+        exec [(msgs, [takeFileName arcname], cmd)]
 
 
 ----------------------------------------------------------------------------------------------------
