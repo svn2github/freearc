@@ -233,7 +233,7 @@ static inline uint16 value16 (void *p)
   uint16 x;
 #if _ARCH_PPC
   uint16 *m = (uint16 *)p;
-  asm volatile ("lhbrx %0,0,%1" : "=r" (x) : "r" (m));
+  __asm__ ("lhbrx %0,%y1" : "=r" (x) : "Z" (*m));
 #else
   uint8 *m = (uint8 *)p;
   x = m[0] + (m[1] << 8);
@@ -246,7 +246,7 @@ static inline uint32 value24 (void *p)
   uint32 x;
 #if _ARCH_PPC
   uint32 *m = (uint32 *)p;
-  asm volatile ("lwbrx %0,0,%1" : "=r" (x) : "r" (m));
+  __asm__ ("lwbrx %0,%y1" : "=r" (x) : "Z" (*m));
   x &= 0xffffff;
 #else
   uint8 *m = (uint8 *)p;
@@ -260,7 +260,7 @@ static inline uint32 value32 (void *p)
   uint32 x;
 #if _ARCH_PPC
   uint32 *m = (uint32 *)p;
-  asm volatile ("lwbrx %0,0,%1" : "=r" (x) : "r" (m));
+  __asm__ ("lwbrx %0,%y1" : "=r" (x) : "Z" (*m));
 #else
   uint8 *m = (uint8 *)p;
   x = m[0] + (m[1] << 8) + (m[2] << 16) + (m[3] << 24);
@@ -271,9 +271,9 @@ static inline uint32 value32 (void *p)
 static inline uint64 value64 (void *p)
 {
   uint64 x;
-#if _ARCH_PPC64
+#if _ARCH_PPC && __PPU__
   uint64 *m = (uint64 *)p;
-  asm volatile ("ldbrx %0,0,%1" : "=r" (x) : "r" (m));
+  __asm__ ("ldbrx %0,%y1" : "=r" (x) : "Z" (*m));
 #else
   uint32 *m = (uint32 *)p;
   x = value32(m) + ((uint64)value32(m + 1) << 32);
@@ -285,7 +285,7 @@ static inline void setvalue16 (void *p, uint16 x)
 {
 #if _ARCH_PPC
   uint16 *m = (uint16 *)p;
-  asm volatile ("sthbrx %1,0,%2" : "=m" (m) : "r" (x), "r" (m));
+  __asm__ ("sthbrx %1,%y0" : "=Z" (*m) : "r" (x));
 #else
   uint8 *m = (uint8 *)p;
   m[0] = x;
@@ -305,7 +305,7 @@ static inline void setvalue32 (void *p, uint32 x)
 {
 #if _ARCH_PPC
   uint32 *m = (uint32 *)p;
-  asm volatile ("stwbrx %1,0,%2" : "=m" (m) : "r" (x), "r" (m));
+  __asm__ ("stwbrx %1,%y0" : "=Z" (*m) : "r" (x));
 #else
   uint8 *m = (uint8 *)p;
   m[0] = x;
@@ -317,9 +317,9 @@ static inline void setvalue32 (void *p, uint32 x)
 
 static inline void setvalue64 (void *p, uint64 x)
 {
-#if _ARCH_PPC64
+#if _ARCH_PPC && __PPU__
   uint64 *m = (uint64 *)p;
-  asm("stdbrx %1,0,%2" : "=m" (m) : "r" (x), "r" (m));
+  __asm__ ("stdbrx %1,%y0" : "=Z" (*m) : "r" (x));
 #else
   uint32 *m = (uint32 *)p;
   setvalue32(m, x);
