@@ -328,7 +328,7 @@ finishCRC = xor aINIT_CRC
 calcCRC addr len  =  updateCRC addr len aINIT_CRC  >>==  finishCRC
 
 -- |Fast C routine for CRC-32 calculation
-foreign import ccall unsafe "Environment.h UpdateCRC"
+foreign import ccall safe "Environment.h UpdateCRC"
    c_UpdateCRC :: Ptr CChar -> CUInt -> CRC -> IO CRC
 
 
