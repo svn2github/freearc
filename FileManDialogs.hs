@@ -141,12 +141,20 @@ arcinfoDialog fm' arcnames arcdir files = do
   -- Создадим диалог со стандартными кнопками OK/Cancel
   fmDialog fm' wintitle $ \(dialog,okButton) -> do
     upbox <- dialogGetUpper dialog
+    -- Поместим все контролы в симпатичный notebook и упростим процедуру создания новых страниц
+    nb <- notebookNew;  boxPackStart upbox nb PackGrow 0
+    let newPage name = do vbox <- vBoxNew False 0; notebookAppendPage nb vbox =<< i18n name
+                          return vbox
+------ Главная закладка ----------------------------------------------------------------------------
+    vbox <- newPage "0174 Main";  let pack n makeControl = do control <- makeControl
+                                                              boxPackStart vbox control PackNatural n
 
     let filelist    = map (cfFileInfo)$ arcDirectory archive
         footer      = arcFooter archive
         dataBlocks  = arcDataBlocks archive        -- список солид-блоков
         numOfBlocks = length dataBlocks
         empty       = "-"
+    ;   yes        <- i18n"0101 Yes"
 
     let origsize = sum$ map blOrigSize dataBlocks  -- суммарный объём файлов в распакованном виде
         compsize = sum$ map blCompSize dataBlocks  -- суммарный объём файлов в упакованном виде
@@ -166,40 +174,35 @@ arcinfoDialog fm' arcnames arcdir files = do
                            (maxMainDict, 0)          -> formatMem maxMainDict
                            (maxMainDict, maxAuxDict) -> showMem maxAuxDict++" + "++showMem maxMainDict
 
-    table <- twoColumnTable [("0173 Directories:",      show3$ ftDirs$ subfm_filetree fm_arc)
+    pack 10 $twoColumnTable [("0173 Directories:",      show3$ ftDirs$ subfm_filetree fm_arc)
                             ,("0088 Files:",            show3$ sum$ map blFiles dataBlocks)
                             ,("0089 Total bytes:",      show3$ origsize)
                             ,("0090 Compressed bytes:", show3$ compsize)
                             ,("0091 Ratio:",            ratio3 compsize origsize++"%")]
-    boxPackStart upbox table       PackNatural 10
 
-    table <- twoColumnTable [("0104 Directory blocks:", show3$ length$ filter ((DIR_BLOCK==).blType) (ftBlocks footer))
+    pack  0 $twoColumnTable [("0104 Directory blocks:", show3$ length$ filter ((DIR_BLOCK==).blType) (ftBlocks footer))
                             ,("0092 Solid blocks:",     show3$ numOfBlocks)
-                            ,("0093 Avg. size:",        formatMem$ origsize `div` i(max numOfBlocks 1))]
-    boxPackStart upbox table       PackNatural 0
+                            ,("0093 Avg. blocksize:",   formatMem$ origsize `div` i(max numOfBlocks 1))]
 
-    table <- twoColumnTable [("0099 Compression memory:",    formatMem$ maximum$ 0: map compressionGetShrinkedCompressionMem   compressors)
+    pack 10 $twoColumnTable [("0099 Compression memory:",    formatMem$ maximum$ 0: map compressionGetShrinkedCompressionMem   compressors)
                             ,("0100 Decompression memory:",  formatMem$ maximum$ 0: map compressionGetShrinkedDecompressionMem compressors)
                             ,("0105 Dictionary:",            dictionaries)]
-    boxPackStart upbox table       PackNatural 10
 
-    yesStr <- i18n"0101 Yes"
-    table <- twoColumnTable [("0094 Archive locked:",    ftLocked footer  .$bool empty yesStr)
+    pack  0 $twoColumnTable [("0094 Archive locked:",    ftLocked footer   &&& yes ||| empty)
+                            ,("0098 Archive comment:",   ftComment footer  &&& yes ||| empty)
                             ,("0095 Recovery info:",     ftRecovery footer ||| empty)
                             ,("0096 SFX size:",          ftSFXSize footer .$show3 .$changeTo [("0", empty)])
-                            ,("0156 Headers encrypted:", header_encryptors &&& yesStr ||| empty)]
-    boxPackStart upbox table       PackNatural 0
+                            ,("0156 Headers encrypted:", header_encryptors &&& yes ||| empty)]
 
     table <- twoColumnTable [("0097 Encryption algorithms:",  ciphers ||| empty)]
-    boxPackStart upbox table       PackNatural ((ciphers ||| ftComment footer) &&& 10)
+    boxPackStart vbox table PackNatural (ciphers &&& 10)
 
-    table <- twoColumnTable [("0098 Archive comment:",  (ftComment footer=="").$bool "" empty)]
-    boxPackStart upbox table       PackNatural 0
 
-    -- Выводим TextView c содержанием комментария к архиву только если комментарий непуст
-    when (ftComment footer>"") $ do
-      comment <- scrollableTextView (ftComment footer) [textViewEditable := False]
-      boxPackStart upbox (widget comment) PackGrow  0
+------ Закладка комментария архива -----------------------------------------------------------------
+    vbox <- newPage "0199 Comment"
+
+    comment <- scrollableTextView (ftComment footer) []
+    boxPackStart vbox (widget comment) PackGrow 0
 
     widgetShowAll upbox
     choice <- fmDialogRun fm' dialog "ArcInfoDialog"
@@ -215,7 +218,7 @@ settingsDialog fm' = do
   fmDialog fm' "0067 Settings" $ \(dialog,okButton) -> do
     upbox <- dialogGetUpper dialog
     -- Поместим все контролы в симпатичный notebook и упростим процедуру создания новых страниц
-    nb <- notebookNew;  boxPackStart upbox nb PackNatural 0
+    nb <- notebookNew;  boxPackStart upbox nb PackGrow 0
     let newPage name = do vbox <- vBoxNew False 0; notebookAppendPage nb vbox =<< i18n name
                           return vbox
 ------ Главная закладка ----------------------------------------------------------------------
@@ -334,18 +337,18 @@ settingsDialog fm' = do
     ;   vbox1 <- vBoxNew False 0
     ;   set langFrame [containerChild := vbox1, containerBorderWidth := 5]
     ;     langbox <- hBoxNew False 0
-    boxPackStart langbox (widget langLabel)          PackNatural 0
-    boxPackStart langbox         langComboBox        PackGrow    5
-    boxPackStart langbox (widget editLangButton)     PackNatural 5
-    boxPackStart langbox (widget convertLangButton)  PackNatural 5
-    boxPackStart vbox1 langbox    PackNatural 5
-    boxPackStart vbox1 langTable  PackNatural 5
-    boxPackStart logfileBox (widget editLogfileButton)  PackNatural 5
-    boxPackStart vbox         aboutLabel       PackNatural 5
-    boxPackStart vbox         langFrame        PackNatural 5
-    boxPackStart vbox         logfileBox       PackNatural 5
-    boxPackStart vbox (widget registerButton)  PackNatural 5           `on` isWindows
-    boxPackStart vbox (widget notes)           PackNatural 5
+    boxPackStart langbox    (widget  langLabel)          PackNatural 0
+    boxPackStart langbox             langComboBox        PackGrow    5
+    boxPackStart langbox    (widget  editLangButton)     PackNatural 5
+    boxPackStart langbox    (widget  convertLangButton)  PackNatural 5
+    boxPackStart vbox1               langbox             PackNatural 5
+    boxPackStart vbox1               langTable           PackNatural 5
+    boxPackStart logfileBox (widget  editLogfileButton)  PackNatural 5
+    boxPackStart vbox                aboutLabel          PackNatural 5
+    boxPackStart vbox                langFrame           PackNatural 5
+    boxPackStart vbox                logfileBox          PackNatural 5
+    boxPackStart vbox       (widget  registerButton)     PackNatural 5   `on` isWindows
+    boxPackStart vbox       (widget  notes)              PackNatural 5
 
     widgetShowAll upbox
     choice <- fmDialogRun fm' dialog "SettingsDialog"
