@@ -62,8 +62,8 @@ struct OutputByteStream
     // Writes 8-64 bits to the buffer
     void put8   (uint c)      {*         output = c; advance(1);}
     void put16  (uint c)      {setvalue16(output, c); advance(2);}
-    void put24  (uint c)      {setvalue32(output, c); advance(3);}
-    void put32  (uint c)      {setvalue32(output, c); advance(4);}
+    void put24  (uint32 c)    {setvalue32(output, c); advance(3);}
+    void put32  (uint32 c)    {setvalue32(output, c); advance(4);}
     void put64  (uint64 c)    {setvalue64(output, c); advance(8);}
     // Writes len bytes pointed by ptr
     void putbuf (void *ptr, uint len);
@@ -147,8 +147,8 @@ struct InputByteStream
     uint   getc   ()  {fill(); return *input++;}
     uint   get8   ()  {fill(); return *input++;}
     uint   get16  ()  {fill(); uint   n = value16(input); input+=2; return n;}
-    uint   get24  ()  {fill(); uint   n = value24(input); input+=3; return n;}
-    uint   get32  ()  {fill(); uint   n = value32(input); input+=4; return n;}
+    uint32 get24  ()  {fill(); uint32 n = value24(input); input+=3; return n;}
+    uint32 get32  ()  {fill(); uint32 n = value32(input); input+=4; return n;}
     uint64 get64  ()  {fill(); uint64 n = value64(input); input+=8; return n;}
 };
 
@@ -158,7 +158,11 @@ struct InputByteStream
 // It's an output bit stream
 struct OutputBitStream : OutputByteStream
 {
-    uint32 bitbuf;   // Bit buffer - written to outstream when filled, 64-bit computers may be faster with uint64 and put64()
+#ifdef FREEARC_64BIT
+    uint64 bitbuf;   // Bit buffer - written to outstream when filled
+#else
+    uint32 bitbuf;
+#endif
     int    bitcount; // Count of lower bits already filled in current bitbuf
 
     // Init and finish bit stream
@@ -168,11 +172,18 @@ struct OutputBitStream : OutputByteStream
     // Write n lower bits of x
     void putbits (int n, uint32 x)
     {
-        //Tracevv((stderr,"\nPut %2d bits of %04x",n,x));
-        bitbuf |= x << bitcount;
+        bitbuf |=
+#ifdef FREEARC_64BIT
+                  (uint64)
+#endif
+                          x << bitcount;
         bitcount += n;
         if (bitcount >= CHAR_BIT * sizeof(bitbuf)) {
+#ifdef FREEARC_64BIT
+            put64 (bitbuf);
+#else
             put32 (bitbuf);
+#endif
             bitcount -= CHAR_BIT * sizeof(bitbuf);
             bitbuf = x >> (n-bitcount);
         }
@@ -198,6 +209,11 @@ OutputBitStream::OutputBitStream (CALLBACK_FUNC *callback, void *auxdata, UINT c
 
 void OutputBitStream::finish()
 {
+#ifdef FREEARC_64BIT
+    if (bitcount > 32)
+        put64 (bitbuf);
+    else
+#endif
     put32 (bitbuf);
     OutputByteStream::finish();
 }
