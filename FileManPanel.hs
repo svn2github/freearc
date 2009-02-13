@@ -528,7 +528,12 @@ createFilePanel = do
     ,addColumn view model onColumnTitleClicked (n!!2) (s!!2) (formatDateTime.fdTime)                                      []
     ,addColumn view model onColumnTitleClicked ("")   ("")   (const "")                                                   [] ]
   -- Включаем поиск по первой колонке
-  -- treeViewSetSearchColumn treeViewSetSearchEqualFunc treeViewSetEnableSearch
+  New.treeViewSetEnableSearch view True
+  New.treeViewSetSearchColumn view 0
+  New.treeViewSetSearchEqualFunc view $ \col str iter -> do
+    (i:_) <- New.treeModelGetPath model iter
+    row <- New.listStoreGetValue model i
+    return (strLower str `isPrefixOf` strLower (fmname row))
   -- Enable multiple selection
   selection <- New.treeViewGetSelection view
   set selection [New.treeSelectionMode := SelectionMultiple]
