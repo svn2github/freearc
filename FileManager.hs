@@ -53,40 +53,40 @@ uiDef =
   "<ui>"++
   "  <menubar>"++
   "    <menu name=\"File\"     action=\"FileAction\">"++
-  "      <menuitem name=\"Open\"     action=\"OpenAction\" />"++
+  "      <menuitem name=\"OpenArchive\"        action=\"OpenArchiveAction\" />"++
   "      <separator/>"++
-  "      <menuitem name=\"Select all\"   action=\"SelectAllAction\" />"++
-  "      <menuitem name=\"Select\"   action=\"SelectAction\" />"++
-  "      <menuitem name=\"Unselect\" action=\"UnselectAction\" />"++
+  "      <menuitem name=\"Select all\"         action=\"SelectAllAction\" />"++
+  "      <menuitem name=\"Select\"             action=\"SelectAction\" />"++
+  "      <menuitem name=\"Unselect\"           action=\"UnselectAction\" />"++
   "      <menuitem name=\"Invert selection\"   action=\"InvertSelectionAction\" />"++
-  "      <menuitem name=\"Refresh\"  action=\"RefreshAction\" />"++
+  "      <menuitem name=\"Refresh\"            action=\"RefreshAction\" />"++
   "      <separator/>"++
   "      <placeholder name=\"FileMenuAdditions\" />"++
-  "      <menuitem name=\"Exit\"     action=\"ExitAction\"/>"++
+  "      <menuitem name=\"Exit\"               action=\"ExitAction\"/>"++
   "    </menu>"++
   "    <menu name=\"Commands\" action=\"CommandsAction\">"++
-  "      <menuitem name=\"Add\"      action=\"AddAction\" />"++
-  "      <menuitem name=\"Modify\"   action=\"ModifyAction\" />"++
-  "      <menuitem name=\"Extract\"  action=\"ExtractAction\" />"++
-  "      <menuitem name=\"Test\"     action=\"TestAction\" />"++
-  "      <menuitem name=\"ArcInfo\"  action=\"ArcInfoAction\" />"++
-  "      <menuitem name=\"Delete\"   action=\"DeleteAction\" />"++
+  "      <menuitem name=\"Add\"                action=\"AddAction\" />"++
+  "      <menuitem name=\"Modify\"             action=\"ModifyAction\" />"++
+  "      <menuitem name=\"Extract\"            action=\"ExtractAction\" />"++
+  "      <menuitem name=\"Test\"               action=\"TestAction\" />"++
+  "      <menuitem name=\"ArcInfo\"            action=\"ArcInfoAction\" />"++
+  "      <menuitem name=\"Delete\"             action=\"DeleteAction\" />"++
   "    </menu>"++
   "    <menu name=\"Tools\"    action=\"ToolsAction\">"++
-  "      <menuitem name=\"Lock\"             action=\"LockAction\" />"++
-  "      <menuitem name=\"Comment\"          action=\"CommentAction\" />"++
-  "      <menuitem name=\"Convert to SFX\"   action=\"ConvertToSFXAction\" />"++
-  "      <menuitem name=\"Encrypt\"          action=\"EncryptAction\" />"++
-  "      <menuitem name=\"Protect\"          action=\"ProtectAction\" />"++
-  "      <menuitem name=\"Join archives\"    action=\"JoinArchivesAction\" />"++
+  "      <menuitem name=\"Lock\"               action=\"LockAction\" />"++
+  "      <menuitem name=\"Comment\"            action=\"CommentAction\" />"++
+  "      <menuitem name=\"Convert to SFX\"     action=\"ConvertToSFXAction\" />"++
+  "      <menuitem name=\"Encrypt\"            action=\"EncryptAction\" />"++
+  "      <menuitem name=\"Protect\"            action=\"ProtectAction\" />"++
+  "      <menuitem name=\"Join archives\"      action=\"JoinArchivesAction\" />"++
   "    </menu>"++
   "    <menu name=\"Options\"  action=\"OptionsAction\">"++
-  "      <menuitem name=\"Settings\" action=\"SettingsAction\" />"++
-  "      <menuitem name=\"ViewLog\"  action=\"ViewLogAction\" />"++
-  "      <menuitem name=\"ClearLog\" action=\"ClearLogAction\" />"++
+  "      <menuitem name=\"Settings\"           action=\"SettingsAction\" />"++
+  "      <menuitem name=\"ViewLog\"            action=\"ViewLogAction\" />"++
+  "      <menuitem name=\"ClearLog\"           action=\"ClearLogAction\" />"++
   "    </menu>"++
   "    <menu name=\"Help\"     action=\"HelpAction\">"++
-  "      <menuitem name=\"About\" action=\"AboutAction\" />"++
+  "      <menuitem name=\"About\"              action=\"AboutAction\" />"++
   "    </menu>"++
   "  </menubar>"++
   "  <toolbar>"++
@@ -151,7 +151,7 @@ myGUI run args = do
   aboutAct    <- anew "9999 About"            "9999 About"                              (Nothing)                   ""
   viewLogAct  <- anew "9999 View log"         "9999 Open logfile"                       (Nothing)                   ""
   clearLogAct <- anew "9999 Clear log"        "9999 Delete logfile"                     (Nothing)                   ""
-  openAct     <- anew "9999 Open"             "9999 Open archive"                       (Nothing)                   "<Alt>O"
+  openAct     <- anew "9999 Open archive"     "9999 Open archive"                       (Nothing)                   "<Alt>O"
 
   selectAllAct<- anew "9999 Select all"       "9999 Select all files"                   (Nothing)                   "<Ctrl>A"
   selectAct   <- anew "0037 Select"           "0047 Select files"                       (Just stockAdd)             "KP_Add"
@@ -555,6 +555,14 @@ myGUI run args = do
       let msg = "9999 Clear logfile %1?"
       whenM (askOkCancel window (format msg logfile)) $ do
         filePutBinary logfile ""
+
+  -- Открыть архив
+  openAct `onActionActivate` do
+    fm <- val fm'
+    let curfile  =  if isFM_Archive fm  then fm_arcname fm  else fm_dir fm </> "."
+    chooseFile window FileChooserActionOpen "9999 Open archive" ["9999 FreeArc archives (*.arc)"] (return curfile) $ \filename -> do
+      chdir fm' filename  `catch`  (\e -> fmErrorMsg fm' "9999 It's not an archive!")
+
 
   -- Инициализируем состояние файл-менеджера каталогом/архивом, заданным в командной строке
   chdir fm' (head (args++["."]))

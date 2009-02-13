@@ -439,25 +439,43 @@ fmCheckedEntryWithHistory fm' tag title = do
 {-# NOINLINE fmFileBox #-}
 -- |Ввод имени файла/каталога с историей под тэгом tag и поиском по диску через вызываемый диалог
 fmFileBox fm' dialog tag dialogType makeControl dialogTitle filter_p process = do
-  hbox    <- hBoxNew False 0
-  control <- makeControl
-  dir'    <- fmEntryWithHistory fm' tag filter_p process
-  set (entry dir') [entryActivatesDefault := True]
+  hbox     <- hBoxNew False 0
+  control  <- makeControl
+  filename <- fmEntryWithHistory fm' tag filter_p process
+  set (entry filename) [entryActivatesDefault := True]
   chooserButton <- button "0999 ..."
   chooserButton `onClick` do
-    title <- i18n dialogTitle
-    bracketCtrlBreak (fileChooserDialogNew (Just title) (Just$ castToWindow dialog) dialogType [("Select",ResponseOk), ("Cancel",ResponseCancel)]) widgetDestroy $ \chooserDialog -> do
-      fileChooserSetFilename    chooserDialog =<< (val dir' >>== unicode2utf8)
-      fileChooserSetCurrentName chooserDialog =<< (val dir' >>== takeFileName)
-      fileChooserSetFilename    chooserDialog =<< (val dir' >>== unicode2utf8)
-      choice <- dialogRun chooserDialog
-      when (choice==ResponseOk) $ do
-        whenJustM_ (fileChooserGetFilename chooserDialog) $ \dir -> do
-          dir' =: utf8_to_unicode dir
+    chooseFile dialog dialogType dialogTitle [] (val filename) (filename =:)
   boxPackStart  hbox  (widget control)        PackNatural 0
-  boxPackStart  hbox  (widget dir')           PackGrow    5
+  boxPackStart  hbox  (widget filename)       PackGrow    5
   boxPackStart  hbox  (widget chooserButton)  PackNatural 0
-  return (hbox, control, dir')
+  return (hbox, control, filename)
+
+{-# NOINLINE chooseFile #-}
+-- |Выбор файла через диалог
+chooseFile parentWindow dialogType dialogTitle filters getFilename setFilename = do
+  title <- i18n dialogTitle
+  bracketCtrlBreak (fileChooserDialogNew (Just title) (Just$ castToWindow parentWindow) dialogType [("Select",ResponseOk), ("Cancel",ResponseCancel)]) widgetDestroy $ \chooserDialog -> do
+    filename <- getFilename
+    fileChooserSetFilename    chooserDialog (unicode2utf8 filename)
+    fileChooserSetCurrentName chooserDialog (takeFileName filename)
+    fileChooserSetFilename    chooserDialog (unicode2utf8 filename)
+    addFilters chooserDialog filters
+    choice <- dialogRun chooserDialog
+    when (choice==ResponseOk) $ do
+      whenJustM_ (fileChooserGetFilename chooserDialog) $ \filename -> do
+        setFilename (utf8_to_unicode filename)
+
+{-# NOINLINE addFilters #-}
+-- |Установить фильтры для выбора файла
+addFilters chooserDialog x = do
+  for (x &&& x++["9999 All files (*)"]) $ \element -> do
+    str <- i18n element
+    let patterns = last (words str) .$drop 1 .$dropEnd 1
+    filt <- fileFilterNew
+    fileFilterSetName filt str
+    for (patterns.$ split ';')  (fileFilterAddPattern filt)
+    fileChooserAddFilter chooserDialog filt
 
 
 {-# NOINLINE fmInputString #-}
