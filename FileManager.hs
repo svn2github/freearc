@@ -53,6 +53,7 @@ uiDef =
   "<ui>"++
   "  <menubar>"++
   "    <menu name=\"File\"     action=\"FileAction\">"++
+  "      <menuitem name=\"Open\"     action=\"OpenAction\" />"++
   "      <separator/>"++
   "      <menuitem name=\"Select all\"   action=\"SelectAllAction\" />"++
   "      <menuitem name=\"Select\"   action=\"SelectAction\" />"++
@@ -81,6 +82,8 @@ uiDef =
   "    </menu>"++
   "    <menu name=\"Options\"  action=\"OptionsAction\">"++
   "      <menuitem name=\"Settings\" action=\"SettingsAction\" />"++
+  "      <menuitem name=\"ViewLog\"  action=\"ViewLogAction\" />"++
+  "      <menuitem name=\"ClearLog\" action=\"ClearLogAction\" />"++
   "    </menu>"++
   "    <menu name=\"Help\"     action=\"HelpAction\">"++
   "      <menuitem name=\"About\" action=\"AboutAction\" />"++
@@ -146,6 +149,9 @@ myGUI run args = do
   encryptAct  <- anew "9999 Encrypt"          "9999 Encrypt archive contents"           (Nothing)                   ""
   addRrAct    <- anew "9999 Protect"          "9999 Add Recovery record to archive"     (Nothing)                   "<Alt>P"
   aboutAct    <- anew "9999 About"            "9999 About"                              (Nothing)                   ""
+  viewLogAct  <- anew "9999 View log"         "9999 Open logfile"                       (Nothing)                   ""
+  clearLogAct <- anew "9999 Clear log"        "9999 Delete logfile"                     (Nothing)                   ""
+  openAct     <- anew "9999 Open"             "9999 Open archive"                       (Nothing)                   "<Alt>O"
 
   selectAllAct<- anew "9999 Select all"       "9999 Select all files"                   (Nothing)                   "<Ctrl>A"
   selectAct   <- anew "0037 Select"           "0047 Select files"                       (Just stockAdd)             "KP_Add"
@@ -532,6 +538,23 @@ myGUI run args = do
   addRrAct `onActionActivate` do
     addDialog fm' exec "ch" ProtectionMode
 
+  -- Действия с логфайлом
+  let withLogfile action = do
+        logfileHist <- fmGetHistory fm' "logfile"
+        case logfileHist of
+          logfile:_ | logfile>""  ->  action logfile
+          _                       ->  fmErrorMsg fm' "9999 No log file!"
+
+  -- Просмотреть логфайл
+  viewLogAct `onActionActivate` do
+    withLogfile runViewCommand
+
+  -- Удалить логфайл
+  clearLogAct `onActionActivate` do
+    withLogfile $ \logfile -> do
+      let msg = "9999 Clear logfile %1?"
+      whenM (askOkCancel window (format msg logfile)) $ do
+        filePutBinary logfile ""
 
   -- Инициализируем состояние файл-менеджера каталогом/архивом, заданным в командной строке
   chdir fm' (head (args++["."]))

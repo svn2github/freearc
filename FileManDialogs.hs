@@ -250,7 +250,7 @@ settingsDialog fm' = do
                                           "0167 Select logfile"
                                           (const$ return True)
                                           (\s -> s &&& fmCanonicalizeDiskPath fm' s)
-    ; editLogfileButton <- button "0069 Edit"
+    ; viewLogfileButton <- button "9999 View"
     -- Прочее
     registerButton      <- button "0172 Associate FreeArc with .arc files"
     notes               <- label . joinWith "\n" =<<
@@ -320,11 +320,8 @@ settingsDialog fm' = do
         showLang (i18n_general (return localeInfo) .>>== fst)
 
     -- Редактирование текущего файла локализации/логфайла
-    let -- edit filename | isWindows && takeExtension filename == "txt"  =  todo: direct shell open command
-        edit filename  = run (iif isWindows "notepad" "gedit") [filename]
-        run cmd params = forkIO (rawSystem cmd params >> return ()) >> return ()
-    editLangButton    `onClick` (edit =<< getCurrentLangFile)
-    editLogfileButton `onClick` (edit =<< val logfile)
+    editLangButton    `onClick` (runEditCommand =<< getCurrentLangFile)
+    viewLogfileButton `onClick` (runViewCommand =<< val logfile)
 
 #if defined(FREEARC_WIN)
     registerButton `onClick` do
@@ -358,7 +355,7 @@ settingsDialog fm' = do
     boxPackStart langbox    (widget  convertLangButton)  PackNatural 5
     boxPackStart vbox1               langbox             PackNatural 5
     boxPackStart vbox1               langTable           PackNatural 5
-    boxPackStart logfileBox (widget  editLogfileButton)  PackNatural 5
+    boxPackStart logfileBox (widget  viewLogfileButton)  PackNatural 5
     boxPackStart vbox                aboutLabel          PackNatural 5
     boxPackStart vbox                langFrame           PackNatural 5
     boxPackStart vbox                logfileBox          PackNatural 5
@@ -663,6 +660,14 @@ refreshCommand fm' = do
     fmSetCursor fm' curfile
   fmUnselectFilenames fm' (const True)
   fmSelectFilenames   fm' ((`elem` selected).fmname)
+
+-- |Просмотреть файл
+runViewCommand           = runEditCommand
+
+-- |Редактировать файл
+runEditCommand filename  = run (iif isWindows "notepad" "gedit") [filename]
+  where run cmd params = forkIO (rawSystem cmd params >> return ()) >> return ()
+  -- edit filename | isWindows && takeExtension filename == "txt"  =  todo: direct shell open command
 
 -- |Определяет то, как имена каталогов подставляются в команды
 addCmdFiles dirname =  [dirname++"/"]
