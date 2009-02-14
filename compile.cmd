@@ -6,7 +6,11 @@
 @md  Tests      >nul 2>nul
 @set defines=-DFREEARC_PACKED_STRINGS -DFREEARC_WIN -DFREEARC_INTEL_BYTE_ORDER -optc-DFREEARC_WIN -optc-DFREEARC_INTEL_BYTE_ORDER -optc-DWIN32 -optc-D_WINDOWS -optc-D_UNICODE -optc-DUNICODE
 @rem ******** -DFREEARC_UNIX -DFREEARC_MOTOROLA_BYTE_ORDER -DFREEARC_ONLY_ALIGNED_ACCESS *******
+@if .%1 == .-DFREEARC_GUI  set c_defines=-DFREEARC_GUI
+@if .%2 == .-DFREEARC_GUI  set c_defines=-DFREEARC_GUI
+@if .%3 == .-DFREEARC_GUI  set c_defines=-DFREEARC_GUI
 @copy win32-common.mak common.mak
+@echo DEFINES1 = %c_defines%   >>common.mak
 @cd Compression
 @call compile
 @cd ..

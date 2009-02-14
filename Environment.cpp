@@ -214,7 +214,7 @@ void RunFile (const CFILENAME filename, const CFILENAME curdir, int wait_finish)
 
 
 
-#ifndef UNARC
+#ifdef FREEARC_GUI
 
 #include <shlobj.h>
 #include <commdlg.h>
