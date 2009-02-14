@@ -115,7 +115,7 @@ isWindows = False
 -- > pathSeparator ==  '/'
 -- > isPathSeparator pathSeparator
 pathSeparator :: Char
-pathSeparator = '/'
+pathSeparator = if isWindows then '\\' else '/'
 
 -- | The list of all possible separators.
 --
