@@ -323,7 +323,7 @@ myGUI run args = do
   listView `New.onRowActivated` \path column -> do
     select =<< fmFilenameAt fm' path
 
-  -- При single-click на свободном пространстве справа снимаем отметку со всех файлов,
+  -- При single-click на свободном пространстве справа/снизу снимаем отметку со всех файлов,
   -- при double-click там же выбираем все файлы
   listView `onButtonPress` \e -> do
     path <- New.treeViewGetPathAtPos listView (round$ eventX e, round$ eventY e)

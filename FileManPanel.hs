@@ -166,7 +166,7 @@ fmFindCursor fm' filename = do
 fmSetFilelist fm' files = do
   fm <- val fm'
   fm' =: fm {fm_filelist = files}
-  changeList (fm_model fm) files
+  changeList (fm_model fm) (fm_selection fm) files
 
 -- |Вывести сообщение об ошибке
 fmErrorMsg fm' msg = do
@@ -538,7 +538,8 @@ createFilePanel = do
   return (scrwin, view, model, selection, columns, onColumnTitleClicked)
 
 -- |Задать новый список отображаемых файлов
-changeList model filelist = do
+changeList model selection filelist = do
+  New.treeSelectionUnselectAll selection
   -- Удалить старые данные из модели и заполнить её новыми
   New.listStoreClear model
   for filelist (New.listStoreAppend model)
