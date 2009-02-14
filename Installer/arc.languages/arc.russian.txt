@@ -18,6 +18,13 @@ Language name in english and mother tongue
 0000 Language=Russian (Русский)
 0159 Copyright=Bulat Ziganshin
 
+URLs and helpfiles
+0254 Homepage=/ru
+0255 News page=/ru/News.aspx
+0256 Helpfile=FreeArc-GUI-Rus.htm
+0257 Command-line help=FreeArc040-rus.htm
+
+
 === Menu ========================================================================
 Main menu
 0050 File=Файл

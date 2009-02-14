@@ -193,6 +193,13 @@ on = flip (&&&)
 -- |”добный способ записать сначала то, что должно об€зательно быть выполнено в конце :)
 doFinally = flip finally
 
+-- |¬ыполнить onError при ошибке в acquire, и action в противном случае
+handleErrors onError acquire action = do
+  x <- try acquire
+  case x of
+    Left  err -> onError
+    Right res -> action res
+
 -- |«аписать в начале то, что нужно выполнить в конце
 atExit a b = (b>>a)
 

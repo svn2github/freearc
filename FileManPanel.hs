@@ -171,7 +171,12 @@ fmSetFilelist fm' files = do
 -- |Вывести сообщение об ошибке
 fmErrorMsg fm' msg = do
   fm <- val fm'
-  msgBox (fm_window fm) MessageError =<< i18n msg
+  msgBox (fm_window fm) MessageError msg
+
+-- |Вывести информационное сообщение
+fmInfoMsg fm' msg = do
+  fm <- val fm'
+  msgBox (fm_window fm) MessageInfo msg
 
 
 ----------------------------------------------------------------------------------------------------

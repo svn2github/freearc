@@ -327,6 +327,9 @@ finishCRC = xor aINIT_CRC
 -- |Посчитать CRC данных в буфере
 calcCRC addr len  =  updateCRC addr len aINIT_CRC  >>==  finishCRC
 
+-- |Посчитать CRC не-unicode строки (символы с кодами 0..255)
+crc32 str  =  unsafePerformIO$ withCStringLen str (uncurry calcCRC)
+
 -- |Fast C routine for CRC-32 calculation
 foreign import ccall safe "Environment.h UpdateCRC"
    c_UpdateCRC :: Ptr CChar -> CUInt -> CRC -> IO CRC

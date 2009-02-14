@@ -12,6 +12,7 @@ import Data.Char
 import Data.IORef
 import Data.List
 import Data.Maybe
+import Numeric hiding (readInt)
 import System.IO.Unsafe
 import System.Cmd
 import System.Process
@@ -86,6 +87,10 @@ uiDef =
   "      <menuitem name=\"ClearLog\"           action=\"ClearLogAction\" />"++
   "    </menu>"++
   "    <menu name=\"Help\"     action=\"HelpAction\">"++
+  "      <menuitem name=\"MainHelp\"           action=\"MainHelpAction\" />"++
+  "      <menuitem name=\"CmdlineHelp\"        action=\"CmdlineHelpAction\" />"++
+  "      <menuitem name=\"GotoHomepage\"       action=\"GotoHomepageAction\" />"++
+  "      <menuitem name=\"CheckForUpdate\"     action=\"CheckForUpdateAction\" />"++
   "      <menuitem name=\"About\"              action=\"AboutAction\" />"++
   "    </menu>"++
   "  </menubar>"++
@@ -148,10 +153,15 @@ myGUI run args = do
   toSfxAct    <- anew "9999 Convert to SFX"   "9999 Convert archive to EXE"             (Nothing)                   "<Alt>S"
   encryptAct  <- anew "9999 Encrypt"          "9999 Encrypt archive contents"           (Nothing)                   ""
   addRrAct    <- anew "9999 Protect"          "9999 Add Recovery record to archive"     (Nothing)                   "<Alt>P"
-  aboutAct    <- anew "9999 About"            "9999 About"                              (Nothing)                   ""
   viewLogAct  <- anew "9999 View log"         "9999 Open logfile"                       (Nothing)                   ""
   clearLogAct <- anew "9999 Clear log"        "9999 Delete logfile"                     (Nothing)                   ""
   openAct     <- anew "9999 Open archive"     "9999 Open archive"                       (Nothing)                   "<Alt>O"
+
+  helpAct     <- anew "9999 Main help"        "9999 Help on using FreeArc"              (Nothing)                   "F1"
+  helpCmdAct  <- anew "9999 Cmdline help"     "9999 Help on FreeArc command line"       (Nothing)                   ""
+  homepageAct <- anew "9999 Goto Homepage"    "9999 Open program site"                  (Nothing)                   ""
+  whatsnewAct <- anew "9999 Check for update" "9999 Check for new program versions"     (Nothing)                   ""
+  aboutAct    <- anew "9999 About"            "9999 About"                              (Nothing)                   ""
 
   selectAllAct<- anew "9999 Select all"       "9999 Select all files"                   (Nothing)                   "<Ctrl>A"
   selectAct   <- anew "0037 Select"           "0047 Select files"                       (Just stockAdd)             "KP_Add"
@@ -385,18 +395,66 @@ myGUI run args = do
   settingsAct `onActionActivate` do
     settingsDialog fm'
 
+
+  -- Открыть URL
+  let openWebsite url  =  runFile url "." False
+
+  -- Открыть файл помощи
+  let openHelp helpfile = do
+        exe <- getExeName
+        doc <- i18n helpfile
+        openWebsite (takeDirectory exe </> "../Documentation" </> doc)
+
+  -- Помощь по использованию GUI
+  helpAct `onActionActivate` do
+    openHelp "0256 FreeArc-GUI-Eng.htm"
+
+  -- Помощь по использованию командной строки
+  helpCmdAct `onActionActivate` do
+    openHelp "0257 FreeArc036-eng.htm"
+
+  -- Homepage/news page for the current locale
+  homeURL <- (aARC_WEBSITE ++) ==<< i18n"0254 /"
+  newsURL <- (aARC_WEBSITE ++) ==<< i18n"0255 /News.aspx"
+
+  -- Домашняя страница программы
+  homepageAct `onActionActivate` do
+    openWebsite homeURL
+
+  -- Проверка обновлений на сайте
+  whatsnewAct `onActionActivate` do
+    handleErrors
+      -- Выполняется при недоступности URL новостей
+      (do msg <- i18n"9999 Cannot open %1. Do you want to check URL manually?"
+          whenM (askOkCancel window (format msg newsURL)) $ do
+            openWebsite newsURL)
+      -- Попытка прочитать URL новостей
+      (fileGetBinary newsURL >>== (`showHex` "").crc32) $ \new_crc -> do
+    old_crc <- fmGetHistory1 fm' "news_crc" ""
+    if (new_crc == old_crc) then do
+       fmInfoMsg fm' "9999 There are no news on the site."
+     else do
+       fmReplaceHistory fm' "news_crc" new_crc
+       whenM (askOkCancel window "9999 There are news. Open website?") $ do
+         openWebsite newsURL
+
   -- Диалог About
   aboutAct `onActionActivate` do
     bracketCtrlBreak aboutDialogNew widgetDestroy $ \dialog -> do
-    dialog `set` [aboutDialogName      := aARC_NAME
+    dialog `set` [windowTransientFor   := window
+                 ,aboutDialogName      := aARC_NAME
                  ,aboutDialogVersion   := aARC_VERSION
                  ,aboutDialogCopyright := "(c) "++aARC_EMAIL
                  ,aboutDialogComments  := "High-performance archiver"
-                 ,aboutDialogWebsite   := aARC_WEBSITE
+                 ,aboutDialogWebsite   := homeURL
 --               ,aboutDialogAuthors   := [aARC_EMAIL]
                  ]
     dialogRun dialog
     return ()
+
+  -- Включить поддержку URL в диалоге About
+  aboutDialogSetUrlHook openWebsite
+
 
   -- При нажатии заголовка столбца в списке файлов - сортировать по этому столбцу
   --   (при повторном нажатии - сортировать в обратном порядке)
