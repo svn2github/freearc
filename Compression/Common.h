@@ -173,11 +173,12 @@ static inline int  file_exists (CFILENAME name) {return _taccess(name,0) == 0;}
 typedef char* CFILENAME;
 typedef char  TCHAR;
 #define _T
-#define _tcschr   strchr
-#define _stprintf sprintf
-#define _tcslen   strlen
-#define _tstat    stat
-#define _stat     stat
+#define _tcschr         strchr
+#define _tcscpy		strcpy
+#define _stprintf       sprintf
+#define _tcslen         strlen
+#define _tstat          stat
+#define _stat           stat
 
 static inline void delete_file (char *name)     {remove(name);}
 static inline void create_dir  (char *name)     {mkdir(name,0777);}
