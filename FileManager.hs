@@ -326,8 +326,11 @@ myGUI run args = do
   -- При single-click на свободном пространстве справа снимаем отметку со всех файлов,
   -- при double-click там же выбираем все файлы
   listView `onButtonPress` \e -> do
-    Just (_,column,_) <- New.treeViewGetPathAtPos listView (round$ eventX e, round$ eventY e)
-    Just coltitle     <- New.treeViewColumnGetTitle column
+    path <- New.treeViewGetPathAtPos listView (round$ eventX e, round$ eventY e)
+    coltitle <- case path of
+                  Just (_,column,_) -> New.treeViewColumnGetTitle column >>== fromMaybe ""
+                  _                 -> return ""
+    -- Пустая строка в coltitle означает клик за пределами списка файлов
     coltitle=="" &&& e.$eventButton==LeftButton &&&
       ((if e.$eventClick==SingleClick  then fmUnselectAll  else fmSelectAll) fm'  >>  return True)
 
