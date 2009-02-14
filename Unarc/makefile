@@ -3,7 +3,7 @@ include ../common.mak
 windows: unarc.exe arc.sfx freearc.sfx freearc-installer.sfx FreeArc.fmt
 linux: unarc arc.linux.sfx
 
-Extractor_DEFINES = -DFREEARC_DECOMPRESS_ONLY -D_NO_EXCEPTIONS
+Extractor_DEFINES = -DFREEARC_DECOMPRESS_ONLY -D_NO_EXCEPTIONS -DUNARC
 OBJDIR  = $(TEMPDIR)-unarc
 LINKOBJ_FAR_PLUGIN = $(OBJDIR)/Environment.o $(OBJDIR)/Common.o $(OBJDIR)/CompressionLibrary.o \
                      $(OBJDIR)/C_LZMA.o

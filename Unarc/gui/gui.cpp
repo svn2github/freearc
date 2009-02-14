@@ -20,9 +20,9 @@
 static const UINT WM_SETOBJECT = WM_USER + 1;
 static const UINT WM_CONFIRM_REPLACE = WM_USER + 2;
 static const WORD MAX_PROGRESS_VALUE = 65535U;
-static const size_t MAX_MESSAGE_LENGTH = MAX_PATH+256;
+static const size_t MAX_MESSAGE_LENGTH = MY_FILENAME_MAX+256;
 bool UI::isInitialized = false;
-static TCHAR archiveFileName[MAX_PATH];
+static TCHAR archiveFileName[MY_FILENAME_MAX];
 static TCHAR cancelConfirmCaption[MAX_MESSAGE_LENGTH];
 static TCHAR cancelConfirmText[MAX_MESSAGE_LENGTH];
 static TCHAR selectFolderToExtract[MAX_MESSAGE_LENGTH];
@@ -397,8 +397,8 @@ char UI::AskOverwrite(TCHAR *filename, uint64 size, time_t modified)
 
 static void InitConfirmReplaceDialog(HWND hWnd, TCHAR *filename, uint64 size, time_t modified, HICON *hIcon)
 {
-	TCHAR msg[MAX_MESSAGE_LENGTH];
-	TCHAR path[MAX_PATH], basename[MAX_PATH];
+	static TCHAR msg[MAX_MESSAGE_LENGTH];
+	static TCHAR path[MY_FILENAME_MAX], basename[MY_FILENAME_MAX];
 
 	// Display file name and path
 	SplitFilename(filename, path, basename);
@@ -493,13 +493,13 @@ static BOOL CALLBACK DialogProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 		switch(LOWORD(wParam))
 		{
 		case IDOK:
-			GetDlgItemText(hWnd, IDC_EDIT_PATH, gui->destinationDirectory, MAX_PATH);
+			GetDlgItemText(hWnd, IDC_EDIT_PATH, gui->destinationDirectory, MY_FILENAME_MAX);
 		case IDCANCEL:
 			gui->button = LOWORD(wParam);
 			DestroyWindow(hWnd);
 			return TRUE;
 		case IDBROWSE:
-			GetDlgItemText(hWnd, IDC_EDIT_PATH, gui->destinationDirectory, MAX_PATH);
+			GetDlgItemText(hWnd, IDC_EDIT_PATH, gui->destinationDirectory, MY_FILENAME_MAX);
 			BrowseForFolder(hWnd, gui->destinationDirectory);
 			return TRUE;
 		case IDC_STATIC_URL:
@@ -622,7 +622,7 @@ static void CenterWindow(HWND hWnd)
 static void BrowseForFolder(HWND hWndOwner, TCHAR *destinationDirectory)
 {
 	BROWSEINFO bi;
-	TCHAR displayName[MAX_PATH];
+	static TCHAR displayName[MY_FILENAME_MAX];
 
 	bi.hwndOwner = hWndOwner;
 	bi.lParam = (LONG)destinationDirectory;

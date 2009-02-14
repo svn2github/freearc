@@ -213,8 +213,12 @@ void RunFile (const CFILENAME filename, const CFILENAME curdir, int wait_finish)
 }
 
 
+
+#ifndef UNARC
+
 #include <shlobj.h>
 #include <commdlg.h>
+
 static int CALLBACK BrowseCallbackProc(HWND hwnd, UINT uMsg, LPARAM lParam, LPARAM lpData)
 {
   if(uMsg == BFFM_INITIALIZED)
@@ -223,17 +227,16 @@ static int CALLBACK BrowseCallbackProc(HWND hwnd, UINT uMsg, LPARAM lParam, LPAR
   return 0;
 }
 
-int BrowseForFolder(TCHAR *prompt, TCHAR *filename)
+// Дать пользователю выбрать каталог
+int BrowseForFolder(TCHAR *prompt, TCHAR *in_filename, TCHAR *out_filename)
 {
   BROWSEINFO bi;
-  TCHAR displayName[MAX_PATH];
-
   bi.hwndOwner = GetActiveWindow();
-  bi.lParam = (LONG)filename;
+  bi.lParam = (LONG)in_filename;
   bi.lpszTitle = prompt;
   bi.lpfn = BrowseCallbackProc;
   bi.pidlRoot = NULL;
-  bi.pszDisplayName = displayName;
+  bi.pszDisplayName = out_filename;
   bi.ulFlags = BIF_RETURNONLYFSDIRS;
 
   LPITEMIDLIST pItemIdList = SHBrowseForFolder(&bi);
@@ -241,7 +244,7 @@ int BrowseForFolder(TCHAR *prompt, TCHAR *filename)
   int result = 0;
   if(pItemIdList != NULL)
   {
-    if (SHGetPathFromIDList(pItemIdList, filename))
+    if (SHGetPathFromIDList(pItemIdList, out_filename))
       result = 1;
 
     IMalloc *iMalloc = 0;
@@ -255,18 +258,20 @@ int BrowseForFolder(TCHAR *prompt, TCHAR *filename)
 }
 
 
-int BrowseForFile(TCHAR *filename, int filenameSize)
+// Дать пользователю выбрать файл
+int BrowseForFile(TCHAR *prompt, TCHAR *in_filename, TCHAR *out_filename)
 {
   OPENFILENAME ofn;
   ZeroMemory (&ofn, sizeof(ofn));
   ofn.lStructSize = sizeof(ofn);
-  ofn.lpstrFile   = filename;
-  ofn.nMaxFile    = filenameSize;
+  ofn.lpstrFile   = out_filename;
+  ofn.nMaxFile    = MY_FILENAME_MAX;
 
 
   return GetOpenFileName(&ofn)? 1 : 0;
 }
 
+#endif
 
 
 
@@ -322,6 +327,12 @@ void FormatDateTime (char *buf, int bufsize, time_t t)
   if (t==-1)  t=0;  // Иначе получим вылет :(
   p = localtime(&t);
   strftime( buf, bufsize, "%Y-%m-%d %H:%M:%S", p);
+}
+
+// Максимальная длина имени файла
+int long_path_size (void)
+{
+  return MY_FILENAME_MAX;
 }
 
 

@@ -765,14 +765,15 @@ textViewGetText textView = do
 chooseFile parentWindow dialogType dialogTitle filters getFilename setFilename = do
   filename <- getFilename
   title <- i18n dialogTitle
-  withCFilePath filename $ \c_filename -> do
-  withCFilePath title    $ \c_prompt -> do
-    result <- c_BrowseForFolder c_prompt c_filename
+  withCFilePath title            $ \c_prompt -> do
+  withCFilePath filename         $ \c_filename -> do
+  allocaBytes (long_path_size*4) $ \c_outpath -> do
+    result <- c_BrowseForFolder c_prompt c_filename c_outpath
     when (result/=0) $ do
-       setFilename =<< peekCFilePath c_filename
+       setFilename =<< peekCFilePath c_outpath
 
 foreign import ccall safe "Environment.h BrowseForFolder"
-  c_BrowseForFolder :: CFilePath -> CFilePath -> IO CInt
+  c_BrowseForFolder :: CFilePath -> CFilePath -> CFilePath -> IO CInt
 
 #else
 

@@ -262,8 +262,11 @@ foreign import ccall unsafe "realpath"
                               -> CString
                               -> IO CString
 #endif
-foreign import ccall unsafe "__hscore_long_path_size"
-  long_path_size :: Int
+
+-- |Максимальная длина имени файла
+long_path_size  =  i c_long_path_size :: Int
+foreign import ccall unsafe "Environment.h long_path_size"
+  c_long_path_size :: CInt
 
 
 #if defined(FREEARC_WIN)
