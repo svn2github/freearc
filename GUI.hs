@@ -1,5 +1,6 @@
+{-# OPTIONS_GHC -cpp #-}
 ----------------------------------------------------------------------------------------------------
----- Информирование пользователя о ходе выполнения программы (CUI - Console User Interface).  ------
+---- Информирование пользователя о ходе выполнения программы.                                 ------
 ----------------------------------------------------------------------------------------------------
 module GUI where
 
@@ -755,4 +756,51 @@ textViewGetText textView = do
   start  <- textBufferGetStartIter buffer
   end    <- textBufferGetEndIter   buffer
   textBufferGetText buffer start end False
+
+
+#if defined(FREEARC_WIN)
+
+{-# NOINLINE chooseFile #-}
+-- |Выбор файла через диалог
+chooseFile parentWindow dialogType dialogTitle filters getFilename setFilename = do
+  filename <- getFilename
+  title <- i18n dialogTitle
+  withCFilePath filename $ \c_filename -> do
+  withCFilePath title    $ \c_prompt -> do
+    result <- c_BrowseForFolder c_prompt c_filename
+    when (result/=0) $ do
+       setFilename =<< peekCFilePath c_filename
+
+foreign import ccall safe "Environment.h BrowseForFolder"
+  c_BrowseForFolder :: CFilePath -> CFilePath -> IO CInt
+
+#else
+
+{-# NOINLINE chooseFile #-}
+-- |Выбор файла через диалог
+chooseFile parentWindow dialogType dialogTitle filters getFilename setFilename = do
+  title <- i18n dialogTitle
+  filename <- getFilename
+  bracketCtrlBreak (fileChooserDialogNew (Just title) (Just$ castToWindow parentWindow) dialogType [("Select",ResponseOk), ("Cancel",ResponseCancel)]) widgetDestroy $ \chooserDialog -> do
+    fileChooserSetFilename    chooserDialog (unicode2utf8 filename)
+    fileChooserSetCurrentName chooserDialog (takeFileName filename)
+    fileChooserSetFilename    chooserDialog (unicode2utf8 filename)
+    addFilters chooserDialog filters
+    choice <- dialogRun chooserDialog
+    when (choice==ResponseOk) $ do
+      whenJustM_ (fileChooserGetFilename chooserDialog) $ \filename -> do
+        setFilename (utf8_to_unicode filename)
+
+{-# NOINLINE addFilters #-}
+-- |Установить фильтры для выбора файла
+addFilters chooserDialog x = do
+  for (x &&& x++["9999 All files (*)"]) $ \element -> do
+    str <- i18n element
+    let patterns = last (words str) .$drop 1 .$dropEnd 1
+    filt <- fileFilterNew
+    fileFilterSetName filt str
+    for (patterns.$ split ';')  (fileFilterAddPattern filt)
+    fileChooserAddFilter chooserDialog filt
+
+#endif
 

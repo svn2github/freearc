@@ -630,7 +630,7 @@ static void BrowseForFolder(HWND hWndOwner, TCHAR *destinationDirectory)
 	bi.lpfn = BrowseCallbackProc;
 	bi.pidlRoot = NULL;
 	bi.pszDisplayName = displayName;
-	bi.ulFlags = 0;
+	bi.ulFlags = BIF_RETURNONLYFSDIRS;
 
 	LPITEMIDLIST pItemIdList = SHBrowseForFolder(&bi);
 

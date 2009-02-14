@@ -213,6 +213,61 @@ void RunFile (const CFILENAME filename, const CFILENAME curdir, int wait_finish)
 }
 
 
+#include <shlobj.h>
+#include <commdlg.h>
+static int CALLBACK BrowseCallbackProc(HWND hwnd, UINT uMsg, LPARAM lParam, LPARAM lpData)
+{
+  if(uMsg == BFFM_INITIALIZED)
+    PostMessage(hwnd, BFFM_SETSELECTION, TRUE, lpData);
+
+  return 0;
+}
+
+int BrowseForFolder(TCHAR *prompt, TCHAR *filename)
+{
+  BROWSEINFO bi;
+  TCHAR displayName[MAX_PATH];
+
+  bi.hwndOwner = GetActiveWindow();
+  bi.lParam = (LONG)filename;
+  bi.lpszTitle = prompt;
+  bi.lpfn = BrowseCallbackProc;
+  bi.pidlRoot = NULL;
+  bi.pszDisplayName = displayName;
+  bi.ulFlags = BIF_RETURNONLYFSDIRS;
+
+  LPITEMIDLIST pItemIdList = SHBrowseForFolder(&bi);
+
+  int result = 0;
+  if(pItemIdList != NULL)
+  {
+    if (SHGetPathFromIDList(pItemIdList, filename))
+      result = 1;
+
+    IMalloc *iMalloc = 0;
+    if(SUCCEEDED(SHGetMalloc(&iMalloc)))
+    {
+      iMalloc->Free(pItemIdList);
+      iMalloc->Release();
+    }
+  }
+  return result;
+}
+
+
+int BrowseForFile(TCHAR *filename, int filenameSize)
+{
+  OPENFILENAME ofn;
+  ZeroMemory (&ofn, sizeof(ofn));
+  ofn.lStructSize = sizeof(ofn);
+  ofn.lpstrFile   = filename;
+  ofn.nMaxFile    = filenameSize;
+
+
+  return GetOpenFileName(&ofn)? 1 : 0;
+}
+
+
 
 
 #else // For Unix:
@@ -362,11 +417,11 @@ void BuildPathTo (CFILENAME name)
 
 
 /* ***************************************************************************
-*																			*
-* Random system values collection routine from CryptLib by Peter Gutmann
-* [ftp://ftp.franken.de/pub/crypt/cryptlib/cl331.zip]
-*																			*
-****************************************************************************/
+*                                                                            *
+* Random system values collection routine from CryptLib by Peter Gutmann     *
+* [ftp://ftp.franken.de/pub/crypt/cryptlib/cl331.zip]                        *
+*                                                                            *
+*****************************************************************************/
 
 /* The size of the intermediate buffer used to accumulate polled data */
 #define RANDOM_BUFSIZE	4096

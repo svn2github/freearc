@@ -451,33 +451,6 @@ fmFileBox fm' dialog tag dialogType makeControl dialogTitle filter_p process = d
   boxPackStart  hbox  (widget chooserButton)  PackNatural 0
   return (hbox, control, filename)
 
-{-# NOINLINE chooseFile #-}
--- |Выбор файла через диалог
-chooseFile parentWindow dialogType dialogTitle filters getFilename setFilename = do
-  title <- i18n dialogTitle
-  bracketCtrlBreak (fileChooserDialogNew (Just title) (Just$ castToWindow parentWindow) dialogType [("Select",ResponseOk), ("Cancel",ResponseCancel)]) widgetDestroy $ \chooserDialog -> do
-    filename <- getFilename
-    fileChooserSetFilename    chooserDialog (unicode2utf8 filename)
-    fileChooserSetCurrentName chooserDialog (takeFileName filename)
-    fileChooserSetFilename    chooserDialog (unicode2utf8 filename)
-    addFilters chooserDialog filters
-    choice <- dialogRun chooserDialog
-    when (choice==ResponseOk) $ do
-      whenJustM_ (fileChooserGetFilename chooserDialog) $ \filename -> do
-        setFilename (utf8_to_unicode filename)
-
-{-# NOINLINE addFilters #-}
--- |Установить фильтры для выбора файла
-addFilters chooserDialog x = do
-  for (x &&& x++["9999 All files (*)"]) $ \element -> do
-    str <- i18n element
-    let patterns = last (words str) .$drop 1 .$dropEnd 1
-    filt <- fileFilterNew
-    fileFilterSetName filt str
-    for (patterns.$ split ';')  (fileFilterAddPattern filt)
-    fileChooserAddFilter chooserDialog filt
-
-
 {-# NOINLINE fmInputString #-}
 -- |Запросить у пользователя строку (с историей ввода)
 fmInputString fm' tag title filter_p process = do

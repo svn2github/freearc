@@ -12,6 +12,8 @@ extern "C" {
 void SetFileDateTime (const CFILENAME Filename, time_t t); // Установить время/дату модификации файла
 void RunProgram (const CFILENAME filename, const CFILENAME curdir, int wait_finish);  // Execute program `filename` in the directory `curdir` optionally waiting until it finished
 void RunFile    (const CFILENAME filename, const CFILENAME curdir, int wait_finish);  // Execute file `filename` in the directory `curdir` optionally waiting until it finished
+int BrowseForFolder(TCHAR *prompt, TCHAR *filename);
+int BrowseForFile(TCHAR *filename, int filenameSize);
 void FormatDateTime (char *buf, int bufsize, time_t t);    // Отформатировать время/дату для команды листинга
 CFILENAME GetExeName (CFILENAME buf, int bufsize);         // Вернуть имя исполняемого файла программы
 unsigned GetPhysicalMemory (void);                         // Объём физической памяти компьютера
