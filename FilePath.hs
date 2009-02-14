@@ -34,7 +34,7 @@ depending on the platform.
 
 module FilePath
     (
-    isWindows,
+    isWindows, windosifyPath,
 
     -- * Separator predicates
     FilePath,
@@ -68,7 +68,7 @@ module FilePath
     dropTrailingPathSeparator,
 
     -- * File name manipulators
-    normalise, equalFilePath,
+    normalise, normalisePath, equalFilePath,
     makeRelative,
     isRelative, isAbsolute,
     isValid, makeValid
@@ -115,7 +115,14 @@ isWindows = False
 -- > pathSeparator ==  '/'
 -- > isPathSeparator pathSeparator
 pathSeparator :: Char
-pathSeparator = if isWindows then '\\' else '/'
+pathSeparator = '/'
+
+-- | Make filename valid for Windows functions
+windosifyPath :: FilePath -> FilePath
+windosifyPath = replace '/' '\\'
+
+replace from to  =  map (\x -> if x==from  then to  else x)
+
 
 -- | The list of all possible separators.
 --
@@ -678,6 +685,10 @@ normaliseDrive drive = if isJust $ readDriveLetter x2
         x2 = map repSlash drive
 
         repSlash x = if isPathSeparator x then pathSeparator else x
+
+-- | Normalise filename, same as normalise
+normalisePath :: FilePath -> FilePath
+normalisePath = normalise
 
 -- information for validity functions on Windows
 -- see http://msdn.microsoft.com/library/default.asp?url=/library/en-us/fileio/fs/naming_a_file.asp

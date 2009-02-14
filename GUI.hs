@@ -763,7 +763,7 @@ textViewGetText textView = do
 {-# NOINLINE chooseFile #-}
 -- |Âûבמנ פאיכא קונוח הטאכמד
 chooseFile parentWindow dialogType dialogTitle filters getFilename setFilename = do
-  filename <- getFilename
+  filename <- getFilename >>== windosifyPath
   title <- i18n dialogTitle
   withCFilePath title            $ \c_prompt -> do
   withCFilePath filename         $ \c_filename -> do
