@@ -443,6 +443,11 @@ between s1 x s2 = s1++x++s2
 quote :: String -> String
 quote str  =  "\"" ++ str ++ "\""
 
+-- |Удалить двойные кавычки вокруг строки (если они есть)
+unquote :: String -> String
+unquote ('"':str) | str>"" && x=='"'  =  xs     where (x:xs) = reverse str
+unquote str = str
+
 contains = flip elem
 
 -- |Удалить n элементов в конце спсика

@@ -249,7 +249,7 @@ settingsDialog fm' = do
                                    (label "0166 Logfile:")
                                           "0167 Select logfile"
                                           (const$ return True)
-                                          (\s -> s &&& fmCanonicalizeDiskPath fm' s)
+                                          (fmCanonicalizeDiskPath fm')
     ; viewLogfileButton <- button "9999 View"
     -- Прочее
     registerButton      <- button "0172 Associate FreeArc with .arc files"
@@ -519,7 +519,7 @@ encryptionPage fm' dialog okButton vbox = do
                                 (checkBox "0123 Keyfile:")
                                           "0124 Select keyfile"
                                           (const$ return True)
-                                          (\s -> s &&& fmCanonicalizeDiskPath fm' s)
+                                          (fmCanonicalizeDiskPath fm')
   ; createKeyfile <- button "0125 Create"
   ; boxPackStart hbox (widget createKeyfile) PackNatural 0;  pack1 hbox
   (hbox, encAlg) <- fmLabeledEntryWithHistory fm' "encryptor" "0121 Encryption algorithm:";  pack1 hbox
@@ -609,7 +609,7 @@ decryptionBox fm' dialog = do
                                  (label "0123 Keyfile:")
                                         "0124 Select keyfile"
                                         (const$ return True)
-                                        (\s -> s &&& fmCanonicalizeDiskPath fm' s)
+                                        (fmCanonicalizeDiskPath fm')
   hbox <- hBoxNew False 0
   ; boxPackStart hbox (widget lbl) PackNatural 0
   ; boxPackStart hbox pwd          PackGrow    5

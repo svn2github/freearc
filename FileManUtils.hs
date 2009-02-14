@@ -110,8 +110,10 @@ splitArcPath fm' fullname = do
 
 -- |Перевести путь, записанный относительно текущего дискового каталога в FM, в абсолютный
 fmCanonicalizeDiskPath fm' relname = do
+  let name  =  unquote (trimRight relname)
+  if (name=="")  then return ""  else do
   fm <- val fm'
-  io$ myCanonicalizePath$ fm_curdir fm </> relname
+  io$ myCanonicalizePath$ fm_curdir fm </> name
 
 -- |Перевести путь, записанный относительно текущего положения в FM, в абсолютный
 fmCanonicalizePath fm' relname = do
