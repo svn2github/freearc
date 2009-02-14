@@ -768,12 +768,14 @@ chooseFile parentWindow dialogType dialogTitle filters getFilename setFilename =
   withCFilePath title            $ \c_prompt -> do
   withCFilePath filename         $ \c_filename -> do
   allocaBytes (long_path_size*4) $ \c_outpath -> do
-    result <- c_BrowseForFolder c_prompt c_filename c_outpath
+    result <- case dialogType of
+                FileChooserActionSelectFolder  ->  c_BrowseForFolder c_prompt c_filename c_outpath
+                _                              ->  c_BrowseForFile   c_prompt c_filename c_outpath
     when (result/=0) $ do
        setFilename =<< peekCFilePath c_outpath
 
-foreign import ccall safe "Environment.h BrowseForFolder"
-  c_BrowseForFolder :: CFilePath -> CFilePath -> CFilePath -> IO CInt
+foreign import ccall safe "Environment.h BrowseForFolder"  c_BrowseForFolder :: CFilePath -> CFilePath -> CFilePath -> IO CInt
+foreign import ccall safe "Environment.h BrowseForFile"    c_BrowseForFile   :: CFilePath -> CFilePath -> CFilePath -> IO CInt
 
 #else
 

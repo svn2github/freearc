@@ -264,9 +264,11 @@ int BrowseForFile(TCHAR *prompt, TCHAR *in_filename, TCHAR *out_filename)
   OPENFILENAME ofn;
   ZeroMemory (&ofn, sizeof(ofn));
   ofn.lStructSize = sizeof(ofn);
+  ofn.hwndOwner   = GetActiveWindow();
   ofn.lpstrFile   = out_filename;
   ofn.nMaxFile    = MY_FILENAME_MAX;
 
+  _tcscpy (out_filename, in_filename);
 
   return GetOpenFileName(&ofn)? 1 : 0;
 }
