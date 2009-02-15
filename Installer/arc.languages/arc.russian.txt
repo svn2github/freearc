@@ -16,9 +16,9 @@
 
 Language name in english and mother tongue
 0000 Language=Russian (Русский)
-0159 Copyright=Bulat Ziganshin
+0159 Copyright=Bulat.Ziganshin@gmail.com
 
-URLs and helpfiles
+Language-specific URLs relative to http://freearc.org and helpfiles
 0254 Homepage=/ru
 0255 News page=/ru/News.aspx
 0256 Helpfile=FreeArc-GUI-Rus.htm
@@ -29,34 +29,74 @@ URLs and helpfiles
 Main menu
 0050 File=Файл
 0066 Edit=Правка
+0258 Commands=Команды
+0259 Tools=Сервис
+0260 Options=Опции
+0261 Help=Помощь
 
-File menu/toolbar 
-0030 Add=Упаковать
-0040 Add files to archive(s)=Добавить файлы в архив(ы)
-0031 Modify=Модифицировать
-0041 Modify archive(s)=Модифицировать архив(ы)
-0032 Join=Объединить
-0042 Join archives together=Объединить архив(ы)
-0033 Delete=Удалить
-0043 Delete files (from archive)=Удалить файлы (из архива)
-0034 Test=Протестировать
-0044 Test files in archive(s)=Протестировать файлы в архив(ах)
-0035 Extract=Распаковать
-0045 Extract files from archive(s)=Распаковать файлы из архив(ов)
-0064 Settings=Настройки
-0065 Edit program settings=Редактировать настройки программы
-0036 Exit=Выход
-0046 Quit application=Выйти из программы
-
-Edit menu/toolbar 
+File menu/toolbar
+0262 Open archive=Открыть архив
+0265 Open archive=Открыть архив
+0263 Select all=Выделить всё
+0290 Select all files=Выделить все файлы
 0037 Select=Отметить
 0047 Select files=Выбрать файлы по маске
 0038 Unselect=Разотметить
 0048 Unselect files=Убрать отметку с файлов по маске
+0264 Invert selection=Инвертировать выделение
+0291 Invert selection=Инвертировать выделение
 0039 Refresh=Перечитать
 0049 Reread archive/directory=Обновить содержание каталога/архива
+0036 Exit=Выход
+0046 Quit application=Выйти из программы
+
+Commands menu/toolbar
+0030 Add=Упаковать
+0040 Add files to archive(s)=Добавить файлы в архив(ы)
+0031 Modify=Модифицировать
+0041 Modify archive(s)=Модифицировать архив(ы)
+0035 Extract=Распаковать
+0045 Extract files from archive(s)=Распаковать файлы из архив(ов)
+0034 Test=Протестировать
+0044 Test files in archive(s)=Протестировать файлы в архив(ах)
 0086 ArcInfo=АркИнфо
 0087 Information about archive=Информация об архиве
+0033 Delete=Удалить
+0043 Delete files (from archive)=Удалить файлы (из архива)
+
+Tools menu/toolbar
+0266 Lock=Закрыть
+0267 Lock archive from further changes=Закрыть архив от модификаций
+0268 Comment=Комментарий
+0269 Edit archive comment=Редактировать комментарий к архиву
+0270 Convert to SFX=Превратить в SFX
+0271 Convert archive to SFX=Превратить архив в SFX
+0272 Encrypt=Зашифровать
+0273 Encrypt archive contents=Зашифровать содержимое архива
+0274 Protect=Защитить
+0275 Add Recovery record to archive=Добавить к архиву информацию для восстановления
+0032 Join=Объединить
+0042 Join archives together=Объединить архив(ы)
+
+Options menu/toolbar
+0064 Settings=Настройки
+0065 Edit program settings=Редактировать настройки программы
+0276 View log=Просмотреть лог
+0277 View logfile=Просмотреть логфайл
+0278 Clear log=Очистить лог
+0279 Clear logfile=Очистить логфайл
+
+Help menu/toolbar
+0280 Main help=Помощь
+0281 Help on using FreeArc=Описание использования FreeArc
+0282 Cmdline help=Помощь по ком. строке
+0283 Help on FreeArc command line=Описание использования командной строки FreeArc
+0284 Goto Homepage=Домашняя страница
+0285 Open program site=Открыть сайт FreeArc
+0286 Check for update=Проверить обновление
+0287 Check for new program versions=Проверить появление новой версии программы
+0288 About=О программе
+0289 About=Информация о программе
 
 
 === File manager ==================================================================

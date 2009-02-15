@@ -96,16 +96,22 @@ uiDef =
   "  </menubar>"++
   "  <toolbar>"++
   "    <placeholder name=\"FileToolItems\">"++
-  "      <toolitem name=\"Add\"      action=\"AddAction\" />"++
-  "      <toolitem name=\"Modify\"   action=\"ModifyAction\" />"++
-  "      <toolitem name=\"ArcInfo\"  action=\"ArcInfoAction\" />"++
-  "      <toolitem name=\"Delete\"   action=\"DeleteAction\" />"++
-  "      <toolitem name=\"Test\"     action=\"TestAction\" />"++
-  "      <toolitem name=\"Extract\"  action=\"ExtractAction\" />"++
+  "      <toolitem name=\"OpenArchive\"        action=\"OpenArchiveAction\" />"++
+  "      <toolitem name=\"Add\"                action=\"AddAction\" />"++
+  "      <toolitem name=\"Modify\"             action=\"ModifyAction\" />"++
+  "      <toolitem name=\"Extract\"            action=\"ExtractAction\" />"++
+  "      <toolitem name=\"Test\"               action=\"TestAction\" />"++
+  "      <toolitem name=\"ArcInfo\"            action=\"ArcInfoAction\" />"++
+  "      <toolitem name=\"Delete\"             action=\"DeleteAction\" />"++
   "      <separator/>"++
-  "      <toolitem name=\"Select\"   action=\"SelectAction\" />"++
-  "      <toolitem name=\"Unselect\" action=\"UnselectAction\" />"++
-  "      <toolitem name=\"Refresh\"  action=\"RefreshAction\" />"++
+  "      <toolitem name=\"Lock\"               action=\"LockAction\" />"++
+  "      <toolitem name=\"Comment\"            action=\"CommentAction\" />"++
+  "      <toolitem name=\"Convert to SFX\"     action=\"ConvertToSFXAction\" />"++
+  "      <toolitem name=\"Encrypt\"            action=\"EncryptAction\" />"++
+  "      <toolitem name=\"Protect\"            action=\"ProtectAction\" />"++
+  "      <separator/>"++
+  "      <toolitem name=\"Refresh\"            action=\"RefreshAction\" />"++
+  "      <toolitem name=\"MainHelp\"           action=\"MainHelpAction\" />"++
   "    </placeholder>"++
   "  </toolbar>"++
   "</ui>"
@@ -127,9 +133,9 @@ myGUI run args = do
   -- Main menu
   standardGroup <- actionGroupNew "standard"
   let action name  =  (concat$ map (mapHead toUpper)$ words$ drop 5 name)++"Action"   -- "9999 the name" -> "TheNameAction"
-  let names = split ',' "0050 File,9999 Commands,9999 Tools,9999 Tools,9999 Options,9999 Help"
-  labels <- i18ns names
-  for (zip names labels) $ \(name,label) -> do
+  let names = split ',' "0050 File,0258 Commands,0259 Tools,0260 Options,0261 Help"
+  for names $ \name -> do
+    label <- i18n name
     actionGroupAddAction standardGroup  =<<  actionNew (action name) label Nothing Nothing
   -- Menus and toolbars
   let anew name comment icon accel = do
@@ -138,36 +144,39 @@ myGUI run args = do
         actionGroupAddActionWithAccel standardGroup action (Just accel)
         accel `onKey` actionActivate action
         return action
-  addAct      <- anew "0030 Add"              "0040 Add files to archive(s)"            (Just stockMediaRecord)     "<Alt>A"
-  modifyAct   <- anew "0031 Modify"           "0041 Modify archive(s)"                  (Just stockEdit)            "<Alt>M"
-  joinAct     <- anew "0032 Join archives"    "0042 Join archives together"             (Just stockCopy)            "<Alt>J"
-  arcinfoAct  <- anew "0086 ArcInfo"          "0087 Information about archive"          (Just stockInfo)            "<Alt>I"
-  deleteAct   <- anew "0033 Delete"           "0043 Delete files (from archive)"        (Just stockDelete)          "Delete"
-  testAct     <- anew "0034 Test"             "0044 Test files in archive(s)"           (Just stockSpellCheck)      "<Alt>T"
-  extractAct  <- anew "0035 Extract"          "0045 Extract files from archive(s)"      (Just stockMediaPlay)       "<Alt>E"
-  settingsAct <- anew "0064 Settings"         "0065 Edit program settings"              (Just stockPreferences)     ""
-  exitAct     <- anew "0036 Exit"             "0046 Quit application"                   (Just stockQuit)            "<Alt>Q"
-
-  lockAct     <- anew "9999 Lock"             "9999 Lock archive from further changes"  (Just stockDialogAuthentication) "<Alt>L"
-  commentAct  <- anew "9999 Comment"          "9999 Edit archive comment"               (Just stockEdit)            "<Alt>C"
-  toSfxAct    <- anew "9999 Convert to SFX"   "9999 Convert archive to EXE"             (Just stockConvert)         "<Alt>S"
-  encryptAct  <- anew "9999 Encrypt"          "9999 Encrypt archive contents"           (Nothing)                   ""
-  addRrAct    <- anew "9999 Protect"          "9999 Add Recovery record to archive"     (Nothing)                   "<Alt>P"
-  viewLogAct  <- anew "9999 View log"         "9999 Open logfile"                       (Nothing)                   ""
-  clearLogAct <- anew "9999 Clear log"        "9999 Delete logfile"                     (Nothing)                   ""
-  openAct     <- anew "9999 Open archive"     "9999 Open archive"                       (Just stockOpen)            "<Alt>O"
-
-  helpAct     <- anew "9999 Main help"        "9999 Help on using FreeArc"              (Just stockHelp)            "F1"
-  helpCmdAct  <- anew "9999 Cmdline help"     "9999 Help on FreeArc command line"       (Just stockHelp)            ""
-  homepageAct <- anew "9999 Goto Homepage"    "9999 Open program site"                  (Just stockHome)            ""
-  whatsnewAct <- anew "9999 Check for update" "9999 Check for new program versions"     (Just stockDialogInfo)      ""
-  aboutAct    <- anew "9999 About"            "9999 About"                              (Just stockAbout)           ""
-
-  selectAllAct<- anew "9999 Select all"       "9999 Select all files"                   (Just stockSelectAll)       "<Ctrl>A"
+  --
+  openAct     <- anew "0262 Open archive"     "0265 Open archive"                       (Just stockOpen)            "<Alt>O"
+  selectAllAct<- anew "0263 Select all"       "0290 Select all files"                   (Just stockSelectAll)       "<Ctrl>A"
   selectAct   <- anew "0037 Select"           "0047 Select files"                       (Just stockAdd)             "KP_Add"
   unselectAct <- anew "0038 Unselect"         "0048 Unselect files"                     (Just stockRemove)          "KP_Subtract"
-  invertSelAct<- anew "9999 Invert selection" "9999 Invert selection"                   (Nothing)                   "KP_Multiply"
+  invertSelAct<- anew "0264 Invert selection" "0291 Invert selection"                   (Nothing)                   "KP_Multiply"
   refreshAct  <- anew "0039 Refresh"          "0049 Reread archive/directory"           (Just stockRefresh)         "F5"
+  exitAct     <- anew "0036 Exit"             "0046 Quit application"                   (Just stockQuit)            "<Alt>Q"
+
+  addAct      <- anew "0030 Add"              "0040 Add files to archive(s)"            (Just stockMediaRecord)     "<Alt>A"
+  modifyAct   <- anew "0031 Modify"           "0041 Modify archive(s)"                  (Just stockEdit)            "<Alt>M"
+  extractAct  <- anew "0035 Extract"          "0045 Extract files from archive(s)"      (Just stockMediaPlay)       "<Alt>E"
+  testAct     <- anew "0034 Test"             "0044 Test files in archive(s)"           (Just stockSpellCheck)      "<Alt>T"
+  arcinfoAct  <- anew "0086 ArcInfo"          "0087 Information about archive"          (Just stockInfo)            "<Alt>I"
+  deleteAct   <- anew "0033 Delete"           "0043 Delete files (from archive)"        (Just stockDelete)          "Delete"
+
+  lockAct     <- anew "0266 Lock"             "0267 Lock archive from further changes"  (Just stockDialogAuthentication) "<Alt>L"
+  commentAct  <- anew "0268 Comment"          "0269 Edit archive comment"               (Just stockEdit)            "<Alt>C"
+  toSfxAct    <- anew "0270 Convert to SFX"   "0271 Convert archive to SFX"             (Just stockConvert)         "<Alt>S"
+  encryptAct  <- anew "0272 Encrypt"          "0273 Encrypt archive contents"           (Nothing)                   ""
+  addRrAct    <- anew "0274 Protect"          "0275 Add Recovery record to archive"     (Nothing)                   "<Alt>P"
+  joinAct     <- anew "0032 Join archives"    "0042 Join archives together"             (Just stockCopy)            "<Alt>J"
+
+  settingsAct <- anew "0064 Settings"         "0065 Edit program settings"              (Just stockPreferences)     ""
+  viewLogAct  <- anew "0276 View log"         "0277 View logfile"                       (Nothing)                   ""
+  clearLogAct <- anew "0278 Clear log"        "0279 Clear logfile"                      (Nothing)                   ""
+
+  helpAct     <- anew "0280 Main help"        "0281 Help on using FreeArc"              (Just stockHelp)            "F1"
+  helpCmdAct  <- anew "0282 Cmdline help"     "0283 Help on FreeArc command line"       (Just stockHelp)            ""
+  homepageAct <- anew "0284 Goto Homepage"    "0285 Open program site"                  (Just stockHome)            ""
+  whatsnewAct <- anew "0286 Check for update" "0287 Check for new program version"      (Just stockDialogInfo)      ""
+  aboutAct    <- anew "0288 About"            "0289 About"                              (Just stockAbout)           ""
+
   ui <- uiManagerNew
   uiManagerAddUiFromString ui uiDef
   uiManagerInsertActionGroup ui standardGroup 0
