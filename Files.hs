@@ -150,11 +150,11 @@ foreign import ccall unsafe "Environment.h GetExeName"
 -- |Места для поиска конфиг-файлов
 configFilePlaces  filename  =  do dir1 <- getAppUserDataDirectory "FreeArc"
                                   return [dir1   </> filename
-                                         ,"/etc" </> filename]
+                                         ,"/etc/FreeArc" </> filename]
 
 -- |Места для поиска sfx-модулей
-libraryFilePlaces filename  =  return ["/usr/lib"       </> filename
-                                      ,"/usr/local/lib" </> filename]
+libraryFilePlaces filename  =  return ["/usr/lib/FreeArc"       </> filename
+                                      ,"/usr/local/lib/FreeArc" </> filename]
 #endif
 
 
