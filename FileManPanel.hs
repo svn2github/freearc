@@ -529,7 +529,7 @@ createFilePanel = do
   New.treeViewSetSearchEqualFunc view $ \col str iter -> do
     (i:_) <- New.treeModelGetPath model iter
     row <- New.listStoreGetValue model i
-    return (strLower str `isPrefixOf` strLower (fmname row))
+    return (strLower(fmname row) ~= strLower(str)++"*")
   -- Enable multiple selection
   selection <- New.treeViewGetSelection view
   set selection [New.treeSelectionMode := SelectionMultiple]
