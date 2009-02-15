@@ -250,7 +250,7 @@ settingsDialog fm' = do
                                           "0167 Select logfile"
                                           (const$ return True)
                                           (fmCanonicalizeDiskPath fm')
-    ; viewLogfileButton <- button "9999 View"
+    ; viewLogfileButton <- button "0292 View"
     -- Прочее
     registerButton      <- button "0172 Associate FreeArc with .arc files"
     notes               <- label . joinWith "\n" =<<

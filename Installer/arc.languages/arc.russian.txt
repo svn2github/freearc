@@ -269,6 +269,7 @@ Settings dialog
 0170 Full name:=Полное имя:
 0171 Copyright:=Авторство:
 0166 Logfile:=Логфайл:
+0292 View=Просмотреть
 0167 Select logfile=Выберите логфайл
 0172 Associate FreeArc with .arc files=Ассоциировать FreeArc с файлами .arc
 
