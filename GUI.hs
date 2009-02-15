@@ -67,7 +67,7 @@ runIndicators = do
   inifile  <- findFile configFilePlaces aINI_FILE
   settings <- inifile  &&&  readConfigFile inifile >>== map (split2 '=')
   -- Локализация.
-  langDir  <- findDir configFilePlaces aLANG_DIR
+  langDir  <- findDir libraryFilePlaces aLANG_DIR
   setLocale$ langDir </> (settings.$lookup aINITAG_LANGUAGE `defaultVal` aLANG_FILE)
 
   -- Собственно окно индикатора прогресса

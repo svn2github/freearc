@@ -292,7 +292,7 @@ settingsDialog fm' = do
     let langFile =  settings.$lookup aINITAG_LANGUAGE `defaultVal` ""
 
     -- Заполнить список языков именами файлов в каталоге arc.languages и выбрать активный язык
-    langDir   <- io$ findDir configFilePlaces aLANG_DIR
+    langDir   <- io$ findDir libraryFilePlaces aLANG_DIR
     langFiles <- langDir &&& (io(dir_list langDir) >>== map baseName >>== sort >>== filter (match "arc.*.txt"))
     -- Отобразим языки в 5 столбцов, с сортировкой по столбцам
     let cols = 5
