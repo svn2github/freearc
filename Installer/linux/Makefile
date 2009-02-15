@@ -7,8 +7,8 @@ PREFIX=/usr/local
 install: uninstall
 	sudo mkdir -p $(PREFIX)/bin
 	sudo mkdir -p $(PREFIX)/lib/FreeArc
-	sudo cp bin/* $(PREFIX)/bin
-	sudo cp lib/* $(PREFIX)/lib/FreeArc
+	sudo cp -r bin/* $(PREFIX)/bin
+	sudo cp -r lib/* $(PREFIX)/lib/FreeArc
 	mkdir -p /etc/FreeArc
 	cp -r cfg/* /etc/FreeArc
 
@@ -16,8 +16,8 @@ install: uninstall
 local: uninstall
 	sudo mkdir -p $(PREFIX)/bin
 	sudo mkdir -p $(PREFIX)/lib/FreeArc
-	sudo cp bin/* $(PREFIX)/bin
-	sudo cp lib/* $(PREFIX)/lib/FreeArc
+	sudo cp -r bin/* $(PREFIX)/bin
+	sudo cp -r lib/* $(PREFIX)/lib/FreeArc
 	mkdir -p ~/.FreeArc
 	cp -r cfg/* ~/.FreeArc
 
