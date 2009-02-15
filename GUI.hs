@@ -51,8 +51,12 @@ aHISTORY_FILE = "freearc.history"
 -- |Инициализирует Gtk и создаёт начальное окно программы
 startGUI action = runInBoundThread $ do
   unsafeInitGUIForThreadedRTS
+  guiThread =:: myThreadId
   action >>= widgetShowAll
   mainGUI
+
+-- |Переменная, хранящая номер GUI-треда
+guiThread  =  unsafePerformIO$ newIORef$ error "undefined GUI::guiThread"
 
 -- |Инициализация GUI-части программы
 guiStartProgram = forkIO$ startGUI (fmap fst runIndicators)
@@ -434,10 +438,11 @@ uiInputArcComment old_comment = gui$ do
 ---- Библиотека ------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------
 
--- |Выполнить операцию в GUI-треде (пользуемся тем, что единственный bound thread у нас - гуишный)
+-- |Выполнить операцию в GUI-треде
 gui action = do
-  bound <- isCurrentThreadBound
-  if bound  then action else do
+  gui <- val guiThread
+  my  <- myThreadId
+  if my==gui  then action else do
   x <- ref Nothing
   y <- postGUISync (action `catch` (\e -> do x=:Just e; return undefined))
   whenJustM (val x) throwIO
