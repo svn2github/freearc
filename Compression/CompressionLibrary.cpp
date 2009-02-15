@@ -1,5 +1,6 @@
 #include "Compression.h"
 #include "MultiThreading.h"
+#include "LZMA/Windows/Synchronization.cpp"
 
 // –аспаковать данные заданным методом сжати€ и возвратить врем€ работы в секундах
 int timed_decompress (COMPRESSION_METHOD *compressor, CALLBACK_FUNC *callback, void *auxdata)

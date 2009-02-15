@@ -320,6 +320,12 @@ void SetFileDateTime(const CFILENAME Filename, time_t mtime)
   utime (Filename, &times);
 }
 
+// Execute file `filename` in the directory `curdir` optionally waiting until it finished
+void RunFile (const CFILENAME filename, const CFILENAME curdir, int wait_finish)
+{
+  system(filename);
+}
+
 #endif // Windows/Unix
 
 

@@ -1,6 +1,5 @@
 #include "LZMA/Windows/Thread.h"
 #include "LZMA/Windows/Synchronization.h"
-#include "LZMA/Windows/Synchronization.cpp"
 
 using namespace NWindows;
 using namespace NWindows::NSynchronization;

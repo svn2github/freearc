@@ -413,9 +413,11 @@ myGUI run args = do
 
   -- Открыть файл помощи
   let openHelp helpfile = do
-        exe <- getExeName
-        doc <- i18n helpfile
-        openWebsite (takeDirectory exe </> "../Documentation" </> doc)
+        doc  <- i18n helpfile
+        file <- findFile libraryFilePlaces ("../Documentation" </> doc)
+        case file of
+          "" -> return ()
+          _  -> openWebsite file
 
   -- Помощь по использованию GUI
   helpAct `onActionActivate` do
@@ -473,13 +475,10 @@ myGUI run args = do
   onColumnTitleClicked =: \column -> do
     fmModifySortOrder fm' (showSortOrder columns) (calcNewSortOrder column)
     refreshCommand fm'
+    fmSaveSortOrder  fm' =<< fmGetSortOrder fm'  -- запишем в конфиг порядок сортировки
 
   -- Отсортируем файлы по сохранённому критерию
   fmSetSortOrder fm' (showSortOrder columns) =<< fmRestoreSortOrder fm'
-
-  -- При закрытии главного окна сохраним порядок сортировки
-  onExit <<= do
-    fmSaveSortOrder  fm' =<< fmGetSortOrder fm'
 
 
 ----------------------------------------------------------------------------------------------------
