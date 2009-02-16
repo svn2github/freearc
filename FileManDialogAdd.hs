@@ -152,7 +152,7 @@ addDialog fm' exec cmd mode = do
           [file] -> let base = dropTrailingPathSeparator file
                     in if base==file  then dropExtension file  -- один файл    - избавимся от расширения
                                       else base                -- один каталог - избавимся от слеша в конце
-          _      -> takeFileName (fm_curdir fm)                -- много файлов - используем имя каталога
+          _      -> takeFileName (fm_curdir fm)                -- много файлов - используем имя текущего каталога
     arcname =: (arcnameBase ||| "archive") ++ aDEFAULT_ARC_EXTENSION
     arcpath =: ""
 

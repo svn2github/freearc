@@ -1,6 +1,6 @@
 include common.mak
 
-ALL: $(TEMPDIR)/Environment.o $(TEMPDIR)/URL.o
+ALL: $(TEMPDIR)/Environment.o $(TEMPDIR)/GuiEnvironment.o $(TEMPDIR)/URL.o
 
 CODE_FLAGS = -fno-exceptions -fno-rtti -Wall \
                 -Wno-unknown-pragmas -Wno-sign-compare -Wno-conversion
@@ -11,6 +11,9 @@ DEBUG_FLAGS = -g0
 CFLAGS = $(CODE_FLAGS) $(OPT_FLAGS) $(DEBUG_FLAGS) $(DEFINES)
 
 $(TEMPDIR)/Environment.o:  Environment.cpp Environment.h Compression/Common.h makefile
+	$(GCC) -c $(CFLAGS) -o $*.o $<
+
+$(TEMPDIR)/GuiEnvironment.o:  GuiEnvironment.cpp Environment.h Compression/Common.h makefile
 	$(GCC) -c $(CFLAGS) -o $*.o $<
 
 $(TEMPDIR)/URL.o:  URL.cpp URL.h Compression/Common.h makefile
