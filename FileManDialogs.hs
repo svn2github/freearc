@@ -674,5 +674,5 @@ addCmdFiles dirname =  [dirname++"/"]
 xCmdFiles   dirname =  [dirname++"/*"]
 
 -- |Режимы диалогов
-data DialogMode = EncryptionMode | ProtectionMode | CommentMode | MakeSFXMode | NoMode  deriving Eq
+data DialogMode = EncryptionMode | ProtectionMode | RecompressMode | CommentMode | MakeSFXMode | NoMode  deriving Eq
 

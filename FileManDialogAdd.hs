@@ -136,7 +136,7 @@ addDialog fm' exec cmd mode = do
 
 
 ------ »нициализаци€ полей --------------------------------------------------------------------------
-    compression     =: cmd=="a"   -- –аздел Compression при старте открыт дл€ команды 'a' и закрыт дл€ остальных команд
+    compression     =: mode==RecompressMode || cmd=="a"
     encryption      =: mode==EncryptionMode
     protection      =: mode==ProtectionMode
     comment         =: mode==CommentMode

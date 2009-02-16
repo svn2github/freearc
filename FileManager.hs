@@ -67,7 +67,6 @@ uiDef =
   "    </menu>"++
   "    <menu name=\"Commands\" action=\"CommandsAction\">"++
   "      <menuitem name=\"Add\"                action=\"AddAction\" />"++
-  "      <menuitem name=\"Modify\"             action=\"ModifyAction\" />"++
   "      <menuitem name=\"Extract\"            action=\"ExtractAction\" />"++
   "      <menuitem name=\"Test\"               action=\"TestAction\" />"++
   "      <menuitem name=\"ArcInfo\"            action=\"ArcInfoAction\" />"++
@@ -76,9 +75,12 @@ uiDef =
   "    <menu name=\"Tools\"    action=\"ToolsAction\">"++
   "      <menuitem name=\"Lock\"               action=\"LockAction\" />"++
   "      <menuitem name=\"Comment\"            action=\"CommentAction\" />"++
+  "      <menuitem name=\"Recompress\"         action=\"RecompressAction\" />"++
   "      <menuitem name=\"Convert to SFX\"     action=\"ConvertToSFXAction\" />"++
   "      <menuitem name=\"Encrypt\"            action=\"EncryptAction\" />"++
   "      <menuitem name=\"Protect\"            action=\"ProtectAction\" />"++
+  "      <separator/>"++
+  "      <menuitem name=\"Modify\"             action=\"ModifyAction\" />"++
   "      <menuitem name=\"Join archives\"      action=\"JoinArchivesAction\" />"++
   "    </menu>"++
   "    <menu name=\"Options\"  action=\"OptionsAction\">"++
@@ -98,14 +100,15 @@ uiDef =
   "    <placeholder name=\"FileToolItems\">"++
   "      <toolitem name=\"OpenArchive\"        action=\"OpenArchiveAction\" />"++
   "      <toolitem name=\"Add\"                action=\"AddAction\" />"++
-  "      <toolitem name=\"Modify\"             action=\"ModifyAction\" />"++
   "      <toolitem name=\"Extract\"            action=\"ExtractAction\" />"++
   "      <toolitem name=\"Test\"               action=\"TestAction\" />"++
   "      <toolitem name=\"ArcInfo\"            action=\"ArcInfoAction\" />"++
   "      <toolitem name=\"Delete\"             action=\"DeleteAction\" />"++
   "      <separator/>"++
+  "      <toolitem name=\"Modify\"             action=\"ModifyAction\" />"++
   "      <toolitem name=\"Lock\"               action=\"LockAction\" />"++
   "      <toolitem name=\"Comment\"            action=\"CommentAction\" />"++
+  "      <toolitem name=\"Recompress\"         action=\"RecompressAction\" />"++
   "      <toolitem name=\"Convert to SFX\"     action=\"ConvertToSFXAction\" />"++
   "      <toolitem name=\"Encrypt\"            action=\"EncryptAction\" />"++
   "      <toolitem name=\"Protect\"            action=\"ProtectAction\" />"++
@@ -154,7 +157,6 @@ myGUI run args = do
   exitAct     <- anew "0036 Exit"             "0046 Quit application"                   (Just stockQuit)            "<Alt>Q"
 
   addAct      <- anew "0030 Add"              "0040 Add files to archive(s)"            (Just stockMediaRecord)     "<Alt>A"
-  modifyAct   <- anew "0031 Modify"           "0041 Modify archive(s)"                  (Just stockEdit)            "<Alt>M"
   extractAct  <- anew "0035 Extract"          "0045 Extract files from archive(s)"      (Just stockMediaPlay)       "<Alt>E"
   testAct     <- anew "0034 Test"             "0044 Test files in archive(s)"           (Just stockSpellCheck)      "<Alt>T"
   arcinfoAct  <- anew "0086 ArcInfo"          "0087 Information about archive"          (Just stockInfo)            "<Alt>I"
@@ -162,9 +164,11 @@ myGUI run args = do
 
   lockAct     <- anew "0266 Lock"             "0267 Lock archive from further changes"  (Just stockDialogAuthentication) "<Alt>L"
   commentAct  <- anew "0268 Comment"          "0269 Edit archive comment"               (Just stockEdit)            "<Alt>C"
+  recompressAct<-anew "0293 Recompress"       "0294 Recompress files in archive"        (Just stockGotoBottom)      "<Alt>R"
   toSfxAct    <- anew "0270 Convert to SFX"   "0271 Convert archive to SFX"             (Just stockConvert)         "<Alt>S"
   encryptAct  <- anew "0272 Encrypt"          "0273 Encrypt archive contents"           (Nothing)                   ""
   addRrAct    <- anew "0274 Protect"          "0275 Add Recovery record to archive"     (Nothing)                   "<Alt>P"
+  modifyAct   <- anew "0031 Modify"           "0041 Modify archive(s)"                  (Just stockEdit)            "<Alt>M"
   joinAct     <- anew "0032 Join archives"    "0042 Join archives together"             (Just stockCopy)            "<Alt>J"
 
   settingsAct <- anew "0064 Settings"         "0065 Edit program settings"              (Just stockPreferences)     ""
@@ -594,6 +598,10 @@ myGUI run args = do
   commentAct `onActionActivate` do
     archiveOperation fm' $
       arcinfoDialog fm' exec CommentMode
+
+  -- Преобразовать архив в SFX
+  recompressAct `onActionActivate` do
+    addDialog fm' exec "ch" RecompressMode
 
   -- Преобразовать архив в SFX
   toSfxAct `onActionActivate` do

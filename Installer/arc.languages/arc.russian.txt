@@ -69,6 +69,8 @@ Tools menu/toolbar
 0267 Lock archive from further changes=Закрыть архив от модификаций
 0268 Comment=Комментарий
 0269 Edit archive comment=Редактировать комментарий к архиву
+0293 Recompress=Перепаковать
+0294 Recompress files in archive=Перепаковать файлы в архиве
 0270 Convert to SFX=Превратить в SFX
 0271 Convert archive to SFX=Превратить архив в SFX
 0272 Encrypt=Зашифровать
