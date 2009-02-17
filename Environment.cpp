@@ -7,8 +7,8 @@
 #include "Environment.h"
 #include "Compression/Compression.h"
 
-// Изменим настройки RTS, включив compacting GC начиная с 20 mb: "-c1 -M2000m" (отключено до исправления ошибки в compacting GC)
-char *ghc_rts_opts = "-c1 -M2000m";
+// Изменим настройки RTS, включив compacting GC начиная с 40 mb:
+char *ghc_rts_opts = "-c1 -M4000m";
 
 
 /* ********************************************************************************************************
