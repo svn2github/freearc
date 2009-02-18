@@ -62,7 +62,7 @@ inline int accept_match (int len, BYTE *p, BYTE *q, void *bufend)
     case 5:  return p-q<192*kb && p<=bufend && val32equ(p, q) && p[4]==q[4]                      ? 5 : 0;
     case 6:  return p-q<1*mb   && p<=bufend && val32equ(p, q) && val16equ(p+4, q+4)              ? 6 : 0;
     case 7:  return p-q<12*mb  && p<=bufend && val32equ(p, q) && val24equ(p+4, q+4)              ? 7 : 0;
-    case 8:  return               p<=bufend && val32equ(p, q) && val24equ(p+4, q+4)              ? 8 : 0;
+    case 8:  return               p<=bufend && val32equ(p, q) && val32equ(p+4, q+4)              ? 8 : 0;
     case 9:  return               p<=bufend && val32equ(p, q) && val32equ(p+4, q+4) && p[8]==q[8]? 9 : 0;
     }
 }
