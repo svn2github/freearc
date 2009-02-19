@@ -40,7 +40,7 @@ void TORNADO_METHOD::SetDictionary (MemSize dict)
 // Записать в buf[MAX_METHOD_STRLEN] строку, описывающую метод сжатия и его параметры (функция, обратная к parse_TORNADO)
 void TORNADO_METHOD::ShowCompressionMethod (char *buf)
 {
-    struct PackMethod defaults = std_Tornado_method[m.number];  char NumStr[100], BufferStr[100], HashSizeStr[100], TempHashSizeStr[100], RowStr[100], EncStr[100], ParserStr[100], StepStr[100];
+    struct PackMethod defaults = std_Tornado_method[m.number];  char NumStr[100], BufferStr[100], HashSizeStr[100], TempHashSizeStr[100], RowStr[100], EncStr[100], ParserStr[100], StepStr[100], TableStr[100];
     showMem (m.buffer,   BufferStr);
     showMem (m.hashsize, TempHashSizeStr);
     sprintf (NumStr,      m.number  !=default_Tornado_method? ":%d"  : "", m.number);
@@ -49,7 +49,8 @@ void TORNADO_METHOD::ShowCompressionMethod (char *buf)
     sprintf (EncStr,      m.encoding_method !=defaults.encoding_method? ":c%d"  : "", m.encoding_method);
     sprintf (ParserStr,   m.match_parser    !=defaults.match_parser?    ":p%d"  : "", m.match_parser);
     sprintf (StepStr,     m.update_step     !=defaults.update_step?     ":u%d"  : "", m.update_step);
-    sprintf (buf, "tor%s:%s%s%s%s%s%s", NumStr, BufferStr, HashSizeStr, RowStr, EncStr, ParserStr, StepStr);
+    sprintf (TableStr,    m.find_tables     !=defaults.find_tables?     ":t%d"  : "", m.find_tables);
+    sprintf (buf, "tor%s:%s%s%s%s%s%s%s", NumStr, BufferStr, HashSizeStr, RowStr, EncStr, ParserStr, StepStr, TableStr);
 }
 
 #endif  // !defined (FREEARC_DECOMPRESS_ONLY)
@@ -75,6 +76,7 @@ COMPRESSION_METHOD* parse_TORNADO (char** parameters)
         case 'c': p->m.encoding_method = parseInt (param+1, &error); continue;
         case 'p': p->m.match_parser    = parseInt (param+1, &error); continue;
         case 'u': p->m.update_step     = parseInt (param+1, &error); continue;
+        case 't': p->m.find_tables     = parseInt (param+1, &error); continue;
       }
       // Сюда мы попадаем, если в параметре не указано его название
       // Если этот параметр удастся разобрать как целое число (т.е. в нём - только цифры),
