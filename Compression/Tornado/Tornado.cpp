@@ -173,7 +173,8 @@ int tor_compress_chunk (PackMethod m, CALLBACK_FUNC *callback, void *auxdata, by
 
         // Check for data table that may be subtracted to improve compression
         if (coder.support_tables  &&  p > table_end) {
-            CHECK_FOR_DATA_TABLE (2);
+            if (mf.min_length() < 4)
+              CHECK_FOR_DATA_TABLE (2);
             CHECK_FOR_DATA_TABLE (4);
             if (p-last_found > table_dist)  table_end = p + table_shift;
             goto not_found;
@@ -430,7 +431,7 @@ int tor_decompress0 (CALLBACK_FUNC *callback, void *auxdata, int _bufsize, int m
                 while (--len);
 
             // Check that it's a proper match
-            } else if (len<IMPOSSIBLE_LEN) {          //// offset may overflow for files larger than 2^64 bytes 
+            } else if (len<IMPOSSIBLE_LEN) {          //// offset may overflow for files larger than 2^64 bytes
                 if (dist>bufsize || len>2*_bufsize || output-outbuf+offset<dist)  {errcode=FREEARC_ERRCODE_BAD_COMPRESSED_DATA; goto finished;}
                 // Slow match copying route for cases when output-dist points before buffer beginning,
                 // or p may wrap at buffer end, or output pointer may run over write point
