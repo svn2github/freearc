@@ -16,40 +16,87 @@
 
 Language name in english and mother tongue
 0000 Language=German (Deutsch)
-0159 Copyright=Vacon and Peter Bauder (based on 7zip language file;edited for FreeArc-0.50-win32-alpha-2008-06-23)\nOriginal copyrights:\nTranslated by Soeren Finster\n7-Zip 4.07 beta\nUpdated by JAK-Software.DE\n7-Zip 4.55 beta\nMaintained by Joachim Henke (since 4.12 beta)
+0159 Copyright=Vacon and Peter Bauder (based on 7zip language file;edited for FreeArc-0.50-win32-alpha-2009-02-16)\nOriginal copyrights:\nTranslated by Soeren Finster\n7-Zip 4.07 beta\nUpdated by JAK-Software.DE\n7-Zip 4.55 beta\nMaintained by Joachim Henke (since 4.12 beta)
+
+Language-specific URLs relative to http://freearc.org and helpfiles
+0254 Homepage=??
+0255 News page=??
+0256 Helpfile=??
+0257 Command-line help=??
+
 
 === Menu ========================================================================
 Main menu
 0050 File=&Datei
 0066 Edit=&Bearbeiten
+0258 Commands=Bearbeiten
+0259 Tools=&Extras
+0260 Options=Optionen
+0261 Help=&Hilfe
 
-File menu/toolbar 
-0030 Add=Hinzufügen
-0040 Add files to archive(s)=Fügt die markierten Objekte einem vorhandenen bzw. einem neuen Archiv hinzu
-0031 Modify=Modifizieren
-0041 Modify archive(s)=Archiv(e) modifizieren
-0032 Join=Verbinden...
-0042 Join archives together=Archive verbinden
-0033 Delete=&Löschen
-0043 Delete files (from archive)=Datei(en) (aus dem Archiv) löschen
-0034 Test=Überprüfen
-0044 Test files in archive(s)=Prüft die Integrität des ausgewählten Archivs
-0035 Extract=Entpacken
-0045 Extract files from archive(s)=Dateien aus dem gewählten Archiv entpacken
-0064 Settings=Einstellungen
-0065 Edit program settings=Programmeinstellungen bearbeiten
-0036 Exit=Be&enden
-0046 Quit application=Programm verlassen
-
-Edit menu/toolbar 
+File menu/toolbar
+0262 Open archive=Öffnen
+0265 Open archive=Archiv öffnen
+0263 Select all=Alles &markieren
+0290 Select all files=Alle Dateien markieren
 0037 Select=Auswählen
 0047 Select files=Dateien auswählen
 0038 Unselect=Auswahl aufheben
 0048 Unselect files=Dateiauswahl aufheben
+0264 Invert selection=Markierung &umkehren
+0291 Invert selection=Markierung &umkehren
 0039 Refresh=&Aktualisieren
 0049 Reread archive/directory=Archiv/Verzeichnis neu einlesen
+0036 Exit=Be&enden
+0046 Quit application=Programm verlassen
+
+Commands menu/toolbar
+0030 Add=Hinzufügen
+0040 Add files to archive(s)=Fügt die markierten Objekte einem vorhandenen bzw. einem neuen Archiv hinzu
+0031 Modify=Modifizieren
+0041 Modify archive(s)=Archiv(e) modifizieren
+0035 Extract=Entpacken
+0045 Extract files from archive(s)=Dateien aus dem gewählten Archiv entpacken
+0034 Test=Überprüfen
+0044 Test files in archive(s)=Prüft die Integrität des ausgewählten Archivs
 0086 ArcInfo=Eigenschaften
 0087 Information about archive=Info zum gewählten Archiv
+0033 Delete=&Löschen
+0043 Delete files (from archive)=Datei(en) (aus dem Archiv) löschen
+
+Tools menu/toolbar
+0266 Lock=Verschluss
+0267 Lock archive from further changes=Archiv vor weiteren Veränderungen schützen
+0268 Comment=Kommentar
+0269 Edit archive comment=Archivkommentar bearbeiten
+0270 Convert to SFX=zu SFX-Exe...
+0271 Convert archive to SFX=Archiv zu SFX-Exe konvertieren
+0272 Encrypt=Verschlüsseleln
+0273 Encrypt archive contents=Archivinhalt verschlüsseln
+0274 Protect=Wiederherstellungsinfos...
+0275 Add Recovery record to archive=Fügt Wiederherstellungsinformationen zum Archiv hinzu
+0032 Join=Verbinden...
+0042 Join archives together=Archive verbinden
+
+Options menu/toolbar
+0064 Settings=Einstellungen
+0065 Edit program settings=Programmeinstellungen bearbeiten
+0276 View log=Logdatei ansehen
+0277 View logfile=Logdatei ansehen
+0278 Clear log=Logdatei löschen
+0279 Clear logfile=Logdatei löschen
+
+Help menu/toolbar
+0280 Main help=Hilfe
+0281 Help on using FreeArc=Hilfe zur Benutzung von FreeArc
+0282 Cmdline help=Befehlszeilen-Hilfe
+0283 Help on FreeArc command line=Hilfe zur Befehlszeile von FreeArc
+0284 Goto Homepage=Gehe zur Homepage
+0285 Open program site=Programmhomepage öffnen
+0286 Check for update=Überprüfe auf Updates
+0287 Check for new program versions=Überprüfe ob neue Programmversion vorliegt
+0288 About=Info
+0289 About=Info
 
 
 === File manager ==================================================================
@@ -196,7 +243,7 @@ Archive information dialog
 --
 0104 Directory blocks:=Verzeichnisblöcke:
 0092 Solid blocks:=Solide Blöcke:
-0093 Avg. size:=Durchschnittliche Größe:
+0093 Avg. blocksize:=Durchschnittliche Größe:
 --
 0099 Compression memory:=Speicherbedarf beim Komprimieren:
 0100 Decompression memory:=Speicherbedarf beim Entpacken:
@@ -222,6 +269,7 @@ Settings dialog
 0170 Full name:=Vollständiger Name:
 0171 Copyright:=Copyright:
 0166 Logfile:=Protokoll:
+0292 View=&Ansehen
 0167 Select logfile=Protokolldatei auswählen
 0172 Associate FreeArc with .arc files=.arc-Dateien mit FreeArc verknüpfen
 

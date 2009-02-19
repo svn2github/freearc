@@ -10,7 +10,7 @@
 ***  You may assign tooltip to any label - just use its number +1000 at    ***
 ***  the left side. For example, label:                                    ***
 ***    0185 Protection:=Protection: (written in your language, of course)  ***
-***  Its tooltip:                                                          ***
+***  It's tooltip:                                                         ***
 ***    1185 Protection:=Appends recovery information to archive            ***
 ******************************************************************************
 
@@ -18,38 +18,85 @@ Language name in english and mother tongue
 0000 Language=Czech (Čeština)
 0159 Copyright=Radek "Black_Fox" Liška\nDodatky k překladu: Jan Ondruš, Milan Hrubý, Michal Molhanec
 
+Language-specific URLs relative to http://freearc.org and helpfiles
+0254 Homepage=??
+0255 News page=??
+0256 Helpfile=??
+0257 Command-line help=??
+
+
 === Menu ========================================================================
 Main menu
 0050 File=Soubor
 0066 Edit=Úpravy
+0258 Commands=Příkazy
+0259 Tools=&Nástroje
+0260 Options=Možnosti
+0261 Help=Nápo&věda
 
-File menu/toolbar 
-0030 Add=Přidat
-0040 Add files to archive(s)=Přidá vybrané položky do archivu
-0031 Modify=Upravit
-0041 Modify archive(s)=Upraví archiv(y)
-0032 Join=Spojit
-0042 Join archives together=Spojí archivy dohromady
-0033 Delete=Vymazat
-0043 Delete files (from archive)=Vymaže soubory (z archivu)
-0034 Test=Test
-0044 Test files in archive(s)=Otestuje integritu vybraného archivu
-0035 Extract=Rozbalit
-0045 Extract files from archive(s)=Rozbalí soubory z vybraného archivu
-0064 Settings=Nastavení
-0065 Edit program settings=Upraví nastavení programu
-0036 Exit=Konec
-0046 Quit application=Ukončí program
-
-Edit menu/toolbar 
+File menu/toolbar
+0262 Open archive=Otevřít
+0265 Open archive=Otevře archiv
+0263 Select all=Vybrat &vše
+0290 Select all files=Vybere všechny soubory
 0037 Select=Vybrat
 0047 Select files=Vybere soubory
 0038 Unselect=Odvybrat
 0048 Unselect files=Odvybere soubory
+0264 Invert selection=&Invertovat výběr
+0291 Invert selection=Invertuje výběr, předtím nevybrané bude vybrané a naopak
 0039 Refresh=Obnovit
 0049 Reread archive/directory=Znovu načte archiv/složku
+0036 Exit=Konec
+0046 Quit application=Ukončí program
+
+Commands menu/toolbar
+0030 Add=Přidat
+0040 Add files to archive(s)=Přidá vybrané položky do archivu
+0031 Modify=Upravit
+0041 Modify archive(s)=Upraví archiv(y)
+0035 Extract=Rozbalit
+0045 Extract files from archive(s)=Rozbalí soubory z vybraného archivu
+0034 Test=Test
+0044 Test files in archive(s)=Otestuje integritu vybraného archivu
 0086 ArcInfo=Informace
 0087 Information about archive=Zobrazí informace o archivu
+0033 Delete=Vymazat
+0043 Delete files (from archive)=Vymaže soubory (z archivu)
+
+Tools menu/toolbar
+0266 Lock=Zamknout
+0267 Lock archive from further changes=Zamkne archiv 
+0268 Comment=Komentář
+0269 Edit archive comment=Upraví komentář archivu
+0270 Convert to SFX=Převést na SFX
+0271 Convert archive to SFX=Převede archiv na samorozbalovací
+0272 Encrypt=Zašifrovat
+0273 Encrypt archive contents=Zašifruje obsah archivu
+0274 Protect=Ochránit
+0275 Add Recovery record to archive=Přidá do archivu záznam pro opravu dat
+0032 Join=Spojit
+0042 Join archives together=Spojí archivy dohromady
+
+Options menu/toolbar
+0064 Settings=Nastavení
+0065 Edit program settings=Upraví nastavení programu
+0276 View log=Prohlédnout záznamy
+0277 View logfile=Zobrazí soubor se záznamy
+0278 Clear log=Vymazat záznamy
+0279 Clear logfile=Vymaže obsah souboru se záznamy
+
+Help menu/toolbar
+0280 Main help=Hlavní nápověda
+0281 Help on using FreeArc=Návod k použití FreeArcu
+0282 Cmdline help=Nápověda k příkazové řádce
+0283 Help on FreeArc command line=Návod k použití FreeArcu v příkazové řádce
+0284 Goto Homepage=Jít na domovskou stránku
+0285 Open program site=Otevře domovskou stránku programu
+0286 Check for update=Zkontrolovat aktualizace
+0287 Check for new program versions=Zkontroluje, jestli nevyšly nové aktualizace programu
+0288 About=O programu FreeArc
+0289 About=Zobrazí informace o verzi a autorovi
 
 
 === File manager ==================================================================
@@ -196,7 +243,7 @@ Archive information dialog
 --
 0104 Directory blocks:=Adresářových bloků:
 0092 Solid blocks:=Solid bloků:
-0093 Avg. size:=Průměrná velikost:
+0093 Avg. blocksize:=Průměrná velikost:
 --
 0099 Compression memory:=Spotřeba paměti pro zabalení:
 0100 Decompression memory:=Spotřeba paměti pro rozbalení:
@@ -222,6 +269,7 @@ Settings dialog
 0170 Full name:=Celý název:
 0171 Copyright:=Copyright:
 0166 Logfile:=Soubor záznamu:
+0292 View=&Zobrazit
 0167 Select logfile=Vybrat záznam
 0172 Associate FreeArc with .arc files=Asociovat FreeArc se soubory .arc
 
@@ -280,6 +328,8 @@ Progress indicator
 0057 Total files=Celkem souborů:
 0058 Bytes=Bajtů
 0059 Total bytes=Velikost:
+0252 Compressed=Komprimovaná velikost:
+0253 Total compressed=Celkem zkomprimováno:
 0060 Ratio=Kompresní poměr:
 0061 Speed=Rychlost:
 0062 Time=Uplynulý čas:
@@ -402,18 +452,17 @@ Exclude
 ***  You may find some tooltips in arc.english.txt                                     ***
 ******************************************************************************************
 
---Other
-1072 Additional options:=Další ručně nastavitelné možnosti (pro pokročilé uživatele)
-
---Add dialog
+Add dialog
+--
 1183 Compression=Zde lze zvolit nastavení komprese.\nPro pokročilá nastavení zvolte kartu \"Komprese\"
 1184 Encryption=Je-li zaškrtnuto, použije se šifrování.\nPro pokročilá nastavení zvolte kartu \"Šifrování\"
 1185 Protection:=Připojí k archivu data (implicitně o velikosti 1% archivu), která dovolují obnovit obsah archivu v případě poškození úložiště či chyb při přenosu
 1186 Comment=Zvolený komentář bude přidán do archivu
-1122 Delete files successfully archived=Je-li tato položka zaškrtnuta, archivované soubory budou po úspěšné kompresi smazány
 1227 Make EXE:=Je-li tato položka zaškrtnuta, bude vytvořen samorozbalovací archiv\n(FreeArc pak nemusí být nainstalován na počítači, kde se bude archiv rozbalovat)
 1128 Test archive after operation=Otestuje, zda komprese proběhla bez chyb
+1122 Delete files successfully archived=Je-li tato položka zaškrtnuta, archivované soubory budou po úspěšné kompresi smazány
 1187 Finalize archive=Archiv bude po kompresi uzavřen\n(nebudou možné jeho následné změny)
+1072 Additional options:=Další ručně nastavitelné možnosti (pro pokročilé uživatele)
 --
 1201 Compress each file into separate archive=Je-li tato položka zaškrtnuta, každý soubor bude zvlášť zkomprimován do samostatného archivu
 1202 Add to archive name=Připojí vybraný parametr k názvu archivu (např. datum a čas)
@@ -423,11 +472,6 @@ Exclude
 --
 1222 Include only files=Je-li tato položka zaškrtnuta, budou archivovány jen zadané typy souborů (např. *.txt)
 1223 Exclude files=Je-li tato položka zaškrtnuta, budou zadané typy souborů z archivace vynechány (např *.dll)
-1224 Include only files larger than:=Soubory, které jsou menší než je zadaná velikost, budou z archivace vynechány
-1225 Include only files smaller than:=Soubory, které jsou větší než je zadaná velikost, budou z archivace vynechány
---
-
-
 
 --Compression settings
 1113 Fast, low-memory decompression=Nepoužijí se algoritmy s pomalou nebo paměťově náročnou dekompresí, nicméně tato volba může zpomalit a zhoršit kompresi
@@ -436,13 +480,11 @@ Exclude
 1139 Files, no more than:=Specifikuje maximální počet souborů, které může solid blok obsahovat
 1140 Split by extension=Roztřídí soubory podle přípony (každý solid blok poté bude obsahovat pouze jeden typ souborů)
 
--- Encryption settings
+--Encryption settings
 1120 Encrypt archive directory=Zašifruje metadata archivu (názvy, velikosti a CRC souborů v archivu), takže heslo bude muset být zadáno i pro otevření archivu. Tuto volbu výrazně doporučujeme pro zajištění opravdové bezpečnosti dat
 1123 Keyfile:=Klíč je dodatečné heslo uložené do souboru na disku, které bude vyžadováno při otevření archivu. Doporučuje se používat klíč pro maximální využití potenciálu AES a dalších bezpečnostních algoritmů
 1125 Generate new keyfile=Vytvoří nový klíč s uživatelsky vybraným názvem obsahující 1 kB kryptograficky generovaných náhodných dat
 1181 Use password=Je-li tato položka zaškrtnuta, bude použito zadané heslo. Udržujte heslo v bezpečí!\n(Je možné použít klíč a heslo zároveň)
-
-
 
 
 === Everything else ====================================================
