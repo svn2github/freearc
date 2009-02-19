@@ -95,7 +95,10 @@ struct DataTableEntry {int table_type; BYTE *table_start; int table_len;};
 struct DataTables
 {
    DataTableEntry   *tables, *curtable, *tables_end;   // Pointers to the start, cuurent entry and end of allocated DataTableEntries table
+
+   int               base_data_bytes;
    byte              base_data[MAX_TABLE_ROW_AT_DECOMPRESSION];  // Place for saving intermediate base element of table divided between two write chunks
+   byte              original[MAX_TABLE_ROW_AT_DECOMPRESSION];
 
    DataTables();
    ~DataTables()   {free(tables);}
@@ -109,7 +112,7 @@ struct DataTables
 
    enum OPERATION {DO_DIFF, DO_UNDIFF};
    // Either diff or undiff all tables in list until buffer point marked by write_end pointer
-   void process_tables (OPERATION op, BYTE *write_end);
+   void process_tables (OPERATION op, BYTE *write_start, BYTE *write_end);
 
    // Undiff contents of tables in current list, preparing data buffer to be saved to outstream
    void undiff_tables (BYTE *write_start, BYTE *write_end);
@@ -117,7 +120,7 @@ struct DataTables
    // Called after data was written. It diffs tables again so that their contents
    // may be used in subsequent LZ decompression. It also clears list of datatables,
    // leaving only last table if this table continues after write_end pointer
-   void diff_tables (BYTE *write_end);
+   void diff_tables (BYTE *write_start, BYTE *write_end);
 
    // Called when buffer shifts to new position relative to file -
    // list entries also need to be shifted
@@ -136,7 +139,7 @@ DataTables::DataTables()
 // Add description of one more datatable to the list
 void DataTables::add (int _table_type, BYTE *_table_start, int _table_len)
 {
-    CHECK (curtable<tables_end,                       (s,"Fatal error: DataTables::add() called without prior filled() check"));
+    CHECK (curtable<tables_end,                          (s,"Fatal error: DataTables::add() called without prior filled() check"));
     CHECK (_table_type<=MAX_TABLE_ROW_AT_DECOMPRESSION,  (s,"Fatal error: DataTables::add() called with _table_type=%d that is larger than maximum allowed %d", _table_type, MAX_TABLE_ROW_AT_DECOMPRESSION));
     curtable->table_type  = _table_type;
     curtable->table_start = _table_start;
@@ -153,12 +156,13 @@ bool DataTables::filled()
 
 enum OPERATION {DO_DIFF, DO_UNDIFF};
 // Either diff or undiff all tables in list until buffer point marked by write_end pointer
-void DataTables::process_tables (OPERATION op, BYTE *write_end)
+void DataTables::process_tables (OPERATION op, BYTE *write_start, BYTE *write_end)
 {
     for (DataTableEntry *p=tables; p<curtable; p++) {
-         //printf ("\n%d %x-%x, len=%d   ", p->table_type, table_start-outbuf, p->table_start-outbuf+p->table_len*p->table_type, p->table_len*p->table_type),
          // Truncate number of processed elements if table ends after output pointer
          int len = mymin (p->table_len, 1 + (write_end - p->table_start) / p->table_type);
+         debug (if (write_start)  printf ("\n%d %x-%x, len=%d   ", p->table_type, p->table_start-write_start, p->table_start-write_start+p->table_len*p->table_type, p->table_len));
+         debug (if (write_start && len!=p->table_len)  printf ("-> %d   ", len));
          if (op==DO_DIFF)   diff_table (p->table_type, p->table_start, len);
          else             undiff_table (p->table_type, p->table_start, len);
     }
@@ -171,21 +175,19 @@ void DataTables::undiff_tables (BYTE *write_start, BYTE *write_end)
     if (curtable>tables && tables[0].table_start < write_start)  {
         // Put correct base element (saved from previous write chunk) to the beginning of first table
         // for the duration of undiffing process but then restore original bytes
-        byte original[MAX_TABLE_ROW_AT_DECOMPRESSION];
-        int bytes = mymin (tables[0].table_type, write_start-tables[0].table_start);
-        memcpy (original,               tables[0].table_start,  bytes);
-        memcpy (tables[0].table_start,  base_data,              bytes);
-        process_tables (DO_UNDIFF, write_end);
-        memcpy (tables[0].table_start,  original,               bytes);
+        base_data_bytes = mymin (tables[0].table_type, write_start-tables[0].table_start);
+        memcpy (original,               tables[0].table_start,  base_data_bytes);
+        memcpy (tables[0].table_start,  base_data,              base_data_bytes);
+        process_tables (DO_UNDIFF, write_start, write_end);
     } else {
-        process_tables (DO_UNDIFF, write_end);
+        process_tables (DO_UNDIFF, write_start, write_end);
     }
 }
 
 // Called after data was written. It diffs tables again so that their contents
 // may be used in subsequent LZ decompression. It also clears list of datatables,
 // leaving only last table if this table continues after write_end pointer
-void DataTables::diff_tables (BYTE *write_end)
+void DataTables::diff_tables (BYTE *write_start, BYTE *write_end)
 {
     if (curtable > tables) {
         DataTableEntry p = curtable[-1];
@@ -201,15 +203,21 @@ void DataTables::diff_tables (BYTE *write_end)
             // Save base element contents of the table before diffing
             memcpy (base_data, p.table_start, p.table_type);
             // Diff buffer data in order to return them to their original state and empty the list
-            process_tables (DO_DIFF, write_end);
-            curtable = tables;
+            process_tables (DO_DIFF, NULL, write_end);
+            // Restore bytes at the beginning of first table
+            if (curtable>tables && tables[0].table_start < write_start)
+                memcpy (tables[0].table_start,  original, base_data_bytes);
             // Put unprocessed tail of last datatable into start of the list
+            curtable = tables;
             *curtable++ = p;
             return;
         }
     }
     // Default route - we don't need to keep tails, so just diff and empty the list
-    process_tables (DO_DIFF, write_end);
+    process_tables (DO_DIFF, NULL, write_end);
+    // Restore bytes at the beginning of first table
+    if (curtable>tables && tables[0].table_start < write_start)
+        memcpy (tables[0].table_start,  original, base_data_bytes);
     curtable = tables;
 }
 

@@ -118,6 +118,7 @@ int read_next_chunk (PackMethod &m, CALLBACK_FUNC *callback, void *auxdata, Matc
         debug (printf ("==== SHIFT %08x: p=%08x ====\n", sh, p-buf));
     }
     bytes = callback ("read", bufend, mymin (chunk, buf+m.buffer-bufend), auxdata);
+    debug (printf ("==== read %08x ====\n", bytes));
     if (bytes<0)  return bytes;    // Return errcode on error
     bufend += bytes;
     read_point = bytes==0? bufend:bufend-LOOKAHEAD;
@@ -173,7 +174,7 @@ int tor_compress_chunk (PackMethod m, CALLBACK_FUNC *callback, void *auxdata, by
 
         // Check for data table that may be subtracted to improve compression
         if (coder.support_tables  &&  p > table_end) {
-            if (mf.min_length() < 4)
+            if (mf.min_length() < 4)                      // increase speed by skipping this check in faster modes
               CHECK_FOR_DATA_TABLE (2);
             CHECK_FOR_DATA_TABLE (4);
             if (p-last_found > table_dist)  table_end = p + table_shift;
@@ -369,13 +370,15 @@ int tor_compress (PackMethod m, CALLBACK_FUNC *callback, void *auxdata)
     if (condition) {                                                                              \
         if (decoder.error() != FREEARC_OK)  goto finished;                                        \
         tables.undiff_tables (write_start, output);                                               \
+        debug (printf ("==== write %08x:%x ====\n", write_start-outbuf+offset, output-write_start)); \
         WRITE (write_start, output-write_start);                                                  \
-        tables.diff_tables (output);                                                              \
+        tables.diff_tables (write_start, output);                                                 \
         write_start = output;  /* next time we should start writing from this pos */              \
                                                                                                   \
         /* Check that we should shift the output pointer to start of buffer */                    \
         if (output >= outbuf + bufsize) {                                                         \
             offset      += output-outbuf;                                                         \
+            offset      &= (uint64(1) << 63) - 1;                                                 \
             write_start -= output-outbuf;                                                         \
             write_end   -= output-outbuf;                                                         \
             tables.shift (output,outbuf);                                                         \
@@ -431,7 +434,7 @@ int tor_decompress0 (CALLBACK_FUNC *callback, void *auxdata, int _bufsize, int m
                 while (--len);
 
             // Check that it's a proper match
-            } else if (len<IMPOSSIBLE_LEN) {          //// offset may overflow for files larger than 2^64 bytes
+            } else if (len<IMPOSSIBLE_LEN) {
                 if (dist>bufsize || len>2*_bufsize || output-outbuf+offset<dist)  {errcode=FREEARC_ERRCODE_BAD_COMPRESSED_DATA; goto finished;}
                 // Slow match copying route for cases when output-dist points before buffer beginning,
                 // or p may wrap at buffer end, or output pointer may run over write point
