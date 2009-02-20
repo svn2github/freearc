@@ -377,8 +377,8 @@ int tor_compress (PackMethod m, CALLBACK_FUNC *callback, void *auxdata)
                                                                                                   \
         /* Check that we should shift the output pointer to start of buffer */                    \
         if (output >= outbuf + bufsize) {                                                         \
+            offset_overflow |= (offset > (uint64(1) << 63));                                      \
             offset      += output-outbuf;                                                         \
-            offset      &= (uint64(1) << 63) - 1;                                                 \
             write_start -= output-outbuf;                                                         \
             write_end   -= output-outbuf;                                                         \
             tables.shift (output,outbuf);                                                         \
@@ -403,14 +403,15 @@ int tor_decompress0 (CALLBACK_FUNC *callback, void *auxdata, int _bufsize, int m
     Decoder decoder (callback, auxdata, _bufsize);        // LZ77 decoder parses raw input bitstream and returns literals&matches
     if (decoder.error() != FREEARC_OK)  return decoder.error();
     uint bufsize = compress_all_at_once? _bufsize : mymax (_bufsize, HUGE_BUFFER_SIZE);   // Make sure that outbuf is at least 8mb in order to avoid excessive disk seeks (not required in programs compiled for one-shot compression)
-    BYTE *outbuf = (byte*) malloc (bufsize+MAX_TABLE_ROW_AT_DECOMPRESSION*2);  // Circular buffer for decompressed data
+    BYTE *outbuf = (byte*) malloc (bufsize+PAD_FOR_TABLES*2);  // Circular buffer for decompressed data
     if (!outbuf)  return FREEARC_ERRCODE_NOT_ENOUGH_MEMORY;
-    outbuf += MAX_TABLE_ROW_AT_DECOMPRESSION;  // We need at least MAX_TABLE_ROW_AT_DECOMPRESSION bytes available before and after outbuf in order to simplify datatables undiffing
-    BYTE *output      = outbuf;                // Current position in decompressed data buffer
-    BYTE *write_start = outbuf;                // Data up to this point was already writen to outsream
+    outbuf += PAD_FOR_TABLES;       // We need at least PAD_FOR_TABLES bytes available before and after outbuf in order to simplify datatables undiffing
+    BYTE *output      = outbuf;     // Current position in decompressed data buffer
+    BYTE *write_start = outbuf;     // Data up to this point was already writen to outsream
     BYTE *write_end   = outbuf + mymin (bufsize, HUGE_BUFFER_SIZE); // Flush buffer when output pointer reaches this point
     if (compress_all_at_once)  write_end = outbuf + bufsize + 1;    // All data should be written after decompression finished
     uint64 offset = 0;                    // Current outfile position corresponding to beginning of outbuf
+    int offset_overflow;                  // Flags what offset was overflowed so we can't use it for match checking
     DataTables tables;                    // Info about data tables that should be undiffed
     for (;;) {
         // Check whether next input element is a literal or a match
@@ -427,7 +428,7 @@ int tor_decompress0 (CALLBACK_FUNC *callback, void *auxdata, int _bufsize, int m
             UINT dist = decoder.getdist();
             print_match (output-outbuf+offset, len, dist);
 
-            // Check for good match (i.e. match not requiring any special handling, >99% of matches fail to this class)
+            // Check for simple match (i.e. match not requiring any special handling, >99% of matches fail to this category)
             if (output-outbuf>=dist && write_end-output>len) {
                 BYTE *p = output-dist;
                 do   *output++ = *p++;
@@ -435,7 +436,8 @@ int tor_decompress0 (CALLBACK_FUNC *callback, void *auxdata, int _bufsize, int m
 
             // Check that it's a proper match
             } else if (len<IMPOSSIBLE_LEN) {
-                if (dist>bufsize || len>2*_bufsize || output-outbuf+offset<dist)  {errcode=FREEARC_ERRCODE_BAD_COMPRESSED_DATA; goto finished;}
+                // Check that compressed data are not broken
+                if (dist>bufsize || len>2*_bufsize || (output-outbuf+offset<dist && !offset_overflow))  {errcode=FREEARC_ERRCODE_BAD_COMPRESSED_DATA; goto finished;}
                 // Slow match copying route for cases when output-dist points before buffer beginning,
                 // or p may wrap at buffer end, or output pointer may run over write point
                 BYTE *p  =  output-outbuf>=dist? output-dist : output-dist+bufsize;
@@ -464,7 +466,7 @@ int tor_decompress0 (CALLBACK_FUNC *callback, void *auxdata, int _bufsize, int m
         }
     }
 finished:
-    free(outbuf-MAX_TABLE_ROW_AT_DECOMPRESSION);
+    free(outbuf-PAD_FOR_TABLES);
     // Return errcode, decoder error code or FREEARC_OK
     return errcode>=0? decoder.error() : errcode;
 }
@@ -569,6 +571,7 @@ LZ77 model:
 +fixed: использование в проверке на REPCHAR инициализационного значения repdist0=1
         использование псевдодистанции от MMx для проверки на REPCHAR (учти: декодер должен иметь ту же очередь последних дистанций)
         переход diffed table через сдвиг буфера
+          восстановление данных должно делаться после обратного diff, иначе этот diff запишет мусор в элемент, следующий за восстановленным
         использование p->table_len вместо обрезанного len
         write_end мог выходить за границу буфера
         read_next_chunk должен возвращать 0 если больше сжимать нечего (последний матч добил до конца уже прочитанных данных и новых прочесть не удалось)
@@ -596,7 +599,7 @@ minor thoughts:
   increase HUFBLOCKSIZE for -2/-3  (100k - -0.2sec)
 
 text files -5/-6: disable 2/3-byte searching, repchar and use encode(..., MINLEN=4), switch to hufcoder(?)
-hufcoder: disable REPDIST, fast qsort<>
+hufcoder: disable REPDIST, +fast qsort<>
 huf&ari: EOB, check for text-like stats, switch into text mode
 
 use only one bit for flag in bytecoder
@@ -611,9 +614,9 @@ huf/ari: вместо cnt++ делать cnt+=10 - должно увеличить точность кодирования (эт
 ST4/BWT sorting for exhaustive string searching
 
 ускорение tor:5
-  ускорение lazy поиска (Кадач)
+  -ускорение lazy поиска (Кадач)
   ускорение сравнения матчей (идея автора QuickLZ)
-  искать MM tables by rep* codes
+  -искать MM tables by rep* codes
   оптимизировать huf и перейти на него
   для текстов:
     не использовать 2/3-byte matches
@@ -646,7 +649,7 @@ make non-inline as much functions as possible (optimize .exe size): +MatchFinder
 .tor signature, version, flags, crc
 ? записывать сжатые данные перед чтением следующего chunk и использовать storing при отсутствии сжатия (обнулять huf/ari-table)
 ? уменьшить хеш назад вдвое (сначала проверить эффект на других файлах, 200-300 kb на all)
-print predefined methods definitions in help screen
++print predefined methods definitions in help screen
 -mem должно демонстрировать режимы сжатия от -1 до -9?  -bench для моих внутренних тестов
 tor_compress: при сжатии файла ==buffer происходит лишний перенос данных перед тем, как прочесть 0 байт :)
 

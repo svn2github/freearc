@@ -9,7 +9,7 @@
 #define MAX_TABLE_ROW_AT_DECOMPRESSION 256
 
 // Pad required before and after decompression output buffer to support undiffing
-#define PAD_FOR_TABLES (MAX_TABLE_ROW_AT_DECOMPRESSION*2*2)
+#define PAD_FOR_TABLES (MAX_TABLE_ROW_AT_DECOMPRESSION*2)
 
 
 // Utility part ******************************************************************************

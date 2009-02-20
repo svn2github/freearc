@@ -273,7 +273,7 @@ check_for_errors:
         showMem (r.method.hashsize, h);
         showMem (r.method.auxhash_size, ah);
         showMem (r.method.buffer, b);
-        printf( "Tornado compressor v0.5 alpha (c) Bulat.Ziganshin@gmail.com  2009-01-14");
+        printf( "Tornado compressor v0.5 alpha (c) Bulat.Ziganshin@gmail.com  2009-02-20");
         printf( "\n" );
         printf( "\n Usage: tor [options and files in any order]");
         printf( "\n   -#      -- compression level (1..%d), default %d", int(elements(std_Tornado_method))-1, default_Tornado_method);
