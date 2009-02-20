@@ -43,12 +43,14 @@ Date        Version  New features compared to previous version
                      64-bit compilers support!
                      -3 mode compression improved by 2-3%
                      2mb hash in -4/-5 modes improved speed by 20-30%
+                     Fixed long-standing decompression bug (table split across 2 write chunks)
+                     Removed CHECK_FOR_DATA_TABLE(2) in -3/-4 modes
+
 
 shift buffer by 1/8, 1/16... for large -l
 -h512m:64, -ah512m:64, -h -ah -b<128m
-remove CHECK_FOR_DATA_TABLE(2) in -3/-4
 hufblock=50.000 in -3 & for texts/compressed
-no rep codes in -3
+no rep codes in -3  (also useful for -2 -c3)
 
 skip 0/32 when calculating hash
 check matches at REP_DIST first	(should improve compression for binary files)
