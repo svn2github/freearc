@@ -411,7 +411,7 @@ int tor_decompress0 (CALLBACK_FUNC *callback, void *auxdata, int _bufsize, int m
     BYTE *write_end   = outbuf + mymin (bufsize, HUGE_BUFFER_SIZE); // Flush buffer when output pointer reaches this point
     if (compress_all_at_once)  write_end = outbuf + bufsize + 1;    // All data should be written after decompression finished
     uint64 offset = 0;                    // Current outfile position corresponding to beginning of outbuf
-    int offset_overflow;                  // Flags what offset was overflowed so we can't use it for match checking
+    int offset_overflow = 0;              // Flags what offset was overflowed so we can't use it for match checking
     DataTables tables;                    // Info about data tables that should be undiffed
     for (;;) {
         // Check whether next input element is a literal or a match
