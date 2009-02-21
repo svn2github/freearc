@@ -161,6 +161,15 @@ static inline int  file_exists (CFILENAME name) {return _taccess(name,0) == 0;}
 #define set_ftime(stream,tstamp)                setftime( file_no(stream), (struct ftime *) &tstamp )
 #define set_binary_mode(file)                   setmode(fileno(file),O_BINARY)
 
+// Number of 100 nanosecond units from 01.01.1601 to 01.01.1970
+#define EPOCH_BIAS    116444736000000000ull
+
+inline void WINAPI UnixTimeToFileTime( time_t time, FILETIME* ft )
+{
+  *(uint64*)ft = EPOCH_BIAS + time * 10000000ull;
+}
+
+
 #endif // FREEARC_WIN
 
 

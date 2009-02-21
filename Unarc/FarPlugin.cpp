@@ -54,15 +54,6 @@ void cleanup()
   FreeAndNil (arcinfo);
 }
 
-// Number of 100 nanosecond units from 01.01.1601 to 01.01.1970
-#define EPOCH_BIAS    116444736000000000ull
-
-void WINAPI UnixTimeToFileTime( time_t time, FILETIME* ft )
-{
-  *(uint64*)ft = EPOCH_BIAS + time * 10000000ull;
-}
-
-
 BOOL WINAPI _export IsArchive(const char *Name,const unsigned char *Data,int DataSize)
 {
   // Найти в буфере сигнатуру, а после неё - версию архиватора

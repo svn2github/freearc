@@ -782,6 +782,15 @@ chooseFile parentWindow dialogType dialogTitle filters getFilename setFilename =
 foreign import ccall safe "Environment.h BrowseForFolder"  c_BrowseForFolder :: CFilePath -> CFilePath -> CFilePath -> IO CInt
 foreign import ccall safe "Environment.h BrowseForFile"    c_BrowseForFile   :: CFilePath -> CFilePath -> CFilePath -> IO CInt
 
+
+guiFormatDateTime t = unsafePerformIO $ do
+  allocaBytes 1000 $ \buf -> do
+  c_GuiFormatDateTime t buf 1000 nullPtr nullPtr
+  peekCString buf
+
+foreign import ccall safe "Environment.h GuiFormatDateTime"
+  c_GuiFormatDateTime :: CTime -> CString -> CInt -> CString -> CString -> IO ()
+
 #else
 
 {-# NOINLINE chooseFile #-}
@@ -809,6 +818,8 @@ addFilters chooserDialog x = do
     fileFilterSetName filt str
     for (patterns.$ split ';')  (fileFilterAddPattern filt)
     fileChooserAddFilter chooserDialog filt
+
+guiFormatDateTime = formatDateTime
 
 #endif
 

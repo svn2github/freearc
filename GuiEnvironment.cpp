@@ -65,5 +65,22 @@ int BrowseForFile(TCHAR *prompt, TCHAR *in_filename, TCHAR *out_filename)
   return GetOpenFileName(&ofn)? 1 : 0;
 }
 
+// Превратить время/дату файла в строку в соответствии с настройками locale или заданными форматами времени и даты
+void GuiFormatDateTime (time_t t, char *buf, int bufsize, char *date_format, char *time_format)
+{
+  if (t==-1)  t=0;  // Иначе получим вылет :(
+
+  FILETIME ft1, ft2;
+  UnixTimeToFileTime (t, &ft1);
+  FileTimeToLocalFileTime (&ft1, &ft2);
+  SYSTEMTIME datetime;
+  FileTimeToSystemTime (&ft2, &datetime);
+
+  GetDateFormatA(LOCALE_USER_DEFAULT, 0, &datetime, date_format, buf, bufsize);
+  char *p = str_end(buf);
+  *p++ = ' ';
+  GetTimeFormatA(LOCALE_USER_DEFAULT, 0, &datetime, time_format, p, bufsize - (p-buf));
+}
+
 #endif // Windows/Unix
 
