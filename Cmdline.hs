@@ -637,8 +637,8 @@ parseCmdline cmdline  =  (`mapMaybeM` split ";" cmdline) $ \args -> do
 ------------------------------------------------------------------------------------------------
 -- Занесём всё это в структуру, представляющую выполняемую команду в последующей части программы
   return$ Just$ Command {
-      cmd_command_text         = unwords ("arc":args)
-    , cmd_additional_args      = unwords additional_args
+      cmd_args                 = args
+    , cmd_additional_args      = additional_args
     , cmd_name                 = cmd
     , cmd_arcspec              = arcspec
     , cmd_arclist              = error "Using uninitialized cmd_arclist"

@@ -41,11 +41,11 @@ uiStartCommand command = do
   -- Открыть логфайл и вывести в него выполняемую команду
   openLogFile (opt_logfile command)
   curdir <- getCurrentDirectory
-  printLog (curdir++">"++cmd_command_text command++"\n")
+  printLog (curdir++">arc "++unwords(hidePasswords$ cmd_args command)++"\n")
   -- Вывеедем версию архиватора и используемые дополнительные опции
   let addArgs = cmd_additional_args command
   once putHeader$ condPrintLine "h" aARC_HEADER
-  condPrintLine "o" (addArgs &&& "Using additional options: "++addArgs++"\n")
+  condPrintLine "o" (addArgs &&& "Using additional options: "++unwords(hidePasswords addArgs)++"\n")
   myFlushStdout
 
 -- |Отметить начало выполнения подкоманды

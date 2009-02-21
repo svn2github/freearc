@@ -253,7 +253,7 @@
   Tornado 0.5:
 .   better compression in -m1; faster -m3xt; modified -m1xx..-m4xx definitions; :t
     tor:7:c1 .. tor:11:c3; support for :l not power of 2
-    checks at decoding in order to prevent segfaults, fixed one bug in decoder
+    checks at decoding in order to prevent segfaults; fixed one bug in decoder
   GRZip multithreading!
   Prints CPU time and Real time for operation
   Installer SFX (extracts into tempdir, runs setup.exe and then deletes extracted files)
@@ -304,7 +304,7 @@
     filetype detection: check for MM on large files
     Priorityio.doc
   bugs
-    пароли не должны попадать в лог-файл (-p/-op/-di$); длинные комментарии/списки файлов - тоже
+    пароли не должны попадать в лог-файл (-p/-op/-di); длинные комментарии/списки файлов - тоже
     dict bug: arc a aa cls.zip -mprecomp+6pt -t
       bcj+dict creates corrupted archives
     что будет, если упаковать на CD, т.е. файл лежит на диске на которой нельзя писать, или в папке, где запрешена запись

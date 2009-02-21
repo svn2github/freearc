@@ -36,8 +36,8 @@ import Compression
 
 -- |Описание выполняемой команды
 data Command = Command {
-    cmd_command_text         :: !String             -- Полный текст команды
-  , cmd_additional_args      :: !String             -- Дополнительные опции, прочитанные из переменной среды и конфиг-файла
+    cmd_args                 :: ![String]           -- Полный текст команды, разбитый на слова
+  , cmd_additional_args      :: ![String]           -- Дополнительные опции, прочитанные из переменной среды и конфиг-файла
   , cmd_name                 :: !String             -- Название команды
   , cmd_arcspec              ::  String             -- Маска архивов
   , cmd_arclist              ::  [FilePath]         --   Имена всех найденных по этой маске (и возможно, рекурсивно) архивов
@@ -229,6 +229,23 @@ aPREFFERED_OPTIONS = words "method sfx charset SizeMore SizeLess overwrite"
 
 -- |Опции из предыдущего списка, имеющий максимальный приоритет :)
 aSUPER_PREFFERED_OPTIONS = words "OldKeyfile"
+
+-- |Скрыть пароли в командной строке (перед её выводом в лог)
+hidePasswords args = map f args1 ++ args2 where
+  (args1,args2)  =  break (=="--") args
+  f "-p-"                                   =  "-p-"
+  f ('-':'p':_)                             =  "-p"
+  f "-op-"                                  =  "-op-"
+  f ('-':'o':'p':_)                         =  "-op"
+  f "-hp-"                                  =  "-hp-"
+  f ('-':'h':'p':_)                         =  "-hp"
+  f "--OldPassword-"                        =  "--OldPassword-"
+  f x | "--OldPassword" `isPrefixOf` x      =  "--OldPassword"
+  f "--HeadersPassword-"                    =  "--HeadersPassword-"
+  f x | "--HeadersPassword" `isPrefixOf` x  =  "--HeadersPassword"
+  f "--password-"                           =  "--password-"
+  f x | "--password" `isPrefixOf` x         =  "--password"
+  f x = x
 
 
 -- |Описание команд, поддерживаемых программой
