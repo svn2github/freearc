@@ -520,6 +520,11 @@ replaceAtEnd from to s =
     Just remainder  -> reverse remainder ++ to
     Nothing         -> s
 
+-- |Взять первых n элементов списка и добавить к ним more для индикации того, что что-то было опущено
+takeSome n more s | (y>[])    = x ++ more
+                  | otherwise = x
+                  where  (x,y) = splitAt n s
+
 -- |Выровнять строку влево/вправо, дополнив её до заданной ширины пробелами или чем-нибудь ещё
 right_fill  c n s  =  s ++ replicate (n-length s) c
 left_fill   c n s  =  replicate (n-length s) c ++ s

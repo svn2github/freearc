@@ -234,6 +234,7 @@
     Увеличено количество команд в меню, реализована поддержка hot-keys
     Comment editing in ArcInfo dialog
     Searching for filename being typed
+    Shortcut keys for add/extract/... commands
     Windows: native Open/Save dialogs
     Windows: locale-specific date/time format
   Linux: "chmod +x" при создании sfx-архива, "chmod -x" при -sfx-
@@ -267,6 +268,8 @@
     external compressors/tempfile: проверяет отсутствие ошибок при чтении/записи
     external compressors: проверяет код возврата вызванной программы
     -sfx --noarcext: не меняло расширения архива
+    Logfile: hide passwords used in cmdline/cfgfile
+             длинные комментарии/списки файлов не должны попадать в лог-файл (?)
   Fixed GUI bugs:
     first file in directory was selected after any operation if nothing was selected before
     ArcInfo on empty.arc or non-archive was terminatihg program
@@ -304,7 +307,6 @@
     filetype detection: check for MM on large files
     Priorityio.doc
   bugs
-    пароли не должны попадать в лог-файл (-p/-op/-di); длинные комментарии/списки файлов - тоже
     dict bug: arc a aa cls.zip -mprecomp+6pt -t
       bcj+dict creates corrupted archives
     что будет, если упаковать на CD, т.е. файл лежит на диске на которой нельзя писать, или в папке, где запрешена запись
@@ -336,8 +338,7 @@
   -ilog a-la RAR
 
 
-  GUI: shortcut keys for add/extract/... commands
-       центрировать индикатор прогресса относительно окна программы, а не всего экрана
+  GUI: центрировать индикатор прогресса относительно окна программы, а не всего экрана
        TC: при распаковке FreeArc.exe извлекается также no-url\FreeArc.exe
          arc x a FreeArc.exe  -  rar извлекает только один файл (*.exe извлекает все файлы)
 
