@@ -500,11 +500,17 @@ static inline int char2int(char c) {return isdigit(c)? c-'0' : tolower(c)-'a';}
 // Use a fast integer replacement for logb(), if possible
 static inline uint int_logb (uint x)
 {
-#if __GNUC__ == 3 && __GNUC_MINOR__ > 3 || __GNUC__ > 3
-    return __builtin_clz(x) ^ (8 * sizeof(x) - 1);
+    uint y;
+#if __INTEL_COMPILER
+    y = _bit_scan_reverse(x)
+#elif _MSC_VER >= 1400
+    _BitScanReverse((DWORD *)&y, x);
+#elif __GNUC__ == 3 && __GNUC_MINOR__ > 3 || __GNUC__ > 3
+    y = __builtin_clz(x) ^ (8 * sizeof(x) - 1);
 #else
-    return logb(x);
+    y = logb(x);
 #endif
+    return y;
 }
 
 #ifdef FREEARC_WIN
