@@ -502,7 +502,7 @@ static inline uint int_logb (uint x)
 {
     uint y;
 #if __INTEL_COMPILER
-    y = _bit_scan_reverse(x)
+    y = _bit_scan_reverse(x);
 #elif _MSC_VER >= 1400
     _BitScanReverse((DWORD *)&y, x);
 #elif __GNUC__ == 3 && __GNUC_MINOR__ > 3 || __GNUC__ > 3
