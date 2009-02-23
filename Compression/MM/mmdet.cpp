@@ -836,14 +836,14 @@ void detect_datatype (BYTE *buf, int bufsize, char *type)
     }
 
     // “ип данных: $compressed если не сжимаетс€ ни order-0 ни lz77.
-    //             $text если активных символов от 18 до 80, число повторов дистанций невелико и lz-матчи составл€ют хот€ бы 10% данных
+    //             $text если активных символов от 17 до 80, число повторов дистанций невелико и lz-матчи составл€ют хот€ бы 10% данных
     strcpy (type, buf==NULL                                 ? "$compressed $text" :  // list of data types this procedure is able to recognize
 
                   order0 > 0.95*bufsize
                     // && matches < bufsize/100
                     && sumlen < 0.10*bufsize                ? "$compressed" :
 
-                  18<normal_chars && normal_chars<80
+                  17<=normal_chars && normal_chars<=80
                     // && matches < bufsize/6
                     && repdists < 0.20*matches
                     && sumlen   > 0.10*bufsize              ? "$text" :
@@ -853,6 +853,7 @@ void detect_datatype (BYTE *buf, int bufsize, char *type)
     //if(normal)   printf ("    %5.0lf %5.0lf %5.2lf%% %5.2lf \n", double(normal), double(used_chars), rare*100, q);
     //if(bufsize) printf (" %8s %d\n", type, normal_chars);
     //if(bufsize)  printf (" %8s %5.2lf%% %5d %5.2lf%% %5.0lf %5.2lf %5.2lf%%\n", type, order0/bufsize*100, normal_chars, double(repdists+1)/(matches+1)*100, double(matches), double(sumlen)/(matches+1), double(sumlen)/(bufsize+1)*100);
+    //(printf("\n\n\nSTAT: normal_chars=%d, repdists=%d, matches=%d, sumlen=%d, bufsize=%d\n\n %*.*s\n", normal_chars, repdists, matches, sumlen, bufsize, bufsize, bufsize, buf), "default"));
 }
 
 #endif  // !defined (FREEARC_DECOMPRESS_ONLY)

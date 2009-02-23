@@ -38,7 +38,8 @@ uiStartCommand command = do
   ref_command =: command
   display_option' =: opt_display command
   refStartArchiveTime =:: getClockTime
-  -- Открыть логфайл и вывести в него выполняемую команду
+  -- Открыть логфайл и вывести в него выполняемую команду. Длинные комментарии/списки файлов/имена файлов
+  -- не должны попадать в лог-файл, так что мы обрезаем список и все строки в нём до 100 элементов
   openLogFile (opt_logfile command)
   curdir <- getCurrentDirectory
   printLog (curdir++">arc "++unwords(map (takeSome 100 "...")$ hidePasswords$ takeSome 100 ["..."]$ cmd_args command)++"\n")

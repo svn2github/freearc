@@ -269,7 +269,8 @@
     external compressors: проверяет код возврата вызванной программы
     -sfx --noarcext: не меняло расширения архива
     Logfile: hide passwords used in cmdline/cfgfile
-             длинные комментарии/списки файлов не должны попадать в лог-файл (?)
+             strip too long arguments and too long argument list down to 100 chars/elements
+    Filetype detection: it was failing on pure English texts
   Fixed GUI bugs:
     first file in directory was selected after any operation if nothing was selected before
     ArcInfo on empty.arc or non-archive was terminatihg program
