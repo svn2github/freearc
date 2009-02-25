@@ -209,12 +209,11 @@ OutputBitStream::OutputBitStream (CALLBACK_FUNC *callback, void *auxdata, UINT c
 
 void OutputBitStream::finish()
 {
-#ifdef FREEARC_64BIT
-    if (bitcount > 32)
-        put64 (bitbuf);
-    else
-#endif
-    put32 (bitbuf);
+    while (bitcount > 0) {
+        put8 (bitbuf);
+        bitbuf  >>= 8;
+        bitcount -= 8;
+    }
     OutputByteStream::finish();
 }
 
