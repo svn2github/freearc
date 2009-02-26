@@ -28,12 +28,22 @@ int TORNADO_METHOD::compress (CALLBACK_FUNC *callback, void *auxdata)
   return tor_compress (m, callback, auxdata);
 }
 
-// Установить размер словаря и уменьшить размер хэша, если он слишком велик для такого маленького блока
+// Установить размер словаря и откорректировать размер хеша
 void TORNADO_METHOD::SetDictionary (MemSize dict)
 {
   if (dict>0) {
-    m.buffer   = dict;
-    m.hashsize = mymin (m.hashsize/sizeof(void*), 1<<(lb(m.buffer-1)+1)) * sizeof(void*);
+    if (dict < m.buffer)
+      // При уменьшении словаря: уменьшить размер хэша, если он слишком велик для такого маленького блока
+      m.hashsize  =  sizeof(PtrVal)  *  mymin (m.hashsize/sizeof(PtrVal), roundup_to_power_of(dict,2));
+    else
+      // При увеличении словаря: пропорционально увеличить размер хеша
+      if (m.hashsize > 1*mb)
+      {
+        if (m.hashsize<8*mb && m.hashsize<m.buffer/2)   m.hashsize = m.buffer/2;  // Во-первых, увеличим размер хеша, если он был подогнан под кеш Core2
+        uint h  =  mymin (uint64(dict) / (m.buffer/64) * (m.hashsize/64),  2*gb);  // Идеальный размер нового хеша
+        m.hashsize = mymin (round_to_nearest_power_of(h / m.hash_row_width, 2) * m.hash_row_width,  2*gb);  // Округлим размер хеша с учётом row_width
+      }
+    m.buffer = dict;
   }
 }
 

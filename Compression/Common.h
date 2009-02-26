@@ -164,7 +164,7 @@ static inline int  file_exists (CFILENAME name) {return _taccess(name,0) == 0;}
 // Number of 100 nanosecond units from 01.01.1601 to 01.01.1970
 #define EPOCH_BIAS    116444736000000000ull
 
-inline void WINAPI UnixTimeToFileTime( time_t time, FILETIME* ft )
+static inline void WINAPI UnixTimeToFileTime( time_t time, FILETIME* ft )
 {
   *(uint64*)ft = EPOCH_BIAS + time * 10000000ull;
 }
@@ -481,6 +481,17 @@ static inline MemSize rounddown_to_power_of (MemSize n, MemSize base)
     MemSize result;
     if (n==1)  return 1;
     for (result=1; (n/=base) != 0; result *= base);
+    return result;
+}
+
+// Эта процедура округляет число к логарифмически ближайшей степени
+// базы, например f(9,2)=8  f(15,2)=16
+static inline MemSize round_to_nearest_power_of (MemSize n, MemSize base)
+{
+    MemSize result;
+    uint64 nn = uint64(n)*n/base;
+    if (nn==0)  return 1;
+    for (result=base; (nn/=base*base) != 0; result *= base);
     return result;
 }
 
