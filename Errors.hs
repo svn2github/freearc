@@ -377,13 +377,13 @@ display_option' = unsafePerformIO$ newIORef$ error "undefined display_option"
 
 -- |Запись сообщения об ошибке в логфайл и аварийное завершение программы с этим сообщением
 registerError err = do
-  programTerminated =: True
   let msg = errormsg err
   val errorHandlers >>= mapM_ ($msg)
   -- Если мы в режиме файл-менеджера, то придётся ждать завершения всех тредов компрессии,
   -- иначе - просто совершаем аварийный выход из программы
   unlessM (val fileManagerMode) $ do
     shutdown ("ERROR: "++msg) (errcode err)
+  programTerminated =: True
   fail ""
 
 -- |Запись предупреждения в логфайл и вывод его на экран

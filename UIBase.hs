@@ -84,28 +84,28 @@ syncUI = withMVar mvarSyncUI . const;  mvarSyncUI = unsafePerformIO$ newMVar "mv
 
 
 -- |Тред, следящий за indicator, и выводящий время от времени его обновлённые значения
-indicatorThread secs output = forkIO $ do
-  foreverM $ do
-    threadDelay (round$ secs*1000000)
-    syncUI $ do
-      whenM (val aProgressIndicatorEnabled) $ do
-        aProgramTerminated <- val programTerminated
-        (indicator, arcname, direction, b, bytes', total') <- val aProgressIndicatorState
-        when (indicator /= NoIndicator  &&  not aProgramTerminated) $ do
-          bytes <- bytes' b;  total <- total'
-          -- Отношение объёма обработанных данных к общему объёму
-          let processed = total>0 &&& (fromIntegral bytes / fromIntegral total :: Double)
-          secs <- return_real_secs
-          let remains  = if processed>0.001  then " "++showHMS(secs/processed-secs)  else ""
-              winTitle = "{"++trimLeft p++remains++"}" ++ direction ++ takeFileName arcname
-              p        = percents indicator bytes total
-          output indicator winTitle b bytes total processed p
+indicatorThread secs output =
+  backgroundThread secs $ do
+    whenM (val aProgressIndicatorEnabled) $ do
+      aProgramTerminated <- val programTerminated
+      (indicator, arcname, direction, b, bytes', total') <- val aProgressIndicatorState
+      when (indicator /= NoIndicator  &&  not aProgramTerminated) $ do
+        bytes <- bytes' b;  total <- total'
+        -- Отношение объёма обработанных данных к общему объёму
+        let processed = total>0 &&& (fromIntegral bytes / fromIntegral total :: Double)
+        secs <- return_real_secs
+        let remains  = if processed>0.001  then " "++showHMS(secs/processed-secs)  else ""
+            winTitle = "{"++trimLeft p++remains++"}" ++ direction ++ takeFileName arcname
+            p        = percents indicator bytes total
+        output indicator winTitle b bytes total processed p
 
-backgroundThread secs action = forkIO $ do
-  foreverM $ do
-    threadDelay (round$ secs*1000000)
-    syncUI $ do
-      action
+-- |Выполнять в бэкграунде action каждые secs секунд
+backgroundThread secs action =
+  forkIO $ do
+    foreverM $ do
+      threadDelay (round$ secs*1000000)
+      syncUI $ do
+        action
 
 {-# NOINLINE indicatorThread #-}
 {-# NOINLINE backgroundThread #-}
