@@ -489,7 +489,7 @@ static inline MemSize rounddown_to_power_of (MemSize n, MemSize base)
 static inline MemSize round_to_nearest_power_of (MemSize n, MemSize base)
 {
     MemSize result;
-    uint64 nn = uint64(n)*n/base;
+    uint64 nn = ((uint64)n)*n/base;
     if (nn==0)  return 1;
     for (result=base; (nn/=base*base) != 0; result *= base);
     return result;
