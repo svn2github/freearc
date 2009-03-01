@@ -87,9 +87,9 @@ syncUI = withMVar mvarSyncUI . const;  mvarSyncUI = unsafePerformIO$ newMVar "mv
 indicatorThread secs output =
   backgroundThread secs $ do
     whenM (val aProgressIndicatorEnabled) $ do
-      aProgramTerminated <- val programTerminated
+      operationTerminated' <- val operationTerminated
       (indicator, arcname, direction, b, bytes', total') <- val aProgressIndicatorState
-      when (indicator /= NoIndicator  &&  not aProgramTerminated) $ do
+      when (indicator /= NoIndicator  &&  not operationTerminated') $ do
         bytes <- bytes' b;  total <- total'
         -- Отношение объёма обработанных данных к общему объёму
         let processed = total>0 &&& (fromIntegral bytes / fromIntegral total :: Double)

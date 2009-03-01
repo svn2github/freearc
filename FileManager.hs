@@ -490,15 +490,15 @@ myGUI run args = do
 ----------------------------------------------------------------------------------------------------
 
   -- При выполнении операций не выходим по исключениям, а печатаем сообщения о них в логфайл
-  let handleErrors action x  =  do programTerminated =: False
-                                   (action x `catch` handler) `finally` (programTerminated =: False)
+  let handleErrors action x  =  do operationTerminated =: False
+                                   (action x `catch` handler) `finally` (operationTerminated =: False)
         where handler ex = do
-                programTerminated' <- val programTerminated
+                operationTerminated' <- val operationTerminated
                 errmsg <- case ex of
-                   _ | programTerminated' -> i18n"0010 Operation interrupted!"
-                   Deadlock               -> i18n"0011 No threads to run: infinite loop or deadlock?"
-                   ErrorCall s            -> return s
-                   other                  -> return$ showsPrec 0 other ""
+                   _ | operationTerminated' -> i18n"0010 Operation interrupted!"
+                   Deadlock                 -> i18n"0011 No threads to run: infinite loop or deadlock?"
+                   ErrorCall s              -> return s
+                   other                    -> return$ showsPrec 0 other ""
                 with' (val log_separator') (log_separator'=:) $ \_ -> do
                   log_separator' =: ""
                   io$ condPrintLineLn "w" errmsg

@@ -48,11 +48,11 @@ decompress_PROCESS command count_cbytes pipe = do
       state <- ref (error "Decompression state is not initialized!")
       repeat_until $ do
         decompress_block command cfile state count_cbytes pipe
-        programTerminated' <- val programTerminated
-        when programTerminated' $ do
-          sendP pipe (error "Operation terminated by user", aFREEARC_ERRCODE_OPERATION_TERMINATED)
+        operationTerminated' <- val operationTerminated
+        when operationTerminated' $ do
+          sendP pipe (error "Decompression terminated", aFREEARC_ERRCODE_OPERATION_TERMINATED)
         (x,_,_) <- val state
-        return (x == aSTOP_DECOMPRESS_THREAD || programTerminated')
+        return (x == aSTOP_DECOMPRESS_THREAD || operationTerminated')
 
 
 {-# NOINLINE decompress_block #-}

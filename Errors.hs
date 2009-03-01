@@ -87,21 +87,18 @@ setCtrlBreakHandler action = do
 
 -- |Вызвать fail, если установлен флаг аварийного завершения программы
 failOnTerminated = do
-  whenM (val programTerminated) $ do
-    -- unlessM (val fileManagerMode) $ do
-      fail$ errormsg TERMINATED
+  whenM (val operationTerminated) $ do
+    fail ""
 
--- |Обработка Ctrl-Break сводится к выполнению финализаторов и
+-- |Обработка Ctrl-Break и нажатия на Cancel сводится к выполнению финализаторов и
 -- установке спец. флага, который проверяется коллбэками, вызываемыми из Си
 onBreak event = terminateOperation
 terminateOperation = do
   isFM <- val fileManagerMode
   registerError$ iif isFM OP_TERMINATED TERMINATED
 
-shutdown msg_ exitCode_ = do
-  programTerminated' <- val programTerminated
-  let (msg, exitCode)  | programTerminated'  =  (errormsg TERMINATED, aEXIT_CODE_USER_BREAK)
-                       | otherwise           =  (msg_, exitCode_)
+-- |Принудительно завершает выполнение программы с заданным exitCode и печатью сообщения msg
+shutdown msg exitCode = do
   separator' =: ("","\n")
   log_separator' =: "\n"
   fin <- val finalizers
@@ -110,7 +107,7 @@ shutdown msg_ exitCode_ = do
 
   w <- val warnings
   case w of
-    0 -> when (exitCode==aEXIT_CODE_SUCCESS) $ condPrintLineLn "k"$ "All OK"
+    0 -> when (exitCode==aEXIT_CODE_SUCCESS) $ condPrintLineLn "k" "All OK"
     _ -> condPrintLineLn "n"$ "There were "++show w++" warning(s)"
   ignoreErrors (msg &&& condPrintLineLn "n" msg)
   condPrintLineLn "e" ""
@@ -165,14 +162,14 @@ curId :: IORef Int
 curId = unsafePerformIO (ref 0)
 {-# NOINLINE curId #-}
 
--- |Список действий, которые надо выполнить перед выходом по ^Break
+-- |Список действий, которые надо выполнить перед аварийным завершением программы
 finalizers :: IORef [(Int, IO ())]
 finalizers = unsafePerformIO (ref [])
 {-# NOINLINE finalizers #-}
 
--- |Этот флаг устанавливается после того, как пользователь нажал Ctrl-Break
-programTerminated = unsafePerformIO (ref False)
-{-# NOINLINE programTerminated #-}
+-- |Флаг, показывающий что мы находимся в режиме прерывания текущей операции
+operationTerminated = unsafePerformIO (ref False)
+{-# NOINLINE operationTerminated #-}
 
 -- |Режим работы файл-менеджера: при этом terminateOperation обрабатывается по-другому - мы дожидаемся завершения всех тредов упаковки и распаковки
 fileManagerMode = unsafePerformIO (ref False)
@@ -383,7 +380,7 @@ registerError err = do
   -- иначе - просто совершаем аварийный выход из программы
   unlessM (val fileManagerMode) $ do
     shutdown ("ERROR: "++msg) (errcode err)
-  programTerminated =: True
+  operationTerminated =: True
   fail ""
 
 -- |Запись предупреждения в логфайл и вывод его на экран

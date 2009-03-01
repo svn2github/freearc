@@ -268,8 +268,8 @@ freearcDecompress num method                       =  checkingCtrlBreak num (Com
 -- исключений, добавим к процедурам чтения/записи явные проверки
 checkingCtrlBreak num action callback = do
   let checked_callback what buf size auxdata = do
-        programTerminated' <- val programTerminated
-        if programTerminated'
+        operationTerminated' <- val operationTerminated
+        if operationTerminated'
           then return CompressionLib.aFREEARC_ERRCODE_OPERATION_TERMINATED   -- foreverM doNothing0
           else callback what buf size
   --
