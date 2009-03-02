@@ -174,8 +174,8 @@ arcinfoDialog fm' exec mode arcnames arcdir files = do
                            (maxMainDict, 0)          -> formatMem maxMainDict
                            (maxMainDict, maxAuxDict) -> showMem maxAuxDict++" + "++showMem maxMainDict
 
-    pack 10 $twoColumnTable [("0173 Directories:",      show3$ ftDirs$ subfm_filetree fm_arc)
-                            ,("0088 Files:",            show3$ sum$ map blFiles dataBlocks)
+    pack 10 $twoColumnTable [("0173 Directories:",      show3$ ftDirs$  subfm_filetree fm_arc)
+                            ,("0088 Files:",            show3$ ftFiles$ subfm_filetree fm_arc)
                             ,("0089 Total bytes:",      show3$ origsize)
                             ,("0090 Compressed bytes:", show3$ compsize)
                             ,("0091 Ratio:",            ratio3 compsize origsize++"%")]
