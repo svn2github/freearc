@@ -281,6 +281,7 @@
     freezing after archive operation was cancelled/returned an error
     lack of scrolling for archive comment
     freezing on selecting two files and pressing Up
+    ArcInfo: fixed counting of files and directories in archive
 
 
   aARCHIVE_VERSION = make4byte 0 0 5 0
@@ -387,7 +388,6 @@
     показ татарских и прочих символов - рецепт Егора
     methodDescr - очищать при custom compr. mode
     каталоги в архиве
-      faster removeDuplicates, ftDirs не учитывает "пустые каталоги"
       refresh - перечитать архив
       closeFMArc перед переходом и перед refresh
     закрытие диалога прогресса не должно приводить к закрытию программы
@@ -401,6 +401,7 @@
       Please, Bulat, can be PPMonstr's output limited to one row?
       несколько паролей/keyfiles расшифровки
       "all ok" после каждой команды
+        if you test an archiv, there is no message given back, there should be some kind of "Archive OK" at the end of the test
       использовать при вычислении cmem/dmem parseCmdline или по крайней мере полный код из неё
       ArcRecover при выполнении команды напрямую
       при распаковке/тестировании архива без паролей они всё равно запрашиваются в диалоге
@@ -415,11 +416,13 @@
         -hp-- - сохранять зашифрованность каталога
         -hp-  - снять шифрование
         -hpxx - включить шифрование
-    -if you test an archiv, there is no message given back, there should be some kind of "Archive OK" at the end of the test
     an additional progressbar for big files, like in Winrar
     DoubleClick->Run inside archive
     нет списка дисков на верхнем уровне, нет ".."
-    медленное открытие/закрытие диалога Add (многократное чтение из history/запись в него)
+    Performance problems
+      Оглавление архива: faster removeDups, keepOnlyFirstOn, buildTree
+      медленное открытие/закрытие диалога Add (многократное чтение из history/запись в него)
+      использовать массивы вместо списков файлов для нормального времени работы
     сохранение опций -m -s -ds в архиве
     в основном окне, рядом с кнопкой "сохранить", так и просится кнопка "обзор"
     выделять или insert'ом, или пробелом (winrar сбрасывает выделение только тех файлов, которые были отмечены мышью)
@@ -428,16 +431,18 @@
     сливать arc.english.txt and locale для того, чтобы выводились англисйские tooltips при отсутствии наших
     диалог Settings
       "Restore standard profiles" button
+      Date format selection
+      Windows: [x] Associate FreeArc with .arc files
       [x] don't keep history
       Import 7-zip lang. file
     Recover, including "Original:"
     возможность сохранения чего-то типа "проекта" как в Nero, т.е. чтобы был список файлов + все настроики
-    команды Run, View, Queue/Apply; d&d support
+    команды View, Queue/Apply; d&d support
     winarc a/x --dialog - открыть диалог добавления/распаковки (для Total Commander, например)
     формировать команду внизу диалогов распаковки/сжатия/модификации и выполнять её (так чтобы пользователь мог отредактировать)
     галочка "Detach operation" во всех диалогах операций, запускающая отдельную копию WinArc для выполнения операции!
     "Detach" FM button and appropriate syntax: "freearc c:\dir file1 file2 file3 /select file1"
-    открыть лог-файл в начале работы программы
+    открывать лог-файл в начале работы программы
     диалог распаковки
       [x] включая подкаталоги
       закладка Selection: -ta/-tb/-tn/-to/-sl/-sm
@@ -447,8 +452,6 @@
     Диалог Cancel: Cancel file/solid block/archive/operation/group of operations/All
     отображение/ред-ние очереди операций в диалоге прогресса
     автоматическое обновление списка файлов каждую секунду/при обновлении каталога
-    время/дата в locale format (getTimeFormat, GetDateFormatW). GetNumberFormat
-    использовать массивы вместо списков файлов для нормального времени работы
     использовать уже открытый архив для ускорения выполнения операций view/test/extract
     linux: иной порядок кнопок в диалоге (HButtonBox?)
     добавление файлов

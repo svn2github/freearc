@@ -178,7 +178,8 @@ fdArtificialDir name = FileData { fdPackedDirectory = myPackStr ""
 data FileTree a = FileTree [a]  [(String, FileTree a)]
 
 -- |Возвращает количество каталогов в дереве
-ftDirs  (FileTree files subdirs) = length (removeDups (map fst subdirs ++ map fdBasename (filter fdIsDir files)))  +  sum (map (ftDirs.snd) subdirs)
+ftDirs  (FileTree files subdirs) = length (removeDups (subdirs.$map fst  ++  files.$filter fdIsDir .$map fdBasename))
+                                 + sum (map (ftDirs.snd) subdirs)
 
 -- |Возвращает количество файлов в дереве
 ftFiles (FileTree files subdirs) = length (filter (not.fdIsDir) files)  +  sum (map (ftFiles.snd) subdirs)
