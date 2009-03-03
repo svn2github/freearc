@@ -33,6 +33,9 @@ import UIBase
 -- |Файл настроек программы
 aINI_FILE = "freearc.ini"
 
+-- |Файл с описанием меню и тулбара
+aMENU_FILE = "freearc.menu"
+
 -- Теги в INI-файле
 aINITAG_LANGUAGE = "language"
 aINITAG_PROGRESS = "ProgressWindowSize"

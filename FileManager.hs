@@ -110,8 +110,6 @@ uiDef =
   "      <toolitem name=\"Comment\"            action=\"CommentAction\" />"++
   "      <toolitem name=\"Recompress\"         action=\"RecompressAction\" />"++
   "      <toolitem name=\"Convert to SFX\"     action=\"ConvertToSFXAction\" />"++
-  "      <toolitem name=\"Encrypt\"            action=\"EncryptAction\" />"++
-  "      <toolitem name=\"Protect\"            action=\"ProtectAction\" />"++
   "      <separator/>"++
   "      <toolitem name=\"Refresh\"            action=\"RefreshAction\" />"++
   "      <toolitem name=\"MainHelp\"           action=\"MainHelpAction\" />"++
@@ -181,8 +179,11 @@ myGUI run args = do
   whatsnewAct <- anew "0286 Check for update" "0287 Check for new program version"      (Just stockDialogInfo)      ""
   aboutAct    <- anew "0288 About"            "0289 About"                              (Just stockAbout)           ""
 
+  menufile <- findFile configFilePlaces aMENU_FILE
+  uiData   <- if menufile>""  then fileGetBinary menufile  else return uiDef
+
   ui <- uiManagerNew
-  uiManagerAddUiFromString ui uiDef
+  uiManagerAddUiFromString ui uiData
   uiManagerInsertActionGroup ui standardGroup 0
 
   window <- windowNew

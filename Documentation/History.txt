@@ -237,6 +237,7 @@
     Shortcut keys for add/extract/... commands
     Windows: native Open/Save dialogs
     Windows: locale-specific date/time format
+    freearc.menu support
   Linux: "chmod +x" при создании sfx-архива, "chmod -x" при -sfx-
   CHECK - в FreeArc приводит к вызову longjmp и возврату FREEARC_ERRCODE_GENERAL из процедуры (рас)паковки
 . -sct для терминала; -sci для логфайла; -scf для имён файлов на диске (под Linux)
@@ -260,7 +261,7 @@
   Installer SFX (extracts into tempdir, runs setup.exe and then deletes extracted files)
   -m2b made faster on modern cpus; -m3b - fixed speed loss on multi-core cpus & 1% better compression
   "lt" command: technical archive listing
-  -m2/-m3/-m4 now use 96mb dictionary by default!
+  -m2/-m3/-m4 now use 96mb dictionary by default! *r modes are removed, bcj moved after rep
   Fixed bugs:
     in Delta filter (leading to crashes)
     showing "increase +RTS -Ksize" on multi-gigabyte files
