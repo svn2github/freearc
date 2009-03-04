@@ -281,44 +281,43 @@ check_for_errors:
         showMem (r.method.hashsize, h);
         showMem (r.method.auxhash_size, ah);
         showMem (r.method.buffer, b);
-        printf( "Tornado compressor v0.5 alpha (c) Bulat.Ziganshin@gmail.com  2009-03-04");
-        printf( "\n" );
-        printf( "\n Usage: tor [options and files in any order]");
-        printf( "\n   -#      -- compression level (1..%d), default %d", int(elements(std_Tornado_method))-1, default_Tornado_method);
-        printf( "\n   -z      -- force compression" );
-        printf( "\n   -d      -- force decompression" );
-        printf( "\n   -oNAME  -- output filename/directory (default %s/%s)", COMPRESS_EXT, DECOMPRESS_EXT );
-        printf( "\n   -t      -- test (de)compression (redirect output to nul)" );
-        printf( "\n   -delete -- delete successfully (de)compressed input files" );
+        printf( "Tornado compressor v0.5 alpha (c) Bulat.Ziganshin@gmail.com  2009-03-04\n"
+                "\n"
+                " Usage: tor [options and files in any order]\n"
+                "   -#      -- compression level (1..%d), default %d\n", int(elements(std_Tornado_method))-1, default_Tornado_method);
+        printf( "   -z      -- force compression\n"
+                "   -d      -- force decompression\n"
+                "   -oNAME  -- output filename/directory (default %s/%s)\n", COMPRESS_EXT, DECOMPRESS_EXT);
+        printf( "   -t      -- test (de)compression (redirect output to nul)\n"
+                "   -delete -- delete successfully (de)compressed input files\n"
 #ifdef FREEARC_NO_TIMING
-        printf( "\n   -q      -- be quiet. -q[hr]* disables header/results individually" );
+                "   -q      -- be quiet; -q[hr]* disables header/results individually\n"
 #else
-        printf( "\n   -q      -- be quiet. -q[thpr]* disables title/header/progress/results individually" );
-        printf( "\n   -cpu    -- compute raw CPU time (for benchmarking)" );
+                "   -q      -- be quiet; -q[thpr]* disables title/header/progress/results individually\n"
+                "   -cpu    -- compute raw CPU time (for benchmarking)\n"
 #endif
-        printf( "\n   -h      -- display this help" );
-        printf( "\n   --      -- stop flags processing" );
-        printf( "\n \"-\" used as filename means stdin/stdout" );
-        printf( "\n" );
-        printf( "\n Advanced compression parameters:" );
-        printf( "\n   -b#    -- buffer size, default %s", b);
-        printf( "\n   -h#    -- hash size, default %s", h);
-        printf( "\n   -l#    -- length of hash row (1..65536), default %d", r.method.hash_row_width);
-        printf( "\n   -ah#   -- auxiliary hash size, default %s", ah);
-        printf( "\n   -al#   -- auxiliary hash row length (1..65536), default %d", r.method.auxhash_row_width);
-        printf( "\n   -u#    -- update step (1..999), default %d", r.method.update_step);
-        printf( "\n   -c#    -- coder (1-bytes,2-bits,3-huf,4-arith), default %d", r.method.encoding_method);
-        printf( "\n   -p#    -- parser (1-greedy,2-lazy), default %d", r.method.match_parser);
-        printf( "\n   -x#    -- caching match finder (0-disabled,1-shifting,2-cycled,5-ht5,6-ht6,7-ht7), default %d", r.method.caching_finder);
-        printf( "\n   -s#    -- 2/3-byte hash (0-disabled,1-fast,2-max), default %d", r.method.hash3);
-        printf( "\n   -t#    -- table diffing (0-disabled,1-enabled), default %d", r.method.find_tables);
-        printf( "\n" );
-        printf( "\n Predefined methods:" );
+                "   -h      -- display this help\n"
+                "   --      -- stop flags processing\n"
+                " \"-\" used as filename means stdin/stdout\n"
+                "\n"
+                " Advanced compression parameters:\n"
+                "   -b#     -- buffer size, default %s\n", b);
+        printf( "   -h#     -- hash size, default %s\n", h);
+        printf( "   -l#     -- length of hash row (1..65536), default %d\n", r.method.hash_row_width);
+        printf( "   -ah#    -- auxiliary hash size, default %s\n", ah);
+        printf( "   -al#    -- auxiliary hash row length (1..65536), default %d\n", r.method.auxhash_row_width);
+        printf( "   -u#     -- update step (1..999), default %d\n", r.method.update_step);
+        printf( "   -c#     -- coder (1-bytes,2-bits,3-huf,4-arith), default %d\n", r.method.encoding_method);
+        printf( "   -p#     -- parser (1-greedy,2-lazy), default %d\n", r.method.match_parser);
+        printf( "   -x#     -- caching match finder (0-disabled,1-shifting,2-cycled,5-ht5,6-ht6,7-ht7), default %d\n", r.method.caching_finder);
+        printf( "   -s#     -- 2/3-byte hash (0-disabled,1-fast,2-max), default %d\n", r.method.hash3);
+        printf( "   -t#     -- table diffing (0-disabled,1-enabled), default %d\n", r.method.find_tables);
+        printf( "\n"
+                " Predefined methods:\n");
         for (int i=1; i<elements(std_Tornado_method); i++)
         {
-            printf("\n   -%d: %s", i, name(std_Tornado_method[i]));
+            printf("   %-8d-- %s\n", -i, name(std_Tornado_method[i]));
         }
-        printf( "\n" );
         exit(1);
     }
 
