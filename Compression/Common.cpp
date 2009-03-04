@@ -294,6 +294,7 @@ char *oem_to_utf8 (const char  *oem, char *utf8)
 }
 #endif
 
+#ifndef FREEARC_NO_TIMING
 
 //*****************************************************************************
 // Вывод заголовка окна *******************************************************
@@ -364,8 +365,7 @@ double GetThreadCPUTime (void)
 }
 #endif // FREEARC_WIN
 
-
-#if defined(FREEARC_UNIX) && !defined(FREEARC_NO_TIMING)
+#ifdef FREEARC_UNIX
 // Returns number of wall-clock seconds since some moment
 double GetGlobalTime (void)
 {
@@ -385,3 +385,4 @@ double GetThreadCPUTime (void)
 }
 #endif // FREEARC_UNIX
 
+#endif // !FREEARC_NO_TIMING

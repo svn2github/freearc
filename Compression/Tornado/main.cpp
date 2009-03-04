@@ -160,8 +160,10 @@ int ReadWriteCallback (const char *what, void *buf, int size, void *r_)
 #endif
       fprintf (stderr, "\n");
     }
+#ifndef FREEARC_NO_TIMING
     if (!r.quiet_title && r.filesize)
       EnvResetConsoleTitle();
+#endif
     return FREEARC_OK;
 
   } else {
@@ -214,7 +216,9 @@ int main (int argc, char **argv)
             else if (strcasecmp(param,"delete")==0) delete_input_files=TRUE;
             else if (strcasecmp(param,"t")==0)      output_filename="";
             else if (strcasecmp(param,"q")==0)      r.quiet_title = r.quiet_header = r.quiet_progress = r.quiet_result = TRUE;
+#ifndef FREEARC_NO_TIMING
             else if (strcasecmp(param,"cpu")==0)    r.use_cpu_time=TRUE;
+#endif
             else if (strcasecmp(param,"h")==0)      global_mode=HELP;
             else if (strcasecmp(param,"b")==0)      r.method.buffer=2047*mb;
             else if (strcasecmp(param,"x")==0)      r.method.caching_finder = 1;
@@ -240,9 +244,12 @@ int main (int argc, char **argv)
                 case 'o': output_filename          = param;                    break;
                 case 'h': r.method.hashsize        = parseMem (param, &error); break;
                 case 'u': r.method.update_step     = parseInt (param, &error); break;
-                case 'q': r.quiet_title            = strchr (param, 't');
-                          r.quiet_header           = strchr (param, 'h');
+                case 'q':
+#ifndef FREEARC_NO_TIMING
+                          r.quiet_title            = strchr (param, 't');
                           r.quiet_progress         = strchr (param, 'p');
+#endif
+                          r.quiet_header           = strchr (param, 'h');
                           r.quiet_result           = strchr (param, 'r');
                           break;
                 case 'a': switch( tolower(*param) ) {
@@ -283,8 +290,12 @@ check_for_errors:
         printf( "\n   -oNAME  -- output filename/directory (default %s/%s)", COMPRESS_EXT, DECOMPRESS_EXT );
         printf( "\n   -t      -- test (de)compression (redirect output to nul)" );
         printf( "\n   -delete -- delete successfully (de)compressed input files" );
+#ifdef FREEARC_NO_TIMING
+        printf( "\n   -q      -- be quiet. -q[hr]* disables header/results individually" );
+#else
         printf( "\n   -q      -- be quiet. -q[thpr]* disables title/header/progress/results individually" );
         printf( "\n   -cpu    -- compute raw CPU time (for benchmarking)" );
+#endif
         printf( "\n   -h      -- display this help" );
         printf( "\n   --      -- stop flags processing" );
         printf( "\n \"-\" used as filename means stdin/stdout" );
