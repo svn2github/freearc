@@ -85,7 +85,7 @@ typedef int CALLBACK_FUNC (const char *what, void *data, int size, void *auxdata
     void *localBuf = (buf);                                                \
     int localSize  = (size);                                               \
     if (localSize && (errcode=callback("read",localBuf,localSize,auxdata))!=size) { \
-        if (errcode>0) (errcode=FREEARC_ERRCODE_IO);                       \
+        if (errcode>0) errcode=FREEARC_ERRCODE_IO;                         \
         goto finished;                                                     \
     }                                                                      \
 }
@@ -110,19 +110,16 @@ typedef int CALLBACK_FUNC (const char *what, void *data, int size, void *auxdata
     unsigned char header[4];                                               \
     errcode = callback ("read", header, 4, auxdata);                       \
     if (errcode != 4) {                                                    \
-        if (errcode>0) (errcode=FREEARC_ERRCODE_IO);                       \
+        if (errcode>0) errcode=FREEARC_ERRCODE_IO;                         \
         goto finished;                                                     \
     }                                                                      \
-    (var) = (((((header[3]<<8)+header[2])<<8)+header[1])<<8)+header[0];    \
+    (var) = value32 (header);                                              \
 }
 
 #define WRITE4(value)                                                      \
 {                                                                          \
     unsigned char header[4];                                               \
-    header[3] = ((unsigned)value)>>24;                                     \
-    header[2] = ((unsigned)value)>>16;                                     \
-    header[1] = ((unsigned)value)>>8;                                      \
-    header[0] = ((unsigned)value);                                         \
+    setvalue32 (header, value);                                            \
     WRITE (header, 4);                                                     \
 }
 
