@@ -456,12 +456,25 @@ static inline MemSize roundUp (MemSize a, MemSize b)
 }
 
 
-// Whole part of number's binary logarithm (please ensure that n>0)
+// Whole part of number's binary logarithm (logb) - please ensure that n > 0
 static inline MemSize lb (MemSize n)
 {
-  MemSize i;
-  for (i=0; n>1; i++, n/=2);
-  return i;
+    MemSize result;
+#if __INTEL_COMPILER
+    result = _bit_scan_reverse(n);
+#elif _MSC_VER >= 1400
+    _BitScanReverse((DWORD *)&result, n);
+#elif __GNUC__ == 3 && __GNUC_MINOR__ > 3 || __GNUC__ > 3
+    result = __builtin_clz(n) ^ (8 * sizeof(unsigned int) - 1);
+#else
+    result = 0;
+    if (n > 0xffff) result = 16, n >>= 16;
+    if (n > 0xff)   result += 8, n >>= 8;
+    if (n > 0xf)    result += 4, n >>= 4;
+    if (n > 0x3)    result += 2, n >>= 2;
+    if (n > 0x1)    result += 1;
+#endif
+    return result;
 }
 
 // Эта процедура округляет число к ближайшей сверху степени
@@ -507,22 +520,6 @@ static inline char *replace (char *str, char* from, char to)
 
 // Возращает числовое значение символа, рассматриваемого как шестнадцатеричная цифра
 static inline int char2int(char c) {return isdigit(c)? c-'0' : tolower(c)-'a';}
-
-// Use a fast integer replacement for logb(), if possible
-static inline uint int_logb (uint x)
-{
-    uint y;
-#if __INTEL_COMPILER
-    y = _bit_scan_reverse(x);
-#elif _MSC_VER >= 1400
-    _BitScanReverse((DWORD *)&y, x);
-#elif __GNUC__ == 3 && __GNUC_MINOR__ > 3 || __GNUC__ > 3
-    y = __builtin_clz(x) ^ (8 * sizeof(x) - 1);
-#else
-    y = logb(x);
-#endif
-    return y;
-}
 
 #ifdef FREEARC_WIN
 // Windows charset conversion routines
