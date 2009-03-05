@@ -17,6 +17,7 @@ for %%a in (%szip%\Lang\*.txt) do ..\7tr ..\arc.russian.txt %%a
 ..\7tr.exe ..\arc.russian.txt %szip%\Lang\nl.txt ..\arc.dutch.txt
 ..\7tr.exe ..\arc.russian.txt %szip%\Lang\es.txt ..\arc.spanish.txt
 ..\7tr.exe ..\arc.russian.txt %szip%\Lang\uk.txt ..\arc.ukrainian.txt
+..\7tr.exe ..\arc.russian.txt %szip%\Lang\pl.txt ..\arc.polish.txt
 copy ..\arc.russian.txt
 copy ..\arc.english.txt
 :: Temporary - it has more tooltips than english version!
