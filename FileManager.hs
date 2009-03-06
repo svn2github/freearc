@@ -466,8 +466,15 @@ myGUI run args = do
                  ,aboutDialogCopyright := "(c) "++aARC_EMAIL
                  ,aboutDialogComments  := "High-performance archiver"
                  ,aboutDialogWebsite   := homeURL
---               ,aboutDialogAuthors   := [aARC_EMAIL]
-                 ]
+                 ,aboutDialogAuthors   := ["Igor Pavlov (author of LZMA and EXE filter)"
+                                          ,"Dmitry Shkarin (author of PPMd)"
+                                          ,"Ilya Grebnov (author of GRZipII and LZP filter)"
+                                          ,"Alexander Djourik and Pavel Zhilin (authors of TTA)"
+                                          ,"Dmitry Subbotin (author of Carryless rangecoder)"
+                                          ,"Joachim Henke (coauthor of Tornado)"
+                                          ,"Mark Shevchenko (author of GUI SFX)"
+                                          ,aARC_EMAIL++" (author of remaining parts)"
+                 ]]
     dialogRun dialog
     return ()
 
