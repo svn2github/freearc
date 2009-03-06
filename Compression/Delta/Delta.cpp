@@ -333,10 +333,11 @@ static BYTE* search_for_table_boundary (int N, BYTE *t, byte *bufstart, byte *bu
     BYTE* lastpoint=t;  bool first_time=TRUE;
     for (t+=N; bufstart<=t+N && t+N+sizeof(int16)<=bufend; t+=N) {
         int diff = *(int16*)t - *(int16*)(t-N);
-        double itemlb = logb(1 + abs(*(int16*)t));
-        double difflb = logb(1 + abs(diff));
-             if (dir<0 && diff<0)  difflb < itemlb/1.1?  len++,omit=0  :  useless++,omit++;
-        else if (dir>0 && diff>0)  difflb < itemlb/1.1?  len++,omit=0  :  useless++,omit++;
+        uint itemlb = lb(1 + abs(*(int16*)t));
+        uint difflb = lb(1 + abs(diff));
+        itemlb -= itemlb > 10;  // itemlb /= 1.1 (0 <= itemlb < 20)
+             if (dir<0 && diff<0) difflb < itemlb? len++,omit=0 : useless++,omit++;
+        else if (dir>0 && diff>0) difflb < itemlb? len++,omit=0 : useless++,omit++;
         else if (diff==0) useless++;
         else {
             if (len>=4 || first_time)  bad=0, lastpoint = t-N*omit,  _useless=useless,  first_time = FALSE;
