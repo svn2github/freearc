@@ -110,7 +110,6 @@ compress_AND_write_to_archive_PROCESS archive command backdoor pipe = do
         pos_begin <- archiveGetPos archive
         ; times <- uiStartDeCompression "compression"              -- создать структуру для учёта времени упаковки
         ;   compress_f                                             -- упаковать данные
-        ; failOnTerminated                                         -- выйти, если был нажат ^Break
         ; uiFinishDeCompression times `on` block_type==DATA_BLOCK  -- учесть в UI чистое время операции
         ; uiUpdateProgressIndicator 0                              -- отметить, что прочитанные данные уже обработаны
         pos_end   <- archiveGetPos archive
@@ -136,12 +135,13 @@ compress_AND_write_to_archive_PROCESS archive command backdoor pipe = do
 {-# NOINLINE storing_PROCESS #-}
 -- |Вспомогательный процесс, перекодирующий поток Instruction в поток CompressionData
 storing_PROCESS pipe = do
-  let send (DataChunk buf len)  =  resend_data pipe (DataBuf buf len)  >>  send_backP pipe (buf,len)
+  let send (DataChunk buf len)  =  failOnTerminated  >>  resend_data pipe (DataBuf buf len)  >>  send_backP pipe (buf,len)
       send  DataEnd             =  resend_data pipe NoMoreData >> return ()
       send _                    =  return ()
 
-  -- Цикл перекодирования инструкций
-  repeat_while (receiveP pipe) (notDataEnd) (send)
-  send DataEnd   -- сообщим следующему процессу, что данных больше нет
+  -- По окончании сообщим следующему процессу, что данных больше нет
+  ensureCtrlBreak (send DataEnd)$ do
+    -- Цикл перекодирования инструкций
+    repeat_while (receiveP pipe) (notDataEnd) (send)
   return ()
 

@@ -503,7 +503,7 @@ myGUI run args = do
                 with' (val log_separator') (log_separator'=:) $ \_ -> do
                   log_separator' =: ""
                   io$ condPrintLineLn "w" errmsg
-                return (error "Undefined result of myGUI::handleErrors")
+                return ()
 
   -- Выполнить команду архиватора
   let runWithMsg ([formatStart,formatSuccess,formatFail],msgArgs,cmd) = do

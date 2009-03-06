@@ -114,10 +114,10 @@ createDirBlock archive processDir decompress_pipe params@(command,bufOps,pipe,ba
 -- |Создать солид-блок, содержащий данные из переданных файлов
 createSolidBlock command processDir bufOps pipe decompress_pipe (orig_compressor,files) = do
   let -- Выберем алгоритм сжатия для этого солид-блока
-      -- и уменьшим словари его алгоритмов, ежели они больше объёма данных в блоке;
-      compressor = if copy_solid_block
-                   then cfCompressor (head files)
-                   else orig_compressor.$ compressionLimitDictionary (clipToMaxMemSize$ roundMemUp$ totalBytes+512)
+      -- и уменьшим словари его алгоритмов, ежели они больше объёма данных в блоке
+      -- (+1%+512 потому что фильтры типа delta могут увеличить объём данных):
+      compressor | copy_solid_block = cfCompressor (head files)
+                 | otherwise        = orig_compressor.$limitDictionary (clipToMaxMemSize$ roundMemUp$ totalBytes+(totalBytes `div` 100)+512)
       -- Общий объём файлов в солид-блоке
       totalBytes = sum$ map (fiSize.cfFileInfo) files
       -- True, если это целый солид-блок из входного архива, который можно скопировать без изменений
@@ -220,18 +220,16 @@ read_file _ pipe (receiveBuf, sendBuf) decompress_pipe compressed_file = do
 -- для получения свободного буфера из кеша и освобождения использованного буфера, соответственно
 makeFileCache cache_size pool pipe = do
   -- Размер буферов, на которые будет разбит весь кеш
-  let onebuf | cache_size>=aLARGE_BUFFER_SIZE*16  =  aLARGE_BUFFER_SIZE
-             | otherwise                          =  aBUFFER_SIZE
+  let bufsize | cache_size>=aLARGE_BUFFER_SIZE*16  =  aLARGE_BUFFER_SIZE
+              | otherwise                          =  aBUFFER_SIZE
   -- Выделить память под кеш и натравить memoryAllocator на выделенный блок памяти
   heap                     <-  pooledMallocBytes pool cache_size
-  (getBlock, shrinkBlock)  <-  memoryAllocator   heap cache_size onebuf 256 (receive_backP pipe)
+  (getBlock, shrinkBlock)  <-  memoryAllocator   heap cache_size bufsize 256 (receive_backP pipe)
   let -- Операция получения свободного буфера
-      receiveBuf            =  do failOnTerminated
-                                  buf <- getBlock
-                                  return (buf, onebuf)
+      receiveBuf            =  do buf <- getBlock
+                                  return (buf, bufsize)
       -- Операция отправления заполненного буфера следующему процессу
-      sendBuf buf size len  =  do failOnTerminated
-                                  shrinkBlock buf len
+      sendBuf buf size len  =  do shrinkBlock buf len
                                   when (len>0)$  do sendP pipe (DataChunk buf len)
   return (receiveBuf, sendBuf)
 

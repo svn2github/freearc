@@ -111,10 +111,13 @@ runIndicators = do
   -- Обработчики событий (закрытие окна/нажатие кнопок)
   let askProgramClose = do
         active <- val pauseButton
-        (if active then id else syncUI) $ do
-          pauseTiming $ do
-            whenM (askYesNo window "0251 Abort operation?") $ do
-              ignoreErrors$ terminateOperation
+        terminationRequested <-
+            (if active then id else syncUI) $ do
+               pauseTiming $ do
+                 askYesNo window "0251 Abort operation?"
+        when terminationRequested $ do
+          pauseButton =: False
+          ignoreErrors$ terminateOperation
 
   window `onDelete` \e -> do
     askProgramClose

@@ -138,7 +138,7 @@ de_compress_PROCESS de_compress times comprMethod num pipe = do
             DataBuf srcbuf srclen  ->  copyData srcbuf srcbuf srclen
             NoMoreData             ->  do remains =: Nothing;  return prevlen
 
-  -- Процедура чтения входных данных процесса упаковки/распаковки (вызывается лишь однажды, в отличие от read_data)
+  -- Процедура чтения входных данных процесса упаковки/распаковки (вызывается лишь однажды, в отличие от рекурсивной read_data)
   let reader  =  read_data 0
 
   de_compress_PROCESS1 de_compress reader times comprMethod num pipe
@@ -165,6 +165,8 @@ de_compress_PROCESS1 de_compress reader times comprMethod num pipe = do
       callback "time" ptr 0 = do t <- peek (castPtr ptr::Ptr CDouble) >>==realToFrac
                                  time' =: t
                                  return aFREEARC_OK
+      -- Прочие (неподдерживаемые) callbacks
+      callback _ _ _ = return aFREEARC_ERRCODE_NOT_IMPLEMENTED
 
   -- СОБСТВЕННО УПАКОВКА ИЛИ РАСПАКОВКА
   result <- de_compress num comprMethod callback
