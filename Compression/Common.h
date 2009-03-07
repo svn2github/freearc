@@ -406,41 +406,35 @@ extern jmp_buf jumper;
 #define throw()
 #endif
 
+#ifndef FREEARC_STANDALONE_TORNADO
 void *MyAlloc(size_t size) throw();
 void MyFree(void *address) throw();
-
 #ifdef FREEARC_WIN
-
 int SetLargePageSize();
-
 void *MidAlloc(size_t size) throw();
 void MidFree(void *address) throw();
 void *BigAlloc(size_t size) throw();
 void BigFree(void *address) throw();
-
 #else
-
 #define MidAlloc(size) MyAlloc(size)
 #define MidFree(address) MyFree(address)
 #define BigAlloc(size) MyAlloc(size)
 #define BigFree(address) MyFree(address)
-
 #endif
-
 
 // ****************************************************************************
 // Функции парсинга и арифметики **********************************************
 // ****************************************************************************
-
-MemSize parseInt (char *param, int *error);      // Если строка param содержит целое число - возвратить его, иначе установить error=1
-MemSize parseMem (char *param, int *error);      // Аналогично, только строка param может содержать суффиксы b/k/m/g/^, что означает соответствующие единицы памяти (по умолчанию - '^', т.е. степень двойки)
-void showMem (MemSize mem, char *result);        // Возвращает текстовое описание объёма памяти
 void strncopy (char *to, char *from, int len);   // Копирует строчку from в to, но не более len символов
 int  split (char *str, char splitter, char **result, int result_size);  // Разбить строку str на подстроки, разделённые символом splitter
 char*subst (char *original, char *from, char *to);  // Заменяет в строке original все вхождения from на to
 char*trim_spaces (char *s);                      // Пропускает пробелы в начале строки и убирает их в конце, модифицируя строку
 char *str_replace_n (char *orig, char *from, int how_many, char *to);   // Replace from:how_many substring and put result in new allocated area
 char *str_replace   (char *orig, char *from, char *to);    // Replace substring and put result in new allocated area
+#endif // !FREEARC_STANDALONE_TORNADO
+MemSize parseInt (char *param, int *error);  // If the string param contains an integer, return it - otherwise set error=1
+MemSize parseMem (char *param, int *error);  // Similarly, but the string param can contain a suffix b/k/m/g/^, representing units of memory, or in the case of '^' (default), the relevant power of 2
+void showMem (MemSize mem, char *result);    // Returns a string with the amount of memory
 
 
 // Round first number *down* to divisible by second one
