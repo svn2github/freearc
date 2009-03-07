@@ -128,6 +128,15 @@ shutdown msg exitCode = do
 #endif
   return undefined
 
+-- |"handle" с выполнением "onException" также при ^Break
+handleCtrlBreak onException action = do
+  failOnTerminated
+  id <- newId
+  handle (\e -> do onException; throwIO e) $ do
+    bracket_ (addFinalizer id onException)
+             (removeFinalizer id)
+             (action)
+
 -- |"bracket" с выполнением "close" также при ^Break
 bracketCtrlBreak init close action = do
   failOnTerminated
@@ -144,15 +153,6 @@ bracketCtrlBreakMaybe init fail close action = do
 
 -- |Выполнить close-действие по завершению action
 ensureCtrlBreak close action  =  bracketCtrlBreak (return ()) (\_->close) (\_->action)
-
--- |"handle" с выполнением "onException" также при ^Break
-handleCtrlBreak onException action = do
-  failOnTerminated
-  id <- newId
-  handle (\e -> do onException; throwIO e) $ do
-    bracket_ (addFinalizer id onException)
-             (removeFinalizer id)
-             (action)
 
 -- Добавить/удалить finalizer в список
 addFinalizer id action  =  finalizers .= ((id,action):)

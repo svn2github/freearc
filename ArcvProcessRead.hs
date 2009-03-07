@@ -173,6 +173,7 @@ read_file _ pipe (receiveBuf, sendBuf) _ (DiskFile old_fi) = do
   let correctTotals files bytes  =  when (files/=0 || bytes/=0) (sendP pipe (CorrectTotals files bytes)) >> return Nothing
   -- Проверяем возможность открыть файл - он может быть залочен или его за это время могли элементарно стереть :)
   tryOpen (diskName old_fi)  >>=  maybe (correctTotals (-1) (-fiSize old_fi))  (\file -> do
+  ensureCtrlBreak (fileClose file) $ do       -- Гарантируем закрытие файла
   -- Перечитаем информацию о файле на случай, если он успел измениться
   rereadFileInfo old_fi file >>=  maybe (correctTotals (-1) (-fiSize old_fi))  (\fi -> do
   correctTotals 0 (fiSize fi - fiSize old_fi) -- Откорректируем показания UI, если размер файла успел измениться
@@ -186,7 +187,6 @@ read_file _ pipe (receiveBuf, sendBuf) _ (DiskFile old_fi) = do
           then readFile newcrc $! bytes+i len    -- Обновим счётчик прочитанных байт
           else return (finishCRC newcrc, bytes)  -- Выйдем из цикла, если файл окончился
   (crc,bytesRead) <- readFile aINIT_CRC 0     -- Прочитаем файл, получив его CRC и размер
-  fileClose file
   correctTotals 0 (bytesRead - fiSize fi)     -- Откорректируем показания UI, если размер файла отличается от возвращённого getFileInfo
   return$ Just$ FileWithCRC crc FILE_ON_DISK fi{fiSize=bytesRead} ))
 
@@ -227,9 +227,11 @@ makeFileCache cache_size pool pipe = do
   (getBlock, shrinkBlock)  <-  memoryAllocator   heap cache_size bufsize 256 (receive_backP pipe)
   let -- Операция получения свободного буфера
       receiveBuf            =  do buf <- getBlock
+                                  failOnTerminated
                                   return (buf, bufsize)
       -- Операция отправления заполненного буфера следующему процессу
       sendBuf buf size len  =  do shrinkBlock buf len
+                                  failOnTerminated
                                   when (len>0)$  do sendP pipe (DataChunk buf len)
   return (receiveBuf, sendBuf)
 
