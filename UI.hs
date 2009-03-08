@@ -141,6 +141,7 @@ uiStartScanning = do
 -- |Вызывается в ходе сканирования диска, files - список файлов, найденных в очередном каталоге
 uiScanning msg files = do  -- Пока это работает только в GUI
 #ifdef FREEARC_GUI
+  failOnTerminated
   files_scanned += i(length files)
   files_scanned' <- val files_scanned
   uiStage$ format msg (show3 files_scanned')

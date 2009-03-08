@@ -432,7 +432,7 @@ myGUI run args = do
   helpCmdAct `onActionActivate` do
     openHelp "0257 FreeArc036-eng.htm"
 
-  -- Homepage/news page for the current locale
+  -- Home/news page for the current locale
   homeURL <- (aARC_WEBSITE ++) ==<< i18n"0254 /"
   newsURL <- (aARC_WEBSITE ++) ==<< i18n"0255 /News.aspx"
 
@@ -442,19 +442,27 @@ myGUI run args = do
 
   -- Проверка обновлений на сайте
   whatsnewAct `onActionActivate` do
+    fmStackMsg fm' "0295 Checking for news..."
+    forkIO_ $ do
     handleErrors
-      -- Выполняется при недоступности URL новостей
-      (do msg <- i18n"9999 Cannot open %1. Do you want to check URL manually?"
+      -- Выполняется при недоступности страницы новостей
+      (gui $ do
+          msg <- i18n"0296 Cannot open %1. Do you want to check URL manually?"
           whenM (askOkCancel window (format msg newsURL)) $ do
             openWebsite newsURL)
-      -- Попытка прочитать URL новостей
+      -- Попытка прочитать страницу новостей
       (fileGetBinary newsURL >>== (`showHex` "").crc32) $ \new_crc -> do
+    -- Страница новостей успешно прочитана
     old_crc <- fmGetHistory1 fm' "news_crc" ""
+    gui $ do
+    fmStackMsg fm' ""
     if (new_crc == old_crc) then do
-       fmInfoMsg fm' "9999 There are no news on the site."
+       msg <- i18n"0296 There are no news on %1"
+       fmInfoMsg fm' (format msg newsURL)
      else do
        fmReplaceHistory fm' "news_crc" new_crc
-       whenM (askOkCancel window "9999 There are news. Open website?") $ do
+       msg <- i18n"0297 Found news on %1. Open website?"
+       whenM (askOkCancel window (format msg newsURL)) $ do
          openWebsite newsURL
 
   -- Диалог About

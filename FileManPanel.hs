@@ -131,7 +131,7 @@ fmStackMsg fm' msg = do
   fm <- val fm'
   let (box,n')  =  fm_messageCombo fm
   n <- val n';  n' += 1
-  New.comboBoxAppendText box msg
+  New.comboBoxAppendText box =<< i18n msg
   New.comboBoxSetActive  box n
   return ()
 

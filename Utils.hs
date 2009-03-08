@@ -226,6 +226,9 @@ const2 x _ _ = x
 const3 x _ _ _ = x
 const4 x _ _ _ _ = x
 
+-- |Нафига вам этот ThreadId??
+forkIO_ action = forkIO action >> return ()
+
 -- |Повторять бесконечно
 foreverM action = do
   action
