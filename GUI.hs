@@ -567,31 +567,34 @@ debugMsg msg = do
   dialogRun dialog
   return ()
 
-{-# NOINLINE msgBox #-}
 -- |Диалог с информационным сообщением
-msgBox window dialogType msg = do
+msgBox window dialogType msg  =  askConfirmation [ResponseClose] window msg  >>  return ()
+
+-- |Запросить у пользователя подтверждение операции
+askOkCancel = askConfirmation [ResponseOk,  ResponseCancel]
+askYesNo    = askConfirmation [ResponseYes, ResponseNo]
+{-# NOINLINE askConfirmation #-}
+askConfirmation buttons window msg = do
   -- Создадим диалог с единственной кнопкой Close
   bracketCtrlBreak dialogNew widgetDestroy $ \dialog -> do
     set dialog [windowTitle        := aARC_NAME,
                 windowTransientFor := window]
-    dialogAddButton dialog stockClose ResponseClose
+    for buttons $ \button -> do
+      let msg = case button of
+                  ResponseOk     -> stockOk
+                  ResponseCancel -> stockCancel
+                  ResponseYes    -> stockYes
+                  ResponseNo     -> stockNo
+                  ResponseClose  -> stockClose
+                  _              -> stockClose
+      dialogAddButton dialog msg button
     -- Напечатаем в нём сообщение
     label <- labelNew.Just =<< i18n msg
     upbox <- dialogGetUpper dialog
     boxPackStart  upbox label PackGrow 20
     widgetShowAll upbox
     -- И запустим
-    dialogRun dialog
-    return ()
-
--- |Запросить у пользователя подтверждение операции
-askOkCancel = askConfirmation ButtonsOkCancel ResponseOk
-askYesNo    = askConfirmation ButtonsYesNo    ResponseYes
-{-# NOINLINE askConfirmation #-}
-askConfirmation buttons rightResponse window msg = do
-  imsg <- i18n msg
-  bracketCtrlBreak (messageDialogNew (Just window) [] MessageQuestion buttons imsg) widgetDestroy $ \dialog -> do
-  dialogRun dialog >>== (==rightResponse)
+    dialogRun dialog >>== (==buttons!!0)
 
 {-# NOINLINE inputString #-}
 -- |Запросить у пользователя строку
