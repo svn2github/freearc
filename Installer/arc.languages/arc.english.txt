@@ -14,7 +14,7 @@ Add dialog
 1187 Finalize archive=Archive will be sealed after compression\n(no more changes of content possible).
 1072 Additional options:=Additional options to be set manually (for advanced users).
 --
-1201 Compress each file into separate archive=If you activate this option each file will be compressed into a single archive.
+1201 Compress each marked file/directory into separate archive=If you activate this option every marked file/directory will be compressed into a separate archive named after respective file/directory.
 1202 Add to archive name=Appends the choosen parameter to the name of the archive (for instance: date and time).
 --
 1207 Delete previous archive contents=Caution! If you activate this option the content of this archive will be deleted before new content will be added. This can't be undone!

@@ -442,12 +442,12 @@ myGUI run args = do
 
   -- ѕроверка обновлений на сайте
   whatsnewAct `onActionActivate` do
-    fmStackMsg fm' "0295 Checking for news..."
+    fmStackMsg fm' "0295 Checking for updates..."
     forkIO_ $ do
     handleErrors
       -- ¬ыполн€етс€ при недоступности страницы новостей
       (gui $ do
-          msg <- i18n"0296 Cannot open %1. Do you want to check URL manually?"
+          msg <- i18n"0296 Cannot open %1. Are you want to check the page with browser?"
           whenM (askOkCancel window (format msg newsURL)) $ do
             openWebsite newsURL)
       -- ѕопытка прочитать страницу новостей
@@ -457,11 +457,11 @@ myGUI run args = do
     gui $ do
     fmStackMsg fm' ""
     if (new_crc == old_crc) then do
-       msg <- i18n"0296 There are no news on %1"
+       msg <- i18n"0297 Nothing new at %1"
        fmInfoMsg fm' (format msg newsURL)
      else do
        fmReplaceHistory fm' "news_crc" new_crc
-       msg <- i18n"0297 Found news on %1. Open website?"
+       msg <- i18n"0298 Found new information at %1! Open the page with browser?"
        whenM (askOkCancel window (format msg newsURL)) $ do
          openWebsite newsURL
 

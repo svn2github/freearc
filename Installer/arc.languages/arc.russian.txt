@@ -102,7 +102,6 @@ Help menu/toolbar
 
 
 === File manager ==================================================================
-
 Navibar
 0006 Up=Вверх
 0007 Save=Сохранить
@@ -365,6 +364,12 @@ Enter password dialog
 Archive comment dialog
 0073 Enter archive comment=Введите комментарий к архиву
 
+Checking for updates
+0295 Checking for updates...=Проверка обновлений...
+0296 Cannot open %1. Are you want to check the page with browser?=Не могу открыть %1. Открыть страницу в браузере?
+0297 Nothing new at %1=Отсутствие новостей - хорошая новость. На %1 без перемен.
+0298 Found new information at %1! Open the page with browser?=О, что-то новенькое на %1! Открыть страницу в браузере?
+
 
 === Infoline messages ====================================================
 0228 Deleting from %1=Удаление из %1
@@ -466,7 +471,7 @@ Add dialog
 1187 Finalize archive=Архив будет \"запечатан\" после сжатия\n(дальнейшая модификация архива будет невозможна)
 1072 Additional options:=Ручной ввод дополнительных опций (для крутых юзеров)
 --
-1201 Compress each file into separate archive=Включите эту опцию для упаковки каждого файла/каталога в отдельный архив.
+1201 Compress each marked file/directory into separate archive=Включите эту опцию для упаковки каждого отмеченного файла/каталога в отдельный архив, имя которого будет совпадать с именем упаковываемого файла/каталога.
 1202 Add to archive name=Добавляет выбранный шаблон к имени архива (например, текущие дату+время).
 --
 1207 Delete previous archive contents=Предупреждение! Если вы включите эту опцию, текущее содержимое архива будет удалено перед архивацией новых файлов. Его нельзя будет восстановить!

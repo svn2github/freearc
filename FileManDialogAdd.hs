@@ -91,7 +91,7 @@ addDialog fm' exec cmd mode = do
 
 ------ Закладка архивных опций ----------------------------------------------------------------------
     vbox <- newPage "0200 Archive";  let pack x = boxPackStart vbox x PackNatural 1
-    separate <- checkBox "0201 Compress each file into separate archive";  pack (widget separate)  `on`  cmd=="a"
+    separate <- checkBox "0201 Compress each marked file/directory into separate archive";  pack (widget separate)  `on`  cmd=="a"
     (hbox, ag, agTemplate) <- fmCheckedEntryWithHistory fm' "ag"  "0202 Add to archive name:";  pack hbox  `on`  cmd/="ch"
     archiveTimeMode <- comboBox "0203 Set archive time to:"
                                 [ "0204 Current system time"
