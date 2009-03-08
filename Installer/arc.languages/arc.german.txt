@@ -16,7 +16,7 @@
 
 Language name in english and mother tongue
 0000 Language=German (Deutsch)
-0159 Copyright=Vacon and Peter Bauder (based on 7zip language file;edited for FreeArc-0.50-win32-alpha-2009-02-16)\nOriginal copyrights:\nTranslated by Soeren Finster\n7-Zip 4.07 beta\nUpdated by JAK-Software.DE\n7-Zip 4.55 beta\nMaintained by Joachim Henke (since 4.12 beta)
+0159 Copyright=Vacon\nPeter Bauder (based on 7zip language file;edited for FreeArc-0.50-win32-alpha-2009-03-06)\nOriginal copyrights:\nTranslated by Soeren Finster\n7-Zip 4.07 beta\nUpdated by JAK-Software.DE\n7-Zip 4.55 beta\nMaintained by Joachim Henke (since 4.12 beta)
 
 Language-specific URLs relative to http://freearc.org and helpfiles
 0254 Homepage=??
@@ -52,7 +52,7 @@ File menu/toolbar
 
 Commands menu/toolbar
 0030 Add=Hinzufügen
-0040 Add files to archive(s)=Fügt die markierten Objekte einem vorhandenen bzw. einem neuen Archiv hinzu
+0040 Add files to archive(s)=Fügt die markierten Objekte zu einem vorhandenen bzw. zu einem neuen Archiv hinzu
 0031 Modify=Modifizieren
 0041 Modify archive(s)=Archiv(e) modifizieren
 0035 Extract=Entpacken
@@ -69,9 +69,11 @@ Tools menu/toolbar
 0267 Lock archive from further changes=Archiv vor weiteren Veränderungen schützen
 0268 Comment=Kommentar
 0269 Edit archive comment=Archivkommentar bearbeiten
+0293 Recompress=Rekomprimieren
+0294 Recompress files in archive=Datein im Archiv rekomprimieren
 0270 Convert to SFX=zu SFX-Exe...
 0271 Convert archive to SFX=Archiv zu SFX-Exe konvertieren
-0272 Encrypt=Verschlüsseleln
+0272 Encrypt=Verschlüsseln
 0273 Encrypt archive contents=Archivinhalt verschlüsseln
 0274 Protect=Wiederherstellungsinfos...
 0275 Add Recovery record to archive=Fügt Wiederherstellungsinformationen zum Archiv hinzu
@@ -167,7 +169,7 @@ Add dialog
 0187 Finalize archive=Archiv vor Veränderungen schützen
 ---------
 0200 Archive=Archivoptionen
-0201 Compress each file into separate archive=Jede Datei in separates Archiv
+0201 Compress each file into separate archive=Jede Datei und/oder jeden Ordner in separates Archiv
 0202 Add to archive name:=An Archivnamen anhängen:
 --
 0203 Set archive time to:=Setze Archivzeit auf:
@@ -458,13 +460,13 @@ Add dialog
 1184 Encryption=Verschlüsselung ein-/ausschalten.\nFür erweiterte Einstellungen bitte in die Kategorie \"Verschlüsselung\" wechseln.
 1185 Protection:=Wiederherstellungsinfos hinzufügen (normalerweise etwa 1% der Archivgröße).\nDiese erlauben es den Archivinhalt im Falle eines Übertragungsfehlers oder einer Beschädigung des Datenträgers wiederherzustellen.
 1186 Comment=Hier können Sie ein aussagekräftiges Kommentar eingeben.
-1227 Make EXE:=Aktivieren, um ein selbstentpackendes Archiv zu erzeugen\n(FreeArc muss zum Entpacken nicht installiert sein...)
+1227 Make EXE:=Aktivieren, um ein selbstentpackendes Archiv zu erzeugen\n(FreeArc muss dann zum Entpacken nicht installiert sein...)
 1128 Test archive after operation=Testen des Archivs nach dem Komprimieren
 1122 Delete files successfully archived=Wenn Sie diese Option aktivieren, werden die archivierten Dateien nach erfolgreich abgeschlossenem Archivieren gelöscht.
 1187 Finalize archive=Archiv wird dauerhaft verschlossen\n(keine Änderungen mehr möglich)
 1072 Additional options:=Zusätzliche Optionen manuell festlegen (für Profis)
 --
-1201 Compress each file into separate archive=Wenn Sie diese Option aktivieren, wird für jede Datei ein einzelnes Archiv erzeugt.
+1201 Compress each file into separate archive=Wenn Sie diese Option aktivieren, wird für jede markierte Datei und/ oder jeden markierten Ordner ein einzelnes Archiv erzeugt.
 1202 Add to archive name=Hängt den gewünschten Parameter an den Archivnamen an (zB Datum und Zeit)
 --
 1207 Delete previous archive contents=Achtung! Wenn Sie diese Option aktivieren, wird der Inhalt des Archivs vor dem Hinzufügen neuer Objekte unwiederbringlich gelöscht!
