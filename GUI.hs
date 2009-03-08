@@ -570,10 +570,19 @@ debugMsg msg = do
 {-# NOINLINE msgBox #-}
 -- |Диалог с информационным сообщением
 msgBox window dialogType msg = do
-  imsg <- i18n msg
-  bracketCtrlBreak (messageDialogNew (Just window) [] dialogType ButtonsClose imsg) widgetDestroy $ \dialog -> do
-  dialogRun dialog
-  return ()
+  -- Создадим диалог с единственной кнопкой Close
+  bracketCtrlBreak dialogNew widgetDestroy $ \dialog -> do
+    set dialog [windowTitle        := aARC_NAME,
+                windowTransientFor := window]
+    dialogAddButton dialog stockClose ResponseClose
+    -- Напечатаем в нём сообщение
+    label <- labelNew.Just =<< i18n msg
+    upbox <- dialogGetUpper dialog
+    boxPackStart  upbox label PackGrow 20
+    widgetShowAll upbox
+    -- И запустим
+    dialogRun dialog
+    return ()
 
 -- |Запросить у пользователя подтверждение операции
 askOkCancel = askConfirmation ButtonsOkCancel ResponseOk
