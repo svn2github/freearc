@@ -214,7 +214,6 @@ void RunFile (const CFILENAME filename, const CFILENAME curdir, int wait_finish)
   sei.cbSize = sizeof(SHELLEXECUTEINFO);
   sei.fMask = (wait_finish? SEE_MASK_NOCLOSEPROCESS : 0);
   sei.hwnd = GetActiveWindow();
-//  sei.lpVerb = _T("open");
   sei.lpFile = filename;
   sei.lpDirectory = curdir;
   sei.nShow = SW_SHOW;
