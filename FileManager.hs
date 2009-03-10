@@ -447,7 +447,7 @@ myGUI run args = do
     handleErrors
       -- Выполняется при недоступности страницы новостей
       (gui $ do
-          msg <- i18n"0296 Cannot open %1. Are you want to check the page with browser?"
+          msg <- i18n"0296 Cannot open %1. Do you want to check the page with browser?"
           whenM (askOkCancel window (format msg newsURL)) $ do
             openWebsite newsURL)
       -- Попытка прочитать страницу новостей
@@ -645,7 +645,7 @@ myGUI run args = do
   -- Удалить логфайл
   clearLogAct `onActionActivate` do
     withLogfile $ \logfile -> do
-      let msg = "0304 Clear logfile %1?"
+      msg <- i18n"0304 Clear logfile %1?"
       whenM (askOkCancel window (format msg logfile)) $ do
         filePutBinary logfile ""
 
@@ -654,7 +654,7 @@ myGUI run args = do
     fm <- val fm'
     let curfile  =  if isFM_Archive fm  then fm_arcname fm  else fm_dir fm </> "."
     chooseFile window FileChooserActionOpen "0305 Open archive" ["0307 FreeArc archives (*.arc)", "0308 Archives and SFXes (*.arc;*.exe)"] (return curfile) $ \filename -> do
-      chdir fm' filename  `catch`  (\e -> fmErrorMsg fm' "0306 This file isn't archive!")
+      chdir fm' filename  `catch`  (\e -> fmErrorMsg fm' "0306 This file isn't a FreeArc archive!")
 
 
   -- Инициализируем состояние файл-менеджера каталогом/архивом, заданным в командной строке

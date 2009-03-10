@@ -130,7 +130,7 @@ Messages
 === Dialogs =======================================================================
 Archive open dialog
 0305 Open archive=Открыть архив
-0306 This file isn't archive!=Это не архив!
+0306 This file isn't a FreeArc archive!=Это не архив FreeArc!
 0307 FreeArc archives (*.arc)=Архивы FreeArc (*.arc)
 0308 Archives and SFXes (*.arc;*.exe)=Архивы и SFX (*.arc;*.exe)
 0309 All files (*)=Все файлы (*)
@@ -288,7 +288,7 @@ Logfiles
 
 Checking for updates
 0295 Checking for updates...=Проверка обновлений...
-0296 Cannot open %1. Are you want to check the page with browser?=Не могу открыть %1. Открыть страницу в браузере?
+0296 Cannot open %1. Do you want to check the page with browser?=Не могу открыть %1. Открыть страницу в браузере?
 0297 Nothing new at %1=Отсутствие новостей - хорошая новость. На %1 без перемен.
 0298 Found new information at %1! Open the page with browser?=О, что-то новенькое на %1! Открыть страницу в браузере?
 

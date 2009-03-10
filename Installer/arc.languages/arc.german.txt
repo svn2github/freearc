@@ -16,7 +16,7 @@
 
 Language name in english and mother tongue
 0000 Language=German (Deutsch)
-0159 Copyright=Vacon\nPeter Bauder (based on 7zip language file;edited for FreeArc-0.50-win32-alpha-2009-03-06)\nOriginal copyrights:\nTranslated by Soeren Finster\n7-Zip 4.07 beta\nUpdated by JAK-Software.DE\n7-Zip 4.55 beta\nMaintained by Joachim Henke (since 4.12 beta)
+0159 Copyright=Vacon\nPeter Bauder (based on 7zip language file;edited for FreeArc-0.50-win32-alpha-2009-03-10)\nOriginal copyrights:\nTranslated by Soeren Finster\n7-Zip 4.07 beta\nUpdated by JAK-Software.DE\n7-Zip 4.55 beta\nMaintained by Joachim Henke (since 4.12 beta)
 
 Language-specific URLs relative to http://freearc.org and helpfiles
 0254 Homepage=??
@@ -29,7 +29,7 @@ Language-specific URLs relative to http://freearc.org and helpfiles
 Main menu
 0050 File=&Datei
 0066 Edit=&Bearbeiten
-0258 Commands=Bearbeiten
+0258 Commands=Befehle
 0259 Tools=&Extras
 0260 Options=Optionen
 0261 Help=&Hilfe
@@ -129,6 +129,15 @@ Messages
 
 
 === Dialogs =======================================================================
+
+Archive open dialog
+0305 Open archive=Archiv öffnen
+0306 This file isn't a FreeArc archive!=Diese Datei ist kein FreeArc- Archiv!
+0307 FreeArc archives (*.arc)=FreeArc Archive (*.arc)
+0308 Archives and SFXes (*.arc;*.exe)=Archive und SFX-Exe- Dateien (*.arc;*.exe)
+0309 All files (*)=Alle Dateien (*.*)
+
+
 Add dialog
 --Title
 0134 Add %1 to archive=Fügt %1 einem Archiv hinzu
@@ -275,6 +284,16 @@ Settings dialog
 0167 Select logfile=Protokolldatei auswählen
 0172 Associate FreeArc with .arc files=.arc-Dateien mit FreeArc verknüpfen
 
+Logfiles
+0303 No log file specified in Settings dialog!=Keine Logdatei in den Einstellungen spezifiziert!
+0304 Clear logfile %1?=Logdatei \"%1\" löschen?
+
+Checking for updates
+0295 Checking for updates...=Überprüfe auf Updates...
+0296 Cannot open %1. Do you want to check the page with browser?=Kann %1 nicht öffnen. Möchten Sie die Seite mit dem Browser überprüfen?
+0297 Nothing new at %1=Es gibt nichts Neues auf %1.
+0298 Found new information at %1! Open the page with browser?=Neue Informationen auf %1 gefunden! Seite mit dem Browser öffnen?
+
 
 === Profile settings ============================================================
 --Compression settings
@@ -295,7 +314,7 @@ Settings dialog
 0114 Compression level: %1=&Kompressionsstärke: %1
 0115 Compression speed: %1, memory: %2=Packgeschwindigkeit:    %1, Speicherbedarf: %2
 0116 Decompression speed: %1, memory: %2=Entpackgeschwindigkeit: %1, Speicherbedarf: %2
-0117 All speeds were measured on 1GHz single-core Duron,=Alle Daten wurden auf einem 1GHz Einzelkern Duron Prozessor
+0117 All speeds were measured on 1GHz single-core Duron,=Alle Daten wurden auf einem 1GHz Einzelkern Duron- Prozessor
 0118 and your horse will probably run faster=gemessen und dein Pferdchen wird vermutlich schneller laufen ;)
 --Solid block size
 0177 Limit solid blocks=Solide Blöcke begrenzen
@@ -335,7 +354,7 @@ Progress indicator
 0060 Ratio=Kompressionsrate:
 0061 Speed=Geschwindigkeit:
 0062 Time=Verstrichene Zeit:
-0063 Total time=Gesamtzeit:
+0063 Total time=Geschätzte Gesamtzeit:
 --Messages
 0246 Found %1 files= %1 Datei(en) gefunden
 0247 Found %1 archives= %1 Archiv(e) gefunden
@@ -390,6 +409,11 @@ Archive comment dialog
 0243 Adding to %1=Füge zu %1 hinzu
 0244 FILES SUCCESFULLY ADDED TO %1=Datei(en) erfolgreich zu %1 hinzugefügt
 0245 %2 WARNINGS WHILE ADDING TO %1=%2 Warnungen beim hinzufügen zu %1
+
+0299 Lock archive(s)?=Archiv(e) verschließen?
+0300 Locking archive %1=Verschließe Archiv %1
+0301 SUCCESFULLY LOCKED ARCHIVE %1=ARCHIV %1 ERFOLGREICH VERSCHLOSSEN
+0302 %2 WARNINGS WHILE LOCKING ARCHIVE %1=%2 WARNUNGEN WÄHREND DEM VERSCHLIEßEN DES ARCHIVS %1
 
 
 === Standard profiles ====================================================
@@ -466,7 +490,7 @@ Add dialog
 1187 Finalize archive=Archiv wird dauerhaft verschlossen\n(keine Änderungen mehr möglich)
 1072 Additional options:=Zusätzliche Optionen manuell festlegen (für Profis)
 --
-1201 Compress each file into separate archive=Wenn Sie diese Option aktivieren, wird für jede markierte Datei und/ oder jeden markierten Ordner ein einzelnes Archiv erzeugt.
+1201 Compress each marked file/directory into separate archive=Wenn Sie diese Option aktivieren, wird für jede markierte Datei und/ oder jeden markierten Ordner ein einzelnes Archiv erzeugt.
 1202 Add to archive name=Hängt den gewünschten Parameter an den Archivnamen an (zB Datum und Zeit)
 --
 1207 Delete previous archive contents=Achtung! Wenn Sie diese Option aktivieren, wird der Inhalt des Archivs vor dem Hinzufügen neuer Objekte unwiederbringlich gelöscht!
