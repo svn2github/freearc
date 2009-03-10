@@ -128,6 +128,14 @@ Messages
 
 
 === Dialogs =======================================================================
+Archive open dialog
+0305 Open archive=Открыть архив
+0306 This file isn't archive!=Это не архив!
+0307 FreeArc archives (*.arc)=Архивы FreeArc (*.arc)
+0308 Archives and SFXes (*.arc;*.exe)=Архивы и SFX (*.arc;*.exe)
+0309 All files (*)=Все файлы (*)
+
+
 Add dialog
 --Title
 0134 Add %1 to archive=Добавить %1 к архиву
@@ -274,6 +282,16 @@ Settings dialog
 0167 Select logfile=Выберите логфайл
 0172 Associate FreeArc with .arc files=Ассоциировать FreeArc с файлами .arc
 
+Logfiles
+0303 No log file specified in Settings dialog!=Логфайл не задан в диалоге Настройки!
+0304 Clear logfile %1?=Очистить логфайл %1?
+
+Checking for updates
+0295 Checking for updates...=Проверка обновлений...
+0296 Cannot open %1. Are you want to check the page with browser?=Не могу открыть %1. Открыть страницу в браузере?
+0297 Nothing new at %1=Отсутствие новостей - хорошая новость. На %1 без перемен.
+0298 Found new information at %1! Open the page with browser?=О, что-то новенькое на %1! Открыть страницу в браузере?
+
 
 === Profile settings ============================================================
 --Compression settings
@@ -364,12 +382,6 @@ Enter password dialog
 Archive comment dialog
 0073 Enter archive comment=Введите комментарий к архиву
 
-Checking for updates
-0295 Checking for updates...=Проверка обновлений...
-0296 Cannot open %1. Are you want to check the page with browser?=Не могу открыть %1. Открыть страницу в браузере?
-0297 Nothing new at %1=Отсутствие новостей - хорошая новость. На %1 без перемен.
-0298 Found new information at %1! Open the page with browser?=О, что-то новенькое на %1! Открыть страницу в браузере?
-
 
 === Infoline messages ====================================================
 0228 Deleting from %1=Удаление из %1
@@ -395,6 +407,11 @@ Checking for updates
 0243 Adding to %1=Добавление в %1
 0244 FILES SUCCESFULLY ADDED TO %1=ФАЙЛЫ УСПЕШНО ДОБАВЛЕНЫ В %1
 0245 %2 WARNINGS WHILE ADDING TO %1=%2 ПРЕДУПРЕЖДЕНИЙ ПРИ ДОБАВЛЕНИИ В %1
+
+0299 Lock archive(s)?=Защитить архив(ы) от изменений?
+0300 Locking archive %1=Защищаю от изменений архив %1
+0301 SUCCESFULLY LOCKED ARCHIVE %1=УСПЕШНО ЗАФИКСИРОВАН АРХИВ %1
+0302 %2 WARNINGS WHILE LOCKING ARCHIVE %1=%2 ПРЕДУПРЕЖДЕНИЙ ПРИ ФИКСАЦИИ АРХИВА %1
 
 
 === Standard profiles ====================================================

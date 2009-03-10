@@ -283,6 +283,7 @@
     lack of scrolling for archive comment
     freezing on selecting two files and pressing Up
     ArcInfo: fixed counting of files and directories in archive
+    Made modal all dialogs
 
 
   aARCHIVE_VERSION = make4byte 0 0 5 0
@@ -311,6 +312,8 @@
     filetype detection: check for MM on large files
     Priorityio.doc
   bugs
+    Попытка зайти внутрь зашифрованного архива - виснем
+    Run работает некорректно на некоторых машинах
     dict bug: arc a aa cls.zip -mprecomp+6pt -t
       bcj+dict creates corrupted archives
     что будет, если упаковать на CD, т.е. файл лежит на диске на которой нельзя писать, или в папке, где запрешена запись
@@ -339,7 +342,9 @@
   GRZip multithreading!
     ?fixing SyncQueue
     limiting memory
-  -ilog a-la RAR
+  -ilog a-la RAR (выключить поддержку Lua)
+  arc.ini: нужна возможность указать non-solid mode для внешнего упаковщика
+
 
 
   GUI: центрировать индикатор прогресса относительно окна программы, а не всего экрана

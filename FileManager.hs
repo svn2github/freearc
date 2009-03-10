@@ -600,13 +600,13 @@ myGUI run args = do
   -- Защитить архив от записи
   lockAct `onActionActivate` do
     multiArchiveOperation fm' $ \archives -> do
-      let msg = "9999 Lock archive(s)?"
+      let msg = "0299 Lock archive(s)?"
       whenM (askOkCancel window (formatn msg [head archives, show3$ length archives])) $ do
         closeFMArc fm'
         for archives $ \arcname -> do
-          exec [(["9999 Locking archive(s)",
-                  "9999 ARCHIVE(S) SUCCESFULLY LOCKED",
-                  "9999 %2 WARNINGS WHILE LOCKING ARCHIVE(S)"],
+          exec [(["0300 Locking archive %1",
+                  "0301 SUCCESFULLY LOCKED ARCHIVE %1",
+                  "0302 %2 WARNINGS WHILE LOCKING ARCHIVE %1"],
                  [takeFileName arcname],
                  ["ch", "--noarcext", "-k", "--", arcname])]
 
@@ -636,7 +636,7 @@ myGUI run args = do
         logfileHist <- fmGetHistory fm' "logfile"
         case logfileHist of
           logfile:_ | logfile>""  ->  action logfile
-          _                       ->  fmErrorMsg fm' "9999 No log file!"
+          _                       ->  fmErrorMsg fm' "0303 No log file specified in Settings dialog!"
 
   -- Просмотреть логфайл
   viewLogAct `onActionActivate` do
@@ -645,7 +645,7 @@ myGUI run args = do
   -- Удалить логфайл
   clearLogAct `onActionActivate` do
     withLogfile $ \logfile -> do
-      let msg = "9999 Clear logfile %1?"
+      let msg = "0304 Clear logfile %1?"
       whenM (askOkCancel window (format msg logfile)) $ do
         filePutBinary logfile ""
 
@@ -653,8 +653,8 @@ myGUI run args = do
   openAct `onActionActivate` do
     fm <- val fm'
     let curfile  =  if isFM_Archive fm  then fm_arcname fm  else fm_dir fm </> "."
-    chooseFile window FileChooserActionOpen "9999 Open archive" ["9999 FreeArc archives (*.arc)"] (return curfile) $ \filename -> do
-      chdir fm' filename  `catch`  (\e -> fmErrorMsg fm' "9999 It's not an archive!")
+    chooseFile window FileChooserActionOpen "0305 Open archive" ["0307 FreeArc archives (*.arc)", "0308 Archives and SFXes (*.arc;*.exe)"] (return curfile) $ \filename -> do
+      chdir fm' filename  `catch`  (\e -> fmErrorMsg fm' "0306 This file isn't archive!")
 
 
   -- Инициализируем состояние файл-менеджера каталогом/архивом, заданным в командной строке
