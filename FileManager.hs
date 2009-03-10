@@ -313,7 +313,7 @@ myGUI run args = do
   -- Перейти в заданный каталог/архив или выполнить команду
   let select filename = do
         fm <- val fm'
-        handle (\e -> runFile filename (fm_curdir fm) False) $ do    -- при неудаче перехода запустим файл :)
+        handle (\e -> (operationTerminated =: False) >> runFile filename (fm_curdir fm) False) $ do    -- при неудаче перехода запустим файл :)
           hideErrors $ do
             chdir fm' filename
             New.treeViewScrollToPoint (fm_view fm) 0 0
