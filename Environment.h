@@ -28,8 +28,8 @@ int systemRandomData (char *rand_buf, int rand_size);
 void BuildPathTo (CFILENAME name);                         // Создать каталоги на пути к name
 
 // GuiEnvironment.cpp
-int BrowseForFolder(TCHAR *prompt, TCHAR *in_filename, TCHAR *out_filename);   // Дать пользователю выбрать каталог
-int BrowseForFile  (TCHAR *prompt, TCHAR *in_filename, TCHAR *out_filename);   // Дать пользователю выбрать файл
+int BrowseForFolder(TCHAR *prompt, TCHAR *in_filename, TCHAR *out_filename);                      // Дать пользователю выбрать каталог
+int BrowseForFile(TCHAR *prompt, TCHAR *filters, TCHAR *in_filename, TCHAR *out_filename);        // Дать пользователю выбрать файл
 void GuiFormatDateTime (time_t t, char *buf, int bufsize, char *date_format, char *time_format);  // Превратить время/дату файла в строку в соответствии с настройками locale или заданными форматами времени и даты
 
 #ifdef  __cplusplus

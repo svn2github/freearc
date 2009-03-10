@@ -51,12 +51,13 @@ int BrowseForFolder(TCHAR *prompt, TCHAR *in_filename, TCHAR *out_filename)
 
 
 // Дать пользователю выбрать файл
-int BrowseForFile(TCHAR *prompt, TCHAR *in_filename, TCHAR *out_filename)
+int BrowseForFile(TCHAR *prompt, TCHAR *filters, TCHAR *in_filename, TCHAR *out_filename)
 {
   OPENFILENAME ofn;
   ZeroMemory (&ofn, sizeof(ofn));
   ofn.lStructSize = sizeof(ofn);
   ofn.hwndOwner   = GetActiveWindow();
+  ofn.lpstrFilter = filters;
   ofn.lpstrFile   = out_filename;
   ofn.nMaxFile    = MY_FILENAME_MAX;
 

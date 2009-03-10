@@ -786,19 +786,22 @@ textViewGetText textView = do
 {-# NOINLINE chooseFile #-}
 -- |Выбор файла через диалог
 chooseFile parentWindow dialogType dialogTitle filters getFilename setFilename = do
-  filename <- getFilename >>== windosifyPath
   title <- i18n dialogTitle
-  withCFilePath title            $ \c_prompt -> do
+  filename <- getFilename >>== windosifyPath
+  -- Строка фильтров состоит из пар (название,шаблоны), разделённых NULL char, плюс дополнительный NULL char в конце
+  filterStr <- prepareFilters filters >>== map (join2 "\0") >>== joinWith "\0" >>== (++"\0")
+  withCFilePath title            $ \c_prompt   -> do
   withCFilePath filename         $ \c_filename -> do
-  allocaBytes (long_path_size*4) $ \c_outpath -> do
+  withCFilePath filterStr        $ \c_filters  -> do
+  allocaBytes (long_path_size*4) $ \c_outpath  -> do
     result <- case dialogType of
                 FileChooserActionSelectFolder  ->  c_BrowseForFolder c_prompt c_filename c_outpath
-                _                              ->  c_BrowseForFile   c_prompt c_filename c_outpath
+                _                              ->  c_BrowseForFile   c_prompt c_filters c_filename c_outpath
     when (result/=0) $ do
        setFilename =<< peekCFilePath c_outpath
 
 foreign import ccall safe "Environment.h BrowseForFolder"  c_BrowseForFolder :: CFilePath -> CFilePath -> CFilePath -> IO CInt
-foreign import ccall safe "Environment.h BrowseForFile"    c_BrowseForFile   :: CFilePath -> CFilePath -> CFilePath -> IO CInt
+foreign import ccall safe "Environment.h BrowseForFile"    c_BrowseForFile   :: CFilePath -> CFilePath -> CFilePath -> CFilePath -> IO CInt
 
 
 guiFormatDateTime t = unsafePerformIO $ do
@@ -820,7 +823,7 @@ chooseFile parentWindow dialogType dialogTitle filters getFilename setFilename =
     fileChooserSetFilename    chooserDialog (unicode2utf8 filename)
     fileChooserSetCurrentName chooserDialog (takeFileName filename)
     fileChooserSetFilename    chooserDialog (unicode2utf8 filename)
-    addFilters chooserDialog filters
+    prepareFilters filters >>= addFilters chooserDialog
     choice <- dialogRun chooserDialog
     when (choice==ResponseOk) $ do
       whenJustM_ (fileChooserGetFilename chooserDialog) $ \filename -> do
@@ -828,16 +831,23 @@ chooseFile parentWindow dialogType dialogTitle filters getFilename setFilename =
 
 {-# NOINLINE addFilters #-}
 -- |Установить фильтры для выбора файла
-addFilters chooserDialog x = do
-  for (x &&& x++["9999 All files (*)"]) $ \element -> do
-    str <- i18n element
-    let patterns = last (words str) .$drop 1 .$dropEnd 1
+addFilters chooserDialog filters = do
+  for filters $ \(text, patterns) -> do
     filt <- fileFilterNew
-    fileFilterSetName filt str
+    fileFilterSetName filt (text++" ("++patterns++")")
     for (patterns.$ split ';')  (fileFilterAddPattern filt)
     fileChooserAddFilter chooserDialog filt
 
 guiFormatDateTime = formatDateTime
 
 #endif
+
+
+-- |Подготовить фильтры к использованию в диалоге
+prepareFilters filters = do
+  foreach (filters &&& filters++["0309 All files (*)"]) $ \element -> do
+    str <- i18n element
+    let text     = unwords$ init$ words str
+        patterns = last (words str) .$drop 1 .$dropEnd 1
+    return (text, patterns)
 
