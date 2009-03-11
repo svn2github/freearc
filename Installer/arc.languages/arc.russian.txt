@@ -414,6 +414,49 @@ Archive comment dialog
 0302 %2 WARNINGS WHILE LOCKING ARCHIVE %1=%2 ПРЕДУПРЕЖДЕНИЙ ПРИ ФИКСАЦИИ АРХИВА %1
 
 
+=== Error messages =======================================================
+0316 ERROR: %1=ОШИБКА: %1
+0317 WARNING: %1=ПРЕДУПРЕЖДЕНИЕ: %1
+0310 can't modify archive locked with -k=невозможно модифицировать архив, зафиксированный опцией -k
+0311 can't create temporary file=невозможно создать временный файл
+0312 output archive already exists, keeping temporary file %1=выходной архив уже существует, сохраняю временный файл %1
+0313 archive broken, keeping temporary file %1=архив содержит ошибки, сохраняю временный файл %1
+0314 archive broken, deleting=архив содержит ошибки, удаляю
+0315 can't open SFX module %1=невозможно открыть SFX модуль %1
+0318 command syntax is "%1"=синтаксис команды: "%1"
+0319 options %1 and %2 can't be used together=опции %1 и %2 нельзя использовать вместе
+0320 unknown command "%1". Supported commands are: %2=неизвестная команда "%1". Список поддерживаемых команд: %2
+0321 unknown option "%1"=неизвестная опция "%1"
+0322 ambiguous option "%1" - is that %2?=неоднозначная опция "%1" - это %2?
+0325 option "%1" have illegal format=опция "%1" имеет неправильный формат
+0326 %1 option must be one of: %2=опция %1 должна быть одной из: %2
+0327 no command name in command: %1=отсутствует имя команды в команде: %1
+0328 no archive name in command: %1=отсутствует имя архива в команде: %1
+0329 no filenames in command: %1=отсутствуют имена файлов в команде: %1
+0330 can't read directory "%1"=невозможно прочитать каталог "%1"
+0331 can't get info about file "%1"=невозможно получить информацию о файле "%1"
+0332 can't open file "%1"=невозможно открыть файл "%1"
+0333 CRC error in file "%1"=ошибка CRC в файле "%1"
+0334 bad section %1 in %2=ошибочная секция %1 в %2
+0335 operation terminated!=операция прекращена!
+0336 program terminated!=прекращено выполнение программы!
+0337 no files, erasing empty archive=нет файлов, удаляю пустой архив
+0338 skipped %1 fake files=пропущено %1 виртуальных файлов
+0339 bad password for archive %1=неправильный пароль для архива %1
+0340 bad password for %1 in archive %2=неправильный пароль для файла %1 в архиве %2
+0341 archive %1 corrupt: %2. Please recover it using 'r' command or use -tp- option to ignore Recovery Record=архив %1 неисправен: %2. Пожалуйста восстановите его командой 'r' или используйте опцию -tp- чтобы игнорировать защитную запись архива
+0342 SFX module %1 is not found=SFX-модуль %1 не найден
+0343 %1 isn't implemented=%1 не реализовано
+0344 only first of %1 recovery records can be processed by this program version. Please use newer versions to process the rest=только первая из %1 защитных записей архива может быть использована этой версией программы. Пожалуйста используйте более свежую версию программы для обработки остальных
+0345 you need FreeArc %1 or above to process this recovery info=для обработки защитной записи этого архива необходим FreeArc %1 или выше 
+0346 file %1 already exists=файл %1 уже существует
+0347 archive can't be recovered - recovery data absent or corrupt=архив не может быть восстановлен - защитная запись отсутствует или сама повреждена
+0348 %1 unrecoverable errors (%2) found, can't restore anything!=найдено %1 невосстановимых ошибок (%2), невозможно ничего восстановить!
+0349 can't open original at %1=не могу открыть оригинал %1
+0350 %1 has size %2 so it can't be used to recover %3 having size %4=%1 имеет размер %2, так что он не может быть использован для восстановления %3, имеющего размер %4
+0351 %1 errors (%2) remain unrecovered=%1 ошибок (%2) осталось не восстановлено
+
+
 === Standard profiles ====================================================
 Compression
 0727 Maximum (1gb decompression)=Максимальное (1Гб для распаковки)
@@ -516,6 +559,8 @@ Common words
 0101 Yes=Да
 0102 No=Нет
 0103 May be=Не уверен
+0323 or=или
+0324 and=и
 
 Failure messages
 0010 Operation interrupted!=Операция прервана!

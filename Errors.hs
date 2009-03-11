@@ -33,29 +33,31 @@ aEXIT_CODE_BAD_PASSWORD = 21
 aEXIT_CODE_USER_BREAK   = 255
 
 -- |Все возможные типы ошибок и предупреждений
-data ErrorTypes = GENERAL_ERROR               String
-                | CMDLINE_NO_COMMAND          [String]
-                | CMDLINE_NO_ARCSPEC          [String]
-                | CMDLINE_NO_FILENAMES        [String]
-                | UNKNOWN_CMD                 String [String]
-                | CMDLINE_UNKNOWN_OPTION      String
-                | CMDLINE_AMBIGUOUS_OPTION    String [String]
-                | CMDLINE_BAD_OPTION_FORMAT   String
-                | INVALID_OPTION_VALUE        String String [String]
-                | CMDLINE_GENERAL             String
-                | CANT_READ_DIRECTORY         String
-                | CANT_GET_FILEINFO           String
-                | CANT_OPEN_FILE              String
-                | BAD_CRC                     String
-                | BAD_CFG_SECTION             String [String]
+data ErrorTypes = GENERAL_ERROR                 [String]
+                | CMDLINE_GENERAL               String
+                | CMDLINE_SYNTAX                String
+                | CMDLINE_INCOMPATIBLE_OPTIONS  String String
+                | CMDLINE_NO_COMMAND            [String]
+                | CMDLINE_NO_ARCSPEC            [String]
+                | CMDLINE_NO_FILENAMES          [String]
+                | UNKNOWN_CMD                   String [String]
+                | CMDLINE_UNKNOWN_OPTION        String
+                | CMDLINE_AMBIGUOUS_OPTION      String [String]
+                | CMDLINE_BAD_OPTION_FORMAT     String
+                | INVALID_OPTION_VALUE          String String [String]
+                | CANT_READ_DIRECTORY           String
+                | CANT_GET_FILEINFO             String
+                | CANT_OPEN_FILE                String
+                | BAD_CRC                       String
+                | BAD_CFG_SECTION               String [String]
                 | OP_TERMINATED
                 | TERMINATED
                 | NOFILES
-                | SKIPPED_FAKE_FILES          Int
-                | BROKEN_ARCHIVE              FilePath String
-                | INTERNAL_ERROR              String
-                | COMPRESSION_ERROR           String
-                | BAD_PASSWORD                FilePath FilePath
+                | SKIPPED_FAKE_FILES            Int
+                | BROKEN_ARCHIVE                FilePath String
+                | INTERNAL_ERROR                String
+                | COMPRESSION_ERROR             String
+                | BAD_PASSWORD                  FilePath FilePath
 
 --foreign import "&errCounter" :: Ptr Int
 {-
@@ -173,7 +175,7 @@ finalizers = unsafePerformIO (ref [])
 operationTerminated = unsafePerformIO (ref False)
 {-# NOINLINE operationTerminated #-}
 
--- |Режим работы файл-менеджера: при этом terminateOperation обрабатывается по-другому - мы дожидаемся завершения всех тредов упаковки и распаковки
+-- |Режим работы файл-менеджера: при этом registerError обрабатывается по-другому - мы дожидаемся завершения всех тредов упаковки и распаковки
 fileManagerMode = unsafePerformIO (ref False)
 {-# NOINLINE fileManagerMode #-}
 
@@ -182,74 +184,85 @@ fileManagerMode = unsafePerformIO (ref False)
 ---- Тексты сообщений о различных типах ошибок. Подходящий ресурс для интернализации --------------
 ---------------------------------------------------------------------------------------------------
 
-errormsg (GENERAL_ERROR str) =
-  str
-
-errormsg (UNKNOWN_CMD cmd known_cmds) =
-  "command "++quote cmd++" is unknown. Supported commands are:\n" ++ joinWith ", " known_cmds
-
-errormsg (CMDLINE_UNKNOWN_OPTION option) =
-  "unknown option " ++ quote option
-
-errormsg (CMDLINE_GENERAL option) =
-  option
-
-errormsg (CMDLINE_AMBIGUOUS_OPTION option variants) =
-  "ambiguous option " ++ quote option ++ ": is that "++enumerate "or" variants++"?"
-
-errormsg (CMDLINE_BAD_OPTION_FORMAT option) =
-  "option " ++ quote option ++ " have illegal format"
-
-errormsg (INVALID_OPTION_VALUE fullname shortname valid_values) =
-  fullname++" option must be one of: "++ enumerate "or" (map (('-':shortname)++) valid_values)
-
-errormsg (CMDLINE_NO_COMMAND args) =
-  "no command name in command: " ++ quote (unwords args)
-
-errormsg (CMDLINE_NO_ARCSPEC args) =
-  "no archive name in command: " ++ quote (unwords args)
-
-errormsg (CMDLINE_NO_FILENAMES args) =
-  "no filenames in command: " ++ quote (unwords args)
-
-errormsg (CANT_READ_DIRECTORY dir) =
-  "error while reading directory " ++ quote dir
-
-errormsg (CANT_GET_FILEINFO filename) =
-  "can't get info about file " ++ quote filename
-
-errormsg (CANT_OPEN_FILE filename) =
-  "can't open file " ++ quote filename
-
-errormsg (BAD_CRC filename) =
-  "CRC error in " ++ filename
-
-errormsg (BAD_CFG_SECTION cfgfile section) =
-  "Bad section " ++ head section ++ " in "++cfgfile
-
-errormsg (OP_TERMINATED) =
-  "Operation terminated!"
-
-errormsg (TERMINATED) =
-  "Program terminated!"
-
-errormsg (NOFILES) =
-  "No files, erasing empty archive"
-
-errormsg (SKIPPED_FAKE_FILES n) =
-  "skipped "++show n++" fake files"
+errormsg (GENERAL_ERROR xs) =
+  i18fmt xs
 
 errormsg (BROKEN_ARCHIVE arcname msg) =
-  "Archive "++arcname++" corrupt: "++msg++
-  ". Please recover it using 'r' command or use -tp- switch to ignore Recovery Record"
+  i18fmt ["0341 archive %1 corrupt: %2. Please recover it using 'r' command or use -tp- option to ignore Recovery Record", arcname, msg]
 
 errormsg (INTERNAL_ERROR msg) =
-  "FreeArc internal error: "++msg
+  return$ "FreeArc internal error: "++msg
 
-errormsg (COMPRESSION_ERROR msg) = msg
+errormsg (COMPRESSION_ERROR msg) =
+  i18fmt [msg]
 
-errormsg (BAD_PASSWORD archive "")   = "Bad password for archive "++archive
-errormsg (BAD_PASSWORD archive file) = "Bad password for "++file++" in archive "++archive
+errormsg (CMDLINE_GENERAL msg) =
+  i18fmt [msg]
+
+errormsg (CMDLINE_SYNTAX syntax) =
+  i18fmt ["0318 command syntax is \"%1\"", syntax]
+
+errormsg (CMDLINE_INCOMPATIBLE_OPTIONS option1 option2) =
+  i18fmt ["0319 options %1 and %2 can't be used together", option1, option2]
+
+errormsg (UNKNOWN_CMD cmd known_cmds) =
+  i18fmt ["0320 unknown command \"%1\". Supported commands are: %2", cmd, joinWith ", " known_cmds]
+
+errormsg (CMDLINE_UNKNOWN_OPTION option) =
+  i18fmt ["0321 unknown option \"%1\"", option]
+
+errormsg (CMDLINE_AMBIGUOUS_OPTION option variants) = do
+  or <- i18n"0323 or"
+  i18fmt ["0322 ambiguous option \"%1\" - is that %2?", option, enumerate or variants]
+
+errormsg (CMDLINE_BAD_OPTION_FORMAT option) =
+  i18fmt ["0325 option \"%1\" have illegal format", option]
+
+errormsg (INVALID_OPTION_VALUE fullname shortname valid_values) = do
+  or <- i18n"0323 or"
+  i18fmt ["0326 %1 option must be one of: %2", fullname, enumerate or (map (('-':shortname)++) valid_values)]
+
+errormsg (CMDLINE_NO_COMMAND args) =
+  i18fmt ["0327 no command name in command: %1", unwords args]
+
+errormsg (CMDLINE_NO_ARCSPEC args) =
+  i18fmt ["0328 no archive name in command: %1", unwords args]
+
+errormsg (CMDLINE_NO_FILENAMES args) =
+  i18fmt ["0329 no filenames in command: %1", unwords args]
+
+errormsg (CANT_READ_DIRECTORY dir) =
+  i18fmt ["0330 can't read directory \"%1\"", dir]
+
+errormsg (CANT_GET_FILEINFO filename) =
+  i18fmt ["0331 can't get info about file \"%1\"", filename]
+
+errormsg (CANT_OPEN_FILE filename) =
+  i18fmt ["0332 can't open file \"%1\"", filename]
+
+errormsg (BAD_CRC filename) =
+  i18fmt ["0333 CRC error in file \"%1\"", filename]
+
+errormsg (BAD_CFG_SECTION cfgfile section) =
+  i18fmt ["0334 bad section %1 in %2", head section, cfgfile]
+
+errormsg (OP_TERMINATED) =
+  i18fmt ["0335 operation terminated!"]
+
+errormsg (TERMINATED) =
+  i18fmt ["0336 program terminated!"]
+
+errormsg (NOFILES) =
+  i18fmt ["0337 no files, erasing empty archive"]
+
+errormsg (SKIPPED_FAKE_FILES n) =
+  i18fmt ["0338 skipped %1 fake files", show n]
+
+errormsg (BAD_PASSWORD archive "") =
+  i18fmt ["0339 bad password for archive %1", archive]
+
+errormsg (BAD_PASSWORD archive file) =
+  i18fmt ["0340 bad password for %1 in archive %2", file, archive]
 
 
 -- |Перечислить список значений
@@ -376,21 +389,23 @@ display_option' = unsafePerformIO$ newIORef$ error "undefined display_option"
 
 -- |Запись сообщения об ошибке в логфайл и аварийное завершение программы с этим сообщением
 registerError err = do
-  let msg = errormsg err
+  msg <- errormsg err
+  msg <- i18fmt ["0316 ERROR: %1", msg]
   val errorHandlers >>= mapM_ ($msg)
   -- Если мы в режиме файл-менеджера, то придётся ждать завершения всех тредов компрессии,
   -- иначе - просто совершаем аварийный выход из программы
   unlessM (val fileManagerMode) $ do
-    shutdown ("ERROR: "++msg) (errcode err)
+    shutdown msg (errcode err)
   operationTerminated =: True
   fail ""
 
 -- |Запись предупреждения в логфайл и вывод его на экран
 registerWarning warn = do
   warnings += 1
-  let msg = errormsg warn
+  msg <- errormsg warn
+  msg <- i18fmt ["0317 WARNING: %1", msg]
   val warningHandlers >>= mapM_ ($msg)
-  condPrintLineLn "w" ("WARNING: "++msg)
+  condPrintLineLn "w" msg
 
 -- |Выполнить операцию и возвратить количество возникших при этом warning'ов
 count_warnings action = do

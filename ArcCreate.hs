@@ -75,7 +75,7 @@ runArchiveCreate pretestArchive
   -- Если мы создаём новый архив, то подставить вместо старого "фантом".
   let abort_on_locked_archive archive footer = do
           when (ftLocked footer) $
-              registerError$ GENERAL_ERROR "can't modify archive locked with -k"
+              registerError$ GENERAL_ERROR ["0310 can't modify archive locked with -k"]
           pretestArchive command archive footer
   --
   uiStage =<< i18n"0249 Reading archive directory"
@@ -181,7 +181,7 @@ tempfile_wrapper filename command deleteFiles pretestArchive action  =  find 0 >
                                    </> (temparc_prefix++show n++temparc_suffix)
                     found <- fileExist tempname
                     case found of
-                        True  | n==999    -> registerError$ GENERAL_ERROR "can't create temporary file"
+                        True  | n==999    -> registerError$ GENERAL_ERROR ["0311 can't create temporary file"]
                               | otherwise -> find (n+1)
                         False             -> return tempname
 
@@ -200,7 +200,7 @@ tempfile_wrapper filename command deleteFiles pretestArchive action  =  find 0 >
                              if old_file
                                  then fileRemove filename   -- Хорошо бы проверять, что это всё ещё тот самый файл
                                  else whenM (fileExist filename) $ do  -- Если файл с именем выходного архива создали за время архивации, то сообщить об ошибке
-                                          registerError$ GENERAL_ERROR$ "output archive already exists, keeping temporary file "++tempname
+                                          registerError$ GENERAL_ERROR ["0312 output archive already exists, keeping temporary file %1", tempname]
                              fileRename tempname filename
                                  `catch` (\_-> do condPrintLineLn "n"$ "Copying temporary archive "++tempname++" to "++filename
                                                   fileCopy tempname filename; fileRemove tempname)
@@ -216,8 +216,8 @@ tempfile_wrapper filename command deleteFiles pretestArchive action  =  find 0 >
             when (w/=0) $ do
                 unless keep_broken_archive (ignoreErrors$ fileRemove arcname)
                 registerError$ GENERAL_ERROR$ if keep_broken_archive
-                                                 then "archive broken, keeping temporary file "++arcname
-                                                 else "archive broken, deleting"
+                                                 then ["0313 archive broken, keeping temporary file %1", arcname]
+                                                 else ["0314 archive broken, deleting"]
 
 
 ----------------------------------------------------------------------------------------------------
@@ -310,7 +310,7 @@ writeSFX sfxname archive old_archive = do
     "--"     -> unless (arcPhantom old_archive) $ do   --   скопировать sfx из исходного архива (по умолчанию)
                   archiveCopyData oldArchive 0 oldSFXSize archive
     filename -> bracket (archiveOpen sfxname              --   прочитать модуль sfx из указанного файла
-                          `catch` (\e -> registerError$ GENERAL_ERROR$ "can't open SFX module "++sfxname))
+                          `catch` (\e -> registerError$ GENERAL_ERROR ["0315 can't open SFX module %1", sfxname]))
                         (archiveClose)
                         (\sfxfile -> do size <- archiveGetSize sfxfile
                                         archiveCopyData sfxfile 0 size archive)

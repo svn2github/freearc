@@ -312,8 +312,13 @@
     filetype detection: check for MM on large files
     Priorityio.doc
   bugs
+    BROKEN_ARCHIVE - i18n для вложенного msg
+    update GUI docs
+    Файл-открыть архив - открываем не архив - висим
+    АркИнфо на файле не архиве - висим
     Попытка зайти внутрь зашифрованного архива - виснем
-    Run работает некорректно на некоторых машинах
+    Тестирование зашифрованного архива и Cancel на приглашении ввести пароль
+    sfx - tempfile support and auto-usage
     dict bug: arc a aa cls.zip -mprecomp+6pt -t
       bcj+dict creates corrupted archives
     что будет, если упаковать на CD, т.е. файл лежит на диске на которой нельзя писать, или в папке, где запрешена запись

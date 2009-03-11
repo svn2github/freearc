@@ -391,7 +391,7 @@ isURL name = "://" `isInfixOf` name
 {-# NOINLINE choose0 #-}
 choose0 onfile onurl name | isURL name = do url <- withCString name onurl
                                             when (url==nullPtr) $ do
-                                              fail$ "Can't open url "++name
+                                              fail$ "Can't open url "++name   --registerError$ CANT_OPEN_FILE name
                                             return (URL url)
                           | otherwise  = onfile name >>== FileOnDisk
 
@@ -399,7 +399,7 @@ choose _ onurl  (URL        url)   = onurl  url
 choose onfile _ (FileOnDisk file)  = onfile file
 
 {-# NOINLINE err #-}
-err s  =  fail$ s++" isn't implemented" --registerError$ GENERAL_ERROR
+err s  =  fail$ s++" isn't implemented"    --registerError$ GENERAL_ERROR ["0343 %1 isn't implemented", s]
 
 
 type URL = Ptr ()

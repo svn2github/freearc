@@ -158,7 +158,7 @@ scanMem archive base_pos found buf len = do
 -- Общий объём данных в блоке - size, но при этом нас интересуют только дескрипторы,
 -- начинающиеся в первых len байтах блока.
 archiveFindBlockDescriptor archive base_pos buf size len =
-  go ((size-sizeOf(aSIGNATURE)) `max` (len-1)) errormsg
+  go ((size-sizeOf(aSIGNATURE)) `max` (len-1)) defaultError
     where
   go pos err | pos<0     = return$ Left err
              | otherwise = do
@@ -175,7 +175,7 @@ archiveFindBlockDescriptor archive base_pos buf size len =
                    Right _   -> return res
          else go (pos-1) err
   -- Сообщение об ошибке, возращаемое если в блоке вообще не найдено ни одного дескритора
-  errormsg = BROKEN_ARCHIVE (archiveName archive) "archive signature was not found at the end of archive"
+  defaultError = BROKEN_ARCHIVE (archiveName archive) "archive signature was not found at the end of archive"
 
 {-# NOINLINE findBlocksInBrokenArchive #-}
 {-# NOINLINE scanArchiveSearchingDescriptors #-}

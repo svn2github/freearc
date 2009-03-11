@@ -135,7 +135,7 @@ Archive open dialog
 0306 This file isn't a FreeArc archive!=Diese Datei ist kein FreeArc- Archiv!
 0307 FreeArc archives (*.arc)=FreeArc Archive (*.arc)
 0308 Archives and SFXes (*.arc;*.exe)=Archive und SFX-Exe- Dateien (*.arc;*.exe)
-0309 All files (*)=Alle Dateien (*.*)
+0309 All files (*)=Alle Dateien (*)
 
 
 Add dialog

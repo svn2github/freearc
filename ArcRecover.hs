@@ -229,7 +229,7 @@ scanArchive command archive footer recovery pool = do
   if (length recovery_blocks < 2)  then return Nothing  else do
   let sectors_block:crcs_block:_ = recovery_blocks
   when (length recovery_blocks > 2) $ do
-      registerWarning$ GENERAL_ERROR$ "Only first of "++show (length recovery_blocks `div` 2)++" recovery records can be processed by this program version. Please use newer versions to process the rest"
+      registerWarning$ GENERAL_ERROR ["0344 only first of %1 recovery records can be processed by this program version. Please use newer versions to process the rest", show (length recovery_blocks `div` 2)]
 
   -- Прочитаем RECOVERY блоки (сектора+crcs)
   sectors <- if recovery  then archiveBlockReadUnchecked pool sectors_block
@@ -240,7 +240,7 @@ scanArchive command archive footer recovery pool = do
   -- Прочитаем заголовок crc_stream, содержащий все необходимые данные об этой recovery информации
   info <- readControlInfo crc_stream crcs_block
   case info of
-    Left version -> do registerWarning$ GENERAL_ERROR$ "You need FreeArc "++version++" or above to process this recovery info"
+    Left version -> do registerWarning$ GENERAL_ERROR ["0345 you need FreeArc %1 or above to process this recovery info", version]
                        return Nothing
     Right (init_pos, arcsize, sector_size, rec_sectors) -> do
       -- От-xor-рить секторы архива с соответствующими секторами RECOVERY блока.
@@ -286,14 +286,14 @@ runArchiveRecovery command@Command{ cmd_filespecs       = filespecs
   let arcname_fixed = "fixed."++arcname
   condPrintLineLn "n"$ "Recovering archive "++arcname
   whenM (fileExist arcname_fixed) $ do
-    registerError$ GENERAL_ERROR$ "File "++arcname_fixed++" already exists"
+    registerError$ GENERAL_ERROR ["0346 file %1 already exists", arcname_fixed]
   command <- (command.$ opt_cook_passwords) command ask_passwords  -- подготовить пароли в команде к использованию
   withPool $ \pool -> do   -- используем пул памяти, чтобы автоматически освободить выделенные буферы при выходе
   bracketCtrlBreak (archiveReadFooter command arcname) (archiveClose.fst) $ \(archive,footer) -> do
     -- Первый этап - сканирование архива и составление списка сбойных секторов
     result <- scanArchive command archive footer True pool
     if isNothing result
-        then registerError$ GENERAL_ERROR$ "Archive can't be recovered - recovery data absent or corrupt"
+        then registerError$ GENERAL_ERROR ["0347 archive can't be recovered - recovery data absent or corrupt"]
         else do
     -- Переходим к восстановлению данных
     let Just ((crcs_block,crc_stream,sectors,buf),_,bad_crcs) = result
@@ -324,7 +324,8 @@ runArchiveRecovery command@Command{ cmd_filespecs       = filespecs
     originalName <- originalURL opt_original arcname
     when (recoverable==[] && originalName=="") $ do
       save_bad_ranges bad
-      registerError$ GENERAL_ERROR$ show3 bad_sectors++" unrecoverable errors ("++showMemory (bad_sectors*sector_size)++") found, can't restore anything!"
+      registerError$ GENERAL_ERROR ["0348 %1 unrecoverable errors (%2) found, can't restore anything!",
+                                    show3 bad_sectors, showMemory (bad_sectors*sector_size)]
 
     -- Скопируем файл, подставляя правильное содержимое вместо сбойных секторов из списка recoverable (bad сектора восстановить невозможно из-за отсутствия однозначности)
     condPrintLineLn "n"$ show3 recoverable_sectors++" recoverable errors ("++showMemory (recoverable_sectors*sector_size)++") "
@@ -373,14 +374,14 @@ runArchiveRecovery command@Command{ cmd_filespecs       = filespecs
         when (originalName>"" && n `elem` errors) $ do
           -- Прежде всего проверим, что original-файл удалось открыть
           eitherM_ (try$ valJIT original')
-            ( \exception -> once originalErr$ registerWarning$ GENERAL_ERROR$ "Can't open original at "++originalName)
+            ( \exception -> once originalErr$ registerWarning$ GENERAL_ERROR ["0349 can't open original at %1", originalName])
             $ \original  -> do
           -- Теперь проверим, что его размер совпадает с восстанавливаемым архивом
           dwnl_size <- fileGetSize original
           if dwnl_size /= archiveFullSize
-            then once originalErr$ registerWarning$ GENERAL_ERROR$
-                      originalName++" has size "++show3 dwnl_size++" so it can't be used to recover "
-                      ++arcname++" having size "++show3 archiveFullSize
+            then once originalErr$ registerWarning$ GENERAL_ERROR
+                      ["0350 %1 has size %2 so it can't be used to recover %3 having size %4",
+                       originalName, show3 dwnl_size, arcname, show3 archiveFullSize]
             else do
           -- Читаем из original сбойный сектор
           allocaBytes bytes $ \temp -> do
@@ -404,8 +405,7 @@ runArchiveRecovery command@Command{ cmd_filespecs       = filespecs
     save_bad_ranges errors
     when (errors>[]) $ do
       let errnum = genericLength errors
-      registerWarning$ GENERAL_ERROR$ show3 errnum++" errors ("++showMemory (errnum*sector_size)++") remain unrecovered"
-
+      registerWarning$ GENERAL_ERROR ["0351 %1 errors (%2) remain unrecovered", show3 errnum, showMemory (errnum*sector_size)]
   return (1,0,0,0)
 
 

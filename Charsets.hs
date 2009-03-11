@@ -368,10 +368,10 @@ i18ns = mapM i18n
 i18n  = i18n' .>>== fst
 i18n' = i18n_general (val locale)
 
-{-# NOINLINE i18formatn #-}
+{-# NOINLINE i18fmt #-}
 -- |Отформатировать список строк, используя первую как требущий локализации шаблон,
 -- а остальные - как его аргументы
-i18formatn (x:xs)  =  i18n x >>== (`formatn` xs)
+i18fmt (x:xs)  =  i18n x >>== (`formatn` xs)
 
 
 {-# NOINLINE parseLocaleFile #-}

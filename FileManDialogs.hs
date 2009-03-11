@@ -434,7 +434,7 @@ compressionPage fm' vbox = do
                              " 250kb/s   300kb/s   500kb/s   1.5mb/s   6mb/s  12mb/s" --m9x,m5x..m1x
             dspeed = x.$bool "2-10mb/s  2-10mb/s  2-10mb/s  2-10mb/s  10mb/s  25mb/s" --m9,m5..m1
                              "  10mb/s    10mb/s    10mb/s    10mb/s  15mb/s  25mb/s" --m9x,m5x..m1x
-        labelSetMarkup methodText . deleteIf (=='_') . unlines =<< mapM i18formatn
+        labelSetMarkup methodText . deleteIf (=='_') . unlines =<< mapM i18fmt
             [ ["0114 Compression level: %1",               bold((words level!!m).$replace '_' ' ')]
             , ["0115 Compression speed: %1, memory: %2",   bold(words cspeed!!m), bold(showMem cmem)]
             , ["0116 Decompression speed: %1, memory: %2", bold(words dspeed!!m), bold(showMem dmem)]

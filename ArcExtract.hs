@@ -161,7 +161,7 @@ runCommentWrite command@Command{ cmd_filespecs   = filespecs
                                } = do
   doFinally uiDoneArchive2 $ do
   when (length filespecs /= 1) $
-    registerError$ CMDLINE_GENERAL "command syntax is \"cw archive outfile\""
+    registerError$ CMDLINE_SYNTAX "cw archive outfile"
   let [outfile] = filespecs
   command <- (command.$ opt_cook_passwords) command ask_passwords  -- подготовить пароли в команде к использованию
   printLineLn$ "Writing archive comment of "++arcname++" to "++outfile

@@ -168,7 +168,7 @@ parseCmdline cmdline  =  (`mapMaybeM` split ";" cmdline) $ \args -> do
            then findFile libraryFilePlaces sfxname   -- использовать модуль с заданным именем из стандартного каталога
            else return sfxname
   when (sfx=="") $
-    registerError$ GENERAL_ERROR$ "SFX module "++sfxname++" is not found"
+    registerError$ GENERAL_ERROR ["0342 SFX module %1 is not found", sfxname]
 
   -- Добавим к базовому имени архива штамп даты/времени, если указана опция -ag
   current_time <- getClockTime
@@ -593,11 +593,11 @@ parseCmdline cmdline  =  (`mapMaybeM` split ";" cmdline) $ \args -> do
                          (False, False) -> return NO_DELETE
                          (False, True ) -> return DEL_FILES
                          (True , False) -> return DEL_FILES_AND_DIRS
-                         (True , True ) -> registerError$ CMDLINE_GENERAL "options m/-d and mf/-df can't be used together"
+                         (True , True ) -> registerError$ CMDLINE_INCOMPATIBLE_OPTIONS "m/-d" "mf/-df"
 
   -- Запретим использование несовместимых опций
   when (clear_archive_bit && delete_files/=NO_DELETE) $
-      registerError$ CMDLINE_GENERAL "options m[f]/-d[f] and -ac can't be used together"
+      registerError$ CMDLINE_INCOMPATIBLE_OPTIONS "m[f]/-d[f]" "-ac"
 
   -- Каталог для временных файлов - может быть указан явно или через переменную среды
   workdir <- case orig_workdir of

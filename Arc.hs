@@ -75,9 +75,9 @@ doMain args  =  bg $ do             -- выполн€ем в новом треде, не €вл€ющемс€ bo
  where
   handler ex  =  registerError$ GENERAL_ERROR$
       case ex of
-        Deadlock    -> "no threads to run: infinite loop or deadlock?"
-        ErrorCall s -> s
-        other       -> show ex
+        Deadlock    -> ["no threads to run: infinite loop or deadlock?"]
+        ErrorCall s -> [s]
+        other       -> [show ex]
 
 
 -- |ƒиспетчеризует команду и организует еЄ повторение дл€ каждого подход€щего архива
