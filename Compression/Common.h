@@ -475,9 +475,14 @@ static inline MemSize lb (MemSize n)
 // базы, например f(13,2)=16
 static inline MemSize roundup_to_power_of (MemSize n, MemSize base)
 {
-    MemSize result;
-    if (n==1)  return 1;
-    for (result=base, n--; (n/=base) != 0; result *= base);
+    MemSize result = base;
+    if (!(--n))
+        return 1;
+    if (base == 2)
+        result <<= lb(n);
+    else
+        while (n /= base)
+            result *= base;
     return result;
 }
 
@@ -485,9 +490,14 @@ static inline MemSize roundup_to_power_of (MemSize n, MemSize base)
 // базы, например f(13,2)=8
 static inline MemSize rounddown_to_power_of (MemSize n, MemSize base)
 {
-    MemSize result;
-    if (n==1)  return 1;
-    for (result=1; (n/=base) != 0; result *= base);
+    MemSize result = 1;
+    if (!n)
+        return 1;
+    if (base == 2)
+        result <<= lb(n);
+    else
+        while (n /= base)
+            result *= base;
     return result;
 }
 
@@ -523,11 +533,11 @@ char  *utf8_to_oem   (const char  *utf8,  char  *oem);    // Converts UTF-8 stri
 char  *oem_to_utf8   (const char  *oem,   char  *utf8);   // Converts OEM string to UTF-8
 #endif
 
+#ifndef FREEARC_NO_TIMING
 // ¬ывод заголовка окна
 void EnvSetConsoleTitle (CFILENAME title);  // ”становить заголовок консольного окна
 void EnvResetConsoleTitle (void);  // ¬осстановить заголовок, который был в начале работы программы
 
-#ifndef FREEARC_NO_TIMING
 // Timing execution
 double GetGlobalTime     (void);   // Returns number of wall-clock seconds since some moment
 double GetThreadCPUTime  (void);   // Returns number of seconds spent in this thread
