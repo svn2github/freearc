@@ -1,0 +1,4 @@
+﻿Language name in english and mother tongue
+0000 Language=New
+0159 Copyright=Use this file as template for developing new translations
+

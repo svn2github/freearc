@@ -12,7 +12,7 @@ main = do (my:szip:old) <- getArgs
           dict    <-  readFile szip >>= return.makeDict
           oldLang <-  if null old then return []
                                   else readFile (head old) >>= return.makeOldLang
-          let lang = dict .$lookup "00000000" .$fromMaybe "-" .$replace ' ' '_' .$map toLower
+          let lang = dict .$lookup "00000000" .$fromMaybe "_New" .$replace ' ' '_' .$map toLower
               out  = "arc."++lang++".txt"
           readFile my >>= writeFile out.unlines.map (makeLine dict oldLang).lines
 
