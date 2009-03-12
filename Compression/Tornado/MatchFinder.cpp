@@ -118,8 +118,8 @@ BaseMatchFinder::BaseMatchFinder (BYTE *buf, int hashsize, int _hash_row_width, 
     base      = buf;
     hash_row_width = _hash_row_width;
     HashSize  = (1<<lb(hashsize)) / sizeof(*HTable);
-    HashShift = 32-lb(HashSize);
-    HashMask  = (HashSize-1) & ~(roundup_to_power_of(hash_row_width,2)-1);
+    HashShift = (lb(HashSize) ^ 31) + 1;
+    HashMask  = (HashSize - 1) & -roundup_to_power_of(hash_row_width, 2);
     HTable    = (PtrVal*) malloc (sizeof(PtrVal) * HashSize);
 }
 
@@ -633,7 +633,7 @@ CycledCachingMatchFinder<N>::CycledCachingMatchFinder (BYTE *buf, uint hashsize,
     base      = buf;
     hash_row_width = _hash_row_width;
     // Simulate 2gb:256 hash with 2040mb:255 one :)
-    if (hashsize==2*gb  &&  hash_row_width == 1<<lb(hash_row_width))
+    if (hashsize == 2*gb && !((hash_row_width - 1) & hash_row_width))
         --hash_row_width;
 
     HeadSize  = 1 << lb(hashsize / (sizeof(*HTable) * hash_row_width * 2));
@@ -642,7 +642,7 @@ CycledCachingMatchFinder<N>::CycledCachingMatchFinder (BYTE *buf, uint hashsize,
     HashSize  = HeadSize * hash_row_width * 2 ;
     HTable    = (PtrVal*) malloc (HashSize * sizeof(*HTable));
 
-    HashShift = 32 - lb(HeadSize);
+    HashShift = (lb(HeadSize) ^ 31) + 1;
     HashMask  = ~0;
     clear_hash (buf);
 }

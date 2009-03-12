@@ -217,10 +217,10 @@ int tor_compress0 (PackMethod m, CALLBACK_FUNC *callback, void *auxdata)
 {
     SET_JMP_POINT( FREEARC_ERRCODE_GENERAL);
     // Make buffer at least 32kb long and round its size up to 4kb chunk
-    m.buffer = ((mymax (m.buffer, 32*kb)-1) & ~4095) + 4096;
+    m.buffer = (mymax(m.buffer, 32*kb) + 4095) & -4096;
     // If hash is too large - make it smaller
-    if (m.hashsize/8     > m.buffer)  m.hashsize     = 1<<lb(m.buffer*8);
-    if (m.auxhash_size/8 > m.buffer)  m.auxhash_size = 1<<lb(m.buffer*8);
+    if (m.hashsize/8     > m.buffer)  m.hashsize     = 8 << lb(m.buffer);
+    if (m.auxhash_size/8 > m.buffer)  m.auxhash_size = 8 << lb(m.buffer);
     // >0: shift data in these chunks, <0: how many old bytes should be kept when buf shifts,
     // -1: don't slide buffer, fill it with new data instead
     m.shift = m.shift?  m.shift  :  (m.hash_row_width>4? m.buffer/4   :
