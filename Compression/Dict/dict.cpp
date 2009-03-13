@@ -1396,7 +1396,7 @@ int main (int argc, char **argv)
     }
 
     // Прочитать входные данные
-    unsigned bytes = read (fin, buf, bufsize);
+    unsigned bytes = file_read (fin, buf, bufsize);
     if (bytes != bufsize) {
         printf( "\n Can't read entire input file");
         exit(5);
@@ -1427,8 +1427,8 @@ int main (int argc, char **argv)
             printf( "\n Can't open %s for write\n", argv[2]);
             exit(3);
         }
-        if (!unpack)  write (fout, &bufsize, sizeof(bufsize));  // Добавим размер исходного файла в начало закодированных данных
-        write (fout, outbuf, outsize);
+        if (!unpack)  file_write (fout, &bufsize, sizeof(bufsize));  // Добавим размер исходного файла в начало закодированных данных
+        file_write (fout, outbuf, outsize);
     }
 
     return 0;
