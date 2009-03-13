@@ -261,6 +261,7 @@
   Installer SFX (extracts into tempdir, runs setup.exe and then deletes extracted files)
   -m2b made faster on modern cpus; -m3b - fixed speed loss on multi-core cpus & 1% better compression
   "lt" command: technical archive listing
+  --language option: localization for console version!
   -m2/-m3/-m4 now use 96mb dictionary by default! *r modes are removed, bcj moved after rep
   Fixed bugs:
     in Delta filter (leading to crashes)

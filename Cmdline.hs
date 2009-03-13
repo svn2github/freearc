@@ -130,6 +130,7 @@ parseCmdline cmdline  =  (`mapMaybeM` split ";" cmdline) $ \args -> do
       orig_workdir          =  findOptArg   o "workdir" "--"   ||| "%TEMP"
       pretest               =  findOptArg   o "pretest"       "1" .$  changeTo [("-","0"), ("+","2"), ("","2")]
       broken_archive        =  findReqArg   o "BrokenArchive" "-"  ||| "0"
+      language              =  findReqArg   o "language"      ""
       noarcext              =  findNoArg    o "noarcext"
       crconly               =  findNoArg    o "crconly"
       nodata                =  findNoArg    o "nodata"
@@ -146,6 +147,10 @@ parseCmdline cmdline  =  (`mapMaybeM` split ";" cmdline) $ \args -> do
   setup_command <- newList
   setup_command <<= (url_setup_proxy      .$ withCString (replace ',' ' ' url_proxy))
   setup_command <<= (url_setup_bypass_list.$ withCString (replace ',' ' ' url_bypass))
+
+  -- Загрузить файл локализации
+  setup_command <<= (setLocale language)
+  setLocale language
 
   -- Вручную раскидать опции -o/-op
   let (op, o_rest) = partition is_op_option (findReqList o "overwrite")
@@ -696,6 +701,7 @@ parseCmdline cmdline  =  (`mapMaybeM` split ";" cmdline) $ \args -> do
     , opt_delete_files         = delete_files
     , opt_workdir              = workdir
     , opt_clear_archive_bit    = clear_archive_bit
+    , opt_language             = language
     , opt_recovery             = recovery
     , opt_broken_archive       = broken_archive
     , opt_original             = findOptArg   o "original"          "--"

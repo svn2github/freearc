@@ -94,6 +94,7 @@ data Command = Command {
   , opt_delete_files         :: !DelOptions         --   удалить файлы/каталоги после успешной архивации?
   , opt_workdir              :: !String             --   каталог дл€ временных файлов или ""
   , opt_clear_archive_bit    :: !Bool               --   сбросить атрибут Archive у успешно упакованных файлов (и файлов, которые уже есть в архиве)
+  , opt_language             :: !String             --   €зык/файл локализации
   , opt_recovery             :: !String             --   величина Recovery блока (в процентах, байтах или секторах)
   , opt_broken_archive       :: !String             --   обрабатывать неисправный архив, полностью сканиру€ его в поисках оставшихс€ исправными блоков
   , opt_original             :: !String             --   перезагружать с указанного URL сбойные части архива
@@ -177,6 +178,7 @@ optionsList = sortOn (\(OPTION a b _) -> (a|||"zzz",b))
    ,OPTION "okf"   "OldKeyfile"         "old KEYFILE used only for decryption"
    ,OPTION "w"     "workdir"            "DIRECTORY for temporary files"
    ,OPTION "sc"    "charset"            "CHARSETS used for listfiles and comment files"
+   ,OPTION ""      "language"           "load localisation from FILE"
    ,OPTION "tp"    "pretest"            "test archive before operation using MODE"
    ,OPTION "t"     "test"               "test archive after operation"
    ,OPTION "d"     "delete"             "delete files & dirs after successful archiving"
