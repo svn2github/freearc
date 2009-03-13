@@ -69,7 +69,7 @@ archiveReadBlockDescriptor archive arcpos buf bufsize = do
   right_crc  <- peekByteOff buf (bufsize - sizeOf (undefined::CRC))
   descriptor_crc <- calcCRC buf (bufsize - sizeOf (undefined::CRC))
   if (descriptor_crc/=right_crc)
-    then return$ Left$ BROKEN_ARCHIVE (archiveName archive) ("block descriptor at pos "++show arcpos++" is corrupt")
+    then return$ Left$ BROKEN_ARCHIVE (archiveName archive) ["0354 block descriptor at pos %1 is corrupted", show arcpos]
     else do
   -- Расшифруем содержимое дескриптора:
   -- сигнатуру, тип блока, использованный компрессор, размер в распакованном и упакованном виде, CRC распакованных данных
@@ -77,7 +77,7 @@ archiveReadBlockDescriptor archive arcpos buf bufsize = do
   let pos   =  blDecodePosRelativeTo arcpos compsize  -- позиция в архиве начала блока
       block =  ArchiveBlock archive block_type compressor pos origsize compsize crc undefined (enc compressor)
   if (sign/=aSIGNATURE || pos<0)
-    then return$ Left$ BROKEN_ARCHIVE (archiveName archive) (block_name block++" is corrupted")
+    then return$ Left$ BROKEN_ARCHIVE (archiveName archive) ["0355 %1 is corrupted", block_name block]
     else return$ Right block
 
 {-# NOINLINE archiveWriteBlockDescriptor #-}
@@ -99,7 +99,7 @@ findBlocksInBrokenArchive arcname = do
   allocaBytes (aHUGE_BUFFER_SIZE+2*aSCAN_MAX) $ \buf -> do
   blocks <- withList $ scanArchiveSearchingDescriptors archive buf arcsize
   if null blocks
-    then registerError$ BROKEN_ARCHIVE arcname "archive directory not found"
+    then registerError$ BROKEN_ARCHIVE arcname ["0356 archive directory not found"]
     else do
   -- Возвратить нормальный FOOTER_BLOCK, если он нашёлся в архиве
   --if blType (head blocks) == FOOTER_BLOCK
@@ -175,7 +175,7 @@ archiveFindBlockDescriptor archive base_pos buf size len =
                    Right _   -> return res
          else go (pos-1) err
   -- Сообщение об ошибке, возращаемое если в блоке вообще не найдено ни одного дескритора
-  defaultError = BROKEN_ARCHIVE (archiveName archive) "archive signature was not found at the end of archive"
+  defaultError = BROKEN_ARCHIVE (archiveName archive) ["0357 archive signature not found at the end of archive"]
 
 {-# NOINLINE findBlocksInBrokenArchive #-}
 {-# NOINLINE scanArchiveSearchingDescriptors #-}
@@ -242,7 +242,7 @@ archiveReadFooterBlock footer @ ArchiveBlock {
                                }
                        decryption_info = do
   when (block_type/=FOOTER_BLOCK) $
-    registerError$ BROKEN_ARCHIVE (archiveName archive) "last block of archive is not footer block"
+    registerError$ BROKEN_ARCHIVE (archiveName archive) ["0358 last block of archive is not footer block"]
   withPool $ \pool -> do   -- используем пул памяти, чтобы автоматически освободить выделенные буферы при выходе
     (buf,size) <- archiveBlockReadAll pool decryption_info footer  -- поместим в буфер распакованные данные блока
     stream <- ByteStream.openMemory buf size
@@ -347,13 +347,13 @@ archiveBlockReadAll pool
   (origbuf, decompressed_size)  <-  decompressInMemory pool compressor decryption_info archive pos compsize origsize
   crc <- calcCRC origbuf origsize
   when (crc/=right_crc || decompressed_size/=origsize) $ do
-    registerError$ BROKEN_ARCHIVE (archiveName archive) (block_name block ++ " fails decompression")
+    registerError$ BROKEN_ARCHIVE (archiveName archive) ["0359 %1 failed decompression", block_name block]
   return (origbuf, origsize)
 
 -- |Выделить буфер и прочитать в него содержимое блока. Не проверяет CRC и не распаковывает данные!
 archiveBlockReadUnchecked pool block = do
   when (blCompressor block/=aNO_COMPRESSION) $ do
-    registerError$ BROKEN_ARCHIVE (archiveName$ blArchive block) (block_name block ++ " should be uncompressed")
+    registerError$ BROKEN_ARCHIVE (archiveName$ blArchive block) ["0360 %1 should be uncompressed", block_name block]
   archiveMallocReadBuf pool (blArchive block) (blPos block) (i$ blOrigSize block)
 
 -- |Выделить буфер и прочитать в него данные из архива

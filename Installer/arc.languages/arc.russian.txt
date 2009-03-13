@@ -455,6 +455,15 @@ Archive comment dialog
 0349 can't open original at %1=не могу открыть оригинал %1
 0350 %1 has size %2 so it can't be used to recover %3 having size %4=%1 имеет размер %2, так что он не может быть использован для восстановления %3, имеющего размер %4
 0351 %1 errors (%2) remain unrecovered=%1 ошибок (%2) осталось не восстановлено
+0352 found %1 errors (%2)=найдено %1 ошибок (%2)
+0353 there were %1 warnings due archive testing=при тестировании архива получено %1 предупреждений
+0354 block descriptor at pos %1 is corrupted=дескриптор блока по адресу %1 повреждён
+0355 %1 is corrupted=%1 повреждён
+0359 %1 failed decompression=ошибка при распаковке %1
+0360 %1 should be uncompressed=%1 должен быть неупакованным
+0356 archive directory not found=оглавление архива не найдено
+0357 archive signature not found at the end of archive=сигнатура архива не найдена в конце архива
+0358 last block of archive is not footer block=последний блок архива - не footer блок
 
 
 === Standard profiles ====================================================

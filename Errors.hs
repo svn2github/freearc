@@ -54,7 +54,7 @@ data ErrorTypes = GENERAL_ERROR                 [String]
                 | TERMINATED
                 | NOFILES
                 | SKIPPED_FAKE_FILES            Int
-                | BROKEN_ARCHIVE                FilePath String
+                | BROKEN_ARCHIVE                FilePath [String]
                 | INTERNAL_ERROR                String
                 | COMPRESSION_ERROR             String
                 | BAD_PASSWORD                  FilePath FilePath
@@ -187,7 +187,8 @@ fileManagerMode = unsafePerformIO (ref False)
 errormsg (GENERAL_ERROR xs) =
   i18fmt xs
 
-errormsg (BROKEN_ARCHIVE arcname msg) =
+errormsg (BROKEN_ARCHIVE arcname msgs) = do
+  msg <- i18fmt msgs
   i18fmt ["0341 archive %1 corrupt: %2. Please recover it using 'r' command or use -tp- option to ignore Recovery Record", arcname, msg]
 
 errormsg (INTERNAL_ERROR msg) =

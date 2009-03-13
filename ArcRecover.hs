@@ -209,7 +209,7 @@ pretestArchive command archive footer = do
     result <- withPool$ scanArchive command archive footer False
     case result of
       Just (_, sector_size, bad_crcs)  |  bad_sectors <- genericLength bad_crcs, bad_sectors>0
-              -> registerError$ BROKEN_ARCHIVE (archiveName archive) ("found "++show3 bad_sectors++" errors ("++showMemory (bad_sectors*sector_size)++")")
+              -> registerError$ BROKEN_ARCHIVE (archiveName archive) ["0352 found %1 errors (%2)", show3 bad_sectors, showMemory (bad_sectors*sector_size)]
       Just _  -> condPrintLineLn "r" "Archive OK"
       _       -> return ()
     -- ѕолное тестирование архива только при -pt3 или при -pt2 и отсутствии recovery информации в архиве
@@ -218,7 +218,7 @@ pretestArchive command archive footer = do
                testArchive command (cmd_arcname command) doNothing3
       -- ѕродолжать работу только при отсутствии warning'ов
       when (w>0) $ do
-        registerError$ BROKEN_ARCHIVE (archiveName archive) ("there were "++show w++" warnings in the course of archive testing")
+        registerError$ BROKEN_ARCHIVE (archiveName archive) ["0353 there were %1 warnings due archive testing", show w]
 
 
 -- |ѕросканировать архив и возвратить список сбойных секторов
