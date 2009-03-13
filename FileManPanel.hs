@@ -308,6 +308,13 @@ fmGetHistory  fm' tags       = handle (\_ -> return []) $ do
                        ("",b) -> return b
                        (a ,b) -> do a <- i18n a; return$ join2 ": " (a,b))
 
+-- Чтение/запись в историю булевского значения
+fmGetHistoryBool     fm' tag deflt  =  fmGetHistory1 fm' tag (bool2str deflt)  >>==  (==bool2str True)
+fmReplaceHistoryBool fm' tag x      =  fmReplaceHistory fm' tag (bool2str x)
+bool2str True  = "1"
+bool2str False = "0"
+
+
 -- |Получить содержимое файла истории
 fmGetConfigFile fm' = do
   fm <- val fm'
@@ -476,14 +483,11 @@ fmInputString fm' tag title filter_p process = do
 {-# NOINLINE fmCheckButtonWithHistory #-}
 -- |Создать чекбокс с историей под тегом tag
 fmCheckButtonWithHistory fm' tag deflt title = do
-  let bool2str True  = "1"
-      bool2str False = "0"
   control <- checkBox title
   let rereadHistory = do
-        control  =::  fmGetHistory1 fm' tag (bool2str deflt)  >>==  (==bool2str True)
+        control =:: fmGetHistoryBool fm' tag deflt
   let saveHistory = do
-        text <- val control >>== bool2str
-        fmReplaceHistory fm' tag text
+        fmReplaceHistoryBool fm' tag =<< val control
   rereadHistory
   return$ control
            { gwSaveHistory   = saveHistory
@@ -511,6 +515,7 @@ fmDialogRun fm' dialog name = do
     inside (restoreSizePos fm' dialog name "")
            (saveSizePos    fm' dialog name)
       (dialogRun dialog)
+
 
 ----------------------------------------------------------------------------------------------------
 ---- Список файлов в архиве ------------------------------------------------------------------------

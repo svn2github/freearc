@@ -273,14 +273,15 @@ Settings dialog
 0068 Language:=Язык:
 0069 Edit=Редактировать
 0070 Import=Импорт
-0168 You should restart FreeArc in order for a language settings to take effect.=Вы должны перезапустить FreeArc чтобы заработали новые настройки локализации.
-0169 Passwords need to be entered again after restart.=Пароли должны быть введены заново после перезапуска
 0170 Full name:=Полное имя:
 0171 Copyright:=Авторство:
 0166 Logfile:=Логфайл:
 0292 View=Просмотреть
 0167 Select logfile=Выберите логфайл
 0172 Associate FreeArc with .arc files=Ассоциировать FreeArc с файлами .arc
+0361 Add captions to toolbar buttons=Подписи под кнопками в тулбаре
+0168 You should restart FreeArc in order for a language settings to take effect.=Вы должны перезапустить FreeArc чтобы заработали новые настройки локализации.
+0169 Passwords need to be entered again after restart.=Пароли должны быть введены заново после перезапуска
 
 Logfiles
 0303 No log file specified in Settings dialog!=Логфайл не задан в диалоге Настройки!

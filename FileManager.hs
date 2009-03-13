@@ -141,7 +141,7 @@ myGUI run args = do
   -- Menus and toolbars
   let anew name comment icon accel = do
         [i18name,i18comment] <- i18ns [name,comment]
-        action <- actionNew (action name) i18name (Just i18comment) icon
+        action <- actionNew (action name) i18comment (Just i18comment) icon
         action `set` [actionShortLabel := i18name]
         actionGroupAddActionWithAccel standardGroup action (Just accel)
         accel `onKey` actionActivate action
@@ -190,7 +190,6 @@ myGUI run args = do
   window <- windowNew
   (Just menuBar) <- uiManagerGetWidget ui "/ui/menubar"
   (Just toolBar) <- uiManagerGetWidget ui "/ui/toolbar"
-  castToToolbar toolBar `set` [toolbarStyle := ToolbarIcons]
 
   (listUI, listView, listModel, listSelection, columns, onColumnTitleClicked) <- createFilePanel
   statusLabel  <- labelNew Nothing
@@ -208,6 +207,8 @@ myGUI run args = do
   -- Создадим переменную для хранения текущего состояния файл-менеджера
   fm' <- newFM window listView listModel listSelection statusLabel messageCombo
   fmStackMsg fm' "              "
+  toolbarCaptions <- fmGetHistoryBool fm' "ToolbarCaptions" True
+  castToToolbar toolBar `set` [toolbarStyle := if toolbarCaptions then ToolbarBoth else ToolbarIcons]
 
   -- Полоска навигации
   naviBar  <- hBoxNew False 0
