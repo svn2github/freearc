@@ -509,41 +509,49 @@ instance GtkWidgetClass w gw a => Variable w a where
 
 -- |Universal interface to arbitrary GTK widget `w` that controls value of type `a`
 class GtkWidgetClass w gw a | w->gw, w->a where
-  widget      :: w -> gw                 -- ^The GTK widget by itself
-  getTitle    :: w -> IO String          -- ^Read current widget's title
-  setTitle    :: w -> String -> IO ()    -- ^Set current widget's title
-  getValue    :: w -> IO a               -- ^Read current widget's value
-  setValue    :: w -> a -> IO ()         -- ^Set current widget's value
-  setOnUpdate :: w -> (IO ()) -> IO ()   -- ^Called when user changes widget's value
-  onClick     :: w -> (IO ()) -> IO ()   -- ^Called when user clicks button
+  widget        :: w -> gw                 -- ^The GTK widget by itself
+  getTitle      :: w -> IO String          -- ^Read current widget's title
+  setTitle      :: w -> String -> IO ()    -- ^Set current widget's title
+  getValue      :: w -> IO a               -- ^Read current widget's value
+  setValue      :: w -> a -> IO ()         -- ^Set current widget's value
+  setOnUpdate   :: w -> (IO ()) -> IO ()   -- ^Called when user changes widget's value
+  onClick       :: w -> (IO ()) -> IO ()   -- ^Called when user clicks button
+  saveHistory   :: w -> IO ()
+  rereadHistory :: w -> IO ()
 
 data GtkWidget gw a = GtkWidget
- {gwWidget      :: gw
- ,gwGetTitle    :: IO String
- ,gwSetTitle    :: String -> IO ()
- ,gwGetValue    :: IO a
- ,gwSetValue    :: a -> IO ()
- ,gwSetOnUpdate :: (IO ()) -> IO ()
- ,gwOnClick     :: (IO ()) -> IO ()
+ {gwWidget        :: gw
+ ,gwGetTitle      :: IO String
+ ,gwSetTitle      :: String -> IO ()
+ ,gwGetValue      :: IO a
+ ,gwSetValue      :: a -> IO ()
+ ,gwSetOnUpdate   :: (IO ()) -> IO ()
+ ,gwOnClick       :: (IO ()) -> IO ()
+ ,gwSaveHistory   :: IO ()
+ ,gwRereadHistory :: IO ()
  }
 
 instance GtkWidgetClass (GtkWidget gw a) gw a where
-  widget      = gwWidget
-  getTitle    = gwGetTitle
-  setTitle    = gwSetTitle
-  getValue    = gwGetValue
-  setValue    = gwSetValue
-  setOnUpdate = gwSetOnUpdate
-  onClick     = gwOnClick
+  widget        = gwWidget
+  getTitle      = gwGetTitle
+  setTitle      = gwSetTitle
+  getValue      = gwGetValue
+  setValue      = gwSetValue
+  setOnUpdate   = gwSetOnUpdate
+  onClick       = gwOnClick
+  saveHistory   = gwSaveHistory
+  rereadHistory = gwRereadHistory
 
 -- |Пустой GtkWidget
-gtkWidget = GtkWidget { gwWidget      = undefined
-                      , gwGetTitle    = undefined
-                      , gwSetTitle    = undefined
-                      , gwGetValue    = undefined
-                      , gwSetValue    = undefined
-                      , gwSetOnUpdate = undefined
-                      , gwOnClick     = undefined
+gtkWidget = GtkWidget { gwWidget        = undefined
+                      , gwGetTitle      = undefined
+                      , gwSetTitle      = undefined
+                      , gwGetValue      = undefined
+                      , gwSetValue      = undefined
+                      , gwSetOnUpdate   = undefined
+                      , gwOnClick       = undefined
+                      , gwSaveHistory   = undefined
+                      , gwRereadHistory = undefined
                       }
 
 -- Использовать жирный Pango Markup для переданного текста

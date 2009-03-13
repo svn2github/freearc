@@ -364,18 +364,18 @@ splitCmt xs (w:ws)       = splitCmt (w:xs) ws
 data EntryWithHistory = EntryWithHistory
   { ehGtkWidget   :: GtkWidget ComboBoxEntry String
   , entry         :: Entry
-  , saveHistory   :: IO ()
-  , rereadHistory :: IO ()
   }
 
 instance GtkWidgetClass EntryWithHistory ComboBoxEntry String where
-  widget      = widget      . ehGtkWidget
-  getTitle    = getTitle    . ehGtkWidget
-  setTitle    = setTitle    . ehGtkWidget
-  getValue    = getValue    . ehGtkWidget
-  setValue    = setValue    . ehGtkWidget
-  setOnUpdate = setOnUpdate . ehGtkWidget
-  onClick     = onClick     . ehGtkWidget
+  widget        = widget        . ehGtkWidget
+  getTitle      = getTitle      . ehGtkWidget
+  setTitle      = setTitle      . ehGtkWidget
+  getValue      = getValue      . ehGtkWidget
+  setValue      = setValue      . ehGtkWidget
+  setOnUpdate   = setOnUpdate   . ehGtkWidget
+  onClick       = onClick       . ehGtkWidget
+  saveHistory   = saveHistory   . ehGtkWidget
+  rereadHistory = rereadHistory . ehGtkWidget
 
 
 {-# NOINLINE fmEntryWithHistory #-}
@@ -384,13 +384,14 @@ instance GtkWidgetClass EntryWithHistory ComboBoxEntry String where
 fmEntryWithHistory fm' tag filter_p process = do
   comboBox <- New.comboBoxEntryNewText
   Just entry <- binGetChild comboBox >>== fmap castToEntry
+  set entry [entryActivatesDefault := True]
   historySize <- mvar 0
   let rereadHistory = do
         historySize .<- \hs -> do
-        replicateM_ (hs+1) (New.comboBoxRemoveText comboBox 0)
-        history <- fmGetHistory fm' tag >>= Utils.filterM filter_p
-        for history (New.comboBoxAppendText comboBox)
-        return (length history)
+          replicateM_ (hs+1) (New.comboBoxRemoveText comboBox 0)
+          history <- fmGetHistory fm' tag >>= Utils.filterM filter_p
+          for history (New.comboBoxAppendText comboBox)
+          return (length history)
   let getText = do
         New.comboBoxGetActiveText comboBox >>= process.fromJust
   let setText text = do
@@ -403,13 +404,13 @@ fmEntryWithHistory fm' tag filter_p process = do
   hs <- val historySize
   when (hs>0) $ New.comboBoxSetActive comboBox 0
   return EntryWithHistory
-           {                           entry         = entry
-           ,                           saveHistory   = saveHistory
-           ,                           rereadHistory = rereadHistory
-           , ehGtkWidget = gtkWidget { gwWidget      = comboBox
-                                     , gwGetValue    = getText
-                                     , gwSetValue    = setText
-                                     , gwSetOnUpdate = \action -> New.onChanged comboBox action >> return ()
+           {                           entry           = entry
+           , ehGtkWidget = gtkWidget { gwWidget        = comboBox
+                                     , gwGetValue      = getText
+                                     , gwSetValue      = setText
+                                     , gwSetOnUpdate   = \action -> New.onChanged comboBox action >> return ()
+                                     , gwSaveHistory   = saveHistory
+                                     , gwRereadHistory = rereadHistory
                                      }
            }
 
@@ -420,7 +421,6 @@ fmLabeledEntryWithHistory fm' tag title = do
   hbox  <- hBoxNew False 0
   title <- label title
   inputStr <- fmEntryWithHistory fm' tag (const$ return True) (return)
-  set (entry inputStr) [entryActivatesDefault := True]
   boxPackStart  hbox  (widget title)     PackNatural 0
   boxPackStart  hbox  (widget inputStr)  PackGrow    5
   return (hbox, inputStr)
@@ -432,7 +432,6 @@ fmCheckedEntryWithHistory fm' tag title = do
   hbox  <- hBoxNew False 0
   checkBox <- checkBox title
   inputStr <- fmEntryWithHistory fm' tag (const$ return True) (return)
-  set (entry inputStr) [entryActivatesDefault := True]
   boxPackStart  hbox  (widget checkBox)  PackNatural 0
   boxPackStart  hbox  (widget inputStr)  PackGrow    5
   --checkBox `onToggled` do
@@ -447,7 +446,6 @@ fmFileBox fm' dialog tag dialogType makeControl dialogTitle filter_p process = d
   hbox     <- hBoxNew False 0
   control  <- makeControl
   filename <- fmEntryWithHistory fm' tag filter_p process
-  set (entry filename) [entryActivatesDefault := True]
   chooserButton <- button "0999 ..."
   chooserButton `onClick` do
     chooseFile dialog dialogType dialogTitle [] (val filename) (filename =:)
@@ -463,7 +461,6 @@ fmInputString fm' tag title filter_p process = do
   -- Создадим диалог со стандартными кнопками OK/Cancel
   fmDialog fm' title $ \(dialog,okButton) -> do
     x <- fmEntryWithHistory fm' tag filter_p process
-    set (entry x) [entryActivatesDefault := True]
 
     upbox <- dialogGetUpper dialog
     --boxPackStart  upbox label    PackGrow 0
@@ -475,6 +472,23 @@ fmInputString fm' tag title filter_p process = do
       ResponseOk -> do saveHistory x; val x >>== Just
       _          -> return Nothing
 
+
+{-# NOINLINE fmCheckButtonWithHistory #-}
+-- |Создать чекбокс с историей под тегом tag
+fmCheckButtonWithHistory fm' tag deflt title = do
+  let bool2str True  = "1"
+      bool2str False = "0"
+  control <- checkBox title
+  let rereadHistory = do
+        control  =::  fmGetHistory1 fm' tag (bool2str deflt)  >>==  (==bool2str True)
+  let saveHistory = do
+        text <- val control >>== bool2str
+        fmReplaceHistory fm' tag text
+  rereadHistory
+  return$ control
+           { gwSaveHistory   = saveHistory
+           , gwRereadHistory = rereadHistory
+           }
 
 {-# NOINLINE fmDialog #-}
 -- |Диалог со стандартными кнопками OK/Cancel
