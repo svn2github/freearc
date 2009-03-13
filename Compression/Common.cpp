@@ -303,16 +303,14 @@ char *oem_to_utf8 (const char  *oem, char *utf8)
 #ifdef FREEARC_WIN
 #include <windows.h>
 
-#define LARGE_STRING 1024
-
-TCHAR Saved_Title[LARGE_STRING];
+TCHAR Saved_Title[MY_FILENAME_MAX];
 bool Saved = FALSE;
 
 // Установить заголовок консольного окна
 void EnvSetConsoleTitle (TCHAR *title)
 {
   if (!Saved) {
-    GetConsoleTitle (Saved_Title, sizeof(Saved_Title));
+    GetConsoleTitle (Saved_Title, MY_FILENAME_MAX);
     Saved = TRUE;
   }
   SetConsoleTitle (title);
