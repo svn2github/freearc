@@ -142,6 +142,7 @@ myGUI run args = do
   let anew name comment icon accel = do
         [i18name,i18comment] <- i18ns [name,comment]
         action <- actionNew (action name) i18name (Just i18comment) icon
+        action `set` [actionShortLabel := i18name]
         actionGroupAddActionWithAccel standardGroup action (Just accel)
         accel `onKey` actionActivate action
         return action
@@ -189,6 +190,7 @@ myGUI run args = do
   window <- windowNew
   (Just menuBar) <- uiManagerGetWidget ui "/ui/menubar"
   (Just toolBar) <- uiManagerGetWidget ui "/ui/toolbar"
+  castToToolbar toolBar `set` [toolbarStyle := ToolbarIcons]
 
   (listUI, listView, listModel, listSelection, columns, onColumnTitleClicked) <- createFilePanel
   statusLabel  <- labelNew Nothing
@@ -507,14 +509,13 @@ myGUI run args = do
 
   -- При выполнении операций не выходим по исключениям, а печатаем сообщения о них в логфайл
   let handleErrors action x  =  do operationTerminated =: False
-                                   (action x `catch` handler) `finally` (operationTerminated =: False)
+                                   action x `catch` handler
+                                   operationTerminated =: False
         where handler ex = do
-                operationTerminated' <- val operationTerminated
                 errmsg <- case ex of
-                   _ | operationTerminated' -> i18n"0010 Operation interrupted!"
-                   Deadlock                 -> i18n"0011 No threads to run: infinite loop or deadlock?"
-                   ErrorCall s              -> return s
-                   other                    -> return$ showsPrec 0 other ""
+                   Deadlock    -> i18n"0011 No threads to run: infinite loop or deadlock?"
+                   ErrorCall s -> return s
+                   other       -> return$ show ex
                 with' (val log_separator') (log_separator'=:) $ \_ -> do
                   log_separator' =: ""
                   io$ condPrintLineLn "w" errmsg

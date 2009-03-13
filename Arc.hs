@@ -75,7 +75,7 @@ doMain args  =  bg $ do             -- выполняем в новом треде, не являющемся bo
  where
   handler ex  =  registerError$ GENERAL_ERROR$
       case ex of
-        Deadlock    -> ["no threads to run: infinite loop or deadlock?"]
+        Deadlock    -> ["0011 No threads to run: infinite loop or deadlock?"]
         ErrorCall s -> [s]
         other       -> [show ex]
 
