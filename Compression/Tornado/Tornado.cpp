@@ -467,8 +467,10 @@ int tor_decompress0 (CALLBACK_FUNC *callback, void *auxdata, int _bufsize, int m
     }
 finished:
     free(outbuf-PAD_FOR_TABLES);
-    // Return errcode, decoder error code or FREEARC_OK
-    return errcode>=0? decoder.error() : errcode;
+    // Return decoder error code, errcode or FREEARC_OK
+    return decoder.error() < 0 ?  decoder.error() :
+           errcode         < 0 ?  errcode
+                               :  FREEARC_OK;
 }
 
 

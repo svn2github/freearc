@@ -175,8 +175,9 @@ de_compress_PROCESS1 de_compress reader times comprMethod num pipe = do
   time  <- val time'
   uiDeCompressionTime times (comprMethod,time,total)
   -- Выйдем с сообщением, если произошла ошибка
-  when (result `notElem` [aFREEARC_OK, aFREEARC_ERRCODE_NO_MORE_DATA_REQUIRED, aFREEARC_ERRCODE_OPERATION_TERMINATED]) $ do
-    registerError$ COMPRESSION_ERROR$ compressionErrorMessage result++" in "++comprMethod
+  unlessM (val operationTerminated) $ do
+    when (result `notElem` [aFREEARC_OK, aFREEARC_ERRCODE_NO_MORE_DATA_REQUIRED]) $ do
+      registerError$ COMPRESSION_ERROR$ compressionErrorMessage result++" in "++comprMethod
   -- Сообщим предыдущему процессу, что данные больше не нужны, а следующему - что данных больше нет
   send_backP  pipe aFREEARC_ERRCODE_NO_MORE_DATA_REQUIRED
   resend_data pipe NoMoreData

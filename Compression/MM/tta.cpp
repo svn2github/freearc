@@ -281,7 +281,7 @@ int tta_compress (int level, int skip_header, int is_float, int num_chan, int wo
     } else {
         // Read first 1mb of data for MM type autodetection
         prevbuf = prevptr = (char*)malloc1d (1*mb, 1);
-        READ_LEN (prevsize, prevbuf, 1*mb);
+        READ_LEN_OR_EOF (prevsize, prevbuf, 1*mb);
 
         // If both WAV file header and entropy autodetection fails use default values
         if (!skip_header && autodetect_wav_header (prevbuf, prevsize, &is_float, &num_chan, &word_size, &offset)) {
@@ -297,7 +297,7 @@ storing:
             while (1) {
                 if (prevbuf != NULL)   {WRITE (prevbuf, prevsize)}
                 else                   prevbuf = (char*)malloc1d (1*mb, 1);
-                READ_LEN (prevsize, prevbuf, 1*mb);
+                READ_LEN_OR_EOF (prevsize, prevbuf, 1*mb);
             }
         }
     }
@@ -435,7 +435,7 @@ int tta_decompress (CALLBACK_FUNC *callback, void *auxdata)
         prevbuf = malloc1d (1*mb, 1);
         while (1) {
             int prevsize;
-            READ_LEN (prevsize, prevbuf, 1*mb);
+            READ_LEN_OR_EOF (prevsize, prevbuf, 1*mb);
             WRITE (prevbuf, prevsize);
         }
     }

@@ -84,15 +84,15 @@ typedef int CALLBACK_FUNC (const char *what, void *data, int size, void *auxdata
 {                                                                          \
     void *localBuf = (buf);                                                \
     int localSize  = (size);                                               \
-    if (localSize && (errcode=callback("read",localBuf,localSize,auxdata))!=size) { \
-        if (errcode>0) errcode=FREEARC_ERRCODE_IO;                         \
+    if (localSize  &&  (errcode=callback("read",localBuf,localSize,auxdata)) != localSize) { \
+        if (errcode>=0) errcode=FREEARC_ERRCODE_IO;                        \
         goto finished;                                                     \
     }                                                                      \
 }
 
-#define READ_LEN(len, buf, size)                                           \
+#define READ_LEN_OR_EOF(len, buf, size)                                    \
 {                                                                          \
-    if ((errcode=len=callback("read",buf,size,auxdata))<=0) {              \
+    if ((errcode=len=callback("read",buf,size,auxdata)) <= 0) {            \
         goto finished;                                                     \
     }                                                                      \
 }
@@ -101,26 +101,32 @@ typedef int CALLBACK_FUNC (const char *what, void *data, int size, void *auxdata
 {                                                                          \
     void *localBuf = (buf);                                                \
     int localSize  = (size);                                               \
+    /* "write" callback on success guarantees to write all the data and may return 0 */ \
     if (localSize && (errcode=callback("write",localBuf,localSize,auxdata))<0)  \
         goto finished;                                                     \
 }
 
 #define READ4(var)                                                         \
 {                                                                          \
-    unsigned char header[4];                                               \
-    errcode = callback ("read", header, 4, auxdata);                       \
-    if (errcode != 4) {                                                    \
-        if (errcode>0) errcode=FREEARC_ERRCODE_IO;                         \
-        goto finished;                                                     \
-    }                                                                      \
-    (var) = value32 (header);                                              \
+    unsigned char localHeader[4];                                          \
+    READ (localHeader, 4);                                                 \
+    (var) = value32 (localHeader);                                         \
+}
+
+#define READ4_OR_EOF(var)                                                  \
+{                                                                          \
+    int localHeaderSize;                                                   \
+    unsigned char localHeader[4];                                          \
+    READ_LEN_OR_EOF (localHeaderSize, localHeader, 4);                     \
+    if (localHeaderSize!=4)  {errcode=FREEARC_ERRCODE_IO; goto finished;}  \
+    (var) = value32 (localHeader);                                         \
 }
 
 #define WRITE4(value)                                                      \
 {                                                                          \
-    unsigned char header[4];                                               \
-    setvalue32 (header, value);                                            \
-    WRITE (header, 4);                                                     \
+    unsigned char localHeader[4];                                          \
+    setvalue32 (localHeader, value);                                       \
+    WRITE (localHeader, 4);                                                \
 }
 
 #define QUASIWRITE(size)                                                   \

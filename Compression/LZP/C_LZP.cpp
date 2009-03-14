@@ -136,7 +136,7 @@ int lzp_compress (MemSize BlockSize, int MinCompression, int MinMatchLen, int Ha
     {
         int InSize, OutSize;     // количество байт во входном и выходном буфере, соответственно
         MALLOC (BYTE, In, BlockSize+2);
-    	READ_LEN (InSize, In, BlockSize);
+    	READ_LEN_OR_EOF (InSize, In, BlockSize);
         In = (BYTE*) realloc(In,InSize);
         MALLOC (BYTE, Out, InSize+2);
         OutSize = LZPEncode (In, InSize, Out, MinMatchLen, 1<<HashSizeLog, Barrier, SmallestLen);
@@ -170,7 +170,7 @@ int lzp_decompress (MemSize BlockSize, int MinCompression, int MinMatchLen, int 
     BYTE* Out= NULL;  // указатель на выходные данные
     for(;;) {
         int InSize, OutSize;     // количество байт во входном и выходном буфере, соответственно
-        READ4 (InSize);
+        READ4_OR_EOF (InSize);
         if (InSize<0) {
             // скопируем неупакованные данные
             InSize = -InSize;

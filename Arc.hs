@@ -73,7 +73,8 @@ doMain args  =  bg $ do             -- выполн€ем в новом треде, не €вл€ющемс€ bo
   mapM_ run commands                -- ¬ыполнить каждую полученную команду
   uiDoneProgram                     -- «акрыть UI
  where
-  handler ex  =  registerError$ GENERAL_ERROR$
+  handler ex  =  --registerError$ GENERAL_ERROR$
+    mapM_ (condPrintLineLn "n") $
       case ex of
         Deadlock    -> ["0011 No threads to run: infinite loop or deadlock?"]
         ErrorCall s -> [s]

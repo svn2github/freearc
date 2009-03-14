@@ -428,7 +428,7 @@ int delta_compress (MemSize BlockSize, int ExtendedTables, CALLBACK_FUNC *callba
     for (;;)
     {
         // Read input block
-        int Size;  READ_LEN (Size, buf, BlockSize);
+        int Size;  READ_LEN_OR_EOF (Size, buf, BlockSize);
 
         BYTE *bufend = buf + Size;     // End of data in buf[]
         BYTE *last_table_end = buf;    // End of last table found so far
@@ -505,8 +505,8 @@ int delta_decompress (MemSize BlockSize, int ExtendedTables, CALLBACK_FUNC *call
     for (;;)
     {
         // Прочитаем один блок данных и описание заключённых в нём таблиц
-        int DataSize;              READ4(DataSize);     // Size of data block
-        int TableSize;             READ4(TableSize);    // Size of each table describing data tables
+        int DataSize;              READ4_OR_EOF(DataSize);       // Size of data block
+        int TableSize;             READ4(TableSize);             // Size of each table describing data tables
         TSkip.reserve(TableSize);  READ (TSkip.buf, TableSize);  // Read table descriptions (see below)
         TType.reserve(TableSize);  READ (TType.buf, TableSize);
         TRows.reserve(TableSize);  READ (TRows.buf, TableSize);
