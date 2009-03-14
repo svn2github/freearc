@@ -199,10 +199,10 @@ myGUI run args = do
   ctx <- statusbarGetContextId statusbar ""
   statusbarPush statusbar ctx "    "
   widgetSetSizeRequest messageCombo 30 (-1)
-  hBox <- hBoxNew False 0
-  boxPackStart hBox statusLabel  PackNatural 2
-  boxPackStart hBox messageCombo PackGrow    2
-  boxPackStart hBox statusbar    PackNatural 0
+  lowBox <- vBoxNew False 0
+  boxPackStart lowBox statusLabel  PackNatural 2
+  boxPackStart lowBox messageCombo PackGrow    2
+  --boxPackStart lowBox statusbar    PackNatural 0
 
   -- Создадим переменную для хранения текущего состояния файл-менеджера
   fm' <- newFM window listView listModel listSelection statusLabel messageCombo
@@ -239,7 +239,7 @@ myGUI run args = do
   boxPackStart vBox toolBar   PackNatural 0
   boxPackStart vBox naviBar   PackNatural 0
   boxPackStart vBox listUI    PackGrow    0
-  boxPackStart vBox hBox      PackNatural 0
+  boxPackStart vBox lowBox    PackNatural 0
 
   containerAdd window vBox
 
