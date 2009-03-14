@@ -380,14 +380,6 @@ myGUI run args = do
     saveCurdirToHistory
     select =<< val curdir
 
-  -- Выделить все файлы
-  selectAllAct `onActionActivate` do
-    fmSelectAll fm'
-
-  -- Инвертировать выделение
-  invertSelAct `onActionActivate` do
-    fmInvertSelection fm'
-
   -- Выполнить action над файлами, состоящими в соотношении makeRE с именем файла под курсором
   let byFile action makeRE = do
         filename <- fmGetCursor fm'
@@ -401,6 +393,29 @@ myGUI run args = do
   "<Alt>KP_Add"        `onKey` byFile fmSelectFilenames   ((++".*").dropExtension)
   "<Alt>KP_Subtract"   `onKey` byFile fmUnselectFilenames ((++".*").dropExtension)
 
+
+  -- При нажатии заголовка столбца в списке файлов - сортировать по этому столбцу
+  --   (при повторном нажатии - сортировать в обратном порядке)
+  onColumnTitleClicked =: \column -> do
+    fmModifySortOrder fm' (showSortOrder columns) (calcNewSortOrder column)
+    refreshCommand fm'
+    fmSaveSortOrder  fm' =<< fmGetSortOrder fm'  -- запишем в конфиг порядок сортировки
+
+  -- Отсортируем файлы по сохранённому критерию
+  fmSetSortOrder fm' (showSortOrder columns) =<< fmRestoreSortOrder fm'
+
+
+----------------------------------------------------------------------------------------------------
+---- Меню File -------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+
+  -- Открыть архив
+  openAct `onActionActivate` do
+    fm <- val fm'
+    let curfile  =  if isFM_Archive fm  then fm_arcname fm  else fm_dir fm </> "."
+    chooseFile window FileChooserActionOpen "0305 Open archive" ["0307 FreeArc archives (*.arc)", "0308 Archives and SFXes (*.arc;*.exe)"] (return curfile) $ \filename -> do
+      chdir fm' filename  `catch`  (\e -> fmErrorMsg fm' "0306 This file isn't a FreeArc archive!")
+
   -- Select/unselect files by user-supplied mask
   let byDialog method msg = do
         whenJustM_ (fmInputString fm' "mask" msg (const$ return True) return) $ \mask -> do
@@ -408,14 +423,189 @@ myGUI run args = do
   selectAct   `onActionActivate`  byDialog fmSelectFilenames   "0008 Select files"
   unselectAct `onActionActivate`  byDialog fmUnselectFilenames "0009 Unselect files"
 
+  -- Выделить все файлы
+  selectAllAct `onActionActivate` do
+    fmSelectAll fm'
+
+  -- Инвертировать выделение
+  invertSelAct `onActionActivate` do
+    fmInvertSelection fm'
+
   -- Обновить список файлов актуальными данными
   refreshAct `onActionActivate` do
     refreshCommand fm'
+
+  -- Выход из программы
+  exitAct `onActionActivate`
+    mainQuit
+
+
+----------------------------------------------------------------------------------------------------
+---- Движок выполнения консольных команд внутри FM gui ---------------------------------------------
+----------------------------------------------------------------------------------------------------
+
+  -- При выполнении операций не выходим по исключениям, а печатаем сообщения о них в логфайл
+  let myHandleErrors action x  =  do operationTerminated =: False
+                                     action x `catch` handler
+                                     operationTerminated =: False
+        where handler ex = do
+                errmsg <- case ex of
+                   Deadlock    -> i18n"0011 No threads to run: infinite loop or deadlock?"
+                   ErrorCall s -> return s
+                   other       -> return$ show ex
+                with' (val log_separator') (log_separator'=:) $ \_ -> do
+                  log_separator' =: ""
+                  io$ condPrintLineLn "w" errmsg
+                return ()
+
+  -- Выполнить команду архиватора
+  let runWithMsg ([formatStart,formatSuccess,formatFail],msgArgs,cmd) = do
+        -- Сообщение о начале выполнения команды
+        msgStart <- i18n formatStart
+        postGUIAsync$ fmStackMsg fm' (formatn msgStart msgArgs)
+        -- Выполнить и посчитать число ошибок
+        w <- count_warnings (parseCmdline cmd >>= mapM_ run)
+        -- Сообщение об успешном выполнении либо кол-ве допущенных ошибок
+        msgFinish <- i18n (if w==0  then formatSuccess  else formatFail)
+        postGUIAsync$ fmStackMsg fm' (formatn msgFinish (msgArgs++[show w]))
+
+  -- Commands executed by various buttons
+  cmdChan <- newChan
+  forkIO $ do
+    foreverM $ do
+      commands <- readChan cmdChan
+      postGUIAsync$ do clearStats; widgetShowAll windowProgress
+      mapM_ (myHandleErrors runWithMsg) commands
+      whenM (isEmptyChan cmdChan)$ postGUIAsync$ do widgetHide windowProgress; refreshCommand fm'
+      --uiDoneProgram
+  let exec = writeChan cmdChan
+
+
+----------------------------------------------------------------------------------------------------
+---- Меню Commands ---------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+
+  -- Упаковка данных
+  addAct `onActionActivate` do
+    addDialog fm' exec "a" NoMode
+
+  -- Распаковка архив(ов)
+  extractAct `onActionActivate` do
+    archiveOperation fm' $
+      extractDialog fm' exec "x"
+    rereadHistory curdir
+
+  -- Тестирование архив(ов)
+  testAct `onActionActivate` do
+    archiveOperation fm' $
+      extractDialog fm' exec "t"
+
+  -- Информация об архиве
+  arcinfoAct `onActionActivate` do
+    archiveOperation fm' $
+      arcinfoDialog fm' exec NoMode
+
+  -- Удаление файлов (из архива)
+  deleteAct `onActionActivate` do
+    fm <- val fm'
+    files <- getSelection fm' (if isFM_Archive fm  then xCmdFiles  else const [])
+    if null files  then fmErrorMsg fm' "0012 There are no files selected!" else do
+    msg <- i18n$ case files of [_] | isFM_Archive fm -> "0160 Delete %1 from archive?"
+                                   | otherwise       -> "0161 Delete %1?"
+                               _   | isFM_Archive fm -> "0019 Delete %2 file(s) from archive?"
+                                   | otherwise       -> "0020 Delete %2 file(s)?"
+    whenM (askOkCancel window (formatn msg [head files, show3$ length files])) $ do
+      fmDeleteSelected fm'
+      if isFM_Archive fm
+        -- Стереть файлы из архива
+        then do closeFMArc fm'
+                let arcname = fm_arcname fm
+                exec [(["0228 Deleting from %1",
+                        "0229 FILES SUCCESFULLY DELETED FROM %1",
+                        "0230 %2 WARNINGS WHILE DELETING FROM %1"],
+                       [takeFileName arcname],
+                       ["d", "--noarcext", "--", arcname]++files)]
+        -- Удалить файлы на диске
+        else io$ mapM_ (ignoreErrors.fileRemove.(fm_dir fm </>)) files
+
+  -- Защитить архив от записи
+  lockAct `onActionActivate` do
+    multiArchiveOperation fm' $ \archives -> do
+      let msg = "0299 Lock archive(s)?"
+      whenM (askOkCancel window (formatn msg [head archives, show3$ length archives])) $ do
+        closeFMArc fm'
+        for archives $ \arcname -> do
+          exec [(["0300 Locking archive %1",
+                  "0301 SUCCESFULLY LOCKED ARCHIVE %1",
+                  "0302 %2 WARNINGS WHILE LOCKING ARCHIVE %1"],
+                 [takeFileName arcname],
+                 ["ch", "--noarcext", "-k", "--", arcname])]
+
+
+----------------------------------------------------------------------------------------------------
+---- Меню Tools ------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+
+  -- Изменить комментарий архива
+  commentAct `onActionActivate` do
+    archiveOperation fm' $
+      arcinfoDialog fm' exec CommentMode
+
+  -- Преобразовать архив в SFX
+  recompressAct `onActionActivate` do
+    addDialog fm' exec "ch" RecompressMode
+
+  -- Преобразовать архив в SFX
+  toSfxAct `onActionActivate` do
+    addDialog fm' exec "ch" MakeSFXMode
+
+  -- Зашифровать архив
+  encryptAct `onActionActivate` do
+    addDialog fm' exec "ch" EncryptionMode
+
+  -- Добавить RR в архив
+  addRrAct `onActionActivate` do
+    addDialog fm' exec "ch" ProtectionMode
+
+  -- Модификация архивов
+  modifyAct `onActionActivate` do
+    addDialog fm' exec "ch" NoMode
+
+  -- Объединение архивов
+  joinAct `onActionActivate` do
+    addDialog fm' exec "j" NoMode
+
+
+----------------------------------------------------------------------------------------------------
+---- Меню Options ----------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 
   -- Окно настроек программы
   settingsAct `onActionActivate` do
     settingsDialog fm'
 
+  -- Действия с логфайлом
+  let withLogfile action = do
+        logfileHist <- fmGetHistory fm' "logfile"
+        case logfileHist of
+          logfile:_ | logfile>""  ->  action logfile
+          _                       ->  fmErrorMsg fm' "0303 No log file specified in Settings dialog!"
+
+  -- Просмотреть логфайл
+  viewLogAct `onActionActivate` do
+    withLogfile runViewCommand
+
+  -- Удалить логфайл
+  clearLogAct `onActionActivate` do
+    withLogfile $ \logfile -> do
+      msg <- i18n"0304 Clear logfile %1?"
+      whenM (askOkCancel window (format msg logfile)) $ do
+        filePutBinary logfile ""
+
+
+----------------------------------------------------------------------------------------------------
+---- Меню Help -------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 
   -- Открыть URL
   let openWebsite url  =  runFile url "." False
@@ -492,172 +682,6 @@ myGUI run args = do
 
   -- Включить поддержку URL в диалоге About
   aboutDialogSetUrlHook openWebsite
-
-
-  -- При нажатии заголовка столбца в списке файлов - сортировать по этому столбцу
-  --   (при повторном нажатии - сортировать в обратном порядке)
-  onColumnTitleClicked =: \column -> do
-    fmModifySortOrder fm' (showSortOrder columns) (calcNewSortOrder column)
-    refreshCommand fm'
-    fmSaveSortOrder  fm' =<< fmGetSortOrder fm'  -- запишем в конфиг порядок сортировки
-
-  -- Отсортируем файлы по сохранённому критерию
-  fmSetSortOrder fm' (showSortOrder columns) =<< fmRestoreSortOrder fm'
-
-
-----------------------------------------------------------------------------------------------------
----- Выполнение команд файл-менеджера --------------------------------------------------------------
-----------------------------------------------------------------------------------------------------
-
-  -- При выполнении операций не выходим по исключениям, а печатаем сообщения о них в логфайл
-  let handleErrors action x  =  do operationTerminated =: False
-                                   action x `catch` handler
-                                   operationTerminated =: False
-        where handler ex = do
-                errmsg <- case ex of
-                   Deadlock    -> i18n"0011 No threads to run: infinite loop or deadlock?"
-                   ErrorCall s -> return s
-                   other       -> return$ show ex
-                with' (val log_separator') (log_separator'=:) $ \_ -> do
-                  log_separator' =: ""
-                  io$ condPrintLineLn "w" errmsg
-                return ()
-
-  -- Выполнить команду архиватора
-  let runWithMsg ([formatStart,formatSuccess,formatFail],msgArgs,cmd) = do
-        -- Сообщение о начале выполнения команды
-        msgStart <- i18n formatStart
-        postGUIAsync$ fmStackMsg fm' (formatn msgStart msgArgs)
-        -- Выполнить и посчитать число ошибок
-        w <- count_warnings (parseCmdline cmd >>= mapM_ run)
-        -- Сообщение об успешном выполнении либо кол-ве допущенных ошибок
-        msgFinish <- i18n (if w==0  then formatSuccess  else formatFail)
-        postGUIAsync$ fmStackMsg fm' (formatn msgFinish (msgArgs++[show w]))
-
-  -- Commands executed by various buttons
-  cmdChan <- newChan
-  forkIO $ do
-    foreverM $ do
-      commands <- readChan cmdChan
-      postGUIAsync$ do clearStats; widgetShowAll windowProgress
-      mapM_ (handleErrors runWithMsg) commands
-      whenM (isEmptyChan cmdChan)$ postGUIAsync$ do widgetHide windowProgress; refreshCommand fm'
-      --uiDoneProgram
-  let exec = writeChan cmdChan
-
-  -- Упаковка данных
-  addAct `onActionActivate` do
-    addDialog fm' exec "a" NoMode
-
-  -- Модификация архивов
-  modifyAct `onActionActivate` do
-    addDialog fm' exec "ch" NoMode
-
-  -- Объединение архивов
-  joinAct `onActionActivate` do
-    addDialog fm' exec "j" NoMode
-
-  -- Информация об архиве
-  arcinfoAct `onActionActivate` do
-    archiveOperation fm' $
-      arcinfoDialog fm' exec NoMode
-
-  -- Удаление файлов (из архива)
-  deleteAct `onActionActivate` do
-    fm <- val fm'
-    files <- getSelection fm' (if isFM_Archive fm  then xCmdFiles  else const [])
-    if null files  then fmErrorMsg fm' "0012 There are no files selected!" else do
-    msg <- i18n$ case files of [_] | isFM_Archive fm -> "0160 Delete %1 from archive?"
-                                   | otherwise       -> "0161 Delete %1?"
-                               _   | isFM_Archive fm -> "0019 Delete %2 file(s) from archive?"
-                                   | otherwise       -> "0020 Delete %2 file(s)?"
-    whenM (askOkCancel window (formatn msg [head files, show3$ length files])) $ do
-      fmDeleteSelected fm'
-      if isFM_Archive fm
-        -- Стереть файлы из архива
-        then do closeFMArc fm'
-                let arcname = fm_arcname fm
-                exec [(["0228 Deleting from %1",
-                        "0229 FILES SUCCESFULLY DELETED FROM %1",
-                        "0230 %2 WARNINGS WHILE DELETING FROM %1"],
-                       [takeFileName arcname],
-                       ["d", "--noarcext", "--", arcname]++files)]
-        -- Удалить файлы на диске
-        else io$ mapM_ (ignoreErrors.fileRemove.(fm_dir fm </>)) files
-
-  -- Тестирование архив(ов)
-  testAct `onActionActivate` do
-    archiveOperation fm' $
-      extractDialog fm' exec "t"
-
-  -- Распаковка архив(ов)
-  extractAct `onActionActivate` do
-    archiveOperation fm' $
-      extractDialog fm' exec "x"
-    rereadHistory curdir
-
-  -- Выход из программы
-  exitAct `onActionActivate`
-    mainQuit
-
-  -- Защитить архив от записи
-  lockAct `onActionActivate` do
-    multiArchiveOperation fm' $ \archives -> do
-      let msg = "0299 Lock archive(s)?"
-      whenM (askOkCancel window (formatn msg [head archives, show3$ length archives])) $ do
-        closeFMArc fm'
-        for archives $ \arcname -> do
-          exec [(["0300 Locking archive %1",
-                  "0301 SUCCESFULLY LOCKED ARCHIVE %1",
-                  "0302 %2 WARNINGS WHILE LOCKING ARCHIVE %1"],
-                 [takeFileName arcname],
-                 ["ch", "--noarcext", "-k", "--", arcname])]
-
-  -- Изменить комментарий архива
-  commentAct `onActionActivate` do
-    archiveOperation fm' $
-      arcinfoDialog fm' exec CommentMode
-
-  -- Преобразовать архив в SFX
-  recompressAct `onActionActivate` do
-    addDialog fm' exec "ch" RecompressMode
-
-  -- Преобразовать архив в SFX
-  toSfxAct `onActionActivate` do
-    addDialog fm' exec "ch" MakeSFXMode
-
-  -- Зашифровать архив
-  encryptAct `onActionActivate` do
-    addDialog fm' exec "ch" EncryptionMode
-
-  -- Добавить RR в архив
-  addRrAct `onActionActivate` do
-    addDialog fm' exec "ch" ProtectionMode
-
-  -- Действия с логфайлом
-  let withLogfile action = do
-        logfileHist <- fmGetHistory fm' "logfile"
-        case logfileHist of
-          logfile:_ | logfile>""  ->  action logfile
-          _                       ->  fmErrorMsg fm' "0303 No log file specified in Settings dialog!"
-
-  -- Просмотреть логфайл
-  viewLogAct `onActionActivate` do
-    withLogfile runViewCommand
-
-  -- Удалить логфайл
-  clearLogAct `onActionActivate` do
-    withLogfile $ \logfile -> do
-      msg <- i18n"0304 Clear logfile %1?"
-      whenM (askOkCancel window (format msg logfile)) $ do
-        filePutBinary logfile ""
-
-  -- Открыть архив
-  openAct `onActionActivate` do
-    fm <- val fm'
-    let curfile  =  if isFM_Archive fm  then fm_arcname fm  else fm_dir fm </> "."
-    chooseFile window FileChooserActionOpen "0305 Open archive" ["0307 FreeArc archives (*.arc)", "0308 Archives and SFXes (*.arc;*.exe)"] (return curfile) $ \filename -> do
-      chdir fm' filename  `catch`  (\e -> fmErrorMsg fm' "0306 This file isn't a FreeArc archive!")
 
 
   -- Инициализируем состояние файл-менеджера каталогом/архивом, заданным в командной строке
