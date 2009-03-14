@@ -77,6 +77,7 @@ uiDef =
   "      <menuitem name=\"Comment\"            action=\"CommentAction\" />"++
   "      <menuitem name=\"Recompress\"         action=\"RecompressAction\" />"++
   "      <menuitem name=\"Convert to SFX\"     action=\"ConvertToSFXAction\" />"++
+  "      <separator/>"++
   "      <menuitem name=\"Encrypt\"            action=\"EncryptAction\" />"++
   "      <menuitem name=\"Protect\"            action=\"ProtectAction\" />"++
   "      <separator/>"++
@@ -85,34 +86,36 @@ uiDef =
   "    </menu>"++
   "    <menu name=\"Options\"  action=\"OptionsAction\">"++
   "      <menuitem name=\"Settings\"           action=\"SettingsAction\" />"++
+  "      <separator/>"++
   "      <menuitem name=\"ViewLog\"            action=\"ViewLogAction\" />"++
   "      <menuitem name=\"ClearLog\"           action=\"ClearLogAction\" />"++
   "    </menu>"++
   "    <menu name=\"Help\"     action=\"HelpAction\">"++
   "      <menuitem name=\"MainHelp\"           action=\"MainHelpAction\" />"++
+  "      <separator/>"++
   "      <menuitem name=\"CmdlineHelp\"        action=\"CmdlineHelpAction\" />"++
   "      <menuitem name=\"GotoHomepage\"       action=\"GotoHomepageAction\" />"++
   "      <menuitem name=\"CheckForUpdate\"     action=\"CheckForUpdateAction\" />"++
+  "      <separator/>"++
   "      <menuitem name=\"About\"              action=\"AboutAction\" />"++
   "    </menu>"++
   "  </menubar>"++
   "  <toolbar>"++
   "    <placeholder name=\"FileToolItems\">"++
   "      <toolitem name=\"OpenArchive\"        action=\"OpenArchiveAction\" />"++
+  "      <separator/>"++
   "      <toolitem name=\"Add\"                action=\"AddAction\" />"++
   "      <toolitem name=\"Extract\"            action=\"ExtractAction\" />"++
   "      <toolitem name=\"Test\"               action=\"TestAction\" />"++
   "      <toolitem name=\"ArcInfo\"            action=\"ArcInfoAction\" />"++
   "      <toolitem name=\"Delete\"             action=\"DeleteAction\" />"++
   "      <separator/>"++
-  "      <toolitem name=\"Modify\"             action=\"ModifyAction\" />"++
   "      <toolitem name=\"Lock\"               action=\"LockAction\" />"++
-  "      <toolitem name=\"Comment\"            action=\"CommentAction\" />"++
   "      <toolitem name=\"Recompress\"         action=\"RecompressAction\" />"++
   "      <toolitem name=\"Convert to SFX\"     action=\"ConvertToSFXAction\" />"++
+  "      <toolitem name=\"Join archives\"      action=\"JoinArchivesAction\" />"++
   "      <separator/>"++
   "      <toolitem name=\"Refresh\"            action=\"RefreshAction\" />"++
-  "      <toolitem name=\"MainHelp\"           action=\"MainHelpAction\" />"++
   "    </placeholder>"++
   "  </toolbar>"++
   "</ui>"
