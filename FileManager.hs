@@ -209,6 +209,7 @@ myGUI run args = do
   fmStackMsg fm' "              "
   toolbarCaptions <- fmGetHistoryBool fm' "ToolbarCaptions" True
   castToToolbar toolBar `set` [toolbarStyle := if toolbarCaptions then ToolbarBoth else ToolbarIcons]
+  castToToolbar toolBar `toolbarSetIconSize` iconSizeLargeToolbar
 
   -- Полоска навигации
   naviBar  <- hBoxNew False 0
