@@ -20,20 +20,20 @@ static void diff_table (int N, BYTE *table_start, int table_len)
 {
     switch (N)
     {
-    	case 2: for (uint16 *r = (uint16*)table_start + table_len; --r > (uint16*)table_start; )
-    	            r[0] -= r[-1];
-                break;
-
-    	case 4: for (uint32 *r = (uint32*)table_start + table_len; --r > (uint32*)table_start; )
-    	            r[0] -= r[-1];
-                break;
-
-    	default:for (BYTE *r = table_start + N*table_len; (r-=N) > table_start; )
-                    for (int i=0,carry=0,newcarry; i<N; i++)
-                        newcarry = r[i] < r[i-N]+carry,
-                        r[i] -= r[i-N]+carry,
-                        carry = newcarry;
-                break;
+    case 2:
+        for (uint16 *r = (uint16*)table_start + table_len; --r > (uint16*)table_start; )
+            r[0] -= r[-1];
+            break;
+    case 4:
+        for (uint32 *r = (uint32*)table_start + table_len; --r > (uint32*)table_start; )
+            r[0] -= r[-1];
+            break;
+    default:
+        for (BYTE *r = table_start + N*table_len; (r-=N) > table_start; )
+            for (int i=0,carry=0,newcarry; i<N; i++)
+                newcarry = r[i] < r[i-N]+carry,
+                r[i] -= r[i-N]+carry,
+                carry = newcarry;
     }
 }
 
@@ -42,20 +42,20 @@ static void undiff_table (int N, BYTE *table_start, int table_len)
 {
     switch (N)
     {
-    	case 2: for (uint16 *r = (uint16*)table_start; ++r < (uint16*)table_start+table_len; )
-    	            r[0] += r[-1];
-                break;
-
-    	case 4: for (uint32 *r = (uint32*)table_start; ++r < (uint32*)table_start+table_len; )
-    	            r[0] += r[-1];
-                break;
-
-    	default:for (BYTE *r = table_start; (r+=N) < table_start + N*table_len; )
-                    for (int i=0,carry=0,temp; i<N; i++)
-                        temp = r[i]+r[i-N]+carry,
-                        r[i] = temp,
-                        carry = temp/256;
-                break;
+    case 2:
+        for (uint16 *r = (uint16*)table_start; ++r < (uint16*)table_start+table_len; )
+            r[0] += r[-1];
+            break;
+    case 4:
+        for (uint32 *r = (uint32*)table_start; ++r < (uint32*)table_start+table_len; )
+            r[0] += r[-1];
+            break;
+    default:
+        for (BYTE *r = table_start; (r+=N) < table_start + N*table_len; )
+            for (int i=0,carry=0,temp; i<N; i++)
+                temp = r[i]+r[i-N]+carry,
+                r[i] = temp,
+                carry = temp/256;
     }
 }
 
