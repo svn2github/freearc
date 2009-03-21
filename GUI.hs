@@ -599,6 +599,7 @@ askConfirmation buttons window msg = do
     -- Напечатаем в нём сообщение
     label <- labelNew.Just =<< i18n msg
     upbox <- dialogGetUpper dialog
+    label `set` [labelWrap := True]
     boxPackStart  upbox label PackGrow 20
     widgetShowAll upbox
     -- И запустим

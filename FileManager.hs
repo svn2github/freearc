@@ -316,6 +316,17 @@ myGUI run args = do
   -- Отключает вывод сообщений об ошибках на время выполнения action
   let hideErrors action  =  bracket (showErrors' <=> False)  (showErrors' =: )  (\_ -> action)
 
+  -- Перехват и обработка ошибок
+  errorMsg <- ref ""
+  errorHandlers ++= [(errorMsg =:)]
+  let withErrorHandler onError = handle$ \e->do operationTerminated =: False
+                                                fmErrorMsg fm' =<< val errorMsg
+                                                sequence_ onError
+  -- При возникновении ошибки выдать её пользователю
+  let msgboxOnError = withErrorHandler []
+  -- При возникновении ошибки выдать её пользователю и заверщить выполнение программы
+  let terminateOnError = withErrorHandler [shutdown "" aEXIT_CODE_FATAL_ERROR]
+
 
   -- Перейти в заданный каталог/архив или выполнить команду
   let select filename = do
@@ -417,7 +428,8 @@ myGUI run args = do
     fm <- val fm'
     let curfile  =  if isFM_Archive fm  then fm_arcname fm  else fm_dir fm </> "."
     chooseFile window FileChooserActionOpen "0305 Open archive" ["0307 FreeArc archives (*.arc)", "0308 Archives and SFXes (*.arc;*.exe)"] (return curfile) $ \filename -> do
-      chdir fm' filename  `catch`  (\e -> fmErrorMsg fm' "0306 This file isn't a FreeArc archive!")
+      msgboxOnError $
+        chdir fm' filename
 
   -- Select/unselect files by user-supplied mask
   let byDialog method msg = do
@@ -505,8 +517,9 @@ myGUI run args = do
 
   -- Информация об архиве
   arcinfoAct `onActionActivate` do
-    archiveOperation fm' $
-      arcinfoDialog fm' exec NoMode
+    msgboxOnError $
+      archiveOperation fm' $
+        arcinfoDialog fm' exec NoMode
 
   -- Удаление файлов (из архива)
   deleteAct `onActionActivate` do
@@ -687,8 +700,9 @@ myGUI run args = do
   aboutDialogSetUrlHook openWebsite
 
 
-  -- Инициализируем состояние файл-менеджера каталогом/архивом, заданным в командной строке
-  chdir fm' (head (args++["."]))
+  -- Инициализируем состояние файл-менеджера каталогом/архивом, заданным в командной строке (при его отсутствии - текущим каталогом)
+  terminateOnError $
+    chdir fm' (head (args++["."]))
   fmStatusBarTotals fm'
 
   return window

@@ -279,7 +279,7 @@
     Fixed bug in SetWindowTitle
   Fixed GUI bugs:
     first file in directory was selected after any operation if nothing was selected before
-    ArcInfo on empty.arc or non-archive was terminatihg program
+    ArcInfo on empty.arc or non-archive was terminating program
     DoubleClick/Enter on non-archives was terminated program, but now executes them
     freezing on chdir "c:"
     freezing when going into archive with encrypted directory  (вход в архивы с зашифрованным каталогом)
@@ -319,9 +319,7 @@
     update GUI docs
     Попытка зайти внутрь зашифрованного архива - виснем
     Тестирование зашифрованного архива и Cancel на приглашении ввести пароль
-    Обрезанный arc1.arc или не-архив
-      0) открыть архив, 1) второй процесс в памяти при Run, 2) вылет при АркИнфо, 3) вылет unarc t arc1.arc
-    sfx - tempfile support and auto-usage
+    sfx - поддержка и автоматическое использование метода tempfile
     dict bug: arc a aa cls.zip -mprecomp+6pt -t
       bcj+dict creates corrupted archives
     что будет, если упаковать на CD, т.е. файл лежит на диске на которой нельзя писать, или в папке, где запрешена запись
@@ -504,6 +502,7 @@
     fa научится работать с внешними упаковщиками через stdin/stdout, что позволит использовать их так же удобно, как и внутренние алгоритмы - никакой записи на диск пормежуточных данных, актуальный индикатор прогресса и т.д.
   Ошибки
     -p=... - "=" может быть частью пароля.
+    Обрезанный arc1.arc или не-архив: вылет unarc t arc1.arc
     уточнить rep:SetCompressionMem; при ограничении lzma/rep можно использовать более точные
       значения словря (и уменьшать все порчие буфера, одновременно увеличивая глубину поиска)
     lzp:2200m - запретить словари >=2gb; ppmd:2560 - сравнивать с MAX_ORDER
@@ -515,7 +514,7 @@
     выполнять clearAll в uiStartArchive/uiDoneArchive
     если нету внешних архиваторов ppmonstr, durilca и т.п. зацикливается FreeArc и размер
       распаковываемых данных стремиться в бесконечность.
-    приостанавливать инд. прогресса при вызове внешних программ?
+    приостанавливать инд. прогресса при вызове внешних программ
   SFX
     Жду - не дождусь, когда у GUI SFX модуля (под винду) будет ключик silent установки с возможностью
       задания пути по умолчанию, а также, как в WinRAR'е, фича запуска приложения после распаковки
