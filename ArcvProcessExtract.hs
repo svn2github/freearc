@@ -168,8 +168,17 @@ de_compress_PROCESS1 de_compress reader times comprMethod num pipe = do
       -- Прочие (неподдерживаемые) callbacks
       callback _ _ _ = return aFREEARC_ERRCODE_NOT_IMPLEMENTED
 
+
+      -- Non-debugging wrapper
+      debug f what buf size = f what buf size
+      -- Debugging wrapper
+      debug f what buf size = inside (print (comprMethod,what,size))
+                                     (print (comprMethod,what,size,"done"))
+                                     (f what buf size)
+
   -- СОБСТВЕННО УПАКОВКА ИЛИ РАСПАКОВКА
-  result <- de_compress num comprMethod callback
+  result <- de_compress num comprMethod (debug callback)
+  debug callback "finished" nullPtr result
   -- Статистика
   total <- val total'
   time  <- val time'
@@ -177,7 +186,8 @@ de_compress_PROCESS1 de_compress reader times comprMethod num pipe = do
   -- Выйдем с сообщением, если произошла ошибка
   unlessM (val operationTerminated) $ do
     when (result `notElem` [aFREEARC_OK, aFREEARC_ERRCODE_NO_MORE_DATA_REQUIRED]) $ do
-      registerError$ COMPRESSION_ERROR$ compressionErrorMessage result++" in "++comprMethod
+      registerWarning$ COMPRESSION_ERROR$ compressionErrorMessage result++" in "++comprMethod
+      operationTerminated =: True
   -- Сообщим предыдущему процессу, что данные больше не нужны, а следующему - что данных больше нет
   send_backP  pipe aFREEARC_ERRCODE_NO_MORE_DATA_REQUIRED
   resend_data pipe NoMoreData
