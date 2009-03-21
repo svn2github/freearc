@@ -276,6 +276,7 @@
     Logfile: hide passwords used in cmdline/cfgfile
              strip too long arguments and too long argument list down to 100 chars/elements
     Filetype detection: it was failing on pure English texts
+    Fixed bug in SetWindowTitle
   Fixed GUI bugs:
     first file in directory was selected after any operation if nothing was selected before
     ArcInfo on empty.arc or non-archive was terminatihg program
@@ -286,7 +287,7 @@
     lack of scrolling for archive comment
     freezing on selecting two files and pressing Up
     ArcInfo: fixed counting of files and directories in archive
-    Made modal all dialogs
+    All dialogs are now modal
 
 
   aARCHIVE_VERSION = make4byte 0 0 5 0
@@ -315,12 +316,11 @@
     filetype detection: check for MM on large files
     Priorityio.doc
   bugs
-    BROKEN_ARCHIVE - i18n для вложенного msg
     update GUI docs
-    Файл-открыть архив - открываем не архив - висим
-    АркИнфо на файле не архиве - висим
     Попытка зайти внутрь зашифрованного архива - виснем
     Тестирование зашифрованного архива и Cancel на приглашении ввести пароль
+    Обрезанный arc1.arc или не-архив
+      0) открыть архив, 1) второй процесс в памяти при Run, 2) вылет при АркИнфо, 3) вылет unarc t arc1.arc
     sfx - tempfile support and auto-usage
     dict bug: arc a aa cls.zip -mprecomp+6pt -t
       bcj+dict creates corrupted archives

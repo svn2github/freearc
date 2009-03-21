@@ -16,7 +16,7 @@
 
 Language name in english and mother tongue
 0000 Language=German (Deutsch)
-0159 Copyright=Vacon\nPeter Bauder (based on 7zip language file;edited for FreeArc-0.50-win32-alpha-2009-03-10)\nOriginal copyrights:\nTranslated by Soeren Finster\n7-Zip 4.07 beta\nUpdated by JAK-Software.DE\n7-Zip 4.55 beta\nMaintained by Joachim Henke (since 4.12 beta)
+0159 Copyright=Vacon\nPeter Bauder (based on 7zip language file;edited for FreeArc-0.50-win32-alpha-2009-03-14)\nOriginal copyrights:\nTranslated by Soeren Finster\n7-Zip 4.07 beta\nUpdated by JAK-Software.DE\n7-Zip 4.55 beta\nMaintained by Joachim Henke (since 4.12 beta)
 
 Language-specific URLs relative to http://freearc.org and helpfiles
 0254 Homepage=??
@@ -102,7 +102,6 @@ Help menu/toolbar
 
 
 === File manager ==================================================================
-
 Navibar
 0006 Up=Aufwärts
 0007 Save=Speichern
@@ -129,7 +128,6 @@ Messages
 
 
 === Dialogs =======================================================================
-
 Archive open dialog
 0305 Open archive=Archiv öffnen
 0306 This file isn't a FreeArc archive!=Diese Datei ist kein FreeArc- Archiv!
@@ -140,9 +138,9 @@ Archive open dialog
 
 Add dialog
 --Title
-0134 Add %1 to archive=Fügt %1 einem Archiv hinzu
-0135 Add %2 files to archive=Fügt %2 markierte Objekte einem Archiv hinzu
-0136 Add all files to archive=Fügt alle Objekte einem Archiv hinzu
+0134 Add %1 to archive=Fügt %1 zu einem Archiv hinzu
+0135 Add %2 files to archive=Fügt %2 markierte Objekte zu einem Archiv hinzu
+0136 Add all files to archive=Fügt alle Objekte zu einem Archiv hinzu
 0146 Modify all archives=Alle Archive modifizieren
 0147 Modify %1=Modifiziere %1
 0148 Modify %2 archives=Modifiziere %2 Archive
@@ -275,14 +273,15 @@ Settings dialog
 0068 Language:=Sprache:
 0069 Edit=&Bearbeiten
 0070 Import=Importieren
-0168 You should restart FreeArc in order for a language settings to take effect.=Zum Übernehmen der Spracheinstellungen muss FreeArc neugestartet werden.
-0169 Passwords need to be entered again after restart.=Passwörter müssen nach dem Neustarten neu eingegeben werden.
 0170 Full name:=Vollständiger Name:
 0171 Copyright:=Copyright:
 0166 Logfile:=Protokoll:
 0292 View=&Ansehen
 0167 Select logfile=Protokolldatei auswählen
 0172 Associate FreeArc with .arc files=.arc-Dateien mit FreeArc verknüpfen
+0361 Add captions to toolbar buttons=Beschriftung zu Toolbar Buttons hinzufügen
+0168 You should restart FreeArc in order for a language settings to take effect.=Zum Übernehmen der Spracheinstellungen muss FreeArc neugestartet werden.
+0169 Passwords need to be entered again after restart.=Passwörter müssen nach dem Neustarten neu eingegeben werden.
 
 Logfiles
 0303 No log file specified in Settings dialog!=Keine Logdatei in den Einstellungen spezifiziert!
@@ -416,6 +415,58 @@ Archive comment dialog
 0302 %2 WARNINGS WHILE LOCKING ARCHIVE %1=%2 WARNUNGEN WÄHREND DEM VERSCHLIEßEN DES ARCHIVS %1
 
 
+=== Error messages =======================================================
+0316 ERROR: %1=FEHLER: %1
+0317 WARNING: %1=WARNUNG: %1
+0310 can't modify archive locked with -k=modifizieren des verschlossenen Archivs (-k) nicht möglich
+0311 can't create temporary file=Anlegen der temporären Datei nicht möglich
+0312 output archive already exists, keeping temporary file %1=Ausgabearchiv existiert bereits, behalte temporäre Datei %1
+0313 archive broken, keeping temporary file %1=Archiv beschädigt, behalte temporäre Datei %1
+0314 archive broken, deleting=Archiv beschädigt, lösche temporäre Datei
+0315 can't open SFX module %1=kann SFX- Modul %1 nicht öffnen
+0318 command syntax is "%1"=Befehls- Syntax lautet \"%1\"
+0319 options %1 and %2 can't be used together=Optionen %1 und %2 können nicht gleichzeitig verwendet werden
+0320 unknown command "%1". Supported commands are: %2=unbekannter Befehl \"%1\". Unterstützte Befehle sind: %2
+0321 unknown option "%1"=unbekannte Option: \"%1\"
+0322 ambiguous option "%1" - is that %2?=mehrdeutige option \"%1\" - War \"%2\" gemeint?
+0325 option "%1" have illegal format=Option \"%1\" hat unzulässiges Format
+0326 %1 option must be one of: %2=Option %1 muss eine der Folgenden sein: %2
+0327 no command name in command: %1=keine Befehlsbezeichnung in Befehl: %1
+0328 no archive name in command: %1=keine Archivbezeichnung in Befehl: %1
+0329 no filenames in command: %1=keine Dateinamen in Befehl: %1
+0330 can't read directory "%1"=kann Verzeichnis \"%1\" nicht lesen
+0331 can't get info about file "%1"=kann keine Informationen zu Datei \"%1\" einlesen
+0332 can't open file "%1"=kann Datei \"%1\" nicht öffnen
+0333 CRC error in file "%1"=CRC- Fehler in Datei \"%1\"
+0334 bad section %1 in %2=fehlerhafter Bereich %1 in %2
+0335 operation terminated!=Vorgang abgebrochen!
+0336 program terminated!=Programm beendet!
+0337 no files, erasing empty archive=keine Dateien, lösche leeres Archiv
+0338 skipped %1 fake files=%1 fehlerhafte Dateien übersprungen
+0339 bad password for archive %1=falsches Passwort zu Archiv %1
+0340 bad password for %1 in archive %2=falsches Passwort zu %1 in Archiv %2
+0341 archive %1 corrupt: %2. Please recover it using 'r' command or use -tp- option to ignore Recovery Record=Archiv %1 beschädigt: %2. Bitte mit Befehl 'r' wiederherstellen oder '-tp'-Option zum Ignorieren der Wiederherstellungsinformationen verwenden
+0342 SFX module %1 is not found=SFX- Modul %1 nicht gefunden
+0343 %1 isn't implemented=%1 ist nicht implementiert
+0344 only first of %1 recovery records can be processed by this program version. Please use newer versions to process the rest=Mit diesee Programmversion können nur die ersten der %1 Wiederherstellungsinformationen verarbeitet werden. Bitte neuere Version verwenden um den Rest fortzusetzen.
+0345 you need FreeArc %1 or above to process this recovery info=Sie brauchen FreeArc %1 oder höher um diese Wiederherstellungsinformationen zu verarbeiten.
+0346 file %1 already exists=Datei %1 existiert bereits
+0347 archive can't be recovered - recovery data absent or corrupt=Archiv kann nicht wiederhergestellt werden - Wiederherstellungsinformationen nicht vorhanden oder beschädigt
+0348 %1 unrecoverable errors (%2) found, can't restore anything!=%1 unbehebbare Fehler (%2) gefunden, es kann nichts wiederhergestellt werden!
+0349 can't open original at %1=kann das Original %1 nicht öffnen
+0350 %1 has size %2 so it can't be used to recover %3 having size %4=%1 hat Größe %2, deshalb kann es nicht zum Wiederherstellen von %3 mit Größe %4 verwendet werden
+0351 %1 errors (%2) remain unrecovered=%1 Fehler (%2) bleiben unbehoben
+0352 found %1 errors (%2)=%1 Fehler gefunden (%2)
+0353 there were %1 warnings due archive testing=es gab %1 Warnungen während dem Testen des Archivs
+0354 block descriptor at pos %1 is corrupted=Blockbezeichner an Position %1 ist beschädigt
+0355 %1 is corrupted=%1 ist beschädigt
+0359 %1 failed decompression=Dekompression von %1 nicht gelungen
+0360 %1 should be uncompressed=%1 sollte unkomprimiert sein
+0356 archive directory not found=Archivverzeichnis nicht gefunden
+0357 archive signature not found at the end of archive=Archivsignatur am Ende des Archivs nicht gefunden
+0358 last block of archive is not footer block=letzter Block des Archivs ist kein abschließender Block
+
+
 === Standard profiles ====================================================
 Compression
 0727 Maximum (1gb decompression)=Maximum (Entpacken mit 1GB Speicherbedarf)
@@ -518,6 +569,8 @@ Common words
 0101 Yes=&Ja
 0102 No=&Nein
 0103 May be=Vielleicht
+0323 or=oder
+0324 and=und
 
 Failure messages
 0010 Operation interrupted!=Vorgang abgebrochen!
