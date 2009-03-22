@@ -503,14 +503,14 @@ fmDialog fm' title action = do
     set dialog [windowTitle          := title,
                 windowTransientFor   := fm_window fm,
                 containerBorderWidth := 0]
-    dialogAddButton dialog stockOk     ResponseOk      >>= \okButton -> do
-    dialogAddButton dialog stockCancel ResponseCancel
+    addStdButton dialog ResponseOk      >>= \okButton -> do
+    addStdButton dialog ResponseCancel
     dialogSetDefaultResponse dialog ResponseOk
     tooltips =:: tooltipsNew
     action (dialog,okButton)
 
 {-# NOINLINE fmDialogRun #-}
--- |Отработать диалог с сохранением его положения и размеро в истории
+-- |Отработать диалог с сохранением его положения и размера в истории
 fmDialogRun fm' dialog name = do
     inside (restoreSizePos fm' dialog name "")
            (saveSizePos    fm' dialog name)

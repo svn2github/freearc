@@ -168,13 +168,14 @@ de_compress_PROCESS1 de_compress reader times comprMethod num pipe = do
       -- Прочие (неподдерживаемые) callbacks
       callback _ _ _ = return aFREEARC_ERRCODE_NOT_IMPLEMENTED
 
-
-      -- Non-debugging wrapper
-      debug f what buf size = f what buf size
+{-
       -- Debugging wrapper
       debug f what buf size = inside (print (comprMethod,what,size))
                                      (print (comprMethod,what,size,"done"))
                                      (f what buf size)
+-}
+      -- Non-debugging wrapper
+      debug f what buf size = f what buf size
 
   -- СОБСТВЕННО УПАКОВКА ИЛИ РАСПАКОВКА
   result <- de_compress num comprMethod (debug callback)

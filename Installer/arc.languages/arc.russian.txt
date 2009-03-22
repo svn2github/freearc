@@ -337,12 +337,19 @@ Checking for updates
 
 
 === Execution dialogs ============================================================
+Many dialogs
+0079 &Yes=&Да
+0080 &No=&Нет
+0362 &OK=&OK
+0081 &Cancel=&Отмена
+0363 &Select=&Выбрать
+0364 &Close=&Закрыть
+
 Progress indicator
 --Buttons
-0052 Background=&Фоном
-0053 Pause=&Пауза
-0054 Continue=&Продолжить
-0055 Cancel=&Отмена
+0052 &Background=&Фоном
+0053 &Pause=&Пауза
+0054 &Continue=&Продолжить
 --Labels
 0056 Files=Файлов
 0057 Total files=Всего файлов
@@ -367,9 +374,6 @@ File overwrite dialog
 0163 Would you like to replace the existing file=Заменить существующий файл
 0164 with this one?=следующим файлом?
 0165 %1\n%2 bytes\nmodified on %3=%1\n%2 байтов\nизменён %3
-0079 &Yes=&Да
-0080 &No=&Нет
-0081 &Cancel=&Отмена
 0082 Yes to &All=Да для &всех
 0083 No to A&ll=Нет для в&сех
 0084 &Update all=Обновить все
@@ -566,9 +570,6 @@ Add dialog
 
 === Everything else ====================================================
 Common words
-0101 Yes=Да
-0102 No=Нет
-0103 May be=Не уверен
 0323 or=или
 0324 and=и
 

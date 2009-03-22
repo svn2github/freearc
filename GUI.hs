@@ -101,9 +101,9 @@ runIndicators = do
 
   -- Заполним кнопками нижнюю часть окна
   --buttonNew window stockClose ResponseClose
-  backgroundButton <- buttonNewWithMnemonic       =<< i18n"0052   Background  "
-  pauseButton      <- toggleButtonNewWithMnemonic =<< i18n"0053   Pause  "
-  cancelButton     <- buttonNewWithMnemonic       =<< i18n"0055   Cancel  "
+  backgroundButton <- buttonNewWithMnemonic       =<< i18n"0052   &Background  "
+  pauseButton      <- toggleButtonNewWithMnemonic =<< i18n"0053   &Pause  "
+  cancelButton     <- buttonNewWithMnemonic       =<< i18n"0081   &Cancel  "
   boxPackStart buttonBox backgroundButton PackNatural 0
   boxPackStart buttonBox pauseButton      PackNatural 0
   boxPackEnd   buttonBox cancelButton     PackNatural 0
@@ -130,10 +130,10 @@ runIndicators = do
     active <- val pauseButton
     if active then do takeMVar mvarSyncUI
                       pause_real_secs
-                      buttonSetLabel pauseButton =<< i18n"0054   Continue  "
+                      buttonSetLabel pauseButton =<< i18n"0054   &Continue  "
               else do putMVar mvarSyncUI "mvarSyncUI"
                       resume_real_secs
-                      buttonSetLabel pauseButton =<< i18n"0053   Pause  "
+                      buttonSetLabel pauseButton =<< i18n"0053   &Pause  "
 
   backgroundButton `onClicked` do
     windowIconify window
@@ -366,8 +366,8 @@ ask_password_dialog title' amount opt_parseData = gui $ do
   okButton <- buttonNewFromStock stockOk
   hbox     <- dialogGetActionArea dialog
   boxPackEnd hbox okButton PackNatural 10
-  --okButton <- dialogAddButton dialog stockOk ResponseOk
-  dialogAddButton dialog stockCancel ResponseCancel
+  --okButton <- addStdButton dialog ResponseOk
+  addStdButton dialog ResponseCancel
 
   -- Создаёт таблицу с полями для ввода одного или двух паролей
   (pwdTable, [pwd1,pwd2]) <- pwdBox amount
@@ -426,8 +426,8 @@ uiInputArcComment old_comment = gui$ do
   set dialog [windowTitle := title,
               windowDefaultHeight := 200, windowDefaultWidth := 400,
               windowWindowPosition := WinPosCenter]
-  dialogAddButton dialog stockOk     ResponseOk
-  dialogAddButton dialog stockCancel ResponseCancel
+  addStdButton dialog ResponseOk
+  addStdButton dialog ResponseCancel
 
   commentTextView <- newTextViewWithText old_comment
   upbox <- dialogGetUpper dialog
@@ -568,6 +568,21 @@ eventKey (Key {eventKeyName = name, eventModifier = modifier}) =
   --
   in concat ((sort$ map mshow modifier)++[mapHead toUpper name])
 
+
+{-# NOINLINE addStdButton #-}
+-- |Добавить к диалогу стандартную кнопку
+addStdButton dialog responseId = do
+  let emsg = case responseId of
+               ResponseYes    -> "0079 &Yes"
+               ResponseNo     -> "0080 &No"
+               ResponseOk     -> "0362 &OK"
+               ResponseCancel -> "0081 &Cancel"
+               ResponseClose  -> "0364 &Close"
+               _              -> "???"
+  msg <- i18n emsg
+  dialogAddButton dialog msg responseId
+
+
 {-# NOINLINE debugMsg #-}
 -- |Диалог с отладочным сообщением
 debugMsg msg = do
@@ -586,16 +601,9 @@ askConfirmation buttons window msg = do
   -- Создадим диалог с единственной кнопкой Close
   bracketCtrlBreak dialogNew widgetDestroy $ \dialog -> do
     set dialog [windowTitle        := aARC_NAME,
-                windowTransientFor := window]
-    for buttons $ \button -> do
-      let msg = case button of
-                  ResponseOk     -> stockOk
-                  ResponseCancel -> stockCancel
-                  ResponseYes    -> stockYes
-                  ResponseNo     -> stockNo
-                  ResponseClose  -> stockClose
-                  _              -> stockClose
-      dialogAddButton dialog msg button
+                windowTransientFor := window,
+                containerBorderWidth := 10]
+    mapM_ (addStdButton dialog) buttons
     -- Напечатаем в нём сообщение
     label <- labelNew.Just =<< i18n msg
     upbox <- dialogGetUpper dialog
@@ -612,8 +620,8 @@ inputString window msg = do
   bracketCtrlBreak dialogNew widgetDestroy $ \dialog -> do
     set dialog [windowTitle        := msg,
                 windowTransientFor := window]
-    dialogAddButton dialog stockOk     ResponseOk      >>= \okButton -> do
-    dialogAddButton dialog stockCancel ResponseCancel
+    addStdButton dialog ResponseOk      >>= \okButton -> do
+    addStdButton dialog ResponseCancel
 
     --label    <- labelNew$ Just msg
     entry <- entryNew
@@ -790,6 +798,10 @@ textViewGetText textView = do
   textBufferGetText buffer start end False
 
 
+----------------------------------------------------------------------------------------------------
+---- Выбор файла -----------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+
 #if defined(FREEARC_WIN)
 
 {-# NOINLINE chooseFile #-}
@@ -828,7 +840,8 @@ foreign import ccall safe "Environment.h GuiFormatDateTime"
 chooseFile parentWindow dialogType dialogTitle filters getFilename setFilename = do
   title <- i18n dialogTitle
   filename <- getFilename
-  bracketCtrlBreak (fileChooserDialogNew (Just title) (Just$ castToWindow parentWindow) dialogType [("Select",ResponseOk), ("Cancel",ResponseCancel)]) widgetDestroy $ \chooserDialog -> do
+  [select,cancel] <- i18ns ["0363 &Select", "0081 &Cancel"]
+  bracketCtrlBreak (fileChooserDialogNew (Just title) (Just$ castToWindow parentWindow) dialogType [(select,ResponseOk), (cancel,ResponseCancel)]) widgetDestroy $ \chooserDialog -> do
     fileChooserSetFilename    chooserDialog (unicode2utf8 filename)
     fileChooserSetCurrentName chooserDialog (takeFileName filename)
     fileChooserSetFilename    chooserDialog (unicode2utf8 filename)
