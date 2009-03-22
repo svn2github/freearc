@@ -101,15 +101,6 @@ deriveKey algorithm password salt numIterations checkCodeSize =
     splitAt keySize $ pbkdf2Hmac password salt numIterations (keySize+checkCodeSize)
     where   keySize = encryptionGet "keySize" algorithm
 
--- |Вернуть шестнадцатеричную запись строки символов с кодами <=255
-encode16 (c:cs) | n<256 = [intToDigit(n `div` 16), intToDigit(n `mod` 16)] ++ encode16 cs
-                             where n = ord c
-encode16 "" = ""
-
--- |Декодировать шестнадцатеричную запись строки символов с кодами <=255
-decode16 (c1:c2:cs) = chr(digitToInt c1 * 16 + digitToInt c2) : decode16 cs
-decode16 ""         = ""
-
 
 -- |Check action result and abort on (internal) error
 check test msg action = do

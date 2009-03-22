@@ -177,6 +177,11 @@ addTime (TOD sa pa) secs  = TOD (sa+sb+sc) pc
     pb = round$ (secs-sb)*1e12
     (sc,pc) = (pa+pb) `divMod` (10^12)
 
+-- |Возвратить время в юниксовом формае (секунд бог знает с какого времени)
+getUnixTime = do
+  (TOD seconds picoseconds) <- getClockTime
+  return seconds
+
 -- |Напечатать объём исходных и упакованных данных, и степень сжатия
 show_ratio cmd bytes cbytes =
   ""        ++ show3       (if (cmdType cmd == ADD_CMD) then bytes else cbytes) ++
