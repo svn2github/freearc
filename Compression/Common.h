@@ -254,7 +254,10 @@ static inline uint16 value16 (void *p)
 static inline uint32 value24 (void *p)
 {
   uint32 x;
-#if _ARCH_PPC
+#if __GNUC__ == 4 && __GNUC_MINOR__ > 2 || __GNUC__ > 4
+  uint32 *m = (uint32 *)p;
+  x = __builtin_bswap32(*m) & 0xffffff;
+#elif _ARCH_PPC
   uint32 *m = (uint32 *)p;
   __asm__ ("lwbrx %0,%y1" : "=r" (x) : "Z" (*m));
   x &= 0xffffff;
@@ -268,7 +271,10 @@ static inline uint32 value24 (void *p)
 static inline uint32 value32 (void *p)
 {
   uint32 x;
-#if _ARCH_PPC
+#if __GNUC__ == 4 && __GNUC_MINOR__ > 2 || __GNUC__ > 4
+  uint32 *m = (uint32 *)p;
+  x = __builtin_bswap32(*m);
+#elif _ARCH_PPC
   uint32 *m = (uint32 *)p;
   __asm__ ("lwbrx %0,%y1" : "=r" (x) : "Z" (*m));
 #else
@@ -313,7 +319,10 @@ static inline void setvalue24 (void *p, uint32 x)
 
 static inline void setvalue32 (void *p, uint32 x)
 {
-#if _ARCH_PPC
+#if __GNUC__ == 4 && __GNUC_MINOR__ > 2 || __GNUC__ > 4
+  uint32 *m = (uint32 *)p;
+  *m = __builtin_bswap32(x);
+#elif _ARCH_PPC
   uint32 *m = (uint32 *)p;
   __asm__ ("stwbrx %1,%y0" : "=Z" (*m) : "r" (x));
 #else
