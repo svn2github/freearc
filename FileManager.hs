@@ -623,6 +623,10 @@ myGUI run args = do
 ---- Меню Help -------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------
 
+  -- Home/news page for the current locale
+  homeURL <- (aARC_WEBSITE ++) ==<< i18n"0254 /"
+  newsURL <- (aARC_WEBSITE ++) ==<< i18n"0255 /News.aspx"
+
   -- Открыть URL
   let openWebsite url  =  runFile url "." False
 
@@ -643,15 +647,53 @@ myGUI run args = do
         userid1 <- fmGetHistory1 fm' "UserID" ""
         return (if userid==userid1  then Just userid  else Nothing)
 
-  -- Возвращает True раз в неделю
-  let weekly = do
+  -- Возвращает True раз в сутки
+  let daily = do
         last <- fmGetHistory1 fm' "LastCheck" ""
         now  <- getUnixTime
-        let week = 7*24*60*60
-        if  last>""  &&  (now - readI last < week)  then return False  else do
+        let day = round$ 24.37*60*60
+        if  last>""  &&  (now - readI last < day)  then return False  else do
         fmReplaceHistory fm' "LastCheck" (show now)
         now1 <- fmGetHistory1 fm' "LastCheck" ""
         return (show now==now1)
+
+  -- Регистрирует использование программы и проверяет новости
+  let checkNews manual = do
+        newDay <- daily
+        when (newDay || manual) $ do
+          fmStackMsg fm' "0295 Checking for updates..."
+          forkIO_ $ do
+            -- Сообщим об использовании программы
+            whenJustM_ getUserID $ \userid -> do
+              let url = homeURL ++ "/CheckNews.aspx?user=" ++ userid ++ ",version=" ++ urlEncode aARC_VERSION
+              ignoreErrors (fileGetBinary url >> return ())
+            -- Проверим страницу новостей
+            handleErrors
+              -- Выполняется при недоступности страницы новостей
+              (gui $ do
+                  msg <- i18n"0296 Cannot open %1. Do you want to check the page with browser?"
+                  whenM (askOkCancel window (format msg newsURL)) $ do
+                    openWebsite newsURL)
+              -- Попытка прочитать страницу новостей
+              (fileGetBinary newsURL >>== (`showHex` "").crc32) $ \new_crc -> do
+            -- Страница новостей успешно прочитана
+            old_crc <- fmGetHistory1 fm' "news_crc" ""
+            gui $ do
+            fmStackMsg fm' ""
+            if (new_crc == old_crc) then do
+               msg <- i18n"0297 Nothing new at %1"
+               manual &&& fmInfoMsg fm' (format msg newsURL)
+             else do
+               fmReplaceHistory fm' "news_crc" new_crc
+               msg <- i18n"0298 Found new information at %1! Open the page with browser?"
+               whenM (askOkCancel window (format msg newsURL)) $ do
+                 openWebsite newsURL
+
+  -- Раз в час проверять отсутствие новостей
+  forkIO_ $ do
+    foreverM $ do
+      checkNews False
+      threadDelay (60*60*1000000)
 
 
   -- Помощь по использованию GUI
@@ -662,44 +704,13 @@ myGUI run args = do
   helpCmdAct `onActionActivate` do
     openHelp "0257 FreeArc036-eng.htm"
 
-  -- Home/news page for the current locale
-  homeURL <- (aARC_WEBSITE ++) ==<< i18n"0254 /"
-  newsURL <- (aARC_WEBSITE ++) ==<< i18n"0255 /News.aspx"
-
   -- Домашняя страница программы
   homepageAct `onActionActivate` do
     openWebsite homeURL
 
   -- Проверка обновлений на сайте
   whatsnewAct `onActionActivate` do
-    fmStackMsg fm' "0295 Checking for updates..."
-    forkIO_ $ do
-      -- Сообщим об использовании программы
-      whenM weekly $ do
-        whenJustM_ getUserID $ \userid -> do
-          let url = homeURL ++ "/User.aspx?user=" ++ userid ++ ",version=" ++ urlEncode aARC_VERSION
-          ignoreErrors (fileGetBinary url >> return ())
-      -- Проверим страницу новостей
-      handleErrors
-        -- Выполняется при недоступности страницы новостей
-        (gui $ do
-            msg <- i18n"0296 Cannot open %1. Do you want to check the page with browser?"
-            whenM (askOkCancel window (format msg newsURL)) $ do
-              openWebsite newsURL)
-        -- Попытка прочитать страницу новостей
-        (fileGetBinary newsURL >>== (`showHex` "").crc32) $ \new_crc -> do
-      -- Страница новостей успешно прочитана
-      old_crc <- fmGetHistory1 fm' "news_crc" ""
-      gui $ do
-      fmStackMsg fm' ""
-      if (new_crc == old_crc) then do
-         msg <- i18n"0297 Nothing new at %1"
-         fmInfoMsg fm' (format msg newsURL)
-       else do
-         fmReplaceHistory fm' "news_crc" new_crc
-         msg <- i18n"0298 Found new information at %1! Open the page with browser?"
-         whenM (askOkCancel window (format msg newsURL)) $ do
-           openWebsite newsURL
+    checkNews True
 
   -- Диалог About
   aboutAct `onActionActivate` do
