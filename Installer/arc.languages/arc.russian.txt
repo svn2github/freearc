@@ -457,7 +457,7 @@ Archive comment dialog
 0346 file %1 already exists=файл %1 уже существует
 0347 archive can't be recovered - recovery data absent or corrupt=архив не может быть восстановлен - защитная запись отсутствует или сама повреждена
 0348 %1 unrecoverable errors (%2) found, can't restore anything!=найдено %1 невосстановимых ошибок (%2), невозможно ничего восстановить!
-0349 can't open original at %1=не могу открыть оригинал %1
+0349 can't open original at %1=невозможно открыть оригинал %1
 0350 %1 has size %2 so it can't be used to recover %3 having size %4=%1 имеет размер %2, так что он не может быть использован для восстановления %3, имеющего размер %4
 0351 %1 errors (%2) remain unrecovered=%1 ошибок (%2) осталось не восстановлено
 0352 found %1 errors (%2)=найдено %1 ошибок (%2)
@@ -469,6 +469,13 @@ Archive comment dialog
 0356 archive directory not found=оглавление архива не найдено
 0357 archive signature not found at the end of archive=сигнатура архива не найдена в конце архива
 0358 last block of archive is not footer block=последний блок архива - не footer блок
+
+Errors returned by compression methods
+0365 general (de)compression error=ошибка (рас)паковки
+0366 invalid compression method or parameters=ошибочный метод сжатия или его параметр
+0367 can't allocate memory required for (de)compression=невозможно выделить память, необходимую для (рас)паковки
+0368 I/O error in compression algorithm=ошибка чтения/записи в алгоритме (рас)паковки
+0369 bad compressed data=ошибка в сжатых данных
 
 
 === Standard profiles ====================================================

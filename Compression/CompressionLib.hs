@@ -170,17 +170,17 @@ aFREEARC_ERRCODE_OPERATION_TERMINATED  = -10
 
 compressionErrorMessage x
   | x==aFREEARC_OK                            = "All OK"
-  | x==aFREEARC_ERRCODE_GENERAL               = "General (de)compression error"
-  | x==aFREEARC_ERRCODE_INVALID_COMPRESSOR    = "Invalid compression method or parameters"
-  | x==aFREEARC_ERRCODE_ONLY_DECOMPRESS       = "Program build with FREEARC_DECOMPRESS_ONLY, so don't try to use compress"
-  | x==aFREEARC_ERRCODE_OUTBLOCK_TOO_SMALL    = "Output block size in (de)compressMem is not enough for all output data"
-  | x==aFREEARC_ERRCODE_NOT_ENOUGH_MEMORY     = "Can't allocate memory required for (de)compression"
-  | x==aFREEARC_ERRCODE_IO                    = "Error when reading or writing data"
-  | x==aFREEARC_ERRCODE_BAD_COMPRESSED_DATA   = "Data can't be decompressed"
-  | x==aFREEARC_ERRCODE_NOT_IMPLEMENTED       = "Requested feature isn't supported"
-  | x==aFREEARC_ERRCODE_NO_MORE_DATA_REQUIRED = "Required part of data was already decompressed"
-  | x==aFREEARC_ERRCODE_OPERATION_TERMINATED  = "Operation terminated by user"
-  | otherwise                                 = "Unknown (de)compression error "++show x
+  | x==aFREEARC_ERRCODE_GENERAL               = "0365 general (de)compression error"
+  | x==aFREEARC_ERRCODE_INVALID_COMPRESSOR    = "0366 invalid compression method or parameters"
+  | x==aFREEARC_ERRCODE_ONLY_DECOMPRESS       = "program build with FREEARC_DECOMPRESS_ONLY, so don't try to use compress"
+  | x==aFREEARC_ERRCODE_OUTBLOCK_TOO_SMALL    = "output block size in (de)compressMem is not enough for all output data"
+  | x==aFREEARC_ERRCODE_NOT_ENOUGH_MEMORY     = "0367 can't allocate memory required for (de)compression"
+  | x==aFREEARC_ERRCODE_IO                    = "0368 error when reading or writing data"
+  | x==aFREEARC_ERRCODE_BAD_COMPRESSED_DATA   = "0369 data can't be decompressed"
+  | x==aFREEARC_ERRCODE_NOT_IMPLEMENTED       = "requested feature isn't supported"
+  | x==aFREEARC_ERRCODE_NO_MORE_DATA_REQUIRED = "required part of data was already decompressed"
+  | x==aFREEARC_ERRCODE_OPERATION_TERMINATED  = "operation terminated by user"
+  | otherwise                                 = "unknown (de)compression error "++show x
 
 
 ----------------------------------------------------------------------------------------------------
