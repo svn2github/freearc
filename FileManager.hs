@@ -658,6 +658,7 @@ myGUI run args = do
         return (show now==now1)
 
   -- Регистрирует использование программы и проверяет новости
+  --  (manual=True - ручной вызов из меню, иначе - ежедневная автопроверка)
   let checkNews manual = do
         newDay <- daily
         when (newDay || manual) $ do
@@ -689,11 +690,11 @@ myGUI run args = do
                whenM (askOkCancel window (format msg newsURL)) $ do
                  openWebsite newsURL
 
-  -- Раз в час проверять отсутствие новостей
+  -- Дважды в час проверять отсутствие новостей
   forkIO_ $ do
     foreverM $ do
       checkNews False
-      threadDelay (60*60*1000000)
+      threadDelay (30*60*1000000::Int)  -- 60 minutes is too much for Int!
 
 
   -- Помощь по использованию GUI

@@ -359,6 +359,7 @@ locale = unsafePerformIO $ ref$ array (0,-1) []
 
 {-# NOINLINE setLocale #-}
 -- |Установить локализацию по файлу
+setLocale "--"       = return ()
 setLocale localeFile = do
   localeInfo <- parseLocaleFile localeFile
   locale =: localeInfo
