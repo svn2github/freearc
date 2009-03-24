@@ -18,6 +18,7 @@
 // (bytewise with carries starting from lower address, i.e. in LSB aka Intel byte order)
 static void diff_table (int N, BYTE *table_start, int table_len)
 {
+#ifdef FREEARC_INTEL_BYTE_ORDER
     switch (N)
     {
     case 2:
@@ -29,17 +30,21 @@ static void diff_table (int N, BYTE *table_start, int table_len)
             r[0] -= r[-1];
             break;
     default:
+#endif
         for (BYTE *r = table_start + N*table_len; (r-=N) > table_start; )
             for (int i=0,carry=0,newcarry; i<N; i++)
                 newcarry = r[i] < r[i-N]+carry,
                 r[i] -= r[i-N]+carry,
                 carry = newcarry;
+#ifdef FREEARC_INTEL_BYTE_ORDER
     }
+#endif
 }
 
 // Process data table adding to each element contents of previous one
 static void undiff_table (int N, BYTE *table_start, int table_len)
 {
+#ifdef FREEARC_INTEL_BYTE_ORDER
     switch (N)
     {
     case 2:
@@ -51,12 +56,15 @@ static void undiff_table (int N, BYTE *table_start, int table_len)
             r[0] += r[-1];
             break;
     default:
+#endif
         for (BYTE *r = table_start; (r+=N) < table_start + N*table_len; )
             for (int i=0,carry=0,temp; i<N; i++)
                 temp = r[i]+r[i-N]+carry,
                 r[i] = temp,
                 carry = temp/256;
+#ifdef FREEARC_INTEL_BYTE_ORDER
     }
+#endif
 }
 
 
