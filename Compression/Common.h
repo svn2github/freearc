@@ -36,7 +36,15 @@ extern "C" {
 #error "You must define OS!"
 #endif
 
-#if !defined(FREEARC_INTEL_BYTE_ORDER) && !defined(FREEARC_MOTOROLA_BYTE_ORDER)
+#if defined(FREEARC_INTEL_BYTE_ORDER)
+#if _BIG_ENDIAN
+#error "You're compiling for Motorola byte order, but FREEARC_INTEL_BYTE_ORDER was defined."
+#endif
+#elif defined(FREEARC_MOTOROLA_BYTE_ORDER)
+#if _M_IX86 || __i386 || __x86_64
+#error "You're compiling for Intel byte order, but FREEARC_MOTOROLA_BYTE_ORDER was defined."
+#endif
+#else
 #error "You must define byte order!"
 #endif
 
