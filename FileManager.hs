@@ -664,7 +664,7 @@ myGUI run args = do
         forkIO_ $ do
           -- Сообщим об использовании программы
           whenJustM_ getUserID $ \userid -> do
-            let url = homeURL ++ "/CheckNews.aspx?user=" ++ userid ++ "&version=" ++ urlEncode aARC_VERSION
+            let url = aARC_WEBSITE ++ "/CheckNews.aspx?user=" ++ userid ++ "&version=" ++ urlEncode aARC_VERSION
             ignoreErrors (fileGetBinary url >> return ())
           -- Проверим страницу новостей
           handleErrors
