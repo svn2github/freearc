@@ -101,9 +101,9 @@ runIndicators = do
 
   -- Заполним кнопками нижнюю часть окна
   --buttonNew window stockClose ResponseClose
-  backgroundButton <- buttonNewWithMnemonic       =<< i18n"0052   &Background  "
-  pauseButton      <- toggleButtonNewWithMnemonic =<< i18n"0053   &Pause  "
-  cancelButton     <- buttonNewWithMnemonic       =<< i18n"0081   &Cancel  "
+  backgroundButton <- buttonNewWithMnemonic       =<< i18n"0052   _Background  "
+  pauseButton      <- toggleButtonNewWithMnemonic =<< i18n"0053   _Pause  "
+  cancelButton     <- buttonNewWithMnemonic       =<< i18n"0081   _Cancel  "
   boxPackStart buttonBox backgroundButton PackNatural 0
   boxPackStart buttonBox pauseButton      PackNatural 0
   boxPackEnd   buttonBox cancelButton     PackNatural 0
@@ -130,10 +130,10 @@ runIndicators = do
     active <- val pauseButton
     if active then do takeMVar mvarSyncUI
                       pause_real_secs
-                      buttonSetLabel pauseButton =<< i18n"0054   &Continue  "
+                      buttonSetLabel pauseButton =<< i18n"0054   _Continue  "
               else do putMVar mvarSyncUI "mvarSyncUI"
                       resume_real_secs
-                      buttonSetLabel pauseButton =<< i18n"0053   &Pause  "
+                      buttonSetLabel pauseButton =<< i18n"0053   _Pause  "
 
   backgroundButton `onClicked` do
     windowIconify window
@@ -573,11 +573,11 @@ eventKey (Key {eventKeyName = name, eventModifier = modifier}) =
 -- |Добавить к диалогу стандартную кнопку
 addStdButton dialog responseId = do
   let emsg = case responseId of
-               ResponseYes    -> "0079 &Yes"
-               ResponseNo     -> "0080 &No"
-               ResponseOk     -> "0362 &OK"
-               ResponseCancel -> "0081 &Cancel"
-               ResponseClose  -> "0364 &Close"
+               ResponseYes    -> "0079 _Yes"
+               ResponseNo     -> "0080 _No"
+               ResponseOk     -> "0362 _OK"
+               ResponseCancel -> "0081 _Cancel"
+               ResponseClose  -> "0364 _Close"
                _              -> "???"
   msg <- i18n emsg
   dialogAddButton dialog msg responseId
@@ -840,7 +840,7 @@ foreign import ccall safe "Environment.h GuiFormatDateTime"
 chooseFile parentWindow dialogType dialogTitle filters getFilename setFilename = do
   title <- i18n dialogTitle
   filename <- getFilename
-  [select,cancel] <- i18ns ["0363 &Select", "0081 &Cancel"]
+  [select,cancel] <- i18ns ["0363 _Select", "0081 _Cancel"]
   bracketCtrlBreak (fileChooserDialogNew (Just title) (Just$ castToWindow parentWindow) dialogType [(select,ResponseOk), (cancel,ResponseCancel)]) widgetDestroy $ \chooserDialog -> do
     fileChooserSetFilename    chooserDialog (unicode2utf8 filename)
     fileChooserSetCurrentName chooserDialog (takeFileName filename)
