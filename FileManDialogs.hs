@@ -252,6 +252,8 @@ settingsDialog fm' = do
                                           (fmCanonicalizeDiskPath fm')
     ; viewLogfileButton <- button "0292 View"
     -- Прочее
+    toolbarTextButton   <- fmCheckButtonWithHistory fm' "ToolbarCaptions" True "0361 Add captions to toolbar buttons"
+    checkNewsButton     <- fmCheckButtonWithHistory fm' "CheckNews"       True "0370 Watch for new versions via Internet"
     registerButton      <- button "0172 Associate FreeArc with .arc files"
     notes               <- label . joinWith "\n" =<<
       i18ns["0168 You should restart FreeArc in order for a language settings to take effect.",
@@ -323,8 +325,6 @@ settingsDialog fm' = do
     editLangButton    `onClick` (runEditCommand =<< getCurrentLangFile)
     viewLogfileButton `onClick` (runViewCommand =<< val logfile)
 
-    toolbarTextButton <- fmCheckButtonWithHistory fm' "ToolbarCaptions" True  "0361 Add captions to toolbar buttons"
-
 #if defined(FREEARC_WIN)
     registerButton `onClick` do
       exe <- getExeName                                -- Name of FreeArc.exe file
@@ -362,6 +362,7 @@ settingsDialog fm' = do
     boxPackStart vbox                langFrame           PackNatural 5
     boxPackStart vbox                logfileBox          PackNatural 5
     boxPackStart vbox       (widget  toolbarTextButton)  PackNatural 5
+    boxPackStart vbox       (widget  checkNewsButton)    PackNatural 5
     boxPackStart vbox       (widget  registerButton)     PackNatural 5   `on` isWindows
     boxPackStart vbox       (widget  notes)              PackNatural 5
 
@@ -375,7 +376,7 @@ settingsDialog fm' = do
       io$ buildPathTo inifile
       io$ saveConfigFile inifile$ map (join2 "=") [(aINITAG_LANGUAGE, takeFileName langFile)]
       logfile' <- val logfile;  saveHistory logfile
-      saveHistory toolbarTextButton
+      saveHistory `mapM_` [toolbarTextButton, checkNewsButton]
       saveCompressionHistories
       saveEncryptionHistories ""
       return ()

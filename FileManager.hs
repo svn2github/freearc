@@ -658,43 +658,43 @@ myGUI run args = do
         return (show now==now1)
 
   -- Регистрирует использование программы и проверяет новости
-  --  (manual=True - ручной вызов из меню, иначе - ежедневная автопроверка)
+  --  (manual=True - ручной вызов из меню, False - ежедневная автопроверка)
   let checkNews manual = do
-        newDay <- daily
-        when (newDay || manual) $ do
-          fmStackMsg fm' "0295 Checking for updates..."
-          forkIO_ $ do
-            -- Сообщим об использовании программы
-            whenJustM_ getUserID $ \userid -> do
-              let url = homeURL ++ "/CheckNews.aspx?user=" ++ userid ++ ",version=" ++ urlEncode aARC_VERSION
-              ignoreErrors (fileGetBinary url >> return ())
-            -- Проверим страницу новостей
-            handleErrors
-              -- Выполняется при недоступности страницы новостей
-              (gui $ do
-                  msg <- i18n"0296 Cannot open %1. Do you want to check the page with browser?"
-                  whenM (askOkCancel window (format msg newsURL)) $ do
-                    openWebsite newsURL)
-              -- Попытка прочитать страницу новостей
-              (fileGetBinary newsURL >>== (`showHex` "").crc32) $ \new_crc -> do
-            -- Страница новостей успешно прочитана
-            old_crc <- fmGetHistory1 fm' "news_crc" ""
-            gui $ do
-            fmStackMsg fm' ""
-            if (new_crc == old_crc) then do
-               msg <- i18n"0297 Nothing new at %1"
-               manual &&& fmInfoMsg fm' (format msg newsURL)
-             else do
-               fmReplaceHistory fm' "news_crc" new_crc
-               msg <- i18n"0298 Found new information at %1! Open the page with browser?"
-               whenM (askOkCancel window (format msg newsURL)) $ do
-                 openWebsite newsURL
+        fmStackMsg fm' "0295 Checking for updates..."
+        forkIO_ $ do
+          -- Сообщим об использовании программы
+          whenJustM_ getUserID $ \userid -> do
+            let url = homeURL ++ "/CheckNews.aspx?user=" ++ userid ++ "&version=" ++ urlEncode aARC_VERSION
+            ignoreErrors (fileGetBinary url >> return ())
+          -- Проверим страницу новостей
+          handleErrors
+            -- Выполняется при недоступности страницы новостей
+            (gui $ do
+                msg <- i18n"0296 Cannot open %1. Do you want to check the page with browser?"
+                whenM (askOkCancel window (format msg newsURL)) $ do
+                  openWebsite newsURL)
+            -- Попытка прочитать страницу новостей
+            (fileGetBinary newsURL >>== (`showHex` "").crc32) $ \new_crc -> do
+          -- Страница новостей успешно прочитана
+          old_crc <- fmGetHistory1 fm' "news_crc" ""
+          gui $ do
+          fmStackMsg fm' ""
+          if (new_crc == old_crc) then do
+             msg <- i18n"0297 Nothing new at %1"
+             manual &&& fmInfoMsg fm' (format msg newsURL)
+           else do
+             fmReplaceHistory fm' "news_crc" new_crc
+             msg <- i18n"0298 Found new information at %1! Open the page with browser?"
+             whenM (askOkCancel window (format msg newsURL)) $ do
+               openWebsite newsURL
 
   -- Дважды в час проверять отсутствие новостей
   forkIO_ $ do
-    foreverM $ do
-      checkNews False
-      threadDelay (30*60*1000000::Int)  -- 60 minutes is too much for Int!
+    whenM (fmGetHistoryBool fm' "CheckNews" True) $ do
+      foreverM $ do
+        whenM daily $ do
+          checkNews False
+        threadDelay (30*60*1000000::Int)  -- 60 minutes is too much for Int!
 
 
   -- Помощь по использованию GUI
