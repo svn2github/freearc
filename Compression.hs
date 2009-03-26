@@ -451,8 +451,8 @@ builtinMethodSubsts = [
     , ""
     , ";Synonyms"
     , "bcj = exe"
-    , "#xb = #bx"
-    , "#xt = #tx"
+    , "#bx = #xb"
+    , "#tx = #xt"
     , "x#  = #x"    -- принимаем опции типа "-mx7" для мимикрии под 7-zip
     , ""
     , ";Compression modes involving external PPMONSTR.EXE"
