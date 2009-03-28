@@ -69,6 +69,8 @@ Tools menu/toolbar
 0267 Lock archive from further changes=Zamkne archiv 
 0268 Comment=Komentář
 0269 Edit archive comment=Upraví komentář archivu
+0293 Recompress=Překomprimovat
+0294 Recompress files in archive=Překomprimovat soubory v archivu
 0270 Convert to SFX=Převést na SFX
 0271 Convert archive to SFX=Převede archiv na samorozbalovací
 0272 Encrypt=Zašifrovat
@@ -100,7 +102,6 @@ Help menu/toolbar
 
 
 === File manager ==================================================================
-
 Navibar
 0006 Up=Nahoru
 0007 Save=Uložit
@@ -127,6 +128,14 @@ Messages
 
 
 === Dialogs =======================================================================
+Archive open dialog
+0305 Open archive=Otevřít archiv
+0306 This file isn't a FreeArc archive!=Tento soubor není FreeArc archiv!
+0307 FreeArc archives (*.arc)=FreeArc archivy (*.arc)
+0308 Archives and SFXes (*.arc;*.exe)=Archivy a SFX archivy (*.arc;*.exe)
+0309 All files (*)=Všechny soubory (*)
+
+
 Add dialog
 --Title
 0134 Add %1 to archive=Přidat %1 do archivu
@@ -238,7 +247,7 @@ Archive information dialog
 0173 Directories:=Adresářů:
 0088 Files:=Souborů:
 0089 Total bytes:=Velikost:
-0090 Compressed bytes:=Sbalená velikost:
+0090 Compressed bytes:=Velikost po zabalení:
 0091 Ratio:=Kompresní poměr:
 --
 0104 Directory blocks:=Adresářových bloků:
@@ -264,14 +273,26 @@ Settings dialog
 0068 Language:=Jazyk:
 0069 Edit=Upravit
 0070 Import=Importovat
-0168 You should restart FreeArc in order for a language settings to take effect.=Aby se změna jazyka projevila, musí být FreeArc restartován.
-0169 Passwords need to be entered again after restart.=Hesla musí být po restartu znovu zadána.
 0170 Full name:=Celý název:
 0171 Copyright:=Copyright:
 0166 Logfile:=Soubor záznamu:
 0292 View=&Zobrazit
 0167 Select logfile=Vybrat záznam
 0172 Associate FreeArc with .arc files=Asociovat FreeArc se soubory .arc
+0361 Add captions to toolbar buttons=Přidat popisy k tlačítkům na liště nástrojů
+0370 Watch for new versions via Internet=Sledovat nové verze na internetu
+0168 You should restart FreeArc in order for a language settings to take effect.=Aby se změna jazyka projevila, musí být FreeArc restartován.
+0169 Passwords need to be entered again after restart.=Hesla musí být po restartu znovu zadána.
+
+Logfiles
+0303 No log file specified in Settings dialog!=V dialogu Nastavení není specifikovaný soubor záznamu!
+0304 Clear logfile %1?=Vymazat soubor záznamu %1?
+
+Checking for updates
+0295 Checking for updates...=Kontroluji aktualizace...
+0296 Cannot open %1. Do you want to check the page with browser?=Nelze otevřít %1. Zobrazit stránku v prohlížeči?
+0297 Nothing new at %1=Žádné dostupné aktualizace na %1
+0298 Found new information at %1! Open the page with browser?=Nalezena aktualizace na %1! Zobrazit stránku v prohlížeči?
 
 
 === Profile settings ============================================================
@@ -317,19 +338,26 @@ Settings dialog
 
 
 === Execution dialogs ============================================================
+Many dialogs
+0079 &Yes=&Ano
+0080 &No=&Ne
+0362 &OK=&OK
+0081 &Cancel=&Zrušit
+0363 &Select=&Vybrat
+0364 &Close=Zavří&t
+
 Progress indicator
 --Buttons
-0052 Background=Na pozadí
-0053 Pause=Pozastavit
-0054 Continue=Pokračovat
-0055 Cancel=Zrušit
+0052 &Background=&Na pozadí
+0053 &Pause=&Pozastavit
+0054 &Continue=Pok&račovat
 --Labels
 0056 Files=Souborů:
 0057 Total files=Celkem souborů:
 0058 Bytes=Bajtů
 0059 Total bytes=Velikost:
 0252 Compressed=Komprimovaná velikost:
-0253 Total compressed=Celkem zkomprimováno:
+0253 Total compressed=Celkem po kompresi:
 0060 Ratio=Kompresní poměr:
 0061 Speed=Rychlost:
 0062 Time=Uplynulý čas:
@@ -347,9 +375,6 @@ File overwrite dialog
 0163 Would you like to replace the existing file=Chcete nahradit existující soubor
 0164 with this one?=tímto?
 0165 %1\n%2 bytes\nmodified on %3=%1\n%2 bajtů\nupraveno %3
-0079 &Yes=&Ano
-0080 &No=&Ne
-0081 &Cancel=&Zrušit
 0082 Yes to &All=Ano na &všechno
 0083 No to A&ll=N&e na všechno
 0084 &Update all=&Obnovit všechno
@@ -388,6 +413,70 @@ Archive comment dialog
 0243 Adding to %1=Přidávám do %1
 0244 FILES SUCCESFULLY ADDED TO %1=SOUBORY BYLY ÚSPĚŠNĚ PŘIDÁNY DO %1
 0245 %2 WARNINGS WHILE ADDING TO %1=%2 VAROVÁNÍ BĚHEM PŘIDÁVÁNÍ DO %1
+
+0299 Lock archive(s)?=Zamknout archiv(y)?
+0300 Locking archive %1=Zamykám archiv %1
+0301 SUCCESFULLY LOCKED ARCHIVE %1=ARCHIV %1 ÚSPĚŠNĚ BYL ÚSPĚŠNĚ ZAMKNUT
+0302 %2 WARNINGS WHILE LOCKING ARCHIVE %1=%2 VAROVÁNÍ BĚHEM ZAMYKÁNÍ ARCHIVU %1
+
+
+=== Error messages =======================================================
+0316 ERROR: %1=CHYBA: %1
+0317 WARNING: %1=VAROVÁNÍ: %1
+0310 can't modify archive locked with -k=nelze upravit archiv zamknutý pomocí -k
+0311 can't create temporary file=nelze vytvořit dočasný soubor
+0312 output archive already exists, keeping temporary file %1=výstupní archiv již existuje, ponechávám dočasný soubor %1
+0313 archive broken, keeping temporary file %1=archiv je poškozen, ponechávám dočasný soubor %1
+0314 archive broken, deleting=archiv je poškozen, mažu
+0315 can't open SFX module %1=nelze otevřít SFX modul %1
+0318 command syntax is "%1"=syntaxe příkazu je "%1"
+0319 options %1 and %2 can't be used together=volby %1 a %2 nemohou být použity zároveň
+0320 unknown command "%1". Supported commands are: %2=neznámý příkaz "%1". Podporované příkazy jsou: %2
+0321 unknown option "%1"=neznámá volba "%1"
+0322 ambiguous option "%1" - is that %2?=nejednoznačná volba "%1" - má to být %2?
+0325 option "%1" have illegal format=volba "%1" má neplatný formát
+0326 %1 option must be one of: %2=volba %1 musí být jedno z: %2
+0327 no command name in command: %1=chybějící název příkazu v příkazu: %1
+0328 no archive name in command: %1=chybějící název archivu v příkazu: %1
+0329 no filenames in command: %1=chybějící názvy souborů v příkazu: %1
+0330 can't read directory "%1"=nelze načíst adresář "%1"
+0331 can't get info about file "%1"=nelze načíst informace o souboru "%1"
+0332 can't open file "%1"=nelze otevřít soubor "%1"
+0333 CRC error in file "%1"=chyba CRC v souboru "%1"
+0334 bad section %1 in %2=špatná sekce %1 v %2
+0335 operation terminated!=operace byla ukončena!
+0336 program terminated!=program byl ukončen!
+0337 no files, erasing empty archive=žádné soubory, mažu prázdný archiv
+0338 skipped %1 fake files=přeskočeno %1 falešných souborů
+0339 bad password for archive %1=špatné heslo pro archiv %1
+0340 bad password for %1 in archive %2=špatné heslo pro %1 v archivu %2
+0341 archive %1 corrupt: %2. Please recover it using 'r' command or use -tp- option to ignore Recovery Record=archiv %1 je poškozen: %2. Prosím opravte jej pomocí příkazu 'r' nebo použijte volbu -tp- k ignorování záznamu pro opravu dat
+0342 SFX module %1 is not found=nenalezen SFX modul %1
+0343 %1 isn't implemented=%1 není implementováno
+0344 only first of %1 recovery records can be processed by this program version. Please use newer versions to process the rest=jen prvních %1 záznamů pro opravu dat může být zpracováno touto verzí programu. Prosím použijte novější verze ke zpracování zbytku
+0345 you need FreeArc %1 or above to process this recovery info=ke zpracování tohoto záznamu pro opravu dat je třeba FreeArc verze %1 a vyšší
+0346 file %1 already exists=soubor %1 již existuje
+0347 archive can't be recovered - recovery data absent or corrupt=archiv nelze obnovit - záznam pro opravu dat schází nebo je poškozen
+0348 %1 unrecoverable errors (%2) found, can't restore anything!=nalezeno %1 neopravitelných chyb (%2), nelze nic obnovit!
+0349 can't open original at %1=nelze otevřít originál na %1
+0350 %1 has size %2 so it can't be used to recover %3 having size %4=%1 má velikost %2, takže jej nelze použít k opravě %3 o velikosti %4
+0351 %1 errors (%2) remain unrecovered=%1 chyb (%2) zůstalo neopravených
+0352 found %1 errors (%2)=nalezeno %1 chyb (%2)
+0353 there were %1 warnings due archive testing=nastalo %1 varování během testování archivu
+0354 block descriptor at pos %1 is corrupted=popisovač bloku na pozici %1 je poškozen
+0355 %1 is corrupted=%1 je poškozen
+0359 %1 failed decompression=%1 se nepodařilo rozbalit
+0360 %1 should be uncompressed=%1 by měl být rozbalen
+0356 archive directory not found=hlavička archivu nebyla nalezena
+0357 archive signature not found at the end of archive=nebyl nalezen identifikátor archivu
+0358 last block of archive is not footer block=poslední blok archivu není ukončovací blok
+
+Errors returned by compression methods
+0365 general (de)compression error=obecná chyba (de)komprese
+0366 invalid compression method or parameters=neplatná kompresní metoda nebo parametry
+0367 can't allocate memory required for (de)compression=nelze alokovat paměť nutnou pro (de)kompresi
+0368 I/O error in compression algorithm=I/O chyba v kompresním algoritmu
+0369 bad compressed data=špatná komprimovaná data
 
 
 === Standard profiles ====================================================
@@ -464,7 +553,7 @@ Add dialog
 1187 Finalize archive=Archiv bude po kompresi uzavřen\n(nebudou možné jeho následné změny)
 1072 Additional options:=Další ručně nastavitelné možnosti (pro pokročilé uživatele)
 --
-1201 Compress each file into separate archive=Je-li tato položka zaškrtnuta, každý soubor bude zvlášť zkomprimován do samostatného archivu
+1201 Compress each marked file/directory into separate archive=Je-li tato položka zaškrtnuta, každý soubor bude zvlášť zkomprimován do samostatného archivu
 1202 Add to archive name=Připojí vybraný parametr k názvu archivu (např. datum a čas)
 --
 1207 Delete previous archive contents=Pozor! Je-li tato položka zaškrtnuta, obsah archivu bude před přidáním nového obsahu vymazán. Tento krok nelze vrátit!
@@ -489,10 +578,9 @@ Add dialog
 
 === Everything else ====================================================
 Common words
-0101 Yes=Ano
-0102 No=Ne
-0103 May be=Možná
+0323 or=nebo
+0324 and=a
 
 Failure messages
 0010 Operation interrupted!=Operace přerušena!
-0011 No threads to run: infinite loop or deadlock?=Žádná vlákna ke spuštění: nekonečná smyčka nebo zamrznutí?
+0011 No threads to run: infinite loop or deadlock?=Žádná vlákna ke spuštění: zacyklení nebo zamrznutí?
