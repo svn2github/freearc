@@ -664,6 +664,9 @@ myGUI run args = do
         now1 <- fmGetHistory1 fm' "LastCheck" ""
         return (show now==now1)
 
+  -- Size of maximum memory block we can allocate in bytes
+  maxBlock <- getMaxMemToAlloc
+
   -- Регистрирует использование программы и проверяет новости
   --  (manual=True - ручной вызов из меню, False - ежедневная автопроверка)
   let checkNews manual = do
@@ -680,8 +683,9 @@ myGUI run args = do
 #ifdef FREEARC_WIN
                                    ++ "&address%20space=" ++ ramLimit
 #endif
+                                   ++ "&largest%20memory%20block=" ++ showMem (maxBlock `roundDown` (100*mb))
                                    ++ "&number%20of%20cores=" ++ show getProcessorsCount
-            gui$ fmStackMsg fm' url
+            --gui$ fmStackMsg fm' url
             ignoreErrors (fileGetBinary url >> return ())
           -- Проверим страницу новостей
           handleErrors
