@@ -284,6 +284,9 @@ is_COPYING_COMMAND ('r':'r':_) = True
 is_COPYING_COMMAND ('s':_)     = True
 is_COPYING_COMMAND x           = x `elem` words "c ch d j k"
 
+-- |Команда, у которой НЕ ДОЛЖНО быть ни одного аргумента (помимо имени архива)
+is_CMD_WITHOUT_ARGS x  =  is_COPYING_COMMAND x  &&  (x `notElem` words "d j")
+
 -- |Классификация всех команд по четырём типам: команды упаковки, распаковки, тестирования и листинга
 data CmdType = ADD_CMD | EXTRACT_CMD | TEST_CMD | LIST_CMD | RECOVER_CMD  deriving (Eq)
 cmdType "t"  = TEST_CMD

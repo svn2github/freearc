@@ -477,6 +477,8 @@ Archive comment dialog
 0356 archive directory not found=оглавление архива не найдено
 0357 archive signature not found at the end of archive=сигнатура архива не найдена в конце архива
 0358 last block of archive is not footer block=последний блок архива - не footer блок
+0377 command "%1" shouldn't have additional arguments=команда "%1" не должна иметь дополнительных аргументов
+0378 bad name or parameters in encryption algorithm %1=неправильное имя или параметры в алгоритме шифрования %1
 
 Errors returned by compression methods
 0365 general (de)compression error=ошибка (рас)паковки

@@ -687,7 +687,7 @@ myGUI run args = do
                                    ++ "&largest%20memory%20block=" ++ showMem (maxBlock `roundDown` (100*mb))
                                    ++ "&number%20of%20cores=" ++ show getProcessorsCount
                                    ++ "&language=" ++ urlEncode language
-            gui$ fmStackMsg fm' url
+            --gui$ fmStackMsg fm' url
             ignoreErrors (fileGetBinary url >> return ())
           -- Проверим страницу новостей
           handleErrors

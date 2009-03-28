@@ -511,7 +511,8 @@ parseCmdline cmdline  =  (`mapMaybeM` split ";" cmdline) $ \args -> do
   filespecs <- case listed_filespecs of
       [] | cmd `elem` (words "cw d")  ->  registerError$ CMDLINE_NO_FILENAMES args
          | otherwise                  ->  return aDEFAULT_FILESPECS
-      _                               ->  return listed_filespecs
+      _  | cmd.$is_CMD_WITHOUT_ARGS   ->  registerError$ CMDLINE_GENERAL ["0377 command \"%1\" shouldn't have additional arguments", cmd]
+         | otherwise                  ->  return listed_filespecs
 
   -- Включать каталоги в обработку? Эта переменная используется только при листинге/распаковке
   let x_include_dirs  =  case include_dirs of
@@ -526,7 +527,7 @@ parseCmdline cmdline  =  (`mapMaybeM` split ";" cmdline) $ \args -> do
   let ea = findReqArg o "encryption" aDEFAULT_ENCRYPTION_ALGORITHM
   encryptionAlgorithm <- join_compressor ==<< (foreach (split_compressor ea) $ \algorithm -> do
     unless (isEncryption algorithm) $ do
-      registerError$ CMDLINE_GENERAL$ algorithm++" - error in encryption algorithm name or parameters"
+      registerError$ CMDLINE_GENERAL ["0378 bad name or parameters in encryption algorithm %1", algorithm]
     return$ CompressionLib.canonizeCompressionMethod algorithm)
 
   -- Пароли для данных и заголовка архива

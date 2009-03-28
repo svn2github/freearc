@@ -34,7 +34,7 @@ aEXIT_CODE_USER_BREAK   = 255
 
 -- |Все возможные типы ошибок и предупреждений
 data ErrorTypes = GENERAL_ERROR                 [String]
-                | CMDLINE_GENERAL               String
+                | CMDLINE_GENERAL               [String]
                 | CMDLINE_SYNTAX                String
                 | CMDLINE_INCOMPATIBLE_OPTIONS  String String
                 | CMDLINE_NO_COMMAND            [String]
@@ -184,8 +184,8 @@ fileManagerMode = unsafePerformIO (ref False)
 ---- Тексты сообщений о различных типах ошибок. Подходящий ресурс для интернализации --------------
 ---------------------------------------------------------------------------------------------------
 
-errormsg (GENERAL_ERROR xs) =
-  i18fmt xs
+errormsg (GENERAL_ERROR msgs) =
+  i18fmt msgs
 
 errormsg (BROKEN_ARCHIVE arcname msgs) = do
   msg <- i18fmt msgs
@@ -197,8 +197,8 @@ errormsg (INTERNAL_ERROR msg) =
 errormsg (COMPRESSION_ERROR msg) =
   i18fmt [msg]
 
-errormsg (CMDLINE_GENERAL msg) =
-  i18fmt [msg]
+errormsg (CMDLINE_GENERAL msgs) =
+  i18fmt msgs
 
 errormsg (CMDLINE_SYNTAX syntax) =
   i18fmt ["0318 command syntax is \"%1\"", syntax]
