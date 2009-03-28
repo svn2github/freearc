@@ -677,6 +677,7 @@ myGUI run args = do
 #ifdef FREEARC_WIN
             si <- getSystemInfo; let ramLimit = showMem (si.$siMaximumApplicationAddress.$ptrToWordPtr.$toInteger `roundTo` (4*mb))
 #endif
+            language <- i18n"0000 English"
             let url = aARC_WEBSITE ++ "/CheckNews.aspx?user=" ++ userid ++ "&version=" ++ urlEncode aARC_VERSION
                                    ++ "&OS%20family=" ++ iif isWindows "Windows" "Unix"
                                    ++ "&RAM=" ++ showMem (toInteger getPhysicalMemory `roundTo` (4*mb))
@@ -685,7 +686,8 @@ myGUI run args = do
 #endif
                                    ++ "&largest%20memory%20block=" ++ showMem (maxBlock `roundDown` (100*mb))
                                    ++ "&number%20of%20cores=" ++ show getProcessorsCount
-            --gui$ fmStackMsg fm' url
+                                   ++ "&language=" ++ urlEncode language
+            gui$ fmStackMsg fm' url
             ignoreErrors (fileGetBinary url >> return ())
           -- Проверим страницу новостей
           handleErrors
