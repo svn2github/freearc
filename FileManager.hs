@@ -18,6 +18,7 @@ import System.Cmd
 import System.Process
 #if defined(FREEARC_WIN)
 import System.Win32
+import Foreign.Ptr
 #endif
 
 import Graphics.UI.Gtk
@@ -94,7 +95,9 @@ uiDef =
   "      <menuitem name=\"MainHelp\"           action=\"MainHelpAction\" />"++
   "      <separator/>"++
   "      <menuitem name=\"CmdlineHelp\"        action=\"CmdlineHelpAction\" />"++
-  "      <menuitem name=\"GotoHomepage\"       action=\"GotoHomepageAction\" />"++
+  "      <menuitem name=\"OpenHomepage\"       action=\"OpenHomepageAction\" />"++
+  "      <menuitem name=\"OpenForum\"          action=\"OpenForumAction\" />"++
+  "      <menuitem name=\"OpenWiki\"           action=\"OpenWikiAction\" />"++
   "      <menuitem name=\"CheckForUpdate\"     action=\"CheckForUpdateAction\" />"++
   "      <separator/>"++
   "      <menuitem name=\"About\"              action=\"AboutAction\" />"++
@@ -179,7 +182,9 @@ myGUI run args = do
 
   helpAct     <- anew "0280 Main help"        "0281 Help on using FreeArc"              (Just stockHelp)            "F1"
   helpCmdAct  <- anew "0282 Cmdline help"     "0283 Help on FreeArc command line"       (Just stockHelp)            ""
-  homepageAct <- anew "0284 Goto Homepage"    "0285 Open program site"                  (Just stockHome)            ""
+  homepageAct <- anew "0284 Open Homepage"    "0285 Open program site"                  (Just stockHome)            ""
+  openForumAct<- anew "0373 Open forum"       "0374 Open program forum"                 (Nothing)                   ""
+  openWikiAct <- anew "0375 Open wiki"        "0376 Open program wiki"                  (Nothing)                   ""
   whatsnewAct <- anew "0286 Check for update" "0287 Check for new program version"      (Just stockDialogInfo)      ""
   aboutAct    <- anew "0288 About"            "0289 About"                              (Just stockAbout)           ""
 
@@ -624,8 +629,10 @@ myGUI run args = do
 ----------------------------------------------------------------------------------------------------
 
   -- Home/news page for the current locale
-  homeURL <- (aARC_WEBSITE ++) ==<< i18n"0254 /"
-  newsURL <- (aARC_WEBSITE ++) ==<< i18n"0255 /News.aspx"
+  homeURL  <- ((aARC_WEBSITE ++ "/") ++) ==<< i18n"0254 "
+  newsURL  <- ((aARC_WEBSITE ++ "/") ++) ==<< i18n"0255 News.aspx"
+  forumURL <- ("http://apps.sourceforge.net/phpbb/freearc/" ++) ==<< i18n"0371 viewforum.php?f=3"
+  wikiURL  <- ("http://freearc.wiki.sourceforge.net/"       ++) ==<< i18n"0372 "
 
   -- Открыть URL
   let openWebsite url  =  runFile url "." False
@@ -664,7 +671,17 @@ myGUI run args = do
         forkIO_ $ do
           -- Сообщим об использовании программы
           whenJustM_ getUserID $ \userid -> do
+#ifdef FREEARC_WIN
+            si <- getSystemInfo; let ramLimit = showMem (si.$siMaximumApplicationAddress.$ptrToWordPtr.$toInteger `roundTo` (4*mb))
+#endif
             let url = aARC_WEBSITE ++ "/CheckNews.aspx?user=" ++ userid ++ "&version=" ++ urlEncode aARC_VERSION
+                                   ++ "&OS%20family=" ++ iif isWindows "Windows" "Unix"
+                                   ++ "&RAM=" ++ showMem (toInteger getPhysicalMemory `roundTo` (4*mb))
+#ifdef FREEARC_WIN
+                                   ++ "&address%20space=" ++ ramLimit
+#endif
+                                   ++ "&number%20of%20cores=" ++ show getProcessorsCount
+            gui$ fmStackMsg fm' url
             ignoreErrors (fileGetBinary url >> return ())
           -- Проверим страницу новостей
           handleErrors
@@ -709,6 +726,14 @@ myGUI run args = do
   homepageAct `onActionActivate` do
     openWebsite homeURL
 
+  -- Домашняя страница программы
+  openForumAct `onActionActivate` do
+    openWebsite forumURL
+
+  -- Домашняя страница программы
+  openWikiAct `onActionActivate` do
+    openWebsite wikiURL
+
   -- Проверка обновлений на сайте
   whatsnewAct `onActionActivate` do
     checkNews True
@@ -728,7 +753,7 @@ myGUI run args = do
                                           ,"Alexander Djourik and Pavel Zhilin (authors of TTA)"
                                           ,"Dmitry Subbotin (author of Carryless rangecoder)"
                                           ,"Joachim Henke (coauthor of Tornado)"
-                                          ,"Mark Shevchenko (author of GUI SFX)"
+                                          ,"Mark Shevchenko (author of GUI SFX and web site)"
                                           ,aARC_EMAIL++" (author of remaining parts)"
                  ]]
     dialogRun dialog

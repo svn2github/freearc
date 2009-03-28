@@ -18,9 +18,12 @@ Language name in english and mother tongue
 0000 Language=Russian (Русский)
 0159 Copyright=Bulat.Ziganshin@gmail.com
 
-Language-specific URLs relative to http://freearc.org and helpfiles
-0254 Homepage=/ru
-0255 News page=/ru/News.aspx
+Language-specific URLs relative to http://freearc.org/ and helpfiles
+Filled only for languages providing their own translations
+0254 Homepage=ru
+0255 News page=ru/News.aspx
+0371 Forum page=viewforum.php?f=4
+0372 Wiki page=??
 0256 Helpfile=FreeArc-GUI-Rus.htm
 0257 Command-line help=FreeArc040-rus.htm
 
@@ -93,8 +96,12 @@ Help menu/toolbar
 0281 Help on using FreeArc=Описание использования FreeArc
 0282 Cmdline help=Помощь по ком. строке
 0283 Help on FreeArc command line=Описание использования командной строки FreeArc
-0284 Goto Homepage=Домашняя страница
+0284 Open Homepage=Домашняя страница
 0285 Open program site=Открыть сайт FreeArc
+0373 Open forum=Форум
+0374 Open program forum=Открыть форум FreeArc
+0375 Open wiki=Wiki
+0376 Open program wiki=Открыть FreeArc Wiki
 0286 Check for update=Проверить обновление
 0287 Check for new program versions=Проверить появление новой версии программы
 0288 About=О программе
