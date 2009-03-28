@@ -856,7 +856,7 @@ chooseFile parentWindow dialogType dialogTitle filters getFilename setFilename =
 addFilters chooserDialog filters = do
   for filters $ \(text, patterns) -> do
     filt <- fileFilterNew
-    fileFilterSetName filt (text++" ("++patterns++")")
+    fileFilterSetName filt text
     for (patterns.$ split ';')  (fileFilterAddPattern filt)
     fileChooserAddFilter chooserDialog filt
 
@@ -868,8 +868,7 @@ guiFormatDateTime = formatDateTime
 -- |Подготовить фильтры к использованию в диалоге
 prepareFilters filters = do
   foreach (filters &&& filters++["0309 All files (*)"]) $ \element -> do
-    str <- i18n element
-    let text     = unwords$ init$ words str
-        patterns = last (words str) .$drop 1 .$dropEnd 1
+    text <- i18n element
+    let patterns = text .$words .$last .$drop 1 .$dropEnd 1
     return (text, patterns)
 
