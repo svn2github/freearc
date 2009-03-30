@@ -18,53 +18,53 @@
 // (bytewise with carries starting from lower address, i.e. in LSB aka Intel byte order)
 static void diff_table (int N, BYTE *table_start, int table_len)
 {
-#ifdef FREEARC_INTEL_BYTE_ORDER
+    byte *r = table_start;
+
     switch (N)
     {
     case 2:
-        for (uint16 *r = (uint16*)table_start + table_len; --r > (uint16*)table_start; )
-            r[0] -= r[-1];
-            break;
+        for (uint16 prev = value16(r), v; (r += 2) < table_start + N * table_len; prev = v)
+            v = value16(r),
+            setvalue16(r, v - prev);
+        break;
     case 4:
-        for (uint32 *r = (uint32*)table_start + table_len; --r > (uint32*)table_start; )
-            r[0] -= r[-1];
-            break;
+        for (uint32 prev = value32(r), v; (r += 4) < table_start + N * table_len; prev = v)
+            v = value32(r),
+            setvalue32(r, v - prev);
+        break;
     default:
-#endif
-        for (BYTE *r = table_start + N*table_len; (r-=N) > table_start; )
+        for (r += N * table_len; (r -= N) > table_start; )
             for (int i=0,carry=0,newcarry; i<N; i++)
                 newcarry = r[i] < r[i-N]+carry,
                 r[i] -= r[i-N]+carry,
                 carry = newcarry;
-#ifdef FREEARC_INTEL_BYTE_ORDER
     }
-#endif
 }
 
 // Process data table adding to each element contents of previous one
 static void undiff_table (int N, BYTE *table_start, int table_len)
 {
-#ifdef FREEARC_INTEL_BYTE_ORDER
+    byte *r = table_start;
+
     switch (N)
     {
     case 2:
-        for (uint16 *r = (uint16*)table_start; ++r < (uint16*)table_start+table_len; )
-            r[0] += r[-1];
-            break;
+        for (uint16 v = value16(r); (r += 2) < table_start + N * table_len; )
+            v += value16(r),
+            setvalue16(r, v);
+        break;
     case 4:
-        for (uint32 *r = (uint32*)table_start; ++r < (uint32*)table_start+table_len; )
-            r[0] += r[-1];
-            break;
+        for (uint32 v = value32(r); (r += 4) < table_start + N * table_len; )
+            v += value32(r),
+            setvalue32(r, v);
+        break;
     default:
-#endif
-        for (BYTE *r = table_start; (r+=N) < table_start + N*table_len; )
+        while ((r += N) < table_start + N * table_len)
             for (int i=0,carry=0,temp; i<N; i++)
                 temp = r[i]+r[i-N]+carry,
                 r[i] = temp,
                 carry = temp/256;
-#ifdef FREEARC_INTEL_BYTE_ORDER
     }
-#endif
 }
 
 
