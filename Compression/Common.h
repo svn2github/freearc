@@ -247,13 +247,22 @@ static inline int dir_exists (const TCHAR *name)
 
 #elif FREEARC_MOTOROLA_BYTE_ORDER
 // routines for non-little-endian cpus, written by Joachim Henke
+#if _ARCH_PPC
+#if __GNUC__ == 4 && __GNUC_MINOR__ > 0 || __GNUC__ > 4
+#define PPC_MCONSTR "Z"
+#else
+#define PPC_MCONSTR "Q"
+#endif
+#define PPC_LBRX(s,p,x)   __asm__ ("l"  s "brx %0,%y1" : "=r" (x) : PPC_MCONSTR (*p))
+#define PPC_STBRX(s,p,x)  __asm__ ("st" s "brx %1,%y0" : "=" PPC_MCONSTR (*p) : "r" (x))
+#endif
 
 static inline uint16 value16 (void *p)
 {
   uint16 x;
 #if _ARCH_PPC
   uint16 *m = (uint16 *)p;
-  __asm__ ("lhbrx %0,%y1" : "=r" (x) : "Z" (*m));
+  PPC_LBRX("h", m, x);
 #else
   uint8 *m = (uint8 *)p;
   x = m[0] + (m[1] << 8);
@@ -269,7 +278,7 @@ static inline uint32 value24 (void *p)
   x = __builtin_bswap32(*m) & 0xffffff;
 #elif _ARCH_PPC
   uint32 *m = (uint32 *)p;
-  __asm__ ("lwbrx %0,%y1" : "=r" (x) : "Z" (*m));
+  PPC_LBRX("w", m, x);
   x &= 0xffffff;
 #else
   uint8 *m = (uint8 *)p;
@@ -286,7 +295,7 @@ static inline uint32 value32 (void *p)
   x = __builtin_bswap32(*m);
 #elif _ARCH_PPC
   uint32 *m = (uint32 *)p;
-  __asm__ ("lwbrx %0,%y1" : "=r" (x) : "Z" (*m));
+  PPC_LBRX("w", m, x);
 #else
   uint8 *m = (uint8 *)p;
   x = m[0] + (m[1] << 8) + (m[2] << 16) + (m[3] << 24);
@@ -299,7 +308,7 @@ static inline uint64 value64 (void *p)
   uint64 x;
 #if _ARCH_PPC && __PPU__
   uint64 *m = (uint64 *)p;
-  __asm__ ("ldbrx %0,%y1" : "=r" (x) : "Z" (*m));
+  PPC_LBRX("d", m, x);
 #else
   uint32 *m = (uint32 *)p;
   x = value32(m) + ((uint64)value32(m + 1) << 32);
@@ -311,7 +320,7 @@ static inline void setvalue16 (void *p, uint16 x)
 {
 #if _ARCH_PPC
   uint16 *m = (uint16 *)p;
-  __asm__ ("sthbrx %1,%y0" : "=Z" (*m) : "r" (x));
+  PPC_STBRX("h", m, x);
 #else
   uint8 *m = (uint8 *)p;
   m[0] = x;
@@ -334,7 +343,7 @@ static inline void setvalue32 (void *p, uint32 x)
   *m = __builtin_bswap32(x);
 #elif _ARCH_PPC
   uint32 *m = (uint32 *)p;
-  __asm__ ("stwbrx %1,%y0" : "=Z" (*m) : "r" (x));
+  PPC_STBRX("w", m, x);
 #else
   uint8 *m = (uint8 *)p;
   m[0] = x;
@@ -348,7 +357,7 @@ static inline void setvalue64 (void *p, uint64 x)
 {
 #if _ARCH_PPC && __PPU__
   uint64 *m = (uint64 *)p;
-  __asm__ ("stdbrx %1,%y0" : "=Z" (*m) : "r" (x));
+  PPC_STBRX("d", m, x);
 #else
   uint32 *m = (uint32 *)p;
   setvalue32(m, x);
