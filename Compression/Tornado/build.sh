@@ -2,8 +2,13 @@
 
 # Tornado build script for Unix, written by Joachim Henke
 
-GCC_FLAGS='-pipe -O3 -fomit-frame-pointer -fstrict-aliasing -ffast-math -fforce-addr -fno-exceptions -fno-rtti -fno-threadsafe-statics -fwhole-program -combine'
+GCC_FLAGS='-pipe -O3 -fomit-frame-pointer -fstrict-aliasing -ffast-math -fforce-addr -fno-exceptions -fno-rtti'
+GCC_FLAGS_VER='-fno-threadsafe-statics -fno-ipa-cp-clone -fwhole-program -combine'
 ICC_FLAGS='-O2 -fp-model fast=2 -fno-exceptions -fno-rtti'
+
+cc_option () {
+	$CC -S -xc++ $1 -o /dev/null /dev/null 2>/dev/null
+}
 
 export LC_ALL='C'
 CC=${CC:-gcc}
@@ -14,13 +19,16 @@ if [ "${CC%icc*}" != "$CC" ]; then
 	PARM_PROF='-ipo'
 else
 	CFLAGS=${CFLAGS:-$GCC_FLAGS}
+	for FLAG in $GCC_FLAGS_VER; do
+		cc_option $FLAG && CFLAGS="$CFLAGS $FLAG"
+	done
 	PROF_GEN='-fprofile-generate'
 	PROF_USE='-fprofile-use'
 	PARM_PROF='-funroll-loops'
 fi
 
-PARM_ADDR='-m32'
-PARM_DEBUG=''
+cc_option -m32 && PARM_ADDR=' -m32' || PARM_ADDR=''
+PARM_DEBUG='-s'
 PARM_ENDIANNES='-DFREEARC_INTEL_BYTE_ORDER'
 PARM_FULL=''
 PARM_STATS=''
@@ -33,21 +41,21 @@ for P; do
 	else
 		case $P in
 		'-64')
-			PARM_ADDR='-m64 -DFREEARC_64BIT'
+			PARM_ADDR=' -m64 -DFREEARC_64BIT'
 			;;
 		'-be')
 			PARM_ENDIANNES='-DFREEARC_MOTOROLA_BYTE_ORDER'
 			;;
 		'-debug')
 			CFLAGS=''
-			PARM_DEBUG='-g -DDEBUG '
+			PARM_DEBUG='-g -DDEBUG'
 			PARM_PROF=''
 			;;
 		"-flags="*)
 			CFLAGS="$CFLAGS ${P#*=}"
 			;;
 		'-full')
-			PARM_FULL='-DFULL_COMPILE '
+			PARM_FULL=' -DFULL_COMPILE'
 			;;
 		"-maxm="*)
 			MAX_METHOD="${P#*=}"
@@ -56,7 +64,7 @@ for P; do
 			PARM_TIME='-DFREEARC_NO_TIMING'
 			;;
 		'-stats')
-			PARM_STATS='-DSTATS '
+			PARM_STATS=' -DSTATS'
 			;;
 		'-h')
 			echo "usage: $0 [OPTIONS] [FILE_FOR_PROFILING]"
@@ -80,18 +88,19 @@ for P; do
 		esac
 	fi
 done
-CFLAGS="$CFLAGS $PARM_DEBUG$PARM_FULL$PARM_STATS$PARM_ADDR $PARM_ENDIANNES $PARM_TIME -D_FILE_OFFSET_BITS=64 -DFREEARC_UNIX -otor main.cpp"
+CFLAGS="$CFLAGS$PARM_FULL$PARM_STATS$PARM_ADDR $PARM_ENDIANNES $PARM_TIME -D_FILE_OFFSET_BITS=64 -DFREEARC_UNIX -o tor main.cpp"
 
 if [ "$PARM_PROF" = "$PROF_USE" ]; then
 	echo 'compiling binary for profiling...'
 	$CC $PROF_GEN $CFLAGS || exit 1
-	for M in `seq 1 ${MAX_METHOD:-11}`; do
+	M=1
+	while [ $M -le ${MAX_METHOD:-11} ]; do
 		echo "profiling method $M..."
 		./tor -$M -q <"$TEST_FILE" >temp.tor && \
 		./tor -d -q <temp.tor | cmp "$TEST_FILE" - || exit 1
+		M=$(($M + 1))
 	done
 	rm -f temp.tor
 fi
 echo 'compiling final binary...'
-$CC $PARM_PROF $CFLAGS && \
-[ -z "$PARM_DEBUG" ] && strip -s tor
+$CC $PARM_PROF $PARM_DEBUG $CFLAGS
