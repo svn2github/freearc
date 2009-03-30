@@ -29,10 +29,15 @@ class SyncQueue
     int ObjectsInQueue()  {return (tail-head+size) % size;};
 
 public:
+    SyncQueue(): a(NULL) {};
+    void Close() { FreeAndNil(a); }
+    ~SyncQueue() { Close(); }
+
     // Set queue size - the class relies on assumption that client code
     // will never try to put excessive elements to the queue
     void SetSize (int max_elements)
     {
+        Close();
         head = tail = 0;
         size = max_elements+1;   // +1 simplifies distinguishing between full and empty queues
         a = (T*) malloc(size * sizeof(T));
@@ -95,13 +100,14 @@ struct WorkerThread
     BaseTask *task;                   // Task to which this job belongs
     Event  StartOperation;            // Signals that data are ready to be processed
     Event  OperationFinished;         // Signals that data were processed and need to be flushed
+    Event  AllFinished;               // Signals that all data were processed so we need to free all resources before exit
     char*  InBuf;                     // Buffer pointing to input (original) data
     char*  OutBuf;                    // Buffer pointing to output (processed) data
     volatile int InSize;              // Amount of data in inbuf
     volatile int OutSize;             // Amount of data in outbuf
 
     virtual int  init()        {return 0;}    // Initialize job
-    virtual int  process()     = 0;           // Perform one operation
+    virtual int  process()     {return 0;}    // Perform one operation
     virtual int  after_write() {return 0;}    // Cleanup after processed data was written
     virtual int  done()        {return 0;}    // Final cleanup
     virtual void run()                        // Thread function performing process() on each input block
@@ -117,6 +123,7 @@ struct WorkerThread
             OperationFinished.Signal();               // signal to Writer thread
         }
         done();
+        AllFinished.Signal();
     }
     virtual ~WorkerThread() {};
 };
@@ -133,7 +140,7 @@ struct MTCompressor : BaseTask
     virtual void WriterThread();      // Thread that saves compressed data to disk
     virtual void WaitJobsFinished();  // Wait until all data are written and compression resources are freed
     virtual void CreateJobs();        // Create all required threads
-    virtual ~MTCompressor() {};
+    virtual ~MTCompressor() { WriterJobs.Close(); FreeJobs.Close(); };
 };
 
 static DWORD WINAPI RunWorkerThread (void *param)  {((WorkerThread*)               param) -> run();          return 0;}
@@ -154,7 +161,9 @@ int MTCompressor<Job>::run()
         Finished.Lock();
     }
     WaitJobsFinished();
-    return errcode;  // возвратим код ошибки или 0
+    LimitThreads.Close();
+    delete [] jobs;
+    return errcode;  // return error code or 0
 }
 
 template <class Job>
@@ -178,7 +187,7 @@ void MTCompressor<Job>::WriterThread()
         // Make thread available for next compression job
         FreeJobs.Put(job);
     }
-    Finished.Signal();
+    AllFinished.Signal();
 }
 
 template <class Job>
@@ -188,6 +197,7 @@ void MTCompressor<Job>::WaitJobsFinished()
     {
         jobs[i].InSize = 0;
         jobs[i].StartOperation.Signal();
+        jobs[i].AllFinished.Lock();
     }
 }
 
