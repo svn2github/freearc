@@ -93,7 +93,12 @@ DICT_METHOD::DICT_METHOD()
 // Функция распаковки
 int DICT_METHOD::decompress (CALLBACK_FUNC *callback, void *auxdata)
 {
-  return dict_decompress (BlockSize, MinCompression, MinWeakChars, MinLargeCnt, MinMediumCnt, MinSmallCnt, MinRatio, callback, auxdata);
+  // Use faster function from DLL if possible
+  static FARPROC f = LoadFromDLL ("dict_decompress");
+  if (!f) f = (FARPROC) dict_decompress;
+
+  return ((int (*)(MemSize, int, int, int, int, int, int, CALLBACK_FUNC*, void*)) f)
+                  (BlockSize, MinCompression, MinWeakChars, MinLargeCnt, MinMediumCnt, MinSmallCnt, MinRatio, callback, auxdata);
 }
 
 #ifndef FREEARC_DECOMPRESS_ONLY
@@ -101,7 +106,12 @@ int DICT_METHOD::decompress (CALLBACK_FUNC *callback, void *auxdata)
 // Функция упаковки
 int DICT_METHOD::compress (CALLBACK_FUNC *callback, void *auxdata)
 {
-  return dict_compress (BlockSize, MinCompression, MinWeakChars, MinLargeCnt, MinMediumCnt, MinSmallCnt, MinRatio, callback, auxdata);
+  // Use faster function from DLL if possible
+  static FARPROC f = LoadFromDLL ("dict_compress");
+  if (!f) f = (FARPROC) dict_compress;
+
+  return ((int (*)(MemSize, int, int, int, int, int, int, CALLBACK_FUNC*, void*)) f)
+                  (BlockSize, MinCompression, MinWeakChars, MinLargeCnt, MinMediumCnt, MinSmallCnt, MinRatio, callback, auxdata);
 }
 
 // Записать в buf[MAX_METHOD_STRLEN] строку, описывающую метод сжатия и его параметры (функция, обратная к parse_DICT)

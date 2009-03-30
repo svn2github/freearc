@@ -186,6 +186,9 @@ MemSize compressorGetDecompressionMem (COMPRESSOR c);
 int  GetCompressionThreads (void);
 void SetCompressionThreads (int threads);
 
+// Load (accelerated) function from facompress.dll
+FARPROC LoadFromDLL (char *funcname);
+
 // Used in 4x4 only: read entire input buffer before compression begins, allocate output buffer large enough to hold entire compressed output
 extern int compress_all_at_once;
 

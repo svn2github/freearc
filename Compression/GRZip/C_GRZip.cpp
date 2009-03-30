@@ -481,7 +481,7 @@ int GRZipCompressionThread::init()                   // Alloc resources
 int GRZipCompressionThread::process()                // Perform one compression operation
 {
     int res = GRZip_CompressBlock ((uint8*)InBuf, InSize, (uint8*)OutBuf, compressor->Mode);
-    return (res == GRZ_NOT_ENOUGH_MEMORY? FREEARC_ERRCODE_NOT_ENOUGH_MEMORY : 
+    return (res == GRZ_NOT_ENOUGH_MEMORY? FREEARC_ERRCODE_NOT_ENOUGH_MEMORY :
             res <  0?                     FREEARC_ERRCODE_GENERAL :
                                           res);
 }
@@ -493,6 +493,31 @@ int GRZipCompressionThread::done()                   // Free resources
     return 0;
 }
 
+
+int grzip_compress (int Method,
+                    int BlockSize,
+                    int EnableLZP,
+                    int MinMatchLen,
+                    int HashSizeLog,
+                    int AlternativeBWTSort,
+                    int AdaptiveBlockSize,
+                    int DeltaFilter,
+                    CALLBACK_FUNC *callback,
+                    void *auxdata)
+{
+  GRZipMTCompressor grz (Method,
+                         BlockSize,
+                         EnableLZP,
+                         MinMatchLen,
+                         HashSizeLog,
+                         AlternativeBWTSort,
+                         AdaptiveBlockSize,
+                         DeltaFilter,
+                         callback,
+                         auxdata);
+  return grz.run();
+}
+
 #endif  // !defined (FREEARC_DECOMPRESS_ONLY)
 
 
@@ -502,7 +527,7 @@ struct GRZipDecompressionThread : WorkerThread
     int process()
     {
         int res = GRZip_DecompressBlock ((uint8*)InBuf, InSize+28, (uint8*)OutBuf);
-        return (res == GRZ_NOT_ENOUGH_MEMORY? FREEARC_ERRCODE_NOT_ENOUGH_MEMORY : 
+        return (res == GRZ_NOT_ENOUGH_MEMORY? FREEARC_ERRCODE_NOT_ENOUGH_MEMORY :
                 res <  0?                     FREEARC_ERRCODE_GENERAL :
                                               res);
     }
@@ -548,6 +573,13 @@ struct GRZipMTDecompressor : MTCompressor<GRZipDecompressionThread>
 };
 
 
+int grzip_decompress (CALLBACK_FUNC *callback, void *auxdata)
+{
+  GRZipMTDecompressor grz (callback, auxdata);
+  return grz.run();
+}
+
+
 /*-------------------------------------------------*/
 /* Реализация класса GRZIP_METHOD                  */
 /*-------------------------------------------------*/
@@ -567,8 +599,11 @@ GRZIP_METHOD::GRZIP_METHOD()
 // Функция распаковки
 int GRZIP_METHOD::decompress (CALLBACK_FUNC *callback, void *auxdata)
 {
-  GRZipMTDecompressor grz (callback, auxdata);
-  return grz.run();
+  // Use faster function from DLL if possible
+  static FARPROC f = LoadFromDLL ("grzip_decompress");
+  if (!f) f = (FARPROC) grzip_decompress;
+
+  return ((int (*)(CALLBACK_FUNC*, void*)) f) (callback, auxdata);
 }
 
 #ifndef FREEARC_DECOMPRESS_ONLY
@@ -576,7 +611,12 @@ int GRZIP_METHOD::decompress (CALLBACK_FUNC *callback, void *auxdata)
 // Функция упаковки
 int GRZIP_METHOD::compress (CALLBACK_FUNC *callback, void *auxdata)
 {
-  GRZipMTCompressor grz (Method,
+  // Use faster function from DLL if possible
+  static FARPROC f = LoadFromDLL ("grzip_compress");
+  if (!f) f = (FARPROC) grzip_compress;
+
+  return ((int (*)(int, int, int, int, int, int, int, int, CALLBACK_FUNC*, void*)) f)
+                        (Method,
                          BlockSize,
                          EnableLZP,
                          MinMatchLen,
@@ -586,7 +626,6 @@ int GRZIP_METHOD::compress (CALLBACK_FUNC *callback, void *auxdata)
                          DeltaFilter,
                          callback,
                          auxdata);
-  return grz.run();
 }
 
 // Установить размер блока и уменьшить размер хэша, если он слишком велик для такого маленького блока

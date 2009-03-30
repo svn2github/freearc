@@ -100,7 +100,7 @@ struct WorkerThread
     BaseTask *task;                   // Task to which this job belongs
     Event  StartOperation;            // Signals that data are ready to be processed
     Event  OperationFinished;         // Signals that data were processed and need to be flushed
-    Event  AllFinished;               // Signals that all data were processed so we need to free all resources before exit
+    Event  Finished;                  // Signals that all compressed data was written
     char*  InBuf;                     // Buffer pointing to input (original) data
     char*  OutBuf;                    // Buffer pointing to output (processed) data
     volatile int InSize;              // Amount of data in inbuf
@@ -123,7 +123,7 @@ struct WorkerThread
             OperationFinished.Signal();               // signal to Writer thread
         }
         done();
-        AllFinished.Signal();
+        Finished.Signal();
     }
     virtual ~WorkerThread() {};
 };
@@ -187,7 +187,7 @@ void MTCompressor<Job>::WriterThread()
         // Make thread available for next compression job
         FreeJobs.Put(job);
     }
-    AllFinished.Signal();
+    Finished.Signal();
 }
 
 template <class Job>
@@ -197,7 +197,7 @@ void MTCompressor<Job>::WaitJobsFinished()
     {
         jobs[i].InSize = 0;
         jobs[i].StartOperation.Signal();
-        jobs[i].AllFinished.Lock();
+        jobs[i].Finished.Lock();
     }
 }
 

@@ -197,6 +197,8 @@ typedef char  TCHAR;
 #define _tstat          stat
 #define _stat           stat
 
+typedef int (*FARPROC) (void);
+
 static inline void delete_file (char *name)     {remove(name);}
 static inline void create_dir  (char *name)     {mkdir(name,0777);}
 static inline int  file_exists (char *name)     {return access(name,0) == 0;}

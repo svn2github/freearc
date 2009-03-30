@@ -83,7 +83,7 @@ STDMETHODIMP CallbackInStream::Read(void *data, UInt32 size, UInt32 *processedSi
 {
   if(processedSize != NULL)
     *processedSize = 0;
-  ssize_t res;
+  SSIZE_T res;
   if (compress_all_at_once) {
     // Read whole buffer at the first call
     res  =  first_read? callback ("read", data, (size_t) size, auxdata)
@@ -131,7 +131,7 @@ STDMETHODIMP CallbackOutStream::Write(const void *data, UInt32 size, UInt32 *pro
 {
   if(processedSize != NULL)
     *processedSize = 0;
-  ssize_t res = callback ("write", (void*)data, (size_t)size, auxdata);
+  SSIZE_T res = callback ("write", (void*)data, (size_t)size, auxdata);
   if (res < 0) {
     errcode = res;
     return E_FAIL;
@@ -275,7 +275,12 @@ LZMA_METHOD::LZMA_METHOD()
 // Функция распаковки
 int LZMA_METHOD::decompress (CALLBACK_FUNC *callback, void *auxdata)
 {
-  return lzma_decompress (dictionarySize,
+  // Use faster function from DLL if possible
+  static FARPROC f = LoadFromDLL ("lzma_decompress");
+  if (!f) f = (FARPROC) lzma_decompress;
+
+  return ((int (*)(int, int, int, int, int, int, int, int, int, CALLBACK_FUNC*, void*)) f)
+                         (dictionarySize,
                           hashSize,
                           algorithm,
                           numFastBytes,
@@ -293,13 +298,18 @@ int LZMA_METHOD::decompress (CALLBACK_FUNC *callback, void *auxdata)
 // Функция упаковки
 int LZMA_METHOD::compress (CALLBACK_FUNC *callback, void *auxdata)
 {
+  // Use faster function from DLL if possible
+  static FARPROC f = LoadFromDLL ("lzma_compress");
+  if (!f) f = (FARPROC) lzma_compress;
+
   SetDictionary (dictionarySize);   // Ограничим размер словаря чтобы сжатие влезало в 4гб памяти :)
   // Если LZMA будет использовать multithreading matchfinder,
   // то нет смысла считать время работы по основному треду - вместо этого
   // следует использовать wall clock time всего процесса упаковки
   if ((algorithm || matchFinder!=kHC4) && GetCompressionThreads()>1)
       addtime = -1;   // это сигнал на использование wall clock time
-  return lzma_compress   (dictionarySize,
+  return ((int (*)(int, int, int, int, int, int, int, int, int, CALLBACK_FUNC*, void*)) f)
+                         (dictionarySize,
                           hashSize,
                           algorithm,
                           numFastBytes,

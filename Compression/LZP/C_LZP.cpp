@@ -214,7 +214,12 @@ LZP_METHOD::LZP_METHOD()
 // Функция распаковки
 int LZP_METHOD::decompress (CALLBACK_FUNC *callback, void *auxdata)
 {
-  return lzp_decompress (BlockSize, MinCompression, MinMatchLen, HashSizeLog, Barrier, SmallestLen, callback, auxdata);
+  // Use faster function from DLL if possible
+  static FARPROC f = LoadFromDLL ("lzp_decompress");
+  if (!f) f = (FARPROC) lzp_decompress;
+
+  return ((int (*)(MemSize, int, int, int, int, int, CALLBACK_FUNC*, void*)) f)
+            (BlockSize, MinCompression, MinMatchLen, HashSizeLog, Barrier, SmallestLen, callback, auxdata);
 }
 
 #ifndef FREEARC_DECOMPRESS_ONLY
@@ -222,7 +227,12 @@ int LZP_METHOD::decompress (CALLBACK_FUNC *callback, void *auxdata)
 // Функция упаковки
 int LZP_METHOD::compress (CALLBACK_FUNC *callback, void *auxdata)
 {
-  return lzp_compress   (BlockSize, MinCompression, MinMatchLen, HashSizeLog, Barrier, SmallestLen, callback, auxdata);
+  // Use faster function from DLL if possible
+  static FARPROC f = LoadFromDLL ("lzp_compress");
+  if (!f) f = (FARPROC) lzp_compress;
+
+  return ((int (*)(MemSize, int, int, int, int, int, CALLBACK_FUNC*, void*)) f)
+            (BlockSize, MinCompression, MinMatchLen, HashSizeLog, Barrier, SmallestLen, callback, auxdata);
 }
 
 // Установить размер блока и уменьшить размер хэша, если он слишком велик для такого маленького блока

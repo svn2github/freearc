@@ -434,7 +434,44 @@ MemSize compressorGetDecompressionMem (COMPRESSOR c)
 // Get/set number of threads used for (de)compression. 0 means "autodetect"
 static int CompressionThreads;
 int  GetCompressionThreads (void)         {return CompressionThreads;}
-void SetCompressionThreads (int threads)  {CompressionThreads = threads==0? 2 : threads;}
+void SetCompressionThreads (int threads)
+{
+  CompressionThreads = threads==0? 2 : threads;
+#ifndef FREEARC_DLL
+  static FARPROC f = LoadFromDLL ("SetCompressionThreads");
+  if (f)  ((void (*)(int)) f) (threads);
+#endif
+}
+
+
+// Load accelerated function from facompress.dll
+FARPROC LoadFromDLL (char *funcname)
+{
+#ifdef FREEARC_WIN  // Non-Windows platforms aren't yet supported
+  static HMODULE dll = NULL;
+  static bool loaded = FALSE;
+
+  if (!loaded)
+  {
+    loaded = TRUE;
+
+    // Get program's executable filename
+    TCHAR path[MY_FILENAME_MAX];
+    GetModuleFileNameW(NULL, path, MY_FILENAME_MAX);
+
+    // Replace basename part with "facompress.dll"
+    TCHAR *basename = _tcsrchr(path,_T('\\'))+1;
+    _tcscpy(basename, _T("facompress.dll"));
+
+    // Load DLL
+    dll = LoadLibraryW(path);
+  }
+
+  return GetProcAddress (dll, funcname);
+#else
+  return NULL;
+#endif
+}
 
 
 // ****************************************************************************************************************************

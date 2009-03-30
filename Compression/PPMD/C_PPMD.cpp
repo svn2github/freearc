@@ -99,7 +99,11 @@ PPMD_METHOD::PPMD_METHOD()
 // Функция распаковки
 int PPMD_METHOD::decompress (CALLBACK_FUNC *callback, void *auxdata)
 {
-  return ppmd_decompress (order, mem, MRMethod, callback, auxdata);
+  // Use faster function from DLL if possible
+  static FARPROC f = LoadFromDLL ("ppmd_decompress");
+  if (!f) f = (FARPROC) ppmd_decompress;
+
+  return ((int (*)(int, MemSize, int, CALLBACK_FUNC*, void*)) f) (order, mem, MRMethod, callback, auxdata);
 }
 
 #ifndef FREEARC_DECOMPRESS_ONLY
@@ -107,7 +111,11 @@ int PPMD_METHOD::decompress (CALLBACK_FUNC *callback, void *auxdata)
 // Функция упаковки
 int PPMD_METHOD::compress (CALLBACK_FUNC *callback, void *auxdata)
 {
-  return ppmd_compress   (order, mem, MRMethod, callback, auxdata);
+  // Use faster function from DLL if possible
+  static FARPROC f = LoadFromDLL ("ppmd_compress");
+  if (!f) f = (FARPROC) ppmd_compress;
+
+  return ((int (*)(int, MemSize, int, CALLBACK_FUNC*, void*)) f) (order, mem, MRMethod, callback, auxdata);
 }
 
 // Записать в buf[MAX_METHOD_STRLEN] строку, описывающую метод сжатия и его параметры (функция, обратная к parse_PPMD)
@@ -122,7 +130,7 @@ void PPMD_METHOD::ShowCompressionMethod (char *buf)
 void PPMD_METHOD::SetCompressionMem (MemSize _mem)
 {
   if (_mem==0)  return;
-  order  +=  int (trunc (log(double(_mem)/mem) / log(2) * 4));
+  order  +=  int (log(double(_mem)/mem) / log(double(2)) * 4);
   mem = _mem;
 }
 

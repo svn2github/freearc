@@ -1,0 +1,36 @@
+include ../common.mak
+
+DLL  = facompress.dll
+DEF  = facompress.def
+OBJS = Common.obj CompressionLibrary.obj C_LZMA.obj C_PPMD.obj C_GRZip.obj C_LZP.obj C_Dict.obj
+CC   = icl
+
+CODE_FLAGS  = -EHsc
+OPT_FLAGS   = -O2 -Gy -GR-
+DEBUG_FLAGS =
+CFLAGS      = -c -DFREEARC_DLL $(CODE_FLAGS) $(OPT_FLAGS) $(DEBUG_FLAGS) $(DEFINES)
+
+$(DLL): $(DEF) $(OBJS)
+	cmd /c link -DLL -DEF:$(DEF) -out:$(DLL) $(OBJS) user32.lib oleaut32.lib
+
+Common.obj: Common.cpp Common.h Compression.h makefile
+	$(CC) $(CFLAGS) $(CFLAGS) $<
+
+CompressionLibrary.obj: CompressionLibrary.cpp Common.h Compression.h makefile
+	$(CC) $(CFLAGS) $(CFLAGS) $<
+
+C_LZMA.obj: LZMA\C_LZMA.cpp
+	$(CC) $(CFLAGS) $<
+
+C_PPMD.obj: PPMD\C_PPMD.cpp
+	$(CC) $(CFLAGS) $<
+
+C_GRZip.obj: GRZip\C_GRZip.cpp
+	$(CC) $(CFLAGS) $<
+
+C_LZP.obj: LZP\C_LZP.cpp
+	$(CC) $(CFLAGS) $<
+
+C_Dict.obj: Dict\C_Dict.cpp
+	$(CC) $(CFLAGS) $<
+

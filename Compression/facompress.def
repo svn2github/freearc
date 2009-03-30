@@ -1,0 +1,12 @@
+EXPORTS
+  SetCompressionThreads
+  lzma_compress
+  lzma_decompress
+  ppmd_compress
+  ppmd_decompress
+  grzip_compress
+  grzip_decompress
+  lzp_compress
+  lzp_decompress
+  dict_compress
+  dict_decompress

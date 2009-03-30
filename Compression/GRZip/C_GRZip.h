@@ -12,15 +12,7 @@ int grzip_compress   (int Method,
                       CALLBACK_FUNC *callback,
                       void *auxdata);
 
-int grzip_decompress (int Method,
-                      int BlockSize,
-                      int EnableLZP,
-                      int MinMatchLen,
-                      int HashSizeLog,
-                      int AlternativeBWTSort,
-                      int AdaptiveBlockSize,
-                      int DeltaFilter,
-                      CALLBACK_FUNC *callback,
+int grzip_decompress (CALLBACK_FUNC *callback,
                       void *auxdata);
 
 
