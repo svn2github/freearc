@@ -18,42 +18,97 @@ Language name in english and mother tongue
 0000 Language=French (Français)
 0159 Copyright=Translated by Arkanosis (Jérémie Roquet)
 
+Language-specific URLs relative to http://freearc.org/ and helpfiles
+Filled only for languages providing their own translations
+0254 Homepage=??
+0255 News page=??
+0371 Forum page=??
+0372 Wiki page=??
+0256 Helpfile=??
+0257 Command-line help=??
+
+
 === Menu ========================================================================
 Main menu
 0050 File=&Fichier
 0066 Edit=&Edition
+0258 Commands=A&ctions
+0259 Tools=&Outils
+0260 Options=O&ptions
+0261 Help=&Aide
 
-File menu/toolbar 
-0030 Add=Ajouter
-0040 Add files to archive(s)=Ajouter les objets sélectionnés à l'archive
-0031 Modify=Modifier
-0041 Modify archive(s)=Modifier les archives
-0032 Join=Fusionner
-0042 Join archives together=Fusionner les archives
-0033 Delete=S&upprimer
-0043 Delete files (from archive)=Supprimer les fichiers de l'archive
-0034 Test=Tester
-0044 Test files in archive(s)=Contrôler l'intégrité de l'archive sélectionnée
-0035 Extract=Extraire
-0045 Extract files from archive(s)=Extraire les fichiers de l'archive sélectionnée
-0064 Settings=Options
-0065 Edit program settings=Modifier les paramètres du programme
-0036 Exit=&Quitter
-0046 Quit application=Quitter le programme
-
-Edit menu/toolbar 
+File menu/toolbar
+0262 Open archive=Ouvrir
+0265 Open archive=Ouvrir
+0263 Select all=Sélectionner &tout
+0290 Select all files=Sélectionner tout les &fichiers
 0037 Select=Sélectionner
 0047 Select files=Sélectionner les fichiers
 0038 Unselect=Désélectionner
 0048 Unselect files=Désélectionner les fichiers
+0264 Invert selection=&Inverser la sélection
+0291 Invert selection=&Inverser la sélection
 0039 Refresh=Actualis&er
 0049 Reread archive/directory=Recharger l'archive/le dossier
+0036 Exit=&Quitter
+0046 Quit application=Quitter le programme
+
+Commands menu/toolbar
+0030 Add=Ajouter
+0040 Add files to archive(s)=Ajouter les objets sélectionnés à l'archive
+0031 Modify=Modifier
+0041 Modify archive(s)=Modifier les archives
+0035 Extract=Extraire
+0045 Extract files from archive(s)=Extraire les fichiers de l'archive sélectionnée
+0034 Test=Tester
+0044 Test files in archive(s)=Contrôler l'intégrité de l'archive sélectionnée
 0086 ArcInfo=Informations
 0087 Information about archive=Informations sur l'archive
+0033 Delete=S&upprimer
+0043 Delete files (from archive)=Supprimer les fichiers de l'archive
+
+Tools menu/toolbar
+0266 Lock=Verrouiller
+0267 Lock archive from further changes=Verrouiller l'archive contre des modifications ultérieures
+0268 Comment=Commentaire
+0269 Edit archive comment=Éditer le commentaire de l'archive
+0293 Recompress=Recompresser
+0294 Recompress files in archive=Recompresser les fichiers de l'archive
+0270 Convert to SFX=Convertir en archive auto-extractible
+0271 Convert archive to SFX=Rendre l'archive auto-extractible
+0272 Encrypt=Chiffrement
+0273 Encrypt archive contents=Chiffrer le contenu de l'archive
+0274 Protect=Protéger
+0275 Add Recovery record to archive=Ajouter des informations de récupération à l'archive
+0032 Join=Fusionner
+0042 Join archives together=Fusionner les archives
+
+Options menu/toolbar
+0064 Settings=Options
+0065 Edit program settings=Modifier les paramètres du programme
+0276 View log=Visionner les évènements
+0277 View logfile=Visionner le journal des évènements
+0278 Clear log=Supprimer l'évènement
+0279 Clear logfile=Vider le journal des évènements
+
+Help menu/toolbar
+0280 Main help=Aide générale
+0281 Help on using FreeArc=Aide sur l'utilisation de FreeArc
+0282 Cmdline help=Aide sur la ligne de commande
+0283 Help on FreeArc command line=Aide sur la ligne de commande de FreeArc
+0284 Open Homepage=Visiter la page d'accueil
+0285 Open program site=Visiter le site du programme
+0373 Open forum=Visiter le forum
+0374 Open program forum=Visiter le forum du programme
+0375 Open wiki=Visiter le wiki
+0376 Open program wiki=Visiter le wiki du programme
+0286 Check for update=Vérifier l'existence de mise à jour
+0287 Check for new program versions=Vérifier l'existence de nouvelle version du programme
+0288 About=À propos
+0289 About=À propos
 
 
 === File manager ==================================================================
-
 Navibar
 0006 Up=Parent
 0007 Save=Enregistrer
@@ -76,10 +131,18 @@ Messages
 0071 %1: no such file or directory!=Il n'existe pas de fichier ou de dossier nommé %1
 0133 You can't compress files directly from archive!=Vous ne pouvez compresser des fichiers directement depuis l'archive !
 0145 You can't join archives directly from archive!=Vous ne pouvez fusionner des fichiers directement depuis l'archive !
-0251 Abort operation?=??
+0251 Abort operation?=Annuler l'opération ?
 
 
 === Dialogs =======================================================================
+Archive open dialog
+0305 Open archive=Ouvrir l'archive
+0306 This file isn't a FreeArc archive!=Ce fichier n'est pas une archive FreeArc
+0307 FreeArc archives (*.arc)=Archives FreeArc (*.arc)
+0308 Archives and SFXes (*.arc;*.exe)=Archives et auto-extractibles (*.arc;*.exe)
+0309 All files (*)=Tous les fichiers (*)
+
+
 Add dialog
 --Title
 0134 Add %1 to archive=Ajouter %1 à l'archive.
@@ -196,7 +259,7 @@ Archive information dialog
 --
 0104 Directory blocks:=Blocs :
 0092 Solid blocks:=Blocs solides :
-0093 Avg. size:=Taille moyenne :
+0093 Avg. blocksize:=Taille moyenne :
 --
 0099 Compression memory:=Mémoire pour la compression :
 0100 Decompression memory:=Mémoire pour la décompression :
@@ -217,13 +280,26 @@ Settings dialog
 0068 Language:=Langue :
 0069 Edit=&Editer
 0070 Import=Importer
-0168 You should restart FreeArc in order for a language settings to take effect.=Vous devez redémarrer FreeArc pour que le changement de langue soit pris en compte.
-0169 Passwords need to be entered again after restart.=Les mots de passe doivent être saisis à nouveau après un redémarrage.
 0170 Full name:=Nom complet :
 0171 Copyright:=Copyright :
 0166 Logfile:=Fichier d'historique :
+0292 View=&Voir
 0167 Select logfile=Sélectionner le fichier d'historique
 0172 Associate FreeArc with .arc files=Associer les fichiers d'extension .arc avec FreeArc
+0361 Add captions to toolbar buttons=Ajouter une description aux boutons de la barre d'outils
+0370 Watch for new versions via Internet=Surveiller l'arrivée de nouvelles versions sur Internet
+0168 You should restart FreeArc in order for a language settings to take effect.=Vous devez redémarrer FreeArc pour que le changement de langue soit pris en compte.
+0169 Passwords need to be entered again after restart.=Les mots de passe doivent être saisis à nouveau après un redémarrage.
+
+Logfiles
+0303 No log file specified in Settings dialog!=Aucun journal d'évènements spécifié dans les paramètres !
+0304 Clear logfile %1?=Vider le journal d'évènements %1 ?
+
+Checking for updates
+0295 Checking for updates...=Recherche de mises à jour...
+0296 Cannot open %1. Do you want to check the page with browser?=Impossible d'ouvrir %1. Voulez-vous vérifier la page avec votre navigateur ?
+0297 Nothing new at %1=Rien de nouveau sur %1
+0298 Found new information at %1! Open the page with browser?=Nouveautés trouvées sur %1! Ouvrir la page avec votre navigateur ?
 
 
 === Profile settings ============================================================
@@ -269,17 +345,26 @@ Settings dialog
 
 
 === Execution dialogs ============================================================
+Many dialogs
+0079 &Yes=&Oui
+0080 &No=&Non
+0362 &OK=OK
+0081 &Cancel=&Annuler
+0363 &Select=&Sélectionner
+0364 &Close=&Fermer
+
 Progress indicator
 --Buttons
-0052 Background=&Tâche d'arrière plan
-0053 Pause=&Pause
-0054 Continue=&Continuer
-0055 Cancel=&Annuler
+0052 &Background=&Tâche d'arrière plan
+0053 &Pause=&Pause
+0054 &Continue=&Continuer
 --Labels
 0056 Files=Fichiers :
 0057 Total files=Fichiers :
 0058 Bytes=Taille :
 0059 Total bytes=Taille globale :
+0252 Compressed=Taille compressée :
+0253 Total compressed=Total compressé :
 0060 Ratio=Ratio :
 0061 Speed=Vitesse :
 0062 Time=Temps écoulé :
@@ -297,9 +382,6 @@ File overwrite dialog
 0163 Would you like to replace the existing file=Voulez-vous remplacer le fichier existant
 0164 with this one?=par celui-ci ?
 0165 %1\n%2 bytes\nmodified on %3=%1\n%2 octets\nmodifié le %3
-0079 &Yes=&Oui
-0080 &No=&Non
-0081 &Cancel=&Annuler
 0082 Yes to &All=O&ui pour tous
 0083 No to A&ll=Non &pour tous
 0084 &Update all=Actualiser &tout
@@ -338,6 +420,70 @@ Archive comment dialog
 0243 Adding to %1=Ajout vers %1
 0244 FILES SUCCESFULLY ADDED TO %1=FICHIERS AJOUTÉS AVEC SUCCÈS À %1
 0245 %2 WARNINGS WHILE ADDING TO %1=%2 AVERTISSEMENTS LORS DE L'AJOUT À %1
+
+0299 Lock archive(s)?=Verrouiller l'(les) archive(s) ?
+0300 Locking archive %1=Verrouillage de l'archive %1
+0301 SUCCESFULLY LOCKED ARCHIVE %1=ARCHIVE %1 VERROUILLÉE AVEC SUCCÈS
+0302 %2 WARNINGS WHILE LOCKING ARCHIVE %1=%2 AVERTISSEMENTS LORS DU VERROUILLAGE DE L'ARCHIVE %1
+
+
+=== Error messages =======================================================
+0316 ERROR: %1=ERREUR : %1
+0317 WARNING: %1=AVERTISSEMENT : %1
+0310 can't modify archive locked with -k=Impossible de modifier une archive verrouillée avec -k
+0311 can't create temporary file=Impossible de créer un fichier temporaire
+0312 output archive already exists, keeping temporary file %1=L'archive de sortie existe déjà, le fichier temporaire %1 est conservé
+0313 archive broken, keeping temporary file %1=L'archive est corrompue, le fichier temporaire %1 est conservé
+0314 archive broken, deleting=L'archive est corrompue, suppression
+0315 can't open SFX module %1=Impossible d'ouvrir le module pour les archives auto-extractibles
+0318 command syntax is "%1"=La syntaxe de la commande est "%1"
+0319 options %1 and %2 can't be used together=Les options %1 et %2 ne peuvent pas être utilisées conjointement
+0320 unknown command "%1". Supported commands are: %2=La commande "%1" est inconnue. Les commandes supportées sont : %2
+0321 unknown option "%1"=L'option "%1" est inconnue
+0322 ambiguous option "%1" - is that %2?=L'option "%1" est ambiguë - s'agit-il de %2 ?
+0325 option "%1" have illegal format=L'option "%1" a un format invalide
+0326 %1 option must be one of: %2=L'option %1 doit être parmi %2
+0327 no command name in command: %1=Il manque la commande dans la commande "%1"
+0328 no archive name in command: %1=Il manque le nom de l'archive dans la commande "%1"
+0329 no filenames in command: %1=Il manque le nom du fichier dans la commande "%1"
+0330 can't read directory "%1"=Impossible de lire le répertoire "%1"
+0331 can't get info about file "%1"=Impossible d'obtenir des informations sur le fichier "%1"
+0332 can't open file "%1"=Impossible d'ouvrir le fichier "%1"
+0333 CRC error in file "%1"=Erreur de contrôle de redondance cyclique dans le fichier "%1"
+0334 bad section %1 in %2=Section %1 corrompue dans %2
+0335 operation terminated!=Opération avortée !
+0336 program terminated!=Programme terminé !
+0337 no files, erasing empty archive=Aucun fichier, suppression de l'archive vide
+0338 skipped %1 fake files=%1 faux fichiers ignoré
+0339 bad password for archive %1=Mauvais mot de passe pour l'archive %1
+0340 bad password for %1 in archive %2=Mauvais mot de passe pour %1 dans l'archive %2
+0341 archive %1 corrupt: %2. Please recover it using 'r' command or use -tp- option to ignore Recovery Record=L'archive %1 est corrompue : %2. Vous pouvez la réparer en utilisant la commande "r" ou en utilisant l'option -tp- pour ignorer la réparation.
+0342 SFX module %1 is not found=Le module pour les archives auto-extractibles %1 est introuvable
+0343 %1 isn't implemented=%1 n'est pas implémenté
+0344 only first of %1 recovery records can be processed by this program version. Please use newer versions to process the rest=Seul le premier des %1 sauvegardes de réparation peut être traité par cette version du programme. Veuillez utiliser une version plus récente pour traiter les autres
+0345 you need FreeArc %1 or above to process this recovery info=FreeArc %1 ou supérieur est nécessaire pour traiter ces informations de réparation.
+0346 file %1 already exists=Le fichier %1 existe déjà
+0347 archive can't be recovered - recovery data absent or corrupt=L'archive ne peut pas être réparée - les informations de réparation sont absentes ou corrompues
+0348 %1 unrecoverable errors (%2) found, can't restore anything!=%1 erreurs non récupérables (%2) ont été détectées, impossible de restaurer quoi que ce soit
+0349 can't open original at %1=Impossible d'ouvrir l'original à l'adresse %1
+0350 %1 has size %2 so it can't be used to recover %3 having size %4=La taille de %1 est %2, il est donc impossible de l'utiliser pour réparer %3 dont la taille est %4
+0351 %1 errors (%2) remain unrecovered=%1 erreurs (%2) n'ont pas été corrigées
+0352 found %1 errors (%2)=%1 erreurs (%2) ont été détectées
+0353 there were %1 warnings due archive testing=Il y a eu %1 avertissements au cours de la vérification de l'archive
+0354 block descriptor at pos %1 is corrupted=Le descripteur de bloc à la position %1 est corrompu
+0355 %1 is corrupted=%1 est corrompu
+0359 %1 failed decompression=La décompression de %1 a échoué
+0360 %1 should be uncompressed=%1 devrait être décompressé
+0356 archive directory not found=Signature de l'archive introuvable
+0357 archive signature not found at the end of archive=Signature de l'archive introuvable à la fin de celle-ci
+0358 last block of archive is not footer block=Le dernier bloc de l'archive n'est pas un bloc de fin
+
+Errors returned by compression methods
+0365 general (de)compression error=Erreur de (dé)compression
+0366 invalid compression method or parameters=Méthode ou paramètres de compression invalide(s)
+0367 can't allocate memory required for (de)compression=Impossible d'allouer la mémoire nécessaire pour la (dé)compression
+0368 I/O error in compression algorithm=Erreur d'entrées-sorties dans l'algorithme de compression
+0369 bad compressed data=Données mal compressées
 
 
 === Standard profiles ====================================================
@@ -404,44 +550,43 @@ Exclude
 
 Add dialog
 --
-1183 Compression=??
-1184 Encryption=??
+1183 Compression=Compression
+1184 Encryption=Chiffrement
 1185 Protection:=Ajoute des informations à l'archive (représentant par défaut 1% de la taille de l'archive), qui permettent de restaurer son contenu en cas de corruption du support de stockage ou d'erreurs de transmission.
-1186 Comment=??
-1227 Make EXE:=??
-1128 Test archive after operation=??
-1122 Delete files successfully archived=??
-1187 Finalize archive=??
-1072 Additional options:=??
+1186 Comment=Commentaire
+1227 Make EXE:=Produire un exécutable
+1128 Test archive after operation=Tester l'archive après l'opération
+1122 Delete files successfully archived=Supprimer les fichier archivés avec succès
+1187 Finalize archive=Finaliser l'archive
+1072 Additional options:=Paramètres additionnels
 --
-1201 Compress each file into separate archive=??
-1202 Add to archive name=??
+1201 Compress each marked file/directory into separate archive=Compresser chaque fichier sélectionné dans une archive séparée
+1202 Add to archive name=Ajouter au nom de l'archive
 --
-1207 Delete previous archive contents=??
-1208 Order of files in archive=??
+1207 Delete previous archive contents=Supprimer le contenu précédent de l'archive
+1208 Order of files in archive=Ordre des fichiers dans l'archive
 --
-1222 Include only files=??
-1223 Exclude files=??
+1222 Include only files=Inclure uniquement les fichiers
+1223 Exclude files=Exclure les fichiers
 
 --Compression settings
 1113 Fast, low-memory decompression=Désactive l'utilisation d'algorithmes présentant une décompression lente ou coûteuse en termes de mémoire. La contrepartie est que cette option rend la compression plus lente et moins efficace.
 1176 Filetype auto-detection=Lorsque cette option est activée, FreeArc analyse le contenu de chaque fichier et choisit pour chacun l'algorithme de compression optimal. Lorsqu'elle est désactivée, les algorithmes sont choisis selon le fichier arc.groups.
-1138 Bytes, no more than:=??
-1139 Files, no more than:=??
-1140 Split by extension=??
+1138 Bytes, no more than:=Octets, pas plus que :
+1139 Files, no more than:=Fichiers, pas plus que :
+1140 Split by extension=Découper par extension
 
 --Encryption settings
 1120 Encrypt archive directory=Chiffre les méta-données de l'archive (noms de fichiers, tailles, hashs CRC des fichiers dans l'archive) de sorte qu'il faille saisir le mot de passe ou un fichier de clefs même pour ouvrir une archive. Cette option est vivement recommandée pour garantir la confidentialité des données.
 1123 Keyfile:=Un fichier de clefs est simplement un mot de passe supplémentaire stocké dans un fichier, qui sera requis pour ouvrir l'archive. Il est vivement recommandé d'utiliser un fichier de clefs pour exploiter pleinement les possibilités de sécurité offertes par AES et les autres algorithmes.
 1125 Generate new keyfile=Crée un nouveau fichier de clefs contenant 1 kio de données aléatoires pour le chiffrement.
-1181 Use password=??
+1181 Use password=Utiliser un mot de passe
 
 
 === Everything else ====================================================
 Common words
-0101 Yes=&Oui
-0102 No=&Non
-0103 May be=Peut-être
+0323 or=ou
+0324 and=et
 
 Failure messages
 0010 Operation interrupted!=Opération interrompue !
