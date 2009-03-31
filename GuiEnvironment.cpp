@@ -29,7 +29,7 @@ int BrowseForFolder(TCHAR *prompt, TCHAR *in_filename, TCHAR *out_filename)
   bi.lpfn = BrowseCallbackProc;
   bi.pidlRoot = NULL;
   bi.pszDisplayName = out_filename;
-  bi.ulFlags = BIF_RETURNONLYFSDIRS;
+  bi.ulFlags = BIF_RETURNONLYFSDIRS | BIF_USENEWUI;
 
   LPITEMIDLIST pItemIdList = SHBrowseForFolder(&bi);
 
