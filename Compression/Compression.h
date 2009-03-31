@@ -143,6 +143,7 @@ typedef int CALLBACK_FUNC (const char *what, void *data, int size, void *auxdata
 
 
 // Buffered data output
+#ifndef FREEARC_STANDALONE_TORNADO
 #define FOPEN()   Buffer fbuffer(BUFFER_SIZE)
 #define FWRITE(buf, size)                                                  \
 {                                                                          \
@@ -162,6 +163,7 @@ typedef int CALLBACK_FUNC (const char *what, void *data, int size, void *auxdata
 }
 #define FFLUSH()  { WRITE (fbuffer.buf, fbuffer.len());  fbuffer.empty(); }
 #define FCLOSE()  { FFLUSH();  fbuffer.free(); }
+#endif // !FREEARC_STANDALONE_TORNADO
 
 
 // ****************************************************************************************************************************
