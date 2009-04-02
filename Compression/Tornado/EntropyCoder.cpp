@@ -491,10 +491,12 @@ struct HuffmanDecoder : InputBitStream
     UINT decode()
     {
         UINT x;
-    again:
-        x = huf.Decode (needbits (huf.maxbits));
-        dumpbits (huf.bits[x]);
-        if (x==EOB)  {huf.build_tree (getbits(3)); goto again;}    // Rebuild huffman tree on EOB code
+        while (1) {
+            x = huf.Decode (needbits (huf.maxbits));
+            dumpbits (huf.bits[x]);
+            if (x != EOB) break;
+            huf.build_tree (getbits(3));  // Rebuild huffman tree on EOB code
+        }
         huf.Inc (x);
         return x;
     }
