@@ -316,13 +316,14 @@
     filetype detection: check for MM on large files
     Priorityio.doc
   bugs
-    update GUI docs
+    Попытка зайти внутрь зашифрованного архива - виснем
+    testing archive with recovery record ("undefined UI::ref_ui_state" sometimes)
     "user error" при ошибках в консольной версии
     lzma:max - mc16????
     -max - exe+rep вместо rep+exe
     -m9x $bmp mm+delta+...
     tor:5 -> delta+tor:5:t0 ?  видимо, имеет смысл только на быстрых машинах
-    Попытка зайти внутрь зашифрованного архива - виснем
+    update GUI docs
     sfx - поддержка и автоматическое использование метода tempfile
     dict bug: arc a aa cls.zip -mprecomp+6pt -t
       bcj+dict creates corrupted archives

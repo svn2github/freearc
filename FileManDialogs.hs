@@ -154,7 +154,7 @@ arcinfoDialog fm' exec mode arcnames arcdir files = do
         dataBlocks  = arcDataBlocks archive        -- список солид-блоков
         numOfBlocks = length dataBlocks
         empty       = "-"
-    ;   yes        <- i18n"0101 Yes"
+    ;   yes        <- i18n"0101 Yes" >>== replaceAll "_" ""
 
     let origsize = sum$ map blOrigSize dataBlocks  -- суммарный объём файлов в распакованном виде
         compsize = sum$ map blCompSize dataBlocks  -- суммарный объём файлов в упакованном виде
