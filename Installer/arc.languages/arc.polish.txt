@@ -577,6 +577,8 @@ Add dialog
 
 === Everything else ====================================================
 Common words
+0101 Yes=Tak
+0102 No=Nie
 0323 or=lub
 0324 and=i
 

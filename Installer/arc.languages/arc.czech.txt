@@ -1,4 +1,4 @@
-******************************************************************************
+﻿******************************************************************************
 ***  This is a language file for FreeArc (http://freearc.org).             ***
 ***  You may improve it by providing new translations.                     ***
 ***  Messages that need translation are marked by "??",                    ***
@@ -578,6 +578,8 @@ Add dialog
 
 === Everything else ====================================================
 Common words
+0101 Yes=Ano
+0102 No=Ne
 0323 or=nebo
 0324 and=a
 

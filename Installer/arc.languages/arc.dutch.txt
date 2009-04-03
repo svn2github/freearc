@@ -16,7 +16,7 @@
 
 Language name in english and mother tongue
 0000 Language=Dutch (Nederlands)
-0159 Copyright=Vertaald door (Translated by):\nPatrick Noyens (aka Pat357)\nFerry Heibrink \n25 maart 2009
+0159 Copyright=Vertaald door (Translated by):\nPatrick Noyens (aka Pat357)\nFerry Heibrink \n1 april 2009
 
 Language-specific URLs relative to http://freearc.org and helpfiles
 0254 Homepage=??
@@ -65,11 +65,11 @@ Commands menu/toolbar
 0043 Delete files (from archive)=Verwijder bestanden (normaal of uit archief)
 
 Tools menu/toolbar
-0266 Lock=Archief vergrendelen
-0267 Lock Archive from further changes=archief vergrendelen zodat niet meer kan worden gewijzigd
+0266 Lock=Vergrendelen
+0267 Lock archive from further changes=Archief vergrendelen zodat niet meer kan worden gewijzigd
 0268 Comment=Commentaar
 0269 Edit archive comment=Toevoegen/wijzigen van commentaar
-0293 Recompress=Opniew inpakken
+0293 Recompress=Opnieuw inpakken
 0294 Recompress files in archive=Archief inhoud opniew inpakken
 0270 Convert to SFX=Maak SFX
 0271 Convert archive to SFX=Maak archief SFX
@@ -82,17 +82,17 @@ Tools menu/toolbar
 
 Options menu/toolbar
 0064 Settings=Instellingen
-0065 Edit program settings=Programma-instellingen wijzigen
+0065 Edit program settings=Programma-Instellingen
 0276 View log=Logfile bekijken
 0277 View logfile=Logfile bekijken
 0278 Clear log=Logfile wissen
 0279 Clear logfile=Logfile wissen
 
 Help menu/toolbar
-0280 Main help=Algemene help
-0281 Help on using FreeArc=Help om Freearc te gebruiken
+0280 Main help=Help
+0281 Help on using FreeArc=Help voor Freearc
 0282 Cmdline help=Help voor console versie
-0283 Help on FreeArc command line=Help om console-versie (ARC.EXE) te gebruiken
+0283 Help on FreeArc command line=Help over console-versie (ARC.EXE)
 0284 Goto Homepage=Ga naar website
 0285 Open program site=Open website
 0286 Check for update=Controleer updates
@@ -130,7 +130,7 @@ Messages
 === Dialogs =======================================================================
 Archive open dialog
 0305 Open archive=Archief openen
-0306 This file isn't a FreeArc archive!=Dit is geen FreeArc bestand
+0306 This file isn't a FreeArc archive!=Dit is geen FreeArc bestand!
 0307 FreeArc archives (*.arc)=FreeArc bestanden
 0308 Archives and SFXes (*.arc;*.exe)=Archieven en SFX archieven
 0309 All files (*)=Alle bestanden
@@ -279,7 +279,8 @@ Settings dialog
 0292 View=Beeld
 0167 Select logfile=Selecteer logbestand
 0172 Associate FreeArc with .arc files=Koppel .arc bestanden aan FreeArc
-0361 Add captions to toolbar buttons=??
+0361 Add captions to toolbar buttons=Zet opdrachtnamen bij de knoppen in het menu
+0370 Watch for new versions via Internet=Automatisch controleren voor nieuwere versies via internet
 0168 You should restart FreeArc in order for a language settings to take effect.=U dient FreeArc te herstarten alvorens de taalinstellingen geactiveerd worden.
 0169 Passwords need to be entered again after restart.=Wachtwoorden dienen na herstarten opnieuw ingevoerd te worden.
 
@@ -413,7 +414,7 @@ Archive comment dialog
 0244 FILES SUCCESFULLY ADDED TO %1=BESTANDEN SUCCESVOEG TOEGEVOEGD AAN %1
 0245 %2 WARNINGS WHILE ADDING TO %1=%2 WAARSCHUWINGEN TIJDENS TOEVOEGEN AAN %1
 
-0299 Lock archive(s)=Archief vergrendelen/verzegelen
+0299 Lock archive(s)?=Archief vergrendelen/verzegelen
 0300 Locking archive %1=Vergrendelen archief %1
 0301 SUCCESFULLY LOCKED ARCHIVE %1= ARCHIEF %1 SUCCESVOL VERGRENDELD
 0302 %2 WARNINGS WHILE LOCKING ARCHIVE %1=%2 WAARSCHUWINGEN TIJDENS VERGRENDELEN ARCHIEF %1
@@ -542,28 +543,22 @@ Exclude
 
 Add dialog
 --
-
 1183 Compression=Kies compressie-profiel.\nVoor geavanceerde instellingen kies de \"compressie"\ tab.
 1184 Encryption=Kies encryptie-profiel. \nVoor geavanceerde instellingen kies de \"encryptie"\ tab.
-
-
 1185 Protection:=Voegt een stuk data toe aan het archief (standaard ongeveer 1% van de archiefgrootte), hierdoor kunnen kleine fouten in het archiefbestand worden hersteld (bijvoorbeeld een beschadigde diskette of een beschadigde download)
 1186 Comment=Hier kan je commentaar toevoegen om de inhoud van het archief te beschrijven
-
 1227 Make EXE:=Gebruik deze optie als je een self-extracting (SFX) archief wil maken. \nOm SFX archieven uit te pakken heb je FreeArc niet nodig.
 1128 Test archive after operation=Archief testen na succesvolle bewerking ?
 1122 Delete files successfully archived=Bestanden verwijderen nadat deze succesvol ingepakt zijn
 1187 Finalize archive=Gebruik om archief te verzegelen.\n(geen wijzigigingen meer mogelijk aan archief)
-
 1072 Additional options:=Manueel instellen van additionele opties.\n (Optioneel - voor geavanceerde gebruikers)
 --
 1201 Compress each marked file/directory into separate archive=Apart archief maken voor elk(e) geselecteerd(e) bestand(of map).\nElk archief zal de naam krijgen van het respaectivelijk bestand of map.
 1202 Add to archive name=Voegt de gekozen parameters toe aan de naam van het archief. \n(Bijvoorbeeld datum en tijd)
-
+--
 1207 Delete previous archive contents=Opgelet! Als je deze optie activeert zal de inhoud van het archief eerst worden gewist alvorens er nieuwe files/folders worden toegevoegd! \nDEZE BEWERKING KAN NIET ONGEDAAN WORDEN GEMAAKT!
 1208 Order of files in archive=Door deze optie te activeren kan de compressie-verhouding worden verhoogd, afhankelijk van de sorteermethode.\n (ook afhankelijk van het type bestanden die gearchiveerd worden)
 --
-
 1222 Include only files=Deze optie kan je activeren als je het type/types files specifieert die je wil archiveren. Bijvoorbeeld alle .txt files.
 1223 Exclude files=Activeer deze optie als je bepaalde files niet wil archiveren. Bijvoorbeeld alle .BAK bestanden niet mee archiveren
 
@@ -571,7 +566,6 @@ Add dialog
 1113 Fast, low-memory decompression=Uitschakelen van algoritmes die traag zijn of veel geheugen verbruiken tijdens uitpakken. Een bij-effect hiervan is wel dat het uitpakken trager word en tevens een groter archief opleverd.
 1176 Filetype auto-detection=Als deze is ingeschakeld, analyzeerd FreeArc de inhoud van elk bestand en selecteerd hier een optimale compressiemethode voor. Als deze uitgeschakeld is zal FreeArc compressiemethoden toepassen zoals beschreven in 'arc.groups'.
 1138 Bytes, no more than:=Specifieer de grootte van de solide blokken : niet meer dan n MB per block.\nGrote waardes resulteren doorgaans in betere compressie maar tragere uitpak-snelheid, terwijl kleine waardes aangewezen zijn voor hogere uitpak-snelheid. 
-
 1139 Files, no more than:=Specifieer het maximum aantal files in solid block : niet meer dan n files per block\nGrote waardes resulteren doorgaans in betere compressie maar tragere uitpak-snelheid, terwijl kleine waardes aangewezen zijn voor hogere uitpak-snelheid.
 1140 Split by extension=opslitsen van solide blokken per bestand-extensie, zodat elk blok alle bestanden bevat met 1 bepaalde extensie. \nBijvoorbeeld 1 blok voor .EXE files, 1 block voor .TXT files).\nDeze optie verhoogt meestal de compressie, maar het uitpakken kan trager worden.
 
@@ -584,6 +578,8 @@ Add dialog
 
 === Everything else ====================================================
 Common words
+0101 Yes=&Ja
+0102 No=&Nee
 0323 or=of
 0324 and=en
 

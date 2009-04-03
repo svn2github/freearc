@@ -585,6 +585,8 @@ Add dialog
 
 === Everything else ====================================================
 Common words
+0101 Yes=&Oui
+0102 No=&Non
 0323 or=ou
 0324 and=et
 

@@ -577,6 +577,8 @@ Add dialog
 
 === Everything else ====================================================
 Common words
+0101 Yes=&Ja
+0102 No=&Nein
 0323 or=oder
 0324 and=und
 
