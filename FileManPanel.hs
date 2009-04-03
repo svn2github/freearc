@@ -40,7 +40,7 @@ decryptionPassword  =  unsafePerformIO$ newIORef$ ""
 
 -- |Создать переменную для хранения состояния файл-менеджера
 newFM window view model selection statusLabel messageCombo = do
-  historyFile <- io$ findOrCreateFile configFilePlaces aHISTORY_FILE
+  historyFile <- findOrCreateFile configFilePlaces aHISTORY_FILE >>= mvar
   curdir <- io$ getCurrentDirectory
   counterCombo <- ref 0  -- number of last message + 1 in combobox
   fm' <- mvar FM_State { fm_window       = window
@@ -288,12 +288,14 @@ fmModifyHistory fm' tags text deleteCond = ignoreErrors $ do
   -- Занесём новый элемент в голову списка и избавимся от дублирующих значений
   let newItem  =  join2 "=" (mainTag, text)
       mainTag  =  head (split '/' tags)
-  modifyConfigFile (fm_history_file fm) ((newItem:) . deleteIf (deleteCond mainTag newItem))
+  withMVar (fm_history_file fm) $ \history_file -> do
+    modifyConfigFile history_file ((newItem:) . deleteIf (deleteCond mainTag newItem))
 
 -- |Удалить тег из списка истории
 fmDeleteTagFromHistory fm' tag = ignoreErrors $ do
   fm <- val fm'
-  modifyConfigFile (fm_history_file fm) (deleteIf ((tag==).fst.split2 '='))
+  withMVar (fm_history_file fm) $ \history_file -> do
+    modifyConfigFile history_file (deleteIf ((tag==).fst.split2 '='))
 
 -- |Извлечь список истории по заданному тэгу/тэгам
 fmGetHistory1 fm' tags deflt = do x <- fmGetHistory fm' tags; return (head (x++[deflt]))
@@ -319,15 +321,14 @@ bool2str False = "0"
 fmGetConfigFile fm' = do
   fm <- val fm'
   case fm_history fm of
-    Nothing      -> readConfigFile (fm_history_file fm)
+    Nothing      -> withMVar (fm_history_file fm) readConfigFile
     Just history -> return history
 
 -- |На время выполнения этих скобок содержимое файла истории читается из поля fm_history
 fmCacheConfigFile fm' =
-  bracket_ (do fm <- val fm'
-               history <- readConfigFile (fm_history_file fm)
-               fm' =: fm {fm_history = Just history})
-           (fm' .= \fm -> fm {fm_history = Nothing})
+  bracket_ (do history <- fmGetConfigFile fm'
+               fm' .= \fm -> fm {fm_history = Just history})
+           (do fm' .= \fm -> fm {fm_history = Nothing})
 
 -- |Сохранить размеры и положение окна в истории
 saveSizePos fm' window name = do

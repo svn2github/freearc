@@ -37,7 +37,7 @@ data FM_State = FM_State { fm_window       :: Window
                          , fm_statusLabel  :: Label
                          , fm_messageCombo :: (New.ComboBox, IORef Int)
                          , fm_filelist     :: [FileData]
-                         , fm_history_file :: FilePath
+                         , fm_history_file :: MVar FilePath
                          , fm_history      :: Maybe [String]
                          , fm_onChdir      :: [IO()]
                          , fm_sort_order   :: String
