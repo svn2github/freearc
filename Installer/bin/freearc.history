@@ -29,7 +29,7 @@ encryptor=aes/cfb
 encryptor=aes-128/cfb
 encryptor=aes:r100
 
-protection=0734 Add: +
+protection=0734 Add:
 protection=0735 Remove: -
 protection=0736 Internet-only (4kb blocks): 0.1%
 protection=0737 Internet-only (64kb blocks): 0.01%

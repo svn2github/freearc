@@ -351,9 +351,9 @@ restoreSizePos fm' window name deflt = do
 -- Выбирает один из нескольких вариантов по индексу
 opt `select` variants  =  words (split ',' variants !! opt)
 -- Преобразует текст настройки в список опций, предварительно удаляя комментарий в её начале
-cvt1 opt  =  map (opt++) . words . clear
+cvt1 opt  =  map (opt++) . (||| [""]) . words . clear
 -- То же самое, только имя опции добавляется только к словам, не начинающимся с "-"
-cvt  opt  =  map (\w -> (w!~"-?*" &&& opt)++w) . words . clear
+cvt  opt  =  map (\w -> (w!~"-?*" &&& opt)++w) . (||| [""]) . words . clear
 -- Удаляет комментарий вида "*: " в начале строки
 clear     =  trim . snd . splitCmt ""
 -- |Разбивает значение на описание+опции
