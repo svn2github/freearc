@@ -483,6 +483,7 @@ myGUI run args = do
         -- —ообщение о начале выполнени€ команды
         msgStart <- i18n formatStart
         postGUIAsync$ fmStackMsg fm' (formatn msgStart msgArgs)
+        --postGUIAsync$ fmStackMsg fm' (unwords cmd)
         -- ¬ыполнить и посчитать число ошибок
         w <- count_warnings (parseCmdline cmd >>= mapM_ run)
         -- —ообщение об успешном выполнении либо кол-ве допущенных ошибок

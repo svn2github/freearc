@@ -1,22 +1,25 @@
-compression=0110 Normal: -m4 -s64m
+compressionLast=0110 Normal: -m4 -s64m
 compression=0727 Maximum (1gb decompression): -mx -ld=1gb
 compression=0728 Maximum (192mb decompression): -mx -ld=192m
 compression=0729 Maximum (fast, low-memory decompression): -m9x
 compression=0109 High: -m5 -s128m
+compression=0110 Normal: -m4 -s64m
 compression=0111 Fast: -m3 -s32m
 compression=0112 Very fast: -m2 -s16m
 compression=0127 HDD-speed: -m1 -s8m
 compression=0752 No compression: -m0
 
+encryptionLast=0730 Standard: aes-256 -p? -hp
+encryption=0733 Strongest: aes:r100+serpent/cfb:r100+twofish:r100 -p? -hp
+encryption=0732 Strong: aes+serpent/cfb+twofish -p? -hp
 encryption=0730 Standard: aes-256 -p? -hp
 encryption=0731 Fast: twofish-256 -p? -hp
-encryption=0732 Strong: aes+serpent/cfb+twofish -p? -hp
-encryption=0733 Strongest: aes:r100+serpent/cfb:r100+twofish:r100 -p? -hp
 
+encryptorLast=0730 Standard: aes-256
+encryptor=0733 Strongest: aes:r100+serpent/cfb:r100+twofish:r100
+encryptor=0732 Strong: aes+serpent/cfb+twofish
 encryptor=0730 Standard: aes-256
 encryptor=0731 Fast: twofish-256
-encryptor=0732 Strong: aes+serpent/cfb+twofish
-encryptor=0733 Strongest: aes:r100+serpent/cfb:r100+twofish:r100
 encryptor=blowfish-448
 encryptor=serpent-256
 encryptor=twofish-256
@@ -77,13 +80,28 @@ smaller=1gb
 
 files=1
 files=10
+files=20
+files=50
 files=100
+files=200
+files=500
 files=1000
+files=2000
+files=5000
+files=10000
 
 bytes=1mb
 bytes=8mb
+bytes=16mb
+bytes=32mb
 bytes=64mb
+bytes=128mb
+bytes=256mb
+bytes=512mb
 bytes=1gb
+bytes=2gb
+bytes=4gb
+bytes=8gb
 
 options=0760 Perform full backup: -ep3 -ac
 options=0761 Full archive test before and after operation: -tp3 -t3

@@ -317,8 +317,12 @@
     Priorityio.doc
   bugs
     update GUI docs
+    "user error" при ошибках в консольной версии
+    lzma:max - mc16????
+    -max - exe+rep вместо rep+exe
+    -m9x $bmp mm+delta+...
+    tor:5 -> delta+tor:5:t0 ?  видимо, имеет смысл только на быстрых машинах
     Попытка зайти внутрь зашифрованного архива - виснем
-    Тестирование зашифрованного архива и Cancel на приглашении ввести пароль
     sfx - поддержка и автоматическое использование метода tempfile
     dict bug: arc a aa cls.zip -mprecomp+6pt -t
       bcj+dict creates corrupted archives

@@ -392,24 +392,33 @@ fmEntryWithHistory fm' tag filter_p process = do
   comboBox <- New.comboBoxEntryNewText
   Just entry <- binGetChild comboBox >>== fmap castToEntry
   set entry [entryActivatesDefault := True]
-  historySize <- mvar 0
-  let rereadHistory = do
-        historySize .<- \hs -> do
-          replicateM_ (hs+1) (New.comboBoxRemoveText comboBox 0)
+  history' <- mvar []
+  let readHistory = do
+        history' .<- \oldHistory -> do
+          replicateM_ (1+length oldHistory) (New.comboBoxRemoveText comboBox 0)
           history <- fmGetHistory fm' tag >>= Utils.filterM filter_p
           for history (New.comboBoxAppendText comboBox)
-          return (length history)
+          return history
   let getText = do
-        New.comboBoxGetActiveText comboBox >>= process.fromJust
+        val entry >>= process
   let setText text = do
         entry =: text
   let saveHistory = do
         text <- getText
-        New.comboBoxPrependText comboBox text
-        fmAddHistory fm' tag text
-  rereadHistory
-  hs <- val historySize
-  when (hs>0) $ New.comboBoxSetActive comboBox 0
+        history <- val history'
+        fmReplaceHistory fm' (tag++"Last") text
+        when (text `notElem` history) $ do
+          New.comboBoxPrependText comboBox text
+          fmAddHistory fm' tag text
+  readHistory
+  -- Установить текст в поле ввода
+  history <- val history'
+  last <- fmGetHistory fm' (tag++"Last")
+  case last of
+    last:_ -> entry =: last
+    []     -> when (history > []) $ do
+                New.comboBoxSetActive comboBox 0
+  --
   return EntryWithHistory
            {                           entry           = entry
            , ehGtkWidget = gtkWidget { gwWidget        = comboBox
@@ -417,7 +426,7 @@ fmEntryWithHistory fm' tag filter_p process = do
                                      , gwSetValue      = setText
                                      , gwSetOnUpdate   = \action -> New.onChanged comboBox action >> return ()
                                      , gwSaveHistory   = saveHistory
-                                     , gwRereadHistory = rereadHistory
+                                     , gwRereadHistory = readHistory
                                      }
            }
 
