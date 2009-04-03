@@ -16,11 +16,14 @@
 
 Language name in english and mother tongue
 0000 Language=German (Deutsch)
-0159 Copyright=Vacon\nPeter Bauder (based on 7zip language file;edited for FreeArc-0.50-win32-alpha-2009-03-24)\nOriginal copyrights:\nTranslated by Soeren Finster\n7-Zip 4.07 beta\nUpdated by JAK-Software.DE\n7-Zip 4.55 beta\nMaintained by Joachim Henke (since 4.12 beta)
+0159 Copyright=Vacon\nPeter Bauder (based on 7zip language file;edited for FreeArc-0.50-win32-alpha-2009-03-28)\nOriginal copyrights:\nTranslated by Soeren Finster\n7-Zip 4.07 beta\nUpdated by JAK-Software.DE\n7-Zip 4.55 beta\nMaintained by Joachim Henke (since 4.12 beta)
 
-Language-specific URLs relative to http://freearc.org and helpfiles
+Language-specific URLs relative to http://freearc.org/ and helpfiles
+Filled only for languages providing their own translations
 0254 Homepage=??
 0255 News page=??
+0371 Forum page=??
+0372 Wiki page=??
 0256 Helpfile=??
 0257 Command-line help=??
 
@@ -95,6 +98,10 @@ Help menu/toolbar
 0283 Help on FreeArc command line=Hilfe zur Befehlszeile von FreeArc
 0284 Goto Homepage=Gehe zur Homepage
 0285 Open program site=Programmhomepage öffnen
+0373 Open forum=Forum öffnen
+0374 Open program forum=Forum zum Programm öffnen
+0375 Open wiki=Wiki öffnen
+0376 Open program wiki=Wiki zum Programm öffnen
 0286 Check for update=Überprüfe auf Updates
 0287 Check for new program versions=Überprüfe ob neue Programmversion vorliegt
 0288 About=Info
@@ -280,6 +287,7 @@ Settings dialog
 0167 Select logfile=Protokolldatei auswählen
 0172 Associate FreeArc with .arc files=.arc-Dateien mit FreeArc verknüpfen
 0361 Add captions to toolbar buttons=Beschriftung zu Toolbar- Buttons hinzufügen
+0370 Watch for new versions via Internet=Neue Version über das Internet suchen
 0168 You should restart FreeArc in order for a language settings to take effect.=Zum Übernehmen der Spracheinstellungen muss FreeArc neugestartet werden.
 0169 Passwords need to be entered again after restart.=Passwörter müssen nach dem Neustarten neu eingegeben werden.
 
@@ -469,6 +477,8 @@ Archive comment dialog
 0356 archive directory not found=Archivverzeichnis nicht gefunden
 0357 archive signature not found at the end of archive=Archivsignatur am Ende des Archivs nicht gefunden
 0358 last block of archive is not footer block=letzter Block des Archivs ist kein abschließender Block
+0377 command "%1" shouldn't have additional arguments=Befehl \"%1\" sollte keine zuätzliche Argumente haben
+0378 bad name or parameters in encryption algorithm %1=falscher Name oder Parameter in Verschlüsselungsalgorithmus
 
 Errors returned by compression methods
 0365 general (de)compression error=allgemeiner (De)Kompressionsfehler
