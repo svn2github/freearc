@@ -312,7 +312,7 @@ aARCHIVE_VERSION = make4byte 0 0 4 9
 -- |Краткое наименование программы, выводимое в начале работы
 aARC_HEADER  = aARC_NAME++" "++aARC_VERSION++" "
 aARC_VERSION = "0.50 alpha ("++aARC_DATE++")"
-aARC_DATE    = "Mar 30 2009"
+aARC_DATE    = "Apr 4 2009"
 aARC_NAME    = "FreeArc"
 aARC_AUTHOR  = "Bulat Ziganshin"
 aARC_EMAIL   = "Bulat.Ziganshin@gmail.com"

@@ -390,9 +390,13 @@ instance GtkWidgetClass EntryWithHistory ComboBoxEntry String where
 -- |Создать комбо-бокс с историей под тегом tag;
 -- перед запоминанием в истории пропускать введённый текст через операцию process
 fmEntryWithHistory fm' tag filter_p process = do
+  -- Create GUI controls
   comboBox <- New.comboBoxEntryNewText
   Just entry <- binGetChild comboBox >>== fmap castToEntry
   set entry [entryActivatesDefault := True]
+  -- Define callbacks
+  last <- fmGetHistory fm' (tag++"Last")
+  let fixedOrder  =  (last>[])   -- True - keep order of dropdown "menu" elements fixed
   history' <- mvar []
   let readHistory = do
         history' .<- \oldHistory -> do
@@ -407,18 +411,18 @@ fmEntryWithHistory fm' tag filter_p process = do
   let saveHistory = do
         text <- getText
         history <- val history'
-        fmReplaceHistory fm' (tag++"Last") text
-        when (text `notElem` history) $ do
+        when fixedOrder $ do
+          fmReplaceHistory fm' (tag++"Last") text
+        unless (fixedOrder && (text `elem` history)) $ do
           New.comboBoxPrependText comboBox text
           fmAddHistory fm' tag text
   readHistory
   -- Установить текст в поле ввода
-  history <- val history'
-  last <- fmGetHistory fm' (tag++"Last")
   case last of
     last:_ -> entry =: last
-    []     -> when (history > []) $ do
-                New.comboBoxSetActive comboBox 0
+    []     -> do history <- val history'
+                 when (history > []) $ do
+                   New.comboBoxSetActive comboBox 0
   --
   return EntryWithHistory
            {                           entry           = entry
