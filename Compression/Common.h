@@ -187,6 +187,9 @@ static inline void WINAPI UnixTimeToFileTime( time_t time, FILETIME* ft )
 #include <fcntl.h>
 #include <sys/types.h>
 
+#define __cdecl
+#define SSIZE_T ssize_t
+
 typedef char* CFILENAME;
 typedef char  TCHAR;
 #define _T

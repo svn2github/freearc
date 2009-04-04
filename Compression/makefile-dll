@@ -5,8 +5,8 @@ DEF  = facompress.def
 OBJS = Common.obj CompressionLibrary.obj C_LZMA.obj C_PPMD.obj C_GRZip.obj C_LZP.obj C_Dict.obj
 CC   = icl
 
-CODE_FLAGS  = -EHsc
-OPT_FLAGS   = -O2 -Gy -GR-
+CODE_FLAGS  = -EHsc -MT
+OPT_FLAGS   = -Ox -Gy -GR-
 DEBUG_FLAGS =
 CFLAGS      = -c -DFREEARC_DLL $(CODE_FLAGS) $(OPT_FLAGS) $(DEBUG_FLAGS) $(DEFINES)
 

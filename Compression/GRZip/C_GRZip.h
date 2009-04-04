@@ -1,7 +1,7 @@
 #include "../Compression.h"
 #include "libGRZip.h"
 
-int grzip_compress   (int Method,
+int __cdecl grzip_compress   (int Method,
                       int BlockSize,
                       int EnableLZP,
                       int MinMatchLen,
@@ -12,7 +12,7 @@ int grzip_compress   (int Method,
                       CALLBACK_FUNC *callback,
                       void *auxdata);
 
-int grzip_decompress (CALLBACK_FUNC *callback,
+int __cdecl grzip_decompress (CALLBACK_FUNC *callback,
                       void *auxdata);
 
 

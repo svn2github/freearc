@@ -494,7 +494,7 @@ int GRZipCompressionThread::done()                   // Free resources
 }
 
 
-int grzip_compress (int Method,
+int __cdecl grzip_compress (int Method,
                     int BlockSize,
                     int EnableLZP,
                     int MinMatchLen,
@@ -573,7 +573,7 @@ struct GRZipMTDecompressor : MTCompressor<GRZipDecompressionThread>
 };
 
 
-int grzip_decompress (CALLBACK_FUNC *callback, void *auxdata)
+int __cdecl grzip_decompress (CALLBACK_FUNC *callback, void *auxdata)
 {
   GRZipMTDecompressor grz (callback, auxdata);
   return grz.run();
@@ -603,7 +603,7 @@ int GRZIP_METHOD::decompress (CALLBACK_FUNC *callback, void *auxdata)
   static FARPROC f = LoadFromDLL ("grzip_decompress");
   if (!f) f = (FARPROC) grzip_decompress;
 
-  return ((int (*)(CALLBACK_FUNC*, void*)) f) (callback, auxdata);
+  return ((int (__cdecl *)(CALLBACK_FUNC*, void*)) f) (callback, auxdata);
 }
 
 #ifndef FREEARC_DECOMPRESS_ONLY
@@ -615,7 +615,7 @@ int GRZIP_METHOD::compress (CALLBACK_FUNC *callback, void *auxdata)
   static FARPROC f = LoadFromDLL ("grzip_compress");
   if (!f) f = (FARPROC) grzip_compress;
 
-  return ((int (*)(int, int, int, int, int, int, int, int, CALLBACK_FUNC*, void*)) f)
+  return ((int (__cdecl *)(int, int, int, int, int, int, int, int, CALLBACK_FUNC*, void*)) f)
                         (Method,
                          BlockSize,
                          EnableLZP,
