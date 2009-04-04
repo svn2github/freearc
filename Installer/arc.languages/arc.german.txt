@@ -16,7 +16,7 @@
 
 Language name in english and mother tongue
 0000 Language=German (Deutsch)
-0159 Copyright=Vacon\nPeter Bauder (based on 7zip language file;edited for FreeArc-0.50-win32-alpha-2009-03-28)\nOriginal copyrights:\nTranslated by Soeren Finster\n7-Zip 4.07 beta\nUpdated by JAK-Software.DE\n7-Zip 4.55 beta\nMaintained by Joachim Henke (since 4.12 beta)
+0159 Copyright=Vacon\nPeter Bauder (based on 7zip language file;edited for FreeArc-0.50-win32-alpha-2009-04-04)\nOriginal copyrights:\nTranslated by Soeren Finster\n7-Zip 4.07 beta\nUpdated by JAK-Software.DE\n7-Zip 4.55 beta\nMaintained by Joachim Henke (since 4.12 beta)
 
 Language-specific URLs relative to http://freearc.org/ and helpfiles
 Filled only for languages providing their own translations
@@ -96,7 +96,7 @@ Help menu/toolbar
 0281 Help on using FreeArc=Hilfe zur Benutzung von FreeArc
 0282 Cmdline help=Befehlszeilen-Hilfe
 0283 Help on FreeArc command line=Hilfe zur Befehlszeile von FreeArc
-0284 Goto Homepage=Gehe zur Homepage
+0284 Open Homepage=Gehe zur Homepage
 0285 Open program site=Programmhomepage öffnen
 0373 Open forum=Forum öffnen
 0374 Open program forum=Forum zum Programm öffnen
@@ -540,7 +540,16 @@ Archive name template
 0759 Weekday=Wochentag
 
 Exclude
-0760 Backup files=Backupdateien
+0753 Backup files=Backupdateien
+
+Additional compression options
+0760 Perform full backup=Vollbackup durchführen
+0761 Full archive test before and after operation=Kompletten Archivtest vor und nach dem Vorgang durchführen
+
+Additional extraction options
+0762 Remove pathnames=Pfadangaben entfernen
+0763 Restore absolute pathnames=vollständige Pfadangaben wiederherstellen
+0764 Full archive test before performing operation=Kompletten Archivtest vor dem Vorgang durchführen
 
 
 === Tooltips (index=N+1000) ===========================================

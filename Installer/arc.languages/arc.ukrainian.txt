@@ -14,15 +14,16 @@
 ***    1185 Protection:=Appends recovery information to archive            ***
 ******************************************************************************
 
-
-
 Language name in english and mother tongue
 0000 Language=Ukrainian (Українська)
-0159 Copyright=chornobyl 2009-03-31
+0159 Copyright=chornobyl 2009-04-04
 
-Language-specific URLs relative to http://freearc.org and helpfiles
+Language-specific URLs relative to http://freearc.org/ and helpfiles
+Filled only for languages providing their own translations
 0254 Homepage=/ru
 0255 News page=/ru/News.aspx
+0371 Forum page=viewforum.php?f=4
+0372 Wiki page=??
 0256 Helpfile=FreeArc-GUI-Rus.htm
 0257 Command-line help=FreeArc040-rus.htm
 
@@ -95,12 +96,17 @@ Help menu/toolbar
 0281 Help on using FreeArc=Опис використання FreeArc
 0282 Cmdline help=Допомога для консольної версії
 0283 Help on FreeArc command line=Опис використання консолі FreeArc
-0284 Goto Homepage=Домашня сторінка
+0284 Open Homepage=Домашня сторінка
 0285 Open program site=Відкрити сайт FreeArc
+0373 Open forum=Форум
+0374 Open program forum=Відкрити форум FreeArc
+0375 Open wiki=Wiki
+0376 Open program wiki=Відкрити FreeArc Wiki
 0286 Check for update=Перевірити оновлення
 0287 Check for new program versions=Перевірити появу нової версії програми
 0288 About=Про програму
 0289 About=Інформація про програму
+
 
 === File manager ==================================================================
 Navibar
@@ -316,7 +322,7 @@ Checking for updates
 0115 Compression speed: %1, memory: %2=Упаковка: швидкість %1, пам'ять %2
 0116 Decompression speed: %1, memory: %2=Розпакування: швидкість %1, пам'ять %2
 0117 All speeds were measured on 1GHz single-core Duron,=Усі швидкості виміряні на 1ГГц одноядерному Duron,
-0118 and your horse will probably run faster=отож ваша конячка, певно буде швидше
+0118 and your horse will probably run faster=отож ваш комп'ютер, певно буде швидше
 --Solid block size
 0177 Limit solid blocks=Обмежити солід-блоки
 0138 Bytes, no more than:=Байтів, не більше:
@@ -471,6 +477,8 @@ Archive comment dialog
 0356 archive directory not found=зміст архіву не знайдено
 0357 archive signature not found at the end of archive=сигнатура архіву не знайдена в кінці архіву
 0358 last block of archive is not footer block=останній блок архіву - не footer блок
+0377 command "%1" shouldn't have additional arguments=команда "%1" не повинна мати додаткових аргументів
+0378 bad name or parameters in encryption algorithm %1=невірне ім'я чи параметри в алгоритмі шифрування %1
 
 Errors returned by compression methods
 0365 general (de)compression error=помилка (роз)пакування
@@ -532,7 +540,16 @@ Archive name template
 0759 Weekday=День тижня
 
 Exclude
-0760 Backup files=Резервні копії файлів
+0753 Backup files=Резервні копії файлів
+
+Additional compression options
+0760 Perform full backup=Створити повну резервну копію файлів
+0761 Full archive test before and after operation=Повне тестування архіву перед та після операції
+
+Additional extraction options
+0762 Remove pathnames=Видалити шляхи з імен файлів
+0763 Restore absolute pathnames=Відновити абсолютні імена файлів
+0764 Full archive test before performing operation=Повне тестування архіву перед виконанням операції
 
 
 === Tooltips (index=N+1000) ===========================================
@@ -580,7 +597,7 @@ Add dialog
 === Everything else ====================================================
 Common words
 0101 Yes=&Так
-0102 No=Ні
+0102 No=&Ні
 0323 or=або
 0324 and=та
 

@@ -18,11 +18,14 @@ Language name in english and mother tongue
 0000 Language=Polish (Polski)
 0159 Copyright=Translated by cHr
 
-Language-specific URLs relative to http://freearc.org and helpfiles
-0254 Homepage=Strona domowa
-0255 News page=Newsy
-0256 Helpfile=Plik pomocy
-0257 Command-line help=Pomoc dla wersji command-line
+Language-specific URLs relative to http://freearc.org/ and helpfiles
+Filled only for languages providing their own translations
+0254 Homepage=??
+0255 News page=??
+0371 Forum page=??
+0372 Wiki page=??
+0256 Helpfile=??
+0257 Command-line help=??
 
 
 === Menu ========================================================================

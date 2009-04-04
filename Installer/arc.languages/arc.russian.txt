@@ -540,7 +540,16 @@ Archive name template
 0759 Weekday=День недели
 
 Exclude
-0760 Backup files=Резервные копии файлов
+0753 Backup files=Резервные копии файлов
+
+Additional compression options
+0760 Perform full backup=Создать полный бэкап
+0761 Full archive test before and after operation=Полное тестирование архива перед и после операции
+
+Additional extraction options
+0762 Remove pathnames=Опустить каталоги в именах файлов
+0763 Restore absolute pathnames=Восстановить абсолютные имена файлов
+0764 Full archive test before performing operation=Полное тестирование архива перед выполнением операции
 
 
 === Tooltips (index=N+1000) ===========================================
@@ -587,8 +596,8 @@ Add dialog
 
 === Everything else ====================================================
 Common words
-0101 Yes=Да
-0102 No=Нет
+0101 Yes=&Да
+0102 No=&Нет
 0323 or=или
 0324 and=и
 
