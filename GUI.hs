@@ -211,6 +211,7 @@ createStats = do
                   , cbytes      = cbytes
                   }  <-  val ref_ui_state
         secs <- return_real_secs
+        sec0 <- val indicator_start_real_secs
 
         -- Для команд добавления выводится строка с Compressed/Total compressed, для остальных она скрывается
         cmd <- val ref_command >>== cmd_name
@@ -227,11 +228,11 @@ createStats = do
         labelSetMarkup totalFilesLabel$ "<b>"++show3 total_files++"</b>"   `on` indType==INDICATOR_FULL
         labelSetMarkup totalBytesLabel$ "<b>"++show3 total_bytes++"</b>"
         labelSetMarkup timesLabel$      "<b>"++showHMS secs++"</b>"
-        when (processed>0.001 && b>0 && secs>0.001) $ do
+        when (processed>0.001 && b>0 && secs-sec0>0.001) $ do
         labelSetMarkup totalCompressedLabel$ "<b>~"++show3 (total_bytes*cbytes `div` b)++"</b>"    `on` indType==INDICATOR_FULL
-        labelSetMarkup totalTimesLabel$      "<b>~"++showHMS (secs/processed)++"</b>"
         labelSetMarkup ratioLabel$           "<b>"++ratio2 cbytes b++"%</b>"                       `on` indType==INDICATOR_FULL
-        labelSetMarkup speedLabel$           "<b>"++showSpeed b secs++"</b>"
+        labelSetMarkup totalTimesLabel$      "<b>~"++showHMS (sec0 + (secs-sec0)/processed)++"</b>"
+        labelSetMarkup speedLabel$           "<b>"++showSpeed b (secs-sec0)++"</b>"
 
   -- Процедура, очищающая текущую статистику
   let clearStats  =  val labels' >>= mapM_ (`labelSetMarkup` "     ")

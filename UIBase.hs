@@ -82,6 +82,8 @@ files_scanned             =  unsafePerformIO$ newIORef$ (0::Integer)
 -- |Глобальная переменная, хранящая состояние индикатора прогресса
 aProgressIndicatorState    =  unsafePerformIO$ newIORef$ error "undefined UI::aProgressIndicatorState"
 aProgressIndicatorEnabled  =  unsafePerformIO$ newIORef$ False
+-- |Время начала отсчёта текущего индиатора
+indicator_start_real_secs  =  unsafePerformIO$ newIORef$ (0::Double)
 
 -- |Синхронизация доступа к UI
 syncUI = withMVar mvarSyncUI . const;  mvarSyncUI = unsafePerformIO$ newMVar "mvarSyncUI"

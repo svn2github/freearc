@@ -441,17 +441,19 @@ uiStartProgressIndicator indType command bytes' total' = do
       direction  =  if (cmdType cmd == ADD_CMD)  then " => "  else " <= "
       indicator  =  select_indicator command total
   aProgressIndicatorState =: (indicator, indType, arcname, direction, 0, bytes', total')
+  indicator_start_real_secs =:: return_real_secs
   uiResumeProgressIndicator
 
 -- |Вывести на экран и в заголовок окна индикатор прогресса (сколько процентов данных уже обработано)
-uiUpdateProgressIndicator add_b = when (add_b/=0) $ do
-  -- Маленькая индейская хитрость: эта функция вызывается ПЕРЕД какой-либо обработкой
-  -- данных. При этом мы считаем, что предыдущие данные к данному моменту уже обработаны и
-  -- рапортуем об этом. Новые же данные только добавляются к счётчику, но не влияют
-  -- на выводимую СЕЙЧАС статистику. Вот такие вот приколы в нашем городке :)
-  syncUI $ do
-  (indicator, indType, arcname, direction, b, bytes', total') <- val aProgressIndicatorState
-  aProgressIndicatorState =: (indicator, indType, arcname, direction, b+add_b, bytes', total')
+uiUpdateProgressIndicator add_b =
+  when (add_b/=0) $ do
+    -- Маленькая индейская хитрость: эта функция вызывается ПЕРЕД какой-либо обработкой
+    -- данных. При этом мы считаем, что предыдущие данные к данному моменту уже обработаны и
+    -- рапортуем об этом. Новые же данные только добавляются к счётчику, но не влияют
+    -- на выводимую СЕЙЧАС статистику. Вот такие вот приколы в нашем городке :)
+    syncUI $ do
+    (indicator, indType, arcname, direction, b, bytes', total') <- val aProgressIndicatorState
+    aProgressIndicatorState =: (indicator, indType, arcname, direction, b+add_b, bytes', total')
 
 -- |Завершить вывод индикатора прогресса
 uiDoneProgressIndicator = do
