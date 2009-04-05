@@ -56,8 +56,6 @@ File menu/toolbar
 Commands menu/toolbar
 0030 Add=Упаковать
 0040 Add files to archive(s)=Добавить файлы в архив(ы)
-0031 Modify=Модифицировать
-0041 Modify archive(s)=Модифицировать архив(ы)
 0035 Extract=Распаковать
 0045 Extract files from archive(s)=Распаковать файлы из архив(ов)
 0034 Test=Протестировать
@@ -80,6 +78,10 @@ Tools menu/toolbar
 0273 Encrypt archive contents=Зашифровать содержимое архива
 0274 Protect=Защитить
 0275 Add Recovery record to archive=Добавить к архиву информацию для восстановления
+0379 Repair=Восстановить
+0380 Repair damaged archive=Восстановить повреждённый архив
+0031 Modify=Модифицировать
+0041 Modify archive(s)=Модифицировать архив(ы)
 0032 Join=Объединить
 0042 Join archives together=Объединить архив(ы)
 
@@ -425,6 +427,11 @@ Archive comment dialog
 0300 Locking archive %1=Защищаю от изменений архив %1
 0301 SUCCESFULLY LOCKED ARCHIVE %1=УСПЕШНО ЗАФИКСИРОВАН АРХИВ %1
 0302 %2 WARNINGS WHILE LOCKING ARCHIVE %1=%2 ПРЕДУПРЕЖДЕНИЙ ПРИ ФИКСАЦИИ АРХИВА %1
+
+0381 Repair archive(s)?=Восстановить повреждённый архив(ы)?
+0382 Repairing archive %1=Восстановление архива %1
+0383 SUCCESFULLY REPAIRED ARCHIVE %1=УСПЕШНО ВОССТАНОВЛЕН АРХИВ %1
+0384 %2 WARNINGS WHILE REPAIRING ARCHIVE %1=%2 ПРЕДУПРЕЖДЕНИЙ ПРИ ВОССТАНОВЛЕНИИ АРХИВА %1
 
 
 === Error messages =======================================================

@@ -81,6 +81,7 @@ uiDef =
   "      <separator/>"++
   "      <menuitem name=\"Encrypt\"            action=\"EncryptAction\" />"++
   "      <menuitem name=\"Protect\"            action=\"ProtectAction\" />"++
+  "      <menuitem name=\"Repair\"             action=\"RepairAction\" />"++
   "      <separator/>"++
   "      <menuitem name=\"Modify\"             action=\"ModifyAction\" />"++
   "      <menuitem name=\"Join archives\"      action=\"JoinArchivesAction\" />"++
@@ -173,6 +174,7 @@ myGUI run args = do
   toSfxAct    <- anew "0270 Convert to SFX"   "0271 Convert archive to SFX"             (Just stockConvert)         "<Alt>S"
   encryptAct  <- anew "0272 Encrypt"          "0273 Encrypt archive contents"           (Nothing)                   ""
   addRrAct    <- anew "0274 Protect"          "0275 Add Recovery record to archive"     (Nothing)                   "<Alt>P"
+  repairAct   <- anew "0379 Repair"           "0380 Repair damaged archive"             (Nothing)                   ""
   modifyAct   <- anew "0031 Modify"           "0041 Modify archive(s)"                  (Just stockEdit)            "<Alt>M"
   joinAct     <- anew "0032 Join archives"    "0042 Join archives together"             (Just stockCopy)            "<Alt>J"
 
@@ -550,6 +552,11 @@ myGUI run args = do
         -- Удалить файлы на диске
         else io$ mapM_ (ignoreErrors.fileRemove.(fm_dir fm </>)) files
 
+
+----------------------------------------------------------------------------------------------------
+---- Меню Tools ------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+
   -- Защитить архив от записи
   lockAct `onActionActivate` do
     multiArchiveOperation fm' $ \archives -> do
@@ -562,11 +569,6 @@ myGUI run args = do
                   "0302 %2 WARNINGS WHILE LOCKING ARCHIVE %1"],
                  [takeFileName arcname],
                  ["ch", "--noarcext", "-k", "--", arcname])]
-
-
-----------------------------------------------------------------------------------------------------
----- Меню Tools ------------------------------------------------------------------------------------
-----------------------------------------------------------------------------------------------------
 
   -- Изменить комментарий архива
   commentAct `onActionActivate` do
@@ -588,6 +590,19 @@ myGUI run args = do
   -- Добавить RR в архив
   addRrAct `onActionActivate` do
     addDialog fm' exec "ch" ProtectionMode
+
+  -- Восстановить повреждённый архив
+  repairAct `onActionActivate` do
+    multiArchiveOperation fm' $ \archives -> do
+      let msg = "0381 Repair archive(s)?"
+      whenM (askOkCancel window (formatn msg [head archives, show3$ length archives])) $ do
+        closeFMArc fm'
+        for archives $ \arcname -> do
+          exec [(["0382 Repairing archive %1",
+                  "0383 SUCCESFULLY REPAIRED ARCHIVE %1",
+                  "0384 %2 WARNINGS WHILE REPAIRING ARCHIVE %1"],
+                 [takeFileName arcname],
+                 ["r", "--noarcext", "--", arcname])]
 
   -- Модификация архивов
   modifyAct `onActionActivate` do
