@@ -22,6 +22,7 @@ import System.Time
 
 import Utils
 import Errors
+import Charsets
 import Files
 import FileInfo
 import Compression (encode_method, showMem, getCompressionMem, getDecompressionMem)
@@ -132,7 +133,7 @@ uiStartProcessing filelist = do
 -- |Отметить стадию выполнения процесса
 uiStage msg = do
   syncUI $ do
-  uiMessage =: msg
+  uiMessage =:: i18n msg
 
 -- |Сбросить счётчик просканированных файлов
 uiStartScanning = do
@@ -144,6 +145,7 @@ uiScanning msg files = do  -- Пока это работает только в GUI
   failOnTerminated
   files_scanned += i(length files)
   files_scanned' <- val files_scanned
+  msg <- i18n msg
   uiStage$ format msg (show3 files_scanned')
 #endif
   return ()

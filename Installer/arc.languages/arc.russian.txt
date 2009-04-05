@@ -377,6 +377,7 @@ Progress indicator
 0248 Analyzed %1 files=Проанализировано %1 файлов
 0249 Reading archive directory=Чтение оглавления архива
 0250 Sorting filelist=Сортировка списка файлов
+0385 Scanning archive for damages=Проверка целостности архива
 
 File overwrite dialog
 0078 Confirm File Replace=Подтверждение замены файла

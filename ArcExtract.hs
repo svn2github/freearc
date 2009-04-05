@@ -43,7 +43,7 @@ runArchiveExtract pretestArchive
     -- Суперэкономия памяти: find_archives -> buffer 10_000 -> read_dir -> buffer 10_000 -> arcExtract
   doFinally uiDoneArchive2 $ do
   uiStartArchive command []  -- сообщить пользователю о начале обработки очередного архива
-  uiStage =<< i18n"0249 Reading archive directory"
+  uiStage "0249 Reading archive directory"
   command <- (command.$ opt_cook_passwords) command ask_passwords  -- подготовить пароли в команде к использованию
   let openArchive = archiveReadInfo command arc_basedir disk_basedir archive_filter (pretestArchive command)
   bracketCtrlBreak (openArchive arcname) (arcClose)$ \archive -> do

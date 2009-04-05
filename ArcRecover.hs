@@ -210,7 +210,7 @@ pretestArchive command archive footer = do
     case result of
       Just (_, sector_size, bad_crcs)  |  bad_sectors <- genericLength bad_crcs, bad_sectors>0
               -> registerError$ BROKEN_ARCHIVE (archiveName archive) ["0352 found %1 errors (%2)", show3 bad_sectors, showMemory (bad_sectors*sector_size)]
-      Just _  -> condPrintLineLn "r" "Archive OK"
+      Just _  -> condPrintLineLn "r" "Archive integrity OK"
       _       -> return ()
     -- Полное тестирование архива только при -pt3 или при -pt2 и отсутствии recovery информации в архиве
     when (opt_pretest command==3 || (opt_pretest command==2 && isNothing result)) $ do
@@ -247,6 +247,7 @@ scanArchive command archive footer recovery pool = do
       -- Занести в bad_crcs список секторов архива, чьи CRC не совпадают с контрольными.
       condPrintLineLn "r"$ show3 rec_sectors++" recovery sectors ("++showMemory (i rec_sectors*i sector_size::Integer)++") present"
       condPrintLineLn "r"$ "Scanning archive for damages..."
+      uiStage              "0385 Scanning archive for damages"
       archiveSeek archive init_pos
       buf <- pooledMallocBytes pool sector_size
       -- Размер защищённой части архива в секторах

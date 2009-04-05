@@ -78,7 +78,7 @@ runArchiveCreate pretestArchive
               registerError$ GENERAL_ERROR ["0310 can't modify archive locked with -k"]
           pretestArchive command archive footer
   --
-  uiStage =<< i18n"0249 Reading archive directory"
+  uiStage "0249 Reading archive directory"
   updatingArchive <- fileExist arcname
   main_archive    <- if updatingArchive
                        then archiveReadInfo command "" "" archive_filter abort_on_locked_archive arcname
@@ -102,7 +102,7 @@ runArchiveCreate pretestArchive
   uiStartScanning
   diskfiles <- find_diskfiles
   debugLogList "Found %1 files" diskfiles
-  uiStage =<< i18n"0250 Sorting filelist"
+  uiStage "0250 Sorting filelist"
   sorted_diskfiles <- (opt_reorder command &&& reorder) (sort_files command diskfiles)
   debugLogList "Sorted %1 files" sorted_diskfiles
   uiStartScanning  -- очистим счётчик для стадии анализа содержимого файлов
