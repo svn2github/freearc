@@ -73,6 +73,7 @@ extractDialog fm' exec cmd arcnames arcdir files = do
                                 "dir" FileChooserActionSelectFolder
                          (label "0004 Output directory:")
                                 "0021 Select output directory"
+                                []
                                 (const$ return True)
                                 (fmCanonicalizeDiskPath fm')
     ; boxPackStart vbox hbox                  PackNatural 0
@@ -248,6 +249,7 @@ settingsDialog fm' = do
                                           "logfile" FileChooserActionSave
                                    (label "0166 Logfile:")
                                           "0167 Select logfile"
+                                          []
                                           (const$ return True)
                                           (fmCanonicalizeDiskPath fm')
     ; viewLogfileButton <- button "0292 View"
@@ -523,6 +525,7 @@ encryptionPage fm' dialog okButton vbox = do
                                           "akeyfile" FileChooserActionOpen
                                 (checkBox "0123 Keyfile:")
                                           "0124 Select keyfile"
+                                          []
                                           (const$ return True)
                                           (fmCanonicalizeDiskPath fm')
   ; createKeyfile <- button "0125 Create"
@@ -613,6 +616,7 @@ decryptionBox fm' dialog = do
                                         "keyfile" FileChooserActionOpen
                                  (label "0123 Keyfile:")
                                         "0124 Select keyfile"
+                                        []
                                         (const$ return True)
                                         (fmCanonicalizeDiskPath fm')
   hbox <- hBoxNew False 0

@@ -283,6 +283,7 @@ fmOutputArchiveFileBox fm' dialog =
             "arcname" FileChooserActionSave
      (label "0131 Output archive:")
             "0132 Select output archive"
+            aARCFILE_FILTER
             (const$ return True)
             (fmCanonicalizeDiskPath fm')
 

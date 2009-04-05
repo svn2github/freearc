@@ -434,7 +434,7 @@ myGUI run args = do
   openAct `onActionActivate` do
     fm <- val fm'
     let curfile  =  if isFM_Archive fm  then fm_arcname fm  else fm_dir fm </> "."
-    chooseFile window FileChooserActionOpen "0305 Open archive" ["0307 FreeArc archives (*.arc)", "0308 Archives and SFXes (*.arc;*.exe)"] (return curfile) $ \filename -> do
+    chooseFile window FileChooserActionOpen "0305 Open archive" aARCFILE_FILTER (return curfile) $ \filename -> do
       msgboxOnError $
         chdir fm' filename
 
