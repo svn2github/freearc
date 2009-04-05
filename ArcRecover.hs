@@ -136,6 +136,7 @@ writeRecoveryBlocks archive oldarc init_pos command params bufOps = do
 
   -- ¬се параметры определены, теперь - реальна€ работа
   condPrintLineLn "r"$ "Protecting archive with "++show3 rec_sectors++" recovery sectors ("++showMemory (i rec_sectors*i sector_size::Integer)++")..."
+  uiStage              "0386 Protecting archive from damages"
   withPool $ \pool -> do
   sectors    <- pooledMallocBytes pool rec_sectors_size;   memset sectors 0 (i rec_sectors_size)
   buf        <- pooledMallocBytes pool sector_size
@@ -334,6 +335,7 @@ runArchiveRecovery command@Command{ cmd_filespecs       = filespecs
                          ++"found"
     archiveFullSize <- archiveGetSize archive
     condPrintLineLn "n"$ "Recovering "++showMem archiveFullSize++" archive..."
+    uiStage              "0387 Recovering archive"
     errors' <- ref bad
     -- ѕереходим к созданию архива с восстановленными данными
     handleCtrlBreak  (ignoreErrors$ fileRemove arcname_fixed) $ do

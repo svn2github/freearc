@@ -378,6 +378,8 @@ Progress indicator
 0249 Reading archive directory=Чтение оглавления архива
 0250 Sorting filelist=Сортировка списка файлов
 0385 Scanning archive for damages=Проверка целостности архива
+0386 Protecting archive from damages=Добавление защитной записи к архиву
+0387 Recovering archive=Восстановление архива
 
 File overwrite dialog
 0078 Confirm File Replace=Подтверждение замены файла
