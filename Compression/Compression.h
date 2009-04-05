@@ -185,8 +185,8 @@ int compressorIsEncrypted (COMPRESSOR c);
 MemSize compressorGetDecompressionMem (COMPRESSOR c);
 
 // Get/set number of threads used for (de)compression
-int  GetCompressionThreads (void);
-void SetCompressionThreads (int threads);
+int  __cdecl GetCompressionThreads (void);
+void __cdecl SetCompressionThreads (int threads);
 
 // Load (accelerated) function from facompress.dll
 FARPROC LoadFromDLL (char *funcname);

@@ -269,7 +269,7 @@ typedef uint Node0;
 #define index0(node)      ((node)%MAXHUF)
 #define cnt0(node)        ((node)/MAXHUF)
 // For stable sorting Nodes by counters
-int by_cnt_and_index (const void* a, const void* b)   {return *(const Node0*)a - *(const Node0*)b;}
+int __cdecl by_cnt_and_index (const void* a, const void* b)   {return *(const Node0*)a - *(const Node0*)b;}
 
 // Huffman tree for dynamic encoding.
 // If you want to work with block-wise static encoding, you need to
