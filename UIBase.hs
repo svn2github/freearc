@@ -56,10 +56,14 @@ data UI_State = UI_State {
   }
 
 -- |Обрабатываемая в данный момент часть архива: файл/каталог/служебные данные
-data DataType = File | Dir | CData   deriving (Eq)
+data DataType = File | Dir | CData   deriving Eq
 
 -- |Операции чтения и записи в списке операций
-data UI_RW a = UI_Read a | UI_Write a deriving Show
+data UI_RW a = UI_Read a | UI_Write a
+
+-- |Тип индикатора - только прценты или + файлы/...
+data IndicatorType = INDICATOR_PERCENTS | INDICATOR_FULL   deriving Eq
+
 
 -- Выполняемая сейчас команда
 ref_command               =  unsafePerformIO$ newIORef$ error "undefined UI::ref_command"
@@ -88,7 +92,7 @@ indicatorThread secs output =
   backgroundThread secs $ do
     whenM (val aProgressIndicatorEnabled) $ do
       operationTerminated' <- val operationTerminated
-      (indicator, arcname, direction, b, bytes', total') <- val aProgressIndicatorState
+      (indicator, indType, arcname, direction, b, bytes', total') <- val aProgressIndicatorState
       when (indicator /= NoIndicator  &&  not operationTerminated') $ do
         bytes <- bytes' b;  total <- total'
         -- Отношение объёма обработанных данных к общему объёму
@@ -97,7 +101,7 @@ indicatorThread secs output =
         let remains  = if processed>0.001  then " "++showHMS(secs/processed-secs)  else ""
             winTitle = "{"++trimLeft p++remains++"}" ++ direction ++ takeFileName arcname
             p        = percents indicator bytes total
-        output indicator winTitle b bytes total processed p
+        output indicator indType winTitle b bytes total processed p
 
 -- |Выполнять в бэкграунде action каждые secs секунд
 backgroundThread secs action =

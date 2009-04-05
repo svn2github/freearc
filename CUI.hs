@@ -38,7 +38,7 @@ import UIBase
 -- |Запускает background thread для вывода индикатора прогресса
 guiStartProgram = do
   -- Обновляем индикатор прогресса и заголовок окна раз в 0.5 секунды
-  indicatorThread 0.5 $ \indicator title b bytes total processed p -> do
+  indicatorThread 0.5 $ \indicator indType title b bytes total processed p -> do
     myPutStr$ back_percents indicator ++ p
     myFlushStdout
     setConsoleTitle title
@@ -58,13 +58,13 @@ guiStartFile = do
 -- |Приостановить вывод индикатора прогресса и стереть его следы
 uiSuspendProgressIndicator = do
   aProgressIndicatorEnabled =: False
-  (indicator, arcname, direction, b, bytes', total') <- val aProgressIndicatorState
+  (indicator, indType, arcname, direction, b, bytes', total') <- val aProgressIndicatorState
   myPutStr$ clear_percents indicator
   myFlushStdout
 
 -- |Возобновить вывод индикатора прогресса и вывести его текущее значение
 uiResumeProgressIndicator = do
-  (indicator, arcname, direction, b, bytes', total') <- val aProgressIndicatorState
+  (indicator, indType, arcname, direction, b, bytes', total') <- val aProgressIndicatorState
   bytes <- bytes' b;  total <- total'
   myPutStr$ percents indicator bytes total
   myFlushStdout

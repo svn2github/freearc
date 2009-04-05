@@ -125,7 +125,7 @@ uiStartProcessing filelist = do
                          return$ bytes + (bytes_per_sec `div` 100)*i (files ui_state)
       total = do ui_state <- val ref_ui_state
                  return$ total_bytes ui_state + (bytes_per_sec `div` 100)*i (total_files ui_state)
-  uiStartProgressIndicator command current total
+  uiStartProgressIndicator INDICATOR_FULL command current total
   myFlushStdout
 
 
@@ -432,13 +432,13 @@ uiReadData num bytes = do
 ----------------------------------------------------------------------------------------------------
 
 -- |Инициализировать индикатор прогресса
-uiStartProgressIndicator command bytes' total' = do
+uiStartProgressIndicator indType command bytes' total' = do
   bytes <- bytes' 0;  total <- total'
   arcname <- val uiArcname
   let cmd        =  cmd_name command
       direction  =  if (cmdType cmd == ADD_CMD)  then " => "  else " <= "
       indicator  =  select_indicator command total
-  aProgressIndicatorState =: (indicator, arcname, direction, 0, bytes', total')
+  aProgressIndicatorState =: (indicator, indType, arcname, direction, 0, bytes', total')
   uiResumeProgressIndicator
 
 -- |Вывести на экран и в заголовок окна индикатор прогресса (сколько процентов данных уже обработано)
@@ -448,17 +448,17 @@ uiUpdateProgressIndicator add_b = when (add_b/=0) $ do
   -- рапортуем об этом. Новые же данные только добавляются к счётчику, но не влияют
   -- на выводимую СЕЙЧАС статистику. Вот такие вот приколы в нашем городке :)
   syncUI $ do
-  (indicator, arcname, direction, b, bytes', total') <- val aProgressIndicatorState
-  aProgressIndicatorState =: (indicator, arcname, direction, b+add_b, bytes', total')
+  (indicator, indType, arcname, direction, b, bytes', total') <- val aProgressIndicatorState
+  aProgressIndicatorState =: (indicator, indType, arcname, direction, b+add_b, bytes', total')
 
 -- |Завершить вывод индикатора прогресса
 uiDoneProgressIndicator = do
   uiSuspendProgressIndicator
-  aProgressIndicatorState =: (NoIndicator, undefined, undefined, undefined, undefined, undefined)
+  aProgressIndicatorState =: (NoIndicator, undefined, undefined, undefined, undefined, undefined, undefined)
 
 -- |Обернуть выполнение команды в открытие и закрытие индикатора прогресса
 uiWithProgressIndicator command arcsize action = do
-  uiStartProgressIndicator command return (return arcsize)
+  uiStartProgressIndicator INDICATOR_PERCENTS command return (return arcsize)
   ensureCtrlBreak uiDoneProgressIndicator action
 
 {-# NOINLINE uiUpdateProgressIndicator #-}

@@ -288,6 +288,7 @@
     freezing on selecting two files and pressing Up
     ArcInfo: fixed counting of files and directories in archive
     All dialogs are now modal
+    testing archive with recovery record ("undefined UI::ref_ui_state")
 
 
   aARCHIVE_VERSION = make4byte 0 0 5 0
@@ -317,9 +318,7 @@
     Priorityio.doc
   bugs
     Попытка зайти внутрь зашифрованного архива - виснем
-    testing archive with recovery record ("undefined UI::ref_ui_state" sometimes)
     "user error" при ошибках в консольной версии
-    lzma:max - mc16????
     -max - exe+rep вместо rep+exe
     -m9x $bmp mm+delta+...
     tor:5 -> delta+tor:5:t0 ?  видимо, имеет смысл только на быстрых машинах

@@ -140,12 +140,12 @@ runIndicators = do
 
   -- Обновляем заголовок окна, статистику и надпись индикатора прогресса раз в 0.5 секунды
   i' <- ref 0   -- а сам индикатор прогресса раз в 0.1 секунды
-  indicatorThread 0.1 $ \indicator title b bytes total processed p -> postGUIAsync$ do
+  indicatorThread 0.1 $ \indicator indType title b bytes total processed p -> postGUIAsync$ do
     i <- val i'; i' += 1; let once_a_halfsecond = (i `mod` 5 == 0)
     -- Заголовок окна
     set window [windowTitle := title]                              `on` once_a_halfsecond
     -- Статистика
-    updateStats b processed                                        `on` once_a_halfsecond
+    updateStats indType b total processed                          `on` once_a_halfsecond
     -- Прогресс-бар и надпись на нём
     progressBarSetFraction progressBar processed                   `on` True
     progressBarSetText     progressBar p                           `on` once_a_halfsecond
@@ -202,12 +202,11 @@ createStats = do
   last_cmd' <- ref ""
 
   -- Процедура, выводящая текущую статистику
-  let updateStats b (processed :: Double) = do
-        UI_State { total_files = total_files
-                 , total_bytes = total_bytes
-                 , files       = files
-                 , cbytes      = cbytes
-                 }  <-  val ref_ui_state
+  let updateStats indType b total_bytes (processed :: Double) = do
+        ~UI_State { total_files = total_files
+                  , files       = files
+                  , cbytes      = cbytes
+                  }  <-  val ref_ui_state
         secs <- return_real_secs
 
         -- Для команд добавления выводится строка с Compressed/Total compressed, для остальных она скрывается
@@ -219,16 +218,16 @@ createStats = do
           mapM_ (if cmdType cmd == ADD_CMD then widgetShow else widgetHide)
                 (compressed++totalCompressed)
 
-        labelSetMarkup filesLabel$      "<b>"++show3 files++"</b>"
+        labelSetMarkup filesLabel$      "<b>"++show3 files++"</b>"         `on` indType==INDICATOR_FULL
         labelSetMarkup bytesLabel$      "<b>"++show3 b++"</b>"
-        labelSetMarkup compressedLabel$ "<b>"++show3 cbytes++"</b>"
-        labelSetMarkup totalFilesLabel$ "<b>"++show3 total_files++"</b>"
+        labelSetMarkup compressedLabel$ "<b>"++show3 cbytes++"</b>"        `on` indType==INDICATOR_FULL
+        labelSetMarkup totalFilesLabel$ "<b>"++show3 total_files++"</b>"   `on` indType==INDICATOR_FULL
         labelSetMarkup totalBytesLabel$ "<b>"++show3 total_bytes++"</b>"
         labelSetMarkup timesLabel$      "<b>"++showHMS secs++"</b>"
-        when (processed>0.001 && b>0) $ do
-        labelSetMarkup totalCompressedLabel$ "<b>~"++show3 (total_bytes*cbytes `div` b)++"</b>"
+        when (processed>0.001 && b>0 && secs>0.001) $ do
+        labelSetMarkup totalCompressedLabel$ "<b>~"++show3 (total_bytes*cbytes `div` b)++"</b>"    `on` indType==INDICATOR_FULL
         labelSetMarkup totalTimesLabel$      "<b>~"++showHMS (secs/processed)++"</b>"
-        labelSetMarkup ratioLabel$           "<b>"++ratio2 cbytes b++"%</b>"
+        labelSetMarkup ratioLabel$           "<b>"++ratio2 cbytes b++"%</b>"                       `on` indType==INDICATOR_FULL
         labelSetMarkup speedLabel$           "<b>"++showSpeed b secs++"</b>"
 
   -- Процедура, очищающая текущую статистику
