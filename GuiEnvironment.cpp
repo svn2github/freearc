@@ -60,6 +60,7 @@ int BrowseForFile(TCHAR *prompt, TCHAR *filters, TCHAR *in_filename, TCHAR *out_
   ofn.lpstrFilter = filters;
   ofn.lpstrFile   = out_filename;
   ofn.nMaxFile    = MY_FILENAME_MAX;
+  ofn.lpstrTitle  = prompt;
 
   _tcscpy (out_filename, in_filename);
 
