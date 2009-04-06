@@ -127,6 +127,7 @@ parseCmdline cmdline  =  (`mapMaybeM` split ";" cmdline) $ \args -> do
       autogenerate_arcname  =  findOptArg   o "autogenerate"  "--" ||| "%Y%m%d%H%M%S"
       indicator             =  findOptArg   o "indicator"     "1"  ||| "0"   -- по умолчанию -i1; -i эквивалентно -i0
       recovery              =  findOptArg   o "recovery"      (if take 2 cmd=="rr"  then drop 2 cmd  else "--")   -- команда "rr..." эквивалентна команде "ch -rr..."
+                                                              .$  changeTo [("0.1%","0*4kb"), ("0.01%","0*64kb")]
       orig_workdir          =  findOptArg   o "workdir" "--"   ||| "%TEMP"
       pretest               =  findOptArg   o "pretest"       "1" .$  changeTo [("-","0"), ("+","2"), ("","2")]
       broken_archive        =  findReqArg   o "BrokenArchive" "-"  ||| "0"
