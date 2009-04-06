@@ -20,7 +20,7 @@ int external_program (bool IsCompressing, CALLBACK_FUNC *callback, void *auxdata
     remove (infile);
     remove (outfile);
     FILE *f = NULL;
-    int bytes = 0;
+    uint64 bytes = 0;
     BYTE runCmd = 1;
     if (!IsCompressing && useHeader)  checked_read (&runCmd, 1);
     while ( (x = callback ("read", Buf, LARGE_BUFFER_SIZE, auxdata)) > 0 )
@@ -48,7 +48,7 @@ int external_program (bool IsCompressing, CALLBACK_FUNC *callback, void *auxdata
     registerTemporaryFile (infile);
     registerTemporaryFile (outfile);
     if (*cmd && runCmd) {
-        printf ("\n%s %d bytes with %s\n", IsCompressing? "Compressing":"Unpacking", bytes, cmd);
+        printf ("\n%s %s bytes with %s\n", IsCompressing? "Compressing":"Unpacking", show3(bytes), cmd);
         double time0 = GetGlobalTime();
         ExitCode = system (cmd);
         if (addtime)  *addtime += GetGlobalTime() - time0;

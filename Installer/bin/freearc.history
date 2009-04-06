@@ -114,7 +114,7 @@ bytes=4gb
 bytes=8gb
 
 options=0760 Perform full backup: -ep3 -ac
-options=0761 Full archive test before and after operation: -tp3 -t3
+options=0761 Full archive test before and after operation: -tp3 -t
 
 xoptions=0762 Remove pathnames: -ep
 xoptions=0763 Restore absolute pathnames: -ep3

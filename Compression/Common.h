@@ -543,6 +543,27 @@ static inline MemSize round_to_nearest_power_of (MemSize n, MemSize base)
     return result;
 }
 
+// Превращает число в строку, разделённую точками: "1.234.567"
+static inline char* show3 (uint64 n, char *buf=NULL)
+{
+    static char buffer[30];
+    if (!buf)  buf=buffer;
+    char *p = buf;
+
+    char buffer0[30];
+    _ui64toa(n,buffer0,10);
+    char *end = str_end(buffer0);
+
+    for(char *q=buffer0; *q;)
+    {
+      *p++ = *q++;
+      if ((end-q)%3 == 0)
+        *p++='.';
+    }
+    p[-1] = '\0';
+    return buf;
+}
+
 // Заменить символы из множества from на символ to
 static inline char *replace (char *str, char* from, char to)
 {

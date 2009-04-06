@@ -319,7 +319,7 @@
   bugs
     Попытка зайти внутрь зашифрованного архива - виснем
     добавление в архив с RR - глупая индикация на стадии сжатия
-    -t3, RR options, 0.1% 0.01% doesn't work
+    RR options, 0.1% 0.01% doesn't work
     "user error" при ошибках в консольной версии
     -max - exe+rep вместо rep+exe
     -m9x $bmp mm+delta+...
