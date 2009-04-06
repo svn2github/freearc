@@ -56,7 +56,6 @@ int external_program (bool IsCompressing, CALLBACK_FUNC *callback, void *auxdata
         rename (infile, outfile);
     }
 
-
     // Прочитаем выходные данные из временного файла, если команда завершилась успешно и его можно открыть
     if(ExitCode==0)  f = fopen (outfile, "rb" );
     if (f) {
@@ -70,6 +69,7 @@ int external_program (bool IsCompressing, CALLBACK_FUNC *callback, void *auxdata
         unregisterTemporaryFile (infile);
         if (IsCompressing && !useHeader)    {remove (infile); return FREEARC_ERRCODE_GENERAL;}
         remove (outfile);
+        if (!IsCompressing)                 {remove (infile); return FREEARC_ERRCODE_INVALID_COMPRESSOR;}
         outfile = infile;
         f = fopen (outfile, "rb" );
         if (!f)                             {remove (outfile); return FREEARC_ERRCODE_IO;}
@@ -100,6 +100,7 @@ char *prepare_cmd (EXTERNAL_METHOD *p, char *cmd)
 {
     // Replace "{options}" or "{-option }" in packcmd with string like "-m48 -r1 " (for "pmm:m48:r1" method string)
     char *OPTIONS_STR = "{options}",  *OPTION_STR = "option";
+    char OPTIONS_START = '{',  OPTIONS_END = '}';
 
     // Params of option template in cmd line
     char before[MAX_METHOD_STRLEN] = "-";
@@ -113,17 +114,17 @@ char *prepare_cmd (EXTERNAL_METHOD *p, char *cmd)
         // search for '{'
         for (char *p1 = cmd; *p1; p1++)
         {
-            if (*p1=='{')
+            if (*p1 == OPTIONS_START)
             {
                 // search for '}'
                 char *p2 = p1, *p12 = NULL;
                 for (; *p2; p2++)
                 {
-                    if (*p2=='}')  break;
+                    if (*p2 == OPTIONS_END)  break;
                     if (start_with(p2, OPTION_STR))  p12 = p2;
                 }
                 // if we have "option" inside of "{...}"
-                if (*p2=='}' && p12)
+                if (*p2==OPTIONS_END && p12)
                 {
                     // Save strings before and after "option" and how many chars in cmd to replace
                     strncopy (before, p1+1, p12-p1-1 + 1);
