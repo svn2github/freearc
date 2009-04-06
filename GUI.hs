@@ -204,12 +204,15 @@ createStats = do
   totalCompressed @ [_, totalCompressedLabel] <- newLabel2 3 2 "0253 Total compressed"
   last_cmd' <- ref ""
 
-  -- Процедура, выводящая текущую статистику
-  let updateStats indType b total_bytes (processed :: Double) = do
+  -- Процедура, выводящая текущую статистику (indType==INDICATOR_FULL - полноценный индикатор, иначе - только проценты, например операции с RR)
+  let updateStats indType b total_b (processed :: Double) = do
         ~UI_State { total_files = total_files
+                  , total_bytes = total_bytes
                   , files       = files
                   , cbytes      = cbytes
                   }  <-  val ref_ui_state
+        total_bytes <- return (if indType==INDICATOR_FULL  then total_bytes  else total_b)
+        -- Общее время с начала операции и момент когда начался показ текущего индикатора прогресса
         secs <- return_real_secs
         sec0 <- val indicator_start_real_secs
 
