@@ -285,8 +285,8 @@ runArchiveRecovery command@Command{ cmd_filespecs       = filespecs
                                   , opt_save_bad_ranges = opt_save_bad_ranges
                                   } = do
   doFinally uiDoneArchive2 $ do
-  let arcname_fixed = "fixed."++arcname
-  condPrintLineLn "n"$ "Recovering archive "++arcname
+  uiStartArchive command []
+  let arcname_fixed = arcname `replaceBaseName` ("fixed."++takeBaseName arcname)
   whenM (fileExist arcname_fixed) $ do
     registerError$ GENERAL_ERROR ["0346 file %1 already exists", arcname_fixed]
   command <- (command.$ opt_cook_passwords) command ask_passwords  -- подготовить пароли в команде к использованию

@@ -100,7 +100,8 @@ indicatorThread secs output =
         -- Отношение объёма обработанных данных к общему объёму
         let processed = total>0 &&& (fromIntegral bytes / fromIntegral total :: Double)
         secs <- return_real_secs
-        let remains  = if processed>0.001  then " "++showHMS(secs/processed-secs)  else ""
+        sec0 <- val indicator_start_real_secs
+        let remains  = if processed>0.001  then " "++showHMS(sec0+(secs-sec0)/processed-secs)  else ""
             winTitle = "{"++trimLeft p++remains++"}" ++ direction ++ takeFileName arcname
             p        = percents indicator bytes total
         output indicator indType winTitle b bytes total processed p
@@ -257,6 +258,7 @@ msgStart cmd arcExist =
                   (LIST_CMD,    _)      ->  "Listing archive: "
                   (TEST_CMD,    _)      ->  "Testing archive: "
                   (EXTRACT_CMD, _)      ->  "Extracting archive: "
+                  (RECOVER_CMD, _)      ->  "Recovering archive: "
 
 msgDo cmd    =  case (cmdType cmd) of
                   ADD_CMD     -> "Compressing "
