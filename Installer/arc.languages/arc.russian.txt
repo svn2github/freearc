@@ -500,22 +500,21 @@ Errors returned by compression methods
 
 === Standard profiles ====================================================
 Compression
-0727 Maximum (1gb decompression)=Максимальное (1Гб для распаковки)
-0728 Maximum (192mb decompression)=Максимальное (192Мб для распаковки)
-0729 Maximum (fast, low-memory decompression)=Максимальное с быстрой распаковкой
+0771 Maximum=Максимальное
+0772 Maximum with fast decompression=Максимальное с быстрой распаковкой
 0752 No compression=Без сжатия
 
 Encryption
+0733 Strongest=Максимальное
+0732 Strong=Сильное
 0730 Standard=Стандартное
 0731 Fast=Быстрое
-0732 Strong=Сильное
-0733 Strongest=Максимальное
 
 Protection
-0769 Add, auto-sized (1-4%)=Добавить, авторазмер (1-4%)
+0769 Add (autosize, 1-4%)=Добавить (авторазмер, 1-4%)
 0735 Remove=Удалить
 0734 Add=Добавить
-0770 Add, for recovery from Internet=Добавить, для восстановления из интернета
+0770 Add for recovery via Internet=Добавить для восстановления по интернету
 
 Comment
 0740 Add from textbox=Добавить введённый на закладке текст

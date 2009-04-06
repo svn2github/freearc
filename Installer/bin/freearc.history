@@ -1,7 +1,6 @@
 compressionLast=0110 Normal: -m4 -s64m
-compression=0727 Maximum (1gb decompression): -mx -ld=1gb
-compression=0728 Maximum (192mb decompression): -mx -ld=192m
-compression=0729 Maximum (fast, low-memory decompression): -m9x
+compression=0771 Maximum: -mx -ld=192m
+compression=0772 Maximum with fast decompression: -m9x -ld=192m -s256m
 compression=0109 High: -m5 -s128m
 compression=0110 Normal: -m4 -s64m
 compression=0111 Fast: -m3 -s32m
@@ -29,14 +28,14 @@ encryptor=aes/cfb
 encryptor=aes-128/cfb
 encryptor=aes:r100
 
-protectionLast=0769 Add, auto-sized (1-4%):
-protection=0769 Add, auto-sized (1-4%):
+protectionLast=0769 Add (autosize, 1-4%):
+protection=0769 Add (autosize, 1-4%):
 protection=0735 Remove: -
 protection=0734 Add: 5%
 protection=0734 Add: 10%
 protection=0734 Add: 20%
 protection=0734 Add: 10mb
-protection=0770 Add, for recovery from Internet: 0.01%
+protection=0770 Add for recovery via Internet: 0.01%
 
 commentLast=0740 Add from textbox:
 comment=0740 Add from textbox:
