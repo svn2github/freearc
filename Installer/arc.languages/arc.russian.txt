@@ -512,12 +512,10 @@ Encryption
 0733 Strongest=Максимальное
 
 Protection
-0734 Add=Добавить
+0769 Add, auto-sized (1-4%)=Добавить, авторазмер (1-4%)
 0735 Remove=Удалить
-0736 Internet-only (4kb blocks)=Только для восстановления через Internet (4кб блоки)
-0737 Internet-only (64kb blocks)=Только для восстановления через Internet (64кб блоки)
-0738 Percents, example=В процентах, пример
-0739 Fixed-size, example=Фиксированного размер, пример
+0734 Add=Добавить
+0770 Add, for recovery from Internet=Добавить, для восстановления из интернета
 
 Comment
 0740 Add from textbox=Добавить введённый на закладке текст

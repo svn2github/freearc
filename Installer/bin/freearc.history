@@ -29,13 +29,14 @@ encryptor=aes/cfb
 encryptor=aes-128/cfb
 encryptor=aes:r100
 
-protectionLast=0734 Add:
-protection=0734 Add:
+protectionLast=0769 Add, auto-sized (1-4%):
+protection=0769 Add, auto-sized (1-4%):
 protection=0735 Remove: -
-protection=0736 Internet-only (4kb blocks): 0.1%
-protection=0737 Internet-only (64kb blocks): 0.01%
-protection=0738 Percents, example: 5%
-protection=0739 Fixed-size, example: 1mb
+protection=0734 Add: 5%
+protection=0734 Add: 10%
+protection=0734 Add: 20%
+protection=0734 Add: 10mb
+protection=0770 Add, for recovery from Internet: 0.01%
 
 commentLast=0740 Add from textbox:
 comment=0740 Add from textbox:
