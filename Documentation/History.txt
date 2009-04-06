@@ -433,6 +433,7 @@
         -hp-  - снять шифрование
         -hpxx - включить шифрование
     an additional progressbar for big files, like in Winrar
+    progress indicator - обновлять при копировании солид-блоков (archiveCopyData)
     DoubleClick->Run inside archive
     нет списка дисков на верхнем уровне, нет ".."
     Performance problems
@@ -454,7 +455,7 @@
     Recover, including "Original:"
     возможность сохранения чего-то типа "проекта" как в Nero, т.е. чтобы был список файлов + все настроики
     команды View, Queue/Apply; d&d support
-    winarc a/x --dialog - открыть диалог добавления/распаковки (для Total Commander, например)
+    freearc a/x --dialog - открыть диалог добавления/распаковки (для Total Commander, например)
     формировать команду внизу диалогов распаковки/сжатия/модификации и выполнять её (так чтобы пользователь мог отредактировать)
     галочка "Detach operation" во всех диалогах операций, запускающая отдельную копию WinArc для выполнения операции!
     "Detach" FM button and appropriate syntax: "freearc c:\dir file1 file2 file3 /select file1"

@@ -261,12 +261,6 @@ settingsDialog fm' = do
       i18ns["0168 You should restart FreeArc in order for a language settings to take effect.",
             "0169 Passwords need to be entered again after restart."]
 
------- Закладка сжатия ------------------------------------------------------------------------
-    (_, saveCompressionHistories) <- compressionPage fm' =<< newPage "0106 Compression"
-
------- Закладка шифрования ------------------------------------------------------------------------
-    (_, saveEncryptionHistories)  <-  encryptionPage fm' dialog okButton =<< newPage "0119 Encryption"
-
 -----------------------------------------------------------------------------------------------
     -- Информация о текущем языке локализации
     langTable <- tableNew 2 2 False
@@ -368,6 +362,21 @@ settingsDialog fm' = do
     boxPackStart vbox       (widget  registerButton)     PackNatural 5   `on` isWindows
     boxPackStart vbox       (widget  notes)              PackNatural 5
 
+------ Закладка сжатия ------------------------------------------------------------------------
+    (_, saveCompressionHistories) <- compressionPage fm' =<< newPage "0106 Compression"
+
+------ Закладка шифрования --------------------------------------------------------------------
+    (_, saveEncryptionHistories)  <-  encryptionPage fm' dialog okButton =<< newPage "0119 Encryption"
+
+------ Закладка информации о системе ----------------------------------------------------------
+    vbox <- newPage "0999 Info";  let pack n makeControl = do control <- makeControl
+                                                              boxPackStart vbox control PackNatural n
+
+    maxBlock <- getMaxMemToAlloc
+    pack 10 $twoColumnTable [("0999 Largest contiguous free memblock:", showMem (maxBlock `roundDown` mb))]
+
+
+-----------------------------------------------------------------------------------------------
     widgetShowAll upbox
     choice <- fmDialogRun fm' dialog "SettingsDialog"
     windowPresent (fm_window fm)
