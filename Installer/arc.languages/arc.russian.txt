@@ -431,7 +431,7 @@ Archive comment dialog
 0301 SUCCESFULLY LOCKED ARCHIVE %1=УСПЕШНО ЗАФИКСИРОВАН АРХИВ %1
 0302 %2 WARNINGS WHILE LOCKING ARCHIVE %1=%2 ПРЕДУПРЕЖДЕНИЙ ПРИ ФИКСАЦИИ АРХИВА %1
 
-0381 Repair archive(s)?=Восстановить повреждённый архив(ы)?
+0381 Repair archive(s)? Repaired archive(s) will be placed into files named fixed.*=Восстановить повреждённые архив(ы)? Восстановленные архив(ы) будут помещены в файлы fixed.*
 0382 Repairing archive %1=Восстановление архива %1
 0383 SUCCESFULLY REPAIRED ARCHIVE %1=УСПЕШНО ВОССТАНОВЛЕН АРХИВ %1
 0384 %2 WARNINGS WHILE REPAIRING ARCHIVE %1=%2 ПРЕДУПРЕЖДЕНИЙ ПРИ ВОССТАНОВЛЕНИИ АРХИВА %1

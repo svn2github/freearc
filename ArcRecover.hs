@@ -153,6 +153,7 @@ writeRecoveryBlocks archive oldarc init_pos command params bufOps = do
   uiWithProgressIndicator command arcsize $ do
     doChunks arcsize sector_size $ \bytes -> do
       uiUpdateProgressIndicator (i bytes)
+      failOnTerminated
       len <- archiveReadBuf archive buf bytes
       crc <- calcCRC buf bytes
       ByteStream.write crc_stream crc
@@ -260,6 +261,7 @@ scanArchive command archive footer recovery pool = do
         uiWithProgressIndicator command arcsize $ do
           doChunks arcsize sector_size $ \bytes -> do
             uiUpdateProgressIndicator (i bytes)
+            failOnTerminated
             len <- archiveReadBuf archive buf bytes
             -- Xor'им сектора, соответствующие одному recovery сектору, чтобы получить данные для восстановления сбойного сектора
             when (recovery && rec_sectors>0) $ do
@@ -353,6 +355,7 @@ runArchiveRecovery command@Command{ cmd_filespecs       = filespecs
     uiWithProgressIndicator command arcsize $ do
       doChunks arcsize sector_size $ \bytes -> do
         uiUpdateProgressIndicator (i bytes)
+        failOnTerminated
         i <- val i';  when (rec_sectors>0) $  do i `seq` (i' =: (i+1) `mod` rec_sectors)
         n <- val n';  n' =: n+1
         len <- archiveReadBuf archive buf bytes

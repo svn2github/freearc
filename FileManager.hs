@@ -594,7 +594,7 @@ myGUI run args = do
   -- Восстановить повреждённый архив
   repairAct `onActionActivate` do
     multiArchiveOperation fm' $ \archives -> do
-      let msg = "0381 Repair archive(s)?"
+      let msg = "0381 Repair archive(s)? Repaired archive(s) will be placed into files named fixed.*"
       whenM (askOkCancel window (formatn msg [head archives, show3$ length archives])) $ do
         closeFMArc fm'
         for archives $ \arcname -> do
