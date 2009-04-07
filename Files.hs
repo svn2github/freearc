@@ -195,6 +195,13 @@ myregCreateStringValue root bracnch key val =
 #endif
 
 
+#if defined(FREEARC_WIN)
+-- |OS-specific thread id
+foreign import stdcall unsafe "windows.h GetCurrentThreadId"
+  getOsThreadId :: IO DWORD
+#endif
+
+
 ----------------------------------------------------------------------------------------------------
 ---- Операции с неоткрытыми файлами и каталогами ---------------------------------------------------
 ----------------------------------------------------------------------------------------------------

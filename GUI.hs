@@ -57,7 +57,7 @@ aARCFILE_FILTER = ["0307 FreeArc archives (*.arc)", "0308 Archives and SFXes (*.
 -- |Инициализирует Gtk и создаёт начальное окно программы
 startGUI action = runInBoundThread $ do
   unsafeInitGUIForThreadedRTS
-  guiThread =:: myThreadId
+  guiThread =:: getOsThreadId
   action >>= widgetShowAll
   mainGUI
 
@@ -67,6 +67,7 @@ guiThread  =  unsafePerformIO$ newIORef$ error "undefined GUI::guiThread"
 -- |Инициализация GUI-части программы
 guiStartProgram = forkIO$ startGUI (fmap fst runIndicators)
 
+{-# NOINLINE runIndicators #-}
 -- |Создаёт окно индикатора прогресса и запускает тред для его периодического обновления.
 runIndicators = do
   -- INI-файл
@@ -241,8 +242,6 @@ createStats = do
   let clearStats  =  val labels' >>= mapM_ (`labelSetMarkup` "     ")
   --
   return (textBox, updateStats, clearStats)
-
-{-# NOINLINE runIndicators #-}
 
 
 -- |Вызывается в начале обработки файла
@@ -453,7 +452,7 @@ uiInputArcComment old_comment = gui$ do
 -- |Выполнить операцию в GUI-треде
 gui action = do
   gui <- val guiThread
-  my  <- myThreadId
+  my  <- getOsThreadId
   if my==gui  then action else do
   x <- ref Nothing
   y <- postGUISync (action `catch` (\e -> do x=:Just e; return undefined))
