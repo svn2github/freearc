@@ -225,17 +225,17 @@ createStats = do
           mapM_ (if cmdType cmd == ADD_CMD then widgetShow else widgetHide)
                 (compressed++totalCompressed)
 
-        labelSetMarkup filesLabel$      "<b>"++show3 files++"</b>"         `on` indType==INDICATOR_FULL
-        labelSetMarkup bytesLabel$      "<b>"++show3 b++"</b>"
-        labelSetMarkup compressedLabel$ "<b>"++show3 cbytes++"</b>"        `on` indType==INDICATOR_FULL
-        labelSetMarkup totalFilesLabel$ "<b>"++show3 total_files++"</b>"   `on` indType==INDICATOR_FULL
-        labelSetMarkup totalBytesLabel$ "<b>"++show3 total_bytes++"</b>"
-        labelSetMarkup timesLabel$      "<b>"++showHMS secs++"</b>"
+        labelSetMarkup filesLabel$           bold$ show3 files                                  `on` indType==INDICATOR_FULL
+        labelSetMarkup bytesLabel$           bold$ show3 b
+        labelSetMarkup compressedLabel$      bold$ show3 cbytes                                 `on` indType==INDICATOR_FULL
+        labelSetMarkup totalFilesLabel$      bold$ show3 total_files                            `on` indType==INDICATOR_FULL
+        labelSetMarkup totalBytesLabel$      bold$ show3 total_bytes
+        labelSetMarkup timesLabel$           bold$ showHMS secs
         when (processed>0.001 && b>0 && secs-sec0>0.001) $ do
-        labelSetMarkup totalCompressedLabel$ "<b>~"++show3 (total_bytes*cbytes `div` b)++"</b>"    `on` indType==INDICATOR_FULL
-        labelSetMarkup ratioLabel$           "<b>"++ratio2 cbytes b++"%</b>"                       `on` indType==INDICATOR_FULL
-        labelSetMarkup totalTimesLabel$      "<b>~"++showHMS (sec0 + (secs-sec0)/processed)++"</b>"
-        labelSetMarkup speedLabel$           "<b>"++showSpeed b (secs-sec0)++"</b>"
+        labelSetMarkup totalCompressedLabel$ bold$ "~"++show3 (total_bytes*cbytes `div` b)      `on` indType==INDICATOR_FULL
+        labelSetMarkup ratioLabel$           bold$ ratio2 cbytes b++"%"                         `on` indType==INDICATOR_FULL
+        labelSetMarkup totalTimesLabel$      bold$ "~"++showHMS (sec0 + (secs-sec0)/processed)
+        labelSetMarkup speedLabel$           bold$ showSpeed b (secs-sec0)
 
   -- Процедура, очищающая текущую статистику
   let clearStats  =  val labels' >>= mapM_ (`labelSetMarkup` "     ")
