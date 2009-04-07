@@ -48,7 +48,8 @@ int external_program (bool IsCompressing, CALLBACK_FUNC *callback, void *auxdata
     registerTemporaryFile (infile);
     registerTemporaryFile (outfile);
     if (*cmd && runCmd) {
-        printf ("\n%s %s bytes with %s\n", IsCompressing? "Compressing":"Unpacking", show3(bytes), cmd);
+    	char temp[30];
+        printf ("\n%s %s bytes with %s\n", IsCompressing? "Compressing":"Unpacking", show3(bytes,temp), cmd);
         double time0 = GetGlobalTime();
         ExitCode = system (cmd);
         if (addtime)  *addtime += GetGlobalTime() - time0;

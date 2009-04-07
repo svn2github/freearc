@@ -544,12 +544,10 @@ static inline MemSize round_to_nearest_power_of (MemSize n, MemSize base)
 }
 
 // Превращает число в строку, разделённую точками: "1.234.567"
-static inline char* show3 (uint64 n, char *buf=NULL)
+static inline char* show3 (uint64 n, char *buf)
 {
-    static char buffer[28];
-    int i = 4;
-    if (!buf)  buf=buffer;
     char *p = buf + 27;
+    int i = 4;
 
     *p = '\0';
     do {
