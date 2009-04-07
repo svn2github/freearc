@@ -16,7 +16,7 @@
 
 Language name in english and mother tongue
 0000 Language=German (Deutsch)
-0159 Copyright=Vacon\nPeter Bauder (based on 7zip language file;edited for FreeArc-0.50-win32-alpha-2009-04-04)\nOriginal copyrights:\nTranslated by Soeren Finster\n7-Zip 4.07 beta\nUpdated by JAK-Software.DE\n7-Zip 4.55 beta\nMaintained by Joachim Henke (since 4.12 beta)
+0159 Copyright=Vacon\nPeter Bauder alias JangoFat (based on 7zip language file;edited for FreeArc-0.50-win32-alpha-2009-04-07)\nOriginal copyrights:\nTranslated by Soeren Finster\n7-Zip 4.07 beta\nUpdated by JAK-Software.DE\n7-Zip 4.55 beta\nMaintained by Joachim Henke (since 4.12 beta)
 
 Language-specific URLs relative to http://freearc.org/ and helpfiles
 Filled only for languages providing their own translations
@@ -56,8 +56,6 @@ File menu/toolbar
 Commands menu/toolbar
 0030 Add=Hinzufügen
 0040 Add files to archive(s)=Fügt die markierten Objekte zu einem vorhandenen bzw. zu einem neuen Archiv hinzu
-0031 Modify=Modifizieren
-0041 Modify archive(s)=Archiv(e) modifizieren
 0035 Extract=Entpacken
 0045 Extract files from archive(s)=Dateien aus dem gewählten Archiv entpacken
 0034 Test=Überprüfen
@@ -80,6 +78,10 @@ Tools menu/toolbar
 0273 Encrypt archive contents=Archivinhalt verschlüsseln
 0274 Protect=Wiederherstellungsinfos...
 0275 Add Recovery record to archive=Fügt Wiederherstellungsinformationen zum Archiv hinzu
+0379 Repair=Reparieren
+0380 Repair damaged archive=Beschädigtes Archiv reparieren
+0031 Modify=Modifizieren
+0041 Modify archive(s)=Archiv(e) modifizieren
 0032 Join=Verbinden...
 0042 Join archives together=Archive verbinden
 
@@ -375,6 +377,9 @@ Progress indicator
 0248 Analyzed %1 files= %1 Datei(en) analysiert
 0249 Reading archive directory=Lese Archivordner
 0250 Sorting filelist=Ordne Dateiliste
+0385 Scanning archive for damages=Scanne Archiv auf Schäden
+0386 Protecting archive from damages=Füge Wiederherstellungsinformationen hinzu
+0387 Recovering archive=Stelle Archiv wieder her
 
 File overwrite dialog
 0078 Confirm File Replace=Überschreiben bestätigen
@@ -425,6 +430,11 @@ Archive comment dialog
 0300 Locking archive %1=Verschließe Archiv %1
 0301 SUCCESFULLY LOCKED ARCHIVE %1=ARCHIV %1 ERFOLGREICH VERSCHLOSSEN
 0302 %2 WARNINGS WHILE LOCKING ARCHIVE %1=%2 WARNUNGEN WÄHREND DEM VERSCHLIEßEN DES ARCHIVS %1
+
+0381 Repair archive(s)? Repaired archive(s) will be placed into files named fixed.*=Archiv(e) reparieren? Reparierte(s) Archiv(e) werden wie folgt umbenannt \"fixed.*\"
+0382 Repairing archive %1=Repariere Archiv %1
+0383 SUCCESFULLY REPAIRED ARCHIVE %1=ARCHIV %1 ERFOLGREICH REPARIERT
+0384 %2 WARNINGS WHILE REPAIRING ARCHIVE %1=%2 WARNUNGEN WÄHREND DEM REPARIEREN DES ARCHIVS %1
 
 
 === Error messages =======================================================
@@ -490,24 +500,21 @@ Errors returned by compression methods
 
 === Standard profiles ====================================================
 Compression
-0727 Maximum (1gb decompression)=Maximum (Entpacken mit 1GB Speicherbedarf)
-0728 Maximum (192mb decompression)=Maximum (Entpacken mit 192MB Speicherbedarf)
-0729 Maximum (fast, low-memory decompression)=Maximum (Schnelles Entpacken mit geringem Speicherbedarf)
+0771 Maximum=Maximum
+0772 Maximum with fast decompression=Maximum (mit schneller Dekompression)
 0752 No compression=Keine Kompression (nur speichern)
 
 Encryption
+0733 Strongest=Stärkste
+0732 Strong=Stark
 0730 Standard=Standard
 0731 Fast=Schnell
-0732 Strong=Stark
-0733 Strongest=Stärkste
 
 Protection
-0734 Add=hinzufügen
+0769 Add (autosize, 1-4%)=Hinzufügen (autom. Größenbestimmung, 1-4%)
 0735 Remove=entfernen
-0736 Internet-only (4kb blocks)=nur für Archive aus dem Internet (4kb Blöcke)
-0737 Internet-only (64kb blocks)=nur für Archive aus dem Internet (64kb Blöcke)
-0738 Percents, example=Prozent, Beispiel
-0739 Fixed-size, example=Angegebene Größe, Beispiel
+0734 Add=hinzufügen
+0770 Add for recovery via Internet=Hinzufügen (für Wiederherstellung von Dateien aus dem Internet)
 
 Comment
 0740 Add from textbox=aus Textbox einfügen

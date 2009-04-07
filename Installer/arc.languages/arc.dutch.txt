@@ -18,9 +18,12 @@ Language name in english and mother tongue
 0000 Language=Dutch (Nederlands)
 0159 Copyright=Vertaald door (Translated by):\nPatrick Noyens (aka Pat357)\nFerry Heibrink \n1 april 2009
 
-Language-specific URLs relative to http://freearc.org and helpfiles
+Language-specific URLs relative to http://freearc.org/ and helpfiles
+Filled only for languages providing their own translations
 0254 Homepage=??
 0255 News page=??
+0371 Forum page=??
+0372 Wiki page=??
 0256 Helpfile=??
 0257 Command-line help=??
 
@@ -53,8 +56,6 @@ File menu/toolbar
 Commands menu/toolbar
 0030 Add=Toevoegen
 0040 Add files to archive(s)=Toevoegen bestanden/mappen aan archief
-0031 Modify=Wijzigen
-0041 Modify archive(s)=Wijzig parameters archief
 0035 Extract=Uitpakken
 0045 Extract files from archive(s)=Bestanden uitpakken vanuit het geselecteerde archief.
 0034 Test=Test
@@ -77,6 +78,10 @@ Tools menu/toolbar
 0273 Encrypt archive contents=Archief beveiligen met paswoord
 0274 Protect=Herstelinformatie
 0275 Add Recovery record to archive=Herstelinformatie toevoegen
+0379 Repair=Herstellen
+0380 Repair damaged archive=Beschadigd archief herstellen
+0031 Modify=Wijzigen
+0041 Modify archive(s)=Wijzig parameters archief
 0032 Join=Samenvoegen
 0042 Join archives together=Archieven samenvoegen
 
@@ -93,8 +98,12 @@ Help menu/toolbar
 0281 Help on using FreeArc=Help voor Freearc
 0282 Cmdline help=Help voor console versie
 0283 Help on FreeArc command line=Help over console-versie (ARC.EXE)
-0284 Goto Homepage=Ga naar website
+0284 Open Homepage=Ga naar website
 0285 Open program site=Open website
+0373 Open forum=Forum openen in browser
+0374 Open program forum=FreeArc forum openen in browser
+0375 Open wiki=Wiki openen in browser
+0376 Open program wiki=FreeArc Wiki openen in browser
 0286 Check for update=Controleer updates
 0287 Check for new program versions=Controleer nieuwe versies
 0288 About=Over FreeArc
@@ -368,6 +377,9 @@ Progress indicator
 0248 Analyzed %1 files=%1 bestanden geanalyzeerd
 0249 Reading archive directory=Inlezen archiefmap
 0250 Sorting filelist=Sorteren bestandslijst
+0385 Scanning archive for damages=Archief controleren op beschadigingen
+0386 Protecting archive from damages=Hersteldata aan archief toevoegen
+0387 Recovering archive=Archief herstellen
 
 File overwrite dialog
 0078 Confirm File Replace=Bevestigen overschijven bestand
@@ -418,6 +430,11 @@ Archive comment dialog
 0300 Locking archive %1=Vergrendelen archief %1
 0301 SUCCESFULLY LOCKED ARCHIVE %1= ARCHIEF %1 SUCCESVOL VERGRENDELD
 0302 %2 WARNINGS WHILE LOCKING ARCHIVE %1=%2 WAARSCHUWINGEN TIJDENS VERGRENDELEN ARCHIEF %1
+
+0381 Repair archive(s)? Repaired archive(s) will be placed into files named fixed.*=Archieven herstellen? Herstelde archieven worden automatisch FIXED.* genoemd
+0382 Repairing archive %1=Herstel archief %1
+0383 SUCCESFULLY REPAIRED ARCHIVE %1=Archief % succesvol hersteld
+0384 %2 WARNINGS WHILE REPAIRING ARCHIVE %1=%Er waren 2 waarschuwingen tijdens herstellen van archief %1
 
 
 === Error messages =======================================================
@@ -470,6 +487,8 @@ Archive comment dialog
 0356 archive directory not found=Archief-map niet gevonden
 0357 archive signature not found at the end of archive=Geen archief-signature gevonden aan het einde van het archief
 0358 last block of archive is not footer block=Laatste blok van archive is geen correct 'footer-block'
+0377 command "%1" shouldn't have additional arguments=opdracht "%1" mag geen opties hebben
+0378 bad name or parameters in encryption algorithm %1=ongeldige naam of optie(s) in encryptie-algoritme
 
 Errors returned by compression methods
 0365 general (de)compression error=algemene fout bij inpakken of uitpakken
@@ -481,24 +500,21 @@ Errors returned by compression methods
 
 === Standard profiles ====================================================
 Compression
-0727 Maximum (1gb decompression)=Maximum (1GB nodig voor uitpakken)
-0728 Maximum (192mb decompression)=Maximum (192MB nodig voor uitpakken)
-0729 Maximum (fast, low-memory decompression)=Maximum (snel, minimum-gehegengebruik)
+0771 Maximum=Maximaal
+0772 Maximum with fast decompression=Maximaal met snelle decompressie
 0752 No compression=geen compressie
 
 Encryption
+0733 Strongest=Sterkst
+0732 Strong=Sterk
 0730 Standard=Standaard
 0731 Fast=Snel
-0732 Strong=Sterk
-0733 Strongest=Sterkst
 
 Protection
-0734 Add=Toevoegen
+0769 Add (autosize, 1-4%)=Toevoegen (autosize, 1-4%)
 0735 Remove=Verwijderen
-0736 Internet-only (4kb blocks)=Alleen internet (4KB blokken)
-0737 Internet-only (64kb blocks)=Alleen internet (64KB blokken)
-0738 Percents, example=Procenten, voorbeeld
-0739 Fixed-size, example=Vaste grootte, voorbeeld
+0734 Add=Toevoegen
+0770 Add for recovery via Internet=Herstelinformatie toevoegen via internet?
 
 Comment
 0740 Add from textbox=Toevoegen vanuit tekstvak
@@ -531,7 +547,16 @@ Archive name template
 0759 Weekday=Week Dag
 
 Exclude
-0760 Backup files=Backup bestanden
+0753 Backup files=Backup betanden
+
+Additional compression options
+0760 Perform full backup=Backup bestanden
+0761 Full archive test before and after operation=Archieven testen voor en na uitvoeren van opdracht?
+
+Additional extraction options
+0762 Remove pathnames=Bestands-paden verwijderen?
+0763 Restore absolute pathnames=Absolute bestandsnamen terugzetten?
+0764 Full archive test before performing operation=Archieven testen voor uitvoeren van opdracht?
 
 
 === Tooltips (index=N+1000) ===========================================
