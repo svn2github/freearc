@@ -141,11 +141,7 @@ arcinfoDialog fm' exec mode arcnames arcdir files = do
   let wintitle  =  format title (takeFileName arcname)
   -- Создадим диалог со стандартными кнопками OK/Cancel
   fmDialog fm' wintitle $ \(dialog,okButton) -> do
-    upbox <- dialogGetUpper dialog
-    -- Поместим все контролы в симпатичный notebook и упростим процедуру создания новых страниц
-    nb <- notebookNew;  boxPackStart upbox nb PackGrow 0
-    let newPage name = do vbox <- vBoxNew False 0; notebookAppendPage nb vbox =<< i18n name
-                          return vbox
+    (nb,newPage) <- startNotebook dialog
 ------ Главная закладка ----------------------------------------------------------------------------
     vbox <- newPage "0174 Main";  let pack n makeControl = do control <- makeControl
                                                               boxPackStart vbox control PackNatural n
@@ -205,7 +201,7 @@ arcinfoDialog fm' exec mode arcnames arcdir files = do
     comment <- scrollableTextView (ftComment footer) []
     boxPackStart vbox (widget comment) PackGrow 0
 
-    widgetShowAll upbox
+    widgetShowAll dialog
     notebookSetCurrentPage nb 1    `on` mode==CommentMode
     choice <- fmDialogRun fm' dialog "ArcInfoDialog"
     windowPresent (fm_window fm)
@@ -232,11 +228,7 @@ arcinfoDialog fm' exec mode arcnames arcdir files = do
 settingsDialog fm' = do
   fm <- val fm'
   fmDialog fm' "0067 Settings" $ \(dialog,okButton) -> do
-    upbox <- dialogGetUpper dialog
-    -- Поместим все контролы в симпатичный notebook и упростим процедуру создания новых страниц
-    nb <- notebookNew;  boxPackStart upbox nb PackGrow 0
-    let newPage name = do vbox <- vBoxNew False 0; notebookAppendPage nb vbox =<< i18n name
-                          return vbox
+    (nb,newPage) <- startNotebook dialog
 ------ Главная закладка ----------------------------------------------------------------------
     vbox <- newPage "0174 Main";  let pack x = boxPackStart vbox x PackNatural 1
     aboutLabel         <- labelNewWithMnemonic aARC_HEADER
@@ -377,7 +369,7 @@ settingsDialog fm' = do
 
 
 -----------------------------------------------------------------------------------------------
-    widgetShowAll upbox
+    widgetShowAll dialog
     choice <- fmDialogRun fm' dialog "SettingsDialog"
     windowPresent (fm_window fm)
     when (choice==ResponseOk) $ do
@@ -690,6 +682,15 @@ runEditCommand filename  = run (iif isWindows "notepad" "gedit") [filename]
 -- |Определяет то, как имена каталогов подставляются в команды
 addCmdFiles dirname =  [dirname++"/"]
 xCmdFiles   dirname =  [dirname++"/*"]
+
+-- Поместим все контролы в симпатичный notebook и получим процедуру создания новых страниц в нём
+startNotebook dialog = do
+  upbox <- dialogGetUpper dialog
+  nb <- notebookNew;  boxPackStart upbox nb PackGrow 0
+  let newPage name = do hbox <- hBoxNew False 0; notebookAppendPage nb hbox =<< i18n name
+                        vbox <- vBoxNew False 0; boxPackStart hbox vbox PackGrow 5
+                        return vbox
+  return (nb,newPage)
 
 -- |Режимы диалогов
 data DialogMode = EncryptionMode | ProtectionMode | RecompressMode | CommentMode | MakeSFXMode | NoMode  deriving Eq

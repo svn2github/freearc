@@ -277,6 +277,7 @@
              strip too long arguments and too long argument list down to 100 chars/elements
     Filetype detection: it was failing on pure English texts
     Fixed bug in SetWindowTitle
+    Fixed RR add/check/recover execution
   Fixed GUI bugs:
     first file in directory was selected after any operation if nothing was selected before
     ArcInfo on empty.arc or non-archive was terminating program
@@ -318,10 +319,10 @@
     Priorityio.doc
   bugs
     ѕопытка зайти внутрь зашифрованного архива - виснем
+    *Last в истории - локализуетс€ после первого же использовани€
     "user error" при ошибках в консольной версии
     -max - exe+rep вместо rep+exe
     -m9x $bmp mm+delta+...
-    tor:5 -> delta+tor:5:t0 ?  видимо, имеет смысл только на быстрых машинах
     update GUI docs
     sfx - поддержка и автоматическое использование метода tempfile
     dict bug: arc a aa cls.zip -mprecomp+6pt -t
@@ -500,6 +501,7 @@
     lzp: ускорить выч. хэша, пропускать по 4-8 байт когда долго ничего не находитс€ (+tor)
     $bmp/$wav - group solid block by 64kb?
     дл€ решени€ проблемы -ld1gb - выдел€ть пам€ть небольшими блоками (при распаковке в lzma, rep, ppmd, tor)
+    tor:5 -> delta+tor:5:t0 ?  видимо, имеет смысл только на быстрых машинах
   Compressor: лучше всего дл€ толстых алгоритмов использовать внешние компрессоры. уже сейчас можно вз€ть compressor.exe и использовать его подобным образом. в будущем же
     compressor будет совместим по формату данных с внутренними алгоритмами так, что к примеру можно будет упаковать внешним lzma со словарЄм в 1 гиг, а распаковывать внутренним
     пон€тно, будут 32 и 64-разр€дные версии, причЄм компилироватьс€ они будут ICC, что увеличит скорость на 10-20%

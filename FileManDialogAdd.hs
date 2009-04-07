@@ -63,11 +63,7 @@ addDialog fm' exec cmd mode = do
   -- Создадим диалог со стандартными кнопками OK/Cancel
   fmDialog fm' wintitle $ \(dialog,okButton) -> do
     fmCacheConfigFile fm' $ do
-    upbox <- dialogGetUpper dialog
-    -- Поместим все контролы в симпатичный notebook и упростим процедуру создания новых страниц
-    nb <- notebookNew;  boxPackStart upbox nb PackGrow 0
-    let newPage name = do vbox <- vBoxNew False 0; notebookAppendPage nb vbox =<< i18n name
-                          return vbox
+    (nb,newPage) <- startNotebook dialog
 
 ------ Главная закладка ----------------------------------------------------------------------
     vbox <- newPage "0182 Main";  let pack x = boxPackStart vbox x PackNatural 1
@@ -158,7 +154,7 @@ addDialog fm' exec cmd mode = do
 
 
 ------ Чтение значений полей и сохранение их для истории ------------------------------------------
-    widgetShowAll upbox
+    widgetShowAll dialog
     --current_time  <- getClockTime;  debugMsg (show$ diffTimes current_time start_time)
     choice <- fmDialogRun fm' dialog "AddDialog"
     windowPresent (fm_window fm)

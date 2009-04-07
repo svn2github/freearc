@@ -649,7 +649,7 @@ inputString window msg = do
 boxed makeControl title = do
   hbox    <- hBoxNew False 0
   control <- makeControl .$i18t title
-  boxPackStart  hbox  control  PackNatural 5
+  boxPackStart  hbox  control  PackNatural 0
   return (hbox, control)
 
 
