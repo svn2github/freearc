@@ -1,0 +1,613 @@
+﻿******************************************************************************
+***  This is a language file for FreeArc (http://freearc.org).             ***
+***  You may improve it by providing new translations.                     ***
+***  Messages that need translation are marked by "??",                    ***
+***  You just need to find all those question signs and replace them with  ***
+***  appropriate translations of the text at left side.                    ***
+***                                                                        ***
+***  Please note that Tooltips section should include not direct           ***
+***  translations but TOOLTIPS diplayed at the top of appropriate labels.  ***
+***  You may assign tooltip to any label - just use its number +1000 at    ***
+***  the left side. For example, label:                                    ***
+***    0185 Protection:=Protection: (written in your language, of course)  ***
+***  It's tooltip:                                                         ***
+***    1185 Protection:=Appends recovery information to archive            ***
+******************************************************************************
+
+Language name in english and mother tongue
+0000 Language=Hungarian (Magyar)
+0159 Copyright=© FreeArc Hunor
+
+Language-specific URLs relative to http://freearc.org and helpfiles
+Filled only for languages providing their own translations
+0254 Homepage=??
+0255 News page=??
+0371 Forum page=??
+0372 Wiki page=??
+0256 Helpfile=??
+0257 Command-line help=??
+
+
+=== Menu ========================================================================
+Main menu
+0050 File=&Fájl
+0066 Edit=S&zerkesztés
+0258 Commands=&Parancsok
+0259 Tools=&Eszközök
+0260 Options=&Beállítások
+0261 Help=&Súgó
+
+File menu/toolbar
+0262 Open archive=Megnyit
+0265 Open archive=Archívumok megnyitása
+0263 Select all=Kijelöl mind
+0290 Select all files=Minden fájlt kijelöl
+0037 Select=Kijelöl
+0047 Select files=Fájlok kijelölése
+0038 Unselect=Jelölést levesz
+0048 Unselect files=Kijelölést levesz
+0264 Invert selection=Jelölést megfordít
+0291 Invert selection=Kijelölést megfordít
+0039 Refresh=Frissít
+0049 Reread archive/directory=Archívum/fájlszerkezet újraolvasása
+0036 Exit=&Kilép
+0046 Quit application=&Kilépés a programból
+
+Commands menu/toolbar 
+0030 Add=Archivál
+0040 Add files to archive(s)=Hozzáadás archívumhoz
+0035 Extract=Kibont
+0045 Extract files from archive(s)=Kibontás archívumból
+0034 Test=Teszt
+0044 Test files in archive(s)=Archivált fájlok tesztje
+0086 ArcInfo=Info
+0087 Information about archive=Archívum adatai
+0033 Delete=Töröl
+0043 Delete files (from archive)=Fájlok törlése (archívumból)
+
+Tools menu/toolbar
+0266 Lock=Zárol
+0267 Lock archive from further changes=Archívum zárolása
+0268 Comment=Megjegyzés
+0269 Edit archive comment=Megjegyzés szerkesztése
+0293 Recompress=Újratömörít
+0294 Recompress files in archive=Archívum újratömörítése
+0270 Convert to SFX=SF&X
+0271 Convert archive to SFX=Konverzió önkibontó *.EXE-vé
+0272 Encrypt=&Titkosít
+0273 Encrypt archive contents=Archivált tartalom titkosítása
+0274 Protect=&Védelem
+0275 Add Recovery record to archive=Archívum sérülésvédelme
+0379 Repair=&Javít
+0380 Repair damaged archive=Sérült archívum javítása
+0031 Modify=Módosít
+0041 Modify archive(s)=Archívum(ok) módosítása
+0032 Join=E&gyesít
+0042 Join archives together=Archívumok egyesítése
+
+Options menu/toolbar
+0064 Settings=Beállítások
+0065 Edit program settings=Programbeállítások
+0276 View log=Napló
+0277 View logfile=Naplófájl megtekintése
+0278 Clear log=Napló törlése
+0279 Clear logfile=Naplófájl törlése
+
+Help menu/toolbar 
+0280 Main help=Súgó főoldal
+0281 Help on using FreeArc=A FreeArc súgója
+0282 Cmdline help=A parancssor súgója
+0283 Help on FreeArc command line=A parancssor és opciók súgója
+0284 Goto Homepage=A FreeArc honlapja
+0285 Open program site=A FreeArc honlapja
+0373 Open forum=FreeArc fórum
+0374 Open program forum=A FreeArc internetes fóruma
+0375 Open wiki=FreeArc Wiki
+0376 Open program wiki=A FreeArc Wikipedia honlapja
+0286 Check for update=Programfrissítés
+0287 Check for new program versions=Új verzió keresése
+0288 About=Névjegy
+0289 About=A FreeArc névjegye
+
+
+=== File manager ==================================================================
+Navibar
+0006 Up=Fe&l
+0007 Save=&Mentés
+0008 Select files=Kijelölés
+0009 Unselect files=Jelölést levesz
+
+Filelist
+0015 Name=Név
+0016 Size=Méret
+0017 Modified=Módosítva
+0018 DIRECTORY=<MAPPA>
+
+Statusbar
+0022 Selected %1 bytes in %2 file(s)= %2 kijelölt elem, %1 bájt
+0023 Total %1 bytes in %2 file(s)= Összesen %2 elem, %1 bájt
+
+Messages
+0012 There are no files selected!=Nem jelölt ki fájlokat!
+0013 There are no archives selected!=Nem jelölt ki archívumokat!
+0071 %1: no such file or directory!=Nincs %1 nevű fájl vagy mappa!
+0133 You can't compress files directly from archive!=Archívumból közvetlenül nem tömöríthet fájlokat!
+0145 You can't join archives directly from archive!=Archívumból közvetlenül nem egyesíthet archívumokat!
+0251 Abort operation?=Megszakítja a műveletet?
+
+
+=== Dialogs =======================================================================
+Archive open dialog
+0305 Open archive=Archívum megnyitása
+0306 This file isn't a FreeArc archive!=A fájl nem FreeArc formátumú!
+0307 FreeArc archives (*.arc)=FreeArc fájlok (*.arc) 
+0308 Archives and SFXes (*.arc;*.exe)=FreeArc archívumok és SFX-ek (*.arc;*.exe)
+0309 All files (*)=Minden fájl (*)
+
+
+Add dialog
+--Title
+0134 Add %1 to archive=%1 hozzáadása az archívumhoz
+0135 Add %2 files to archive=%2 fájl hozzáadása az archívumhoz
+0136 Add all files to archive=Minden fájl hozzáadása az archívumhoz
+0146 Modify all archives=Minden archívum módosítása
+0147 Modify %1=%1 módosítása
+0148 Modify %2 archives=%2 archívum módosítása
+0149 Join all archives=Minden archívum egyesítése
+0150 Join %1 with another archive=%1 egyesítése másik archívummal
+0151 Join %2 archives=%2 archívum egyesítése
+---------
+0182 Main=Főlap
+0131 Output archive:=Kimeneti archívum:
+0132 Select output archive=Kimeneti archívum kiválasztása
+0141 Base directory inside archive:=Kiindulási mappa az archívumban:
+--
+0188 Store file paths:=Elérési utak mentése:
+0189 No=Nincs mentés
+0190 Relative to compressed dir=Relatív, a tömörítendő mappától
+0191 Relative to curdir (default)=Relatív, az aktuális mappától (alapértelmezés)
+0192 Absolute (relative to root dir)=Abszolút, a gyökérmappától
+0193 Full (including drive letter)=Teljes, a meghajtó betűjelével
+--
+0194 Update mode:=Frissítés módja:
+0195 Add and replace files (default)=Hozzáadás és csere (alapértelmezés)
+0196 Add and update files=Hozzáadás és frissítés
+0197 Fresh existing files=Csak a létező fájlok frissítése
+0198 Synchronize archive with disk contents=Szinkronizálás a lemez tartalmával
+--
+0183 Compression:=Tömörítés:
+0184 Encryption:=Titkosítás:
+0185 Protection:=Sérülésvédelem:
+0186 Comment:=Megjegyzés:
+0227 Make EXE:=EXE létrehozása:
+0128 Test archive after operation=Művelet után archívum tesztje
+0122 Delete files successfully archived=Archiválás után a forrásfájlok törlése
+0187 Finalize archive=Archívum véglegesítése (zárolás)
+---------
+0200 Archive=Archívum
+0201 Compress each file into separate archive=Minden fájlt külön fájlba tömörítsen
+0202 Add to archive name:=Fűzze az archívum nevéhez:
+--
+0203 Set archive time to:=Az archívum dátuma:
+0204 Current system time=Az aktuális rendszerdátum/idő 
+0205 Original archive time=Eredeti archívum dátuma/ideje
+0206 Latest file time=A legújabb fájl dátuma/ideje
+--
+0207 Delete previous archive contents=A korábbi archivált tartalom törlése
+0208 Order of files in archive:=Fájlok sorrendje az archívumban:
+--
+0209 Recompression mode:=Újratömörítés módja:
+0210 Quickly append new files=Új fájlok gyors hozzáfűzése
+0211 Smart recompression of solid blocks (default)=Szolid blokkok okos újratömörítése (alapértelmezés)
+0212 Recompress all files=Minden fájl újratömörítése
+0213 Store only fileinfo=Csak a fájlinfó tárolása
+0214 Store only fileinfo & crcs=Csak a fájlinfó és CRC-k tárolása 
+0215 No archive headers=Fejlécek nélkül
+--
+0216 Backup mode:=Biztonsági mentés mód:
+0217 No (default)=Nincs (alapértelmezés)
+0218 Full: clear \"Archive\" attribute of files succesfully archived=Teljes: a sikerrel archivált fájlok \"archív\" attribútumának törlésével
+0219 Differential: select only files with \"Archive\" attribute set=Különbségi: csak az \"archív\" attribútumú fájlokat
+0220 Incremental: select by \"Archive\" attribute & clear it after compression=Növekményes: csak az \"archív\" attribútumú fájlokat, tömörítés után attribútum törlésével
+---------
+0221 Files=Fájlok
+0222 Include only files:=Befoglaló fájlmaszkok:
+0223 Exclude files:=Kizáró fájlmaszkok:
+0224 Include only files larger than:=Csak az ennél nagyobb fájlokat:
+0225 Include only files smaller than:=Csak az ennél kisebb fájlokat:
+---------
+0199 Comment=Megjegyzés
+
+
+Delete dialog
+0160 Delete %1 from archive?=Törli az archívumból: "%1"?
+0161 Delete %1?=%1 törlése?
+0019 Delete %2 file(s) from archive?=Törli az archívum %2 kijelölt elemét?
+0020 Delete %2 file(s)?=Töröl %2 kijelölt elemet?
+
+
+Extract dialog
+0024 Extract files from %3=Kibontás %3 fájlból
+0025 Extract %1 from %3=%1 kibontása %3 fájlból
+0026 Extract %2 files from %3=%2 fájl kibontása %3 fájlból
+0027 Extract files from %4 archives=Fájlok kibontása %4 archívumból
+0158 Extract all archives=Minden archívum kibontása
+0152 Test %3=%3 tesztje
+0153 Test %1 from %3=%1 tesztje %3 fájlból
+0154 Test %2 files from %3=%2 fájl tesztje %3 fájlból
+0155 Test %4 archives=%4 archívum tesztje
+0157 Test all archives=Minden archívum tesztje
+--Overwrite mode
+0005 Overwrite mode=Felülírás módja
+0001 Ask before overwrite=Felülírás előtt rákérdezés 
+0002 Overwrite without prompt=Felülírás rákérdezés nélkül
+0003 Update old files=Régi fájlok frissítése
+0051 Skip existing files=Létező fájlok kihagyása
+--Output directory
+0004 Output directory:=&Kibontás mappája:
+0021 Select output directory=A kibontandó fájlok célmappája
+0014 Append archive name to the output directory=Az archívum nevét a célmappa nevéhez fűzi
+--Other
+0072 Additional options:=További opciók:
+
+
+Archive information dialog
+0085 All about %1=%1 tulajdonságai
+0173 Directories:=Mappák száma:
+0088 Files:=Fájlok száma:
+0089 Total bytes:=Teljes méret [bájt]:
+0090 Compressed bytes:=Tömörített méret [bájt]:
+0091 Ratio:=Tömörítési arány:
+--
+0104 Directory blocks:=Mappa blokk:
+0092 Solid blocks:=Szolid blokk:
+0093 Avg. size:=Átlagméret:
+--
+0099 Compression memory:=Tömörítés memóriaigénye:
+0100 Decompression memory:=Kibontás memóriaigénye:
+0105 Dictionary:=Szótár mérete:
+--
+0094 Archive locked:=Zárolás:
+0095 Recovery info:=Sérülésvédelem:
+0096 SFX size:=SFX modul mérete [bájt]:
+0156 Headers encrypted:=Fejlécek titkosítva:
+--
+0097 Encryption algorithms:=Titkosítási algoritmus:
+0098 Archive comment:=Archívum megjegyzése:
+
+
+Settings dialog
+0067 Settings=Beállítások
+0174 Main=Főbb beállítások
+0068 Language:=Nyelv (language):
+0069 Edit=S&zerkesztés
+0070 Import=&Import
+0170 Full name:=Teljes név:
+0171 Copyright:=Szerzői jog:
+0166 Logfile:=Naplófájl:
+0292 View=&Megnéz
+0167 Select logfile=Naplófájl kiválasztása
+0172 Associate FreeArc with .arc files=FreeArc társítása *.arc kiterjesztéshez
+0361 Add captions to toolbar buttons=Az eszköztár gombjai feliratokkal jelennek meg
+0370 Watch for new versions via Internet=Új programverzió keresése az Interneten
+0168 You should restart FreeArc in order for a language settings to take effect.=A nyelvi beállítások érvényesítéséhez újra kell indítani a programot.
+0169 Passwords need to be entered again after restart.=Újraindítás után a jelszavakat ismét be kell írnia.
+
+Logfiles
+0303 No log file specified in Settings dialog!=Nem adott meg naplófájlt a Beállításokban!
+0304 Clear logfile %1?=Törli "%1" naplót?
+
+Checking for updates
+0295 Checking for updates...=Frissítések keresése...
+0296 Cannot open %1. Do you want to check the page with browser?=%1 nem nyitható meg. Megnézi a honlapot a böngészővel?
+0297 Nothing new at %1=Nincs újdonság %1 honlapon.
+0298 Found new information at %1! Open the page with browser?=Újdonságok %1 honlapon! Megnyitja a böngészőben?
+
+
+=== Profile settings ============================================================
+--Compression settings
+0106 Compression=Tömörítés
+0175 Compression profile:=Tömörítési profil:
+0178 Save=&Mentés
+0107 Compression level=A tömörítés mértéke:
+0108 Maximum=Legnagyobb
+0109 High=Magas
+0110 Normal=Normál
+0111 Fast=Gyors
+0112 Very fast=Nagyon gyors
+0127 HDD-speed=HDD sebességű
+0113 Fast, low-memory decompression=Gyors, kis memóriaigényű kibontás
+0226 (fast, low-memory decompression)=(gyors, kis memóriaigényű kibontás)
+0176 Filetype auto-detection=Fájltípusok automatikus felismerése
+--Description of compression method selected
+0114 Compression level: %1=A tömörítés mértéke: %1
+0115 Compression speed: %1, memory: %2=A tömörítés sebessége %1, memóriaigénye %2.
+0116 Decompression speed: %1, memory: %2=A kibontás sebessége %1, memóriaigénye %2.
+0117 All speeds were measured on 1GHz single-core Duron,=A sebességek 1 GHz-es egymagos Duron processzorra
+0118 and your horse will probably run faster=vonatkoznak, az Ön paripája feltehetően gyorsabban fut ;)
+--Solid block size
+0177 Limit solid blocks=Szolid blokk korlát
+0138 Bytes, no more than:=Nem több bájt, mint:
+0139 Files, no more than:=Nem több fájl, mint:
+0140 Split by extension=Felosztás kiterjesztés szerint
+
+--Encryption settings
+0119 Encryption=Titkosítás
+0179 Encryption profile:=Titkosítási profil:
+0180 Save=&Mentés
+0120 Encrypt archive directory=Archív fájlszerkezet titkosítása
+0181 Use password=Jelszó használata
+0123 Keyfile:=Kulcsfájl:
+0124 Select keyfile=Kulcsfájl kiválasztása
+0125 Create=Új &fájl
+0126 Create new keyfile=Új kulcsfájl létrehozása
+0121 Encryption algorithm:=Titkosítási algoritmus:
+--Decryption settings
+0144 Decryption=Titkosítás feloldása
+
+
+=== Execution dialogs ============================================================
+Many dialogs
+0079 &Yes=&Igen
+0080 &No=&Nem
+0362 &OK=&OK
+0081 &Cancel=&Mégsem
+0363 &Select=&Kijelöl
+0364 &Close=&Bezár
+
+Progress indicator
+--Buttons
+0052 Background=&Háttérben
+0053 Pause=&Szünet
+0054 Continue=&Folytat
+--Labels
+0056 Files=Fájl
+0057 Total files=Összes fájl
+0058 Bytes=Bájt
+0059 Total bytes=Összes bájt
+0252 Compressed=Tömörített
+0253 Total compressed=Összes tömörített
+0060 Ratio=Arány
+0061 Speed=Sebesség
+0062 Time=Eltelt idő
+0063 Total time=Teljes idő
+--Messages
+0246 Found %1 files=Találat: %1 fájl 
+0247 Found %1 archives=Találat: %1 archívum
+0248 Analyzed %1 files=%1 fájl elemezve
+0249 Reading archive directory=Archív fájlszerkezet kiolvasása
+0250 Sorting filelist=Fájllista rendezése
+0385 Scanning archive for damages=Sérülések keresése az archívumban
+0386 Protecting archive from damages=Archívum sérülésvédelme
+0387 Recovering archive=Archívum helyreállítása
+
+File overwrite dialog
+0078 Confirm File Replace=Fájlcsere megerősítése
+0162 Destination folder already contains processed file.=A célmappa már tartalmazza a fájlt.
+0163 Would you like to replace the existing file=Lecseréli a létező
+0164 with this one?=fájlt ezzel?
+0165 %1\n%2 bytes\nmodified on %3=%1\n%2 bájt\nmódosítva %3
+0082 Yes to &All=Igen, &mindet
+0083 No to A&ll=Egyiket &sem
+0084 &Update all=&Frissít mind
+
+Enter password dialog
+0076 Enter encryption password=Titkosítási jelszó:
+0077 Enter decryption password=Visszafejtési jelszó:
+0074 Enter password:=Jelszó:
+0075 Reenter password:=Jelszó újra:
+
+Archive comment dialog
+0073 Enter archive comment=Archívum megjegyzése
+
+
+=== Infoline messages ====================================================
+0228 Deleting from %1=Törlés %1 fájból
+0229 FILES SUCCESFULLY DELETED FROM %1=A FÁJLOK SIKERESEN TÖRÖLVE %1 FÁJLBÓL
+0230 %2 WARNINGS WHILE DELETING FROM %1=%2 FIGYELMEZTETÉS %1 FÁJLBÓL TÖRLÉS KÖZBEN
+
+0231 Testing %1=%1 tesztje
+0232 SUCCESFULLY TESTED %1=%1 TESZTJE SIKERES VOLT
+0233 %2 WARNINGS WHILE TESTING %1=%2 FIGYELMEZTETÉS %1 TESZTJE KÖZBEN
+
+0234 Extracting files from %1=Fájlok kibontása %1 fájból
+0235 FILES SUCCESFULLY EXTRACTED FROM %1=A FÁJLOK SIKERESEN KIBONTVA %1 FÁJLBÓL 
+0236 %2 WARNINGS WHILE EXTRACTING FILES FROM %1=%2 FIGYELMEZTETÉS %1 FÁJLBÓL KIBONTÁS KÖZBEN
+
+0237 Modifying %1=%1 módosítása
+0238 SUCCESFULLY MODIFIED %1=%1 SIKERESEN MÓDOSÍTVA
+0239 %2 WARNINGS WHILE MODIFYING %1=%2 FIGYELMEZTETÉS %1 MÓDOSÍTÁSA KÖZBEN
+
+0240 Joining archives to %1=Archívumok egyesítése %1 fájlba
+0241 SUCCESFULLY JOINED ARCHIVES TO %1=AZ EGYESÍTÉS %1 FÁJLBA SIKERÜLT
+0242 %2 WARNINGS WHILE JOINING ARCHIVES TO %1=%2 FIGYELMEZTETÉS %1 FÁJLBA EGYESÍTÉS KÖZBEN
+
+0243 Adding to %1=Hozzáadás %1 fájlhoz
+0244 FILES SUCCESFULLY ADDED TO %1=A FÁJLOK SIKERESEN HOZZÁADVA %1 FÁJLHOZ
+0245 %2 WARNINGS WHILE ADDING TO %1=%2 FIGYELMEZTETÉS %1 FÁJLBA TÖMÖRÍTÉS KÖZBEN
+
+0299 Lock archive(s)?=Archívum(ok) zárolása?
+0300 Locking archive %1=%1 archívum zárolása
+0301 SUCCESFULLY LOCKED ARCHIVE %1=%1 ARCHÍVUM SIKERESEN ZÁROLVA
+0302 %2 WARNINGS WHILE LOCKING ARCHIVE %1=%2 FIGYELMEZTETÉS %1 ARCHÍVUM ZÁROLÁSA KÖZBEN
+
+0381 Repair archive(s)? Repaired archive(s) will be placed into files named fixed.*=Kijavíttatja az archívumo(ka)t? A helyreállított fájlokat a FreeArc "fixed.*" néven menti.
+0382 Repairing archive %1=%1 archívum helyreállítása
+0383 SUCCESFULLY REPAIRED ARCHIVE %1=%1 ARCHÍVUM SIKERESEN KIJAVÍTVA
+0384 %2 WARNINGS WHILE REPAIRING ARCHIVE %1=%2 FIGYELMEZTETÉS %1 ARCHÍVUM HELYREÁLLÍTÁSA KÖZBEN
+
+
+=== Error messages =======================================================
+0316 ERROR: %1=HIBA: %1
+0317 WARNING: %1=FIGYELEM: %1
+0310 can't modify archive locked with -k=a -k kapcsolóval zárolt archívum nem módosítható
+0311 can't create temporary file=átmeneti fájl nem hozható létre
+0312 output archive already exists, keeping temporary file %1=a kimeneti archívum már létezik, %1 átmeneti fájl megmarad
+0313 archive broken, keeping temporary file %1=az archívum tönkrement, %1 átmeneti fájl megmarad
+0314 archive broken, deleting=az archívum tönkrement, törlés
+0315 can't open SFX module %1=%1 SFX modul nem nyitható meg
+0318 command syntax is "%1"=a parancs szintakszisa "%1"
+0319 options %1 and %2 can't be used together=%1 és %2 opció nem használható együtt
+0320 unknown command "%1". Supported commands are: %2="%1" ismeretlen parancs. Az elfogadott parancsok:
+0321 unknown option "%1"="%1" ismeretlen opció
+0322 ambiguous option "%1" - is that %2?="%1" nem egyértelmű opció, talán %2?
+0325 option "%1" have illegal format="%1" opció érvénytelen formátumú
+0326 %1 option must be one of: %2=%1 opció csak ezek egyike lehet: %2
+0327 no command name in command: %1=%1 parancsban nincs parancsnév
+0328 no archive name in command: %1=%1 parancsban nincs archívumnév
+0329 no filenames in command: %1=%1 parancsban nincsenek fájlnevek
+0330 can't read directory "%1"="%1" fájlszerkezete nem olvasható ki
+0331 can't get info about file "%1"="%1" fájl adatai nem elérhetők
+0332 can't open file "%1"="%1" fájl nem nyitható meg
+0333 CRC error in file "%1"="%1" fájl CRC-hibás
+0334 bad section %1 in %2=%1 hibás szakasz %2 fájlban
+0335 operation terminated!=művelet kész!
+0336 program terminated!=program befejeződött!
+0337 no files, erasing empty archive=nincsenek fájlok, az üres archívum törlődik
+0338 skipped %1 fake files=%1 hamis .arc fájl kihagyva
+0339 bad password for archive %1=%1 archívum: rossz jelszó
+0340 bad password for %1 in archive %2=%2 archívum: %1 jelszava rossz
+0341 archive %1 corrupt: %2. Please recover it using 'r' command or use -tp- option to ignore Recovery Record="%1" archívum hibás: %2. Az r parancs kijavítja a fájlt, a -tp- opció figyelmen kívül hagyja a sérülésvédelmet.
+0342 SFX module %1 is not found=%1 SFX modul nem található
+0343 %1 isn't implemented=%1 nincs implementálva
+0344 only first of %1 recovery records can be processed by this program version. Please use newer versions to process the rest=ez a programverzió csak az első %1 sérülésvédelmi adatot képes kezelni. A többi hiba javításához újabb verzió kell.
+0345 you need FreeArc %1 or above to process this recovery info=a sérülésvédelmi adat feldolgozásához minimum FreeArc %1 kell
+0346 file %1 already exists=%1 fájl már létezik
+0347 archive can't be recovered - recovery data absent or corrupt=az archívum nem javítható - sérülésvédelmi adat nincs vagy hibás
+0348 %1 unrecoverable errors (%2) found, can't restore anything!=%1 helyrehozhatatan hiba (%2), semmi sem javítható!
+0349 can't open original at %1=az eredeti nem nyitható meg %1 helyen
+0350 %1 has size %2 so it can't be used to recover %3 having size %4=%1 %2 méretű, ezért nem alkalmas %4 méretű %3 javítására
+0351 %1 errors (%2) remain unrecovered=%1 hiba (%2) javítatlan maradt
+0352 found %1 errors (%2)=%1 hiba (%2)
+0353 there were %1 warnings due archive testing=%1 figyelmeztetés a teszt során
+0354 block descriptor at pos %1 is corrupted=%1 pozíciójú blokkleíró sérült
+0355 %1 is corrupted=%1 sérült
+0359 %1 failed decompression=%1 sikertelen kibontás
+0360 %1 should be uncompressed=%1 nem lehet tömörített
+0356 archive directory not found=az archívumban nincs fájlszerkezet
+0357 archive signature not found at the end of archive=a fájl végéből hiányzik az archívumjelző bejegyzés
+0358 last block of archive is not footer block=az archívum utolsó blokkja nem láblécblokk
+0377 command "%1" shouldn't have additional arguments="%1" parancs nem igényel további paramétereket
+0378 bad name or parameters in encryption algorithm %1=rossz név vagy paraméterek %1 titkosítási algoritmusban
+
+Errors returned by compression methods
+0365 general (de)compression error=általános (ki)tömörítési hiba
+0366 invalid compression method or parameters=érvénytelen tömörítési mód vagy paraméterek
+0367 can't allocate memory required for (de)compression=nincs elég memória a (ki)tömörítéshez
+0368 I/O error in compression algorithm=I/O hiba a tömörítési algoritmusban
+0369 bad compressed data=rossz tömörített adat
+
+
+=== Standard profiles ====================================================
+Compression
+0771 Maximum=Maximális
+0772 Maximum with fast decompression=Maximális, gyors kibontással
+0752 No compression=Tömörítés nélkül
+
+Encryption
+0730 Standard=Alapszintű
+0731 Fast=Gyors
+0732 Strong=Erős
+0733 Strongest=Legerősebb
+
+Protection
+0769 Add (autosize, 1-4%)=Sérülésvédelem (automatikus, 1-4%)
+0734 Add=Sérülésvédelem
+0735 Remove=Törlés
+0770 Add for recovery via Internet=Internetes javíthatóság hozzáadása
+
+Comment
+0740 Add from textbox=Hozzáadás szövegablakból
+0741 Remove=Törlés
+0742 Add short comment, example=Rövid megjegyzés hozzáadása, például 
+0743 Add from a file, example=Hozzáadás fájlból, például
+
+SFX
+0765 Windows GUI=Windows grafikus felület
+0766 Windows console=Windows konzol
+0767 Linux console=Linux konzol
+0768 Convert EXE back to ARC=EXE visszaalakítása ARC fájllá
+
+Sorting
+0744 No sorting=Rendezetlen
+0745 Standard=Alap
+0746 Advanced=Haladó
+0747 Smart+Path=Okos+Elérési út
+0748 Smart+Name=Okos+Név
+0750 Extension+Path=Kiterjesztés+Elérési út
+0749 Extension+Name=Kiterjesztés+Név
+0751 Extension+Size=Kiterjesztés+Méret
+
+Archive name template
+0754 Date+Time=Dátum+Idő
+0755 Date=Dátum
+0756 Time=Idő
+0757 Month=Hónap
+0758 Monthday=HónapNap
+0759 Weekday=HétNap
+
+Exclude
+0753 Backup files=Fájlok biztonsági mentése
+
+Additional compression options
+0760 Perform full backup=Teljes biztonsági mentés
+0761 Full archive test before and after operation=Teljes archívum teszt művelet előtt és után
+
+Additional extraction options
+0762 Remove pathnames=Elérési utak törlése
+0763 Restore absolute pathnames=Abszolút elérési utak visszaállítása
+0764 Full archive test before performing operation=Teljes archívum teszt művelet előtt
+
+
+=== Tooltips (index=N+1000) ===========================================
+
+******************************************************************************************
+***  DON'T FORGET THAT THIS SECTION SHOULD PROVIDE TOOLTIPS, NOT DIRECT TRANSLATIONS.  ***
+***  You may find some tooltips in arc.english.txt                                     ***
+******************************************************************************************
+
+Add dialog
+--
+1183 Compression=Tömörítési profil kiválasztása. A haladó beállításokat a \"Tömörítés\" fülön találja.
+1184 Encryption=Titkosítási profil kiválasztása. A haladó beállításokat a \"Titkosítás\" fülön találja.
+1185 Protection:=Sérülésvédelmi adatot helyez el az archívumban (alapértelmezésben a fájlméret 1%-át), amellyel helyreállíthatók a mágneses tárolás vagy az adatátvitel során keletkezett adathibák.
+1186 Comment=Az archívumhoz a fájl tartalmát jellemző megjegyzés fűzhető.
+1227 Make EXE:=Az opció önkibontó, vagyis önállóan futtatható archívumot készít. Az ilyen fájlok kibontásához nem szükséges a FreeArc. A telepített FreeArc mappájában különféle .SFX kiterjesztésű modulok közül választhat.
+1128 Test archive after operation=Az archiválás után ellenőrzi az elkészült fájl tartalmának épségét.
+1122 Delete files successfully archived=Bekapcsolt opciónál az archiválás végeztével az eredeti fájlok törlődnek.
+1187 Finalize archive=Az archívumot a tömörítés után végleg lezárja (tartalma többé nem módosítható).
+1072 Additional options:=További, kézzel beállítható opciók (gyakorlott felhasználóknak).
+--
+1201 Compress each file into separate archive=Az opció bekapcsolásával minden kijelölt fájt és mappát a nevükkel megegyező nevű külön fájlokba tömörít.
+1202 Add to archive name=A kiválasztott paramétereket az archívum nevéhez fűzi (például a dátumot és időt).
+--
+1207 Delete previous archive contents=VIGYÁZAT! Az opciót bekapcsolva az új fájlok hozzáadása előtt az archívum teljes korábbi tartalma VISSZAVONHATATLANUL törlődik!
+1208 Order of files in archive=Az opció bekapcsolásával tömörebb fájlok hozhatók létre. A tömörítés hatásfoka a rendezési elvtől (és a tömörítendő fájlok jellegétől) függ.
+--
+1222 Include only files:=Csak a megadott maszkrendszernek megfelelő fájlokat archiválja, például *.txt.
+1223 Exclude files:=A megadott maszkrendszernek megfelelő fájlokat kizárja az archiválandó fájlok közül.
+
+--Compression settings
+1113 Fast, low-memory decompression=Letiltja a lassú vagy memóriaigényes kibontó algoritmusokat, ezzel együtt a tömörítés is lassabb és rosszabb hatásfokú lesz.
+1176 Filetype auto-detection=Az opciót engedélyezve a FreeArc minden egyes fájl tartalmát elemzi és megkeresi a neki legmegfelelőbb tömörítési módot. Ha az opciót letiltja, a tömörítési módszert az "arc.groups" fájl határozza meg.
+1138 Bytes, no more than:=A szolid blokkok maximális méretét szabja meg.
+1139 Files, no more than:=Megszabja, hogy egy szolid blokk legfeljebb hány fájlból állhat.
+1140 Split by extension=A szolid blokkokat kiterjesztések szerinti további alcsoportokra osztja. Bekapcsolva minden szolid blokk csak egyetlen fájltípust tartalmazhat.
+
+--Encryption settings
+1120 Encrypt archive directory=Titkosítja az archívumban a metaadatokat (fájlok neve, mérete, CRC), így már az archívum megnyitásához is jelszó vagy kulcsfájl kell. A valódi adatbiztonság érdekében az opció használata nagyon ajánlott.
+1123 Keyfile:=A kulcsfájl nem más, mint lemezre mentett jelszófájl, ami a tömörített fájl megnyitásához szükséges. A kulcsfájl használata nagyon ajánlott az AES-ben vagy más algoritmusban rejlő biztonsági potenciál teljes kiaknázásához.
+1125 Generate new keyfile=Új kulcsfájlt készít a felhasználó által megadott néven. A fájl 1 kilobájtnyi, kriptográfiai úton előállított véletlenszerű adatot tartalmaz.
+1181 Use password=Az opciót engedélyezve az archívum a megadott jelszóval védhető. A jelszót őrizze biztonságos helyen! (Növelheti az adatbiztonságot, ha egyidejűleg kulcsfájlt ÉS jelszót is használ!)
+
+
+=== Everything else ====================================================
+Common words
+0101 Yes=Van
+0102 No=Nincs
+0323 or=vagy
+0324 and=és
+
+Failure messages
+0010 Operation interrupted!=A művelet félbeszakadt!
+0011 No threads to run: infinite loop or deadlock?=Nincs futtatható szál: végtelelen ciklus vagy holtpont?

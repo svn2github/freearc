@@ -18,6 +18,7 @@ for %%a in (%szip%\Lang\*.txt) do ..\7tr ..\arc.russian.txt %%a
 ..\7tr.exe ..\arc.russian.txt %szip%\Lang\es.txt ..\arc.spanish.txt
 ..\7tr.exe ..\arc.russian.txt %szip%\Lang\uk.txt ..\arc.ukrainian.txt
 ..\7tr.exe ..\arc.russian.txt %szip%\Lang\pl.txt ..\arc.polish.txt
+..\7tr.exe ..\arc.russian.txt %szip%\Lang\hu.txt ..\arc.hungarian.txt
 ..\7tr.exe ..\arc.russian.txt nul ..\arc._New.txt
 copy ..\arc.russian.txt
 copy ..\arc.english.txt
