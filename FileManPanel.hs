@@ -136,10 +136,13 @@ fmStackMsg fm' msg = do
   return ()
 
 -- |Имя файла, находящегося по заданному пути
-fmFilenameAt fm' path = do
+fmFilenameAt fm' path  =  fmname `fmap` fmFileAt fm' path
+
+-- |Файл, находящийся по заданному пути
+fmFileAt fm' path = do
   fm <- val fm'
   let fullList = fm_filelist fm
-  return$ fmname(fullList!!head path)
+  return$ fullList!!head path
 
 -- |Возвратить файл под курсором
 fmGetCursor fm' = do

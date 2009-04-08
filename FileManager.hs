@@ -360,7 +360,10 @@ myGUI run args = do
 
   -- При нажатии Enter на строке в списке открываем выбранный архив/каталог
   listView `New.onRowActivated` \path column -> do
-    select =<< fmFilenameAt fm' path
+    fm <- val fm'
+    file <- fmFileAt fm' path
+    unless (isFM_Archive fm  &&  not(fdIsDir file)) $ do  -- Run command don't yet work directly from archives
+    select (fmname file)
 
   -- При single-click на свободном пространстве справа/снизу снимаем отметку со всех файлов,
   -- при double-click там же выбираем все файлы
