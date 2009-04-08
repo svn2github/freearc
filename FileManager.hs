@@ -347,10 +347,10 @@ myGUI run args = do
   -- ѕереход в родительский каталог
   let goParentDir = do
         fm <- val fm'
-        let path = fm_current fm
+        unless (isFM_Archive fm  &&  isURL(fm_arcname fm)  &&  fm_arcdir fm=="") $ do  -- «апретить Up из архива в инете
         chdir fm' ".."
         -- ¬ыбираем каталог/архив, из которого мы только что вышли
-        fmSetCursor fm' (takeFileName path)
+        fmSetCursor fm' (takeFileName$ fm_current fm)
 
   -- «апись текущего каталога в историю
   let saveCurdirToHistory = do
