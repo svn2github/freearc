@@ -17,6 +17,7 @@
 // Compression job
 struct Job
 {
+    Event  Finished;        // Signals that job was finished
     Event  Compressed;      // Signals that compression part of job was finished
     Event  Saved;           // Signals that writing part of job was finished
     int    insize;          // Amount of data in inbuf
@@ -84,7 +85,8 @@ int callback_func (const char *what, void *data, int size, void *param)
         if (job->insize==0)   job->insize = -1;
         WriterJobs.Put(job);     // Put job to the Writer ordering queue
         IO.Release();
-        AllowCompression.Lock();     // wait for compression slot
+        if (job->insize != -1)
+            AllowCompression.Lock();     // wait for compression slot
         return job->insize;
     }
     else if (strequ(what,"read") && !ENCODE)
@@ -110,15 +112,17 @@ int callback_func (const char *what, void *data, int size, void *param)
         job->Saved.Wait();           // pause execution until (de)compressed data will be written
         return size;
     }
+    return 0;
 }
 
 
 // Read and (de)compress data by chunks from input stream
 static DWORD WINAPI DeCompressionThread (void *paramPtr)
 {
+    Job *job = (Job*) paramPtr;
+
     try
     {
-        Job *job = new Job();
         for(;;)
         {
             if (ENCODE)
@@ -129,7 +133,7 @@ static DWORD WINAPI DeCompressionThread (void *paramPtr)
             {
                 IO.Lock();
                 if (ftell(infile)==filelength(fileno(infile)))
-                    {job->insize = -1; WriterJobs.Put(job); IO.Release(); for(;;);}
+                    {job->insize = -1; WriterJobs.Put(job); IO.Release(); break;}
                 job->outsize = read4();
                 job->insize = read4();
                 char method[1000];
@@ -144,12 +148,13 @@ static DWORD WINAPI DeCompressionThread (void *paramPtr)
     {
         fprintf(stderr,"\n%s\n", msg);
     }
+    job->Finished.Signal();
     return 0;
 }
 
 
 // Send compressed data to output stream
-void WriterThread()
+void WriterThread(int NumThreads)
 {
     try
     {
@@ -160,7 +165,14 @@ void WriterThread()
 
             // Break on EOF/error
             if (job->insize < 0)
-                break;
+            {
+                job->Finished.Wait();
+                NumThreads--;
+                if (NumThreads <= 0)
+                    break;
+                continue;
+            }
+
 
             // Wait until (de)compression will be finished
             job->Compressed.Wait();
@@ -204,14 +216,22 @@ void DeCompressionMachine()
     // Queue of jobs for Writer thread
     WriterJobs.SetSize(NumThreads);
 
+    Job* job=new Job[NumThreads];
+
     // Create threads for I/O and compression
     for (int i=0; i < NumThreads; i++)
     {
-        CThread t; t.Create(DeCompressionThread, NULL);
+        CThread t; t.Create(DeCompressionThread, &job[i]);
     }
 
     // Perform compression and write compressed data to outstream
-    WriterThread();
+    WriterThread(NumThreads);
+
+    delete [] job;
+
+    AllowCompression.Close();
+    IO.Close();
+    WriterJobs.Close();
 }
 
 

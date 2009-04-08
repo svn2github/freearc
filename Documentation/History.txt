@@ -318,7 +318,7 @@
     filetype detection: check for MM on large files
     Priorityio.doc
   bugs
-    Попытка зайти внутрь зашифрованного архива - виснем
+    ColumnOrder - убрать русификацию
     *Last в истории - локализуется после первого же использования
     "user error" при ошибках в консольной версии
     -max - exe+rep вместо rep+exe
