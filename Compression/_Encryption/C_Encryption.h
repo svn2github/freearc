@@ -4,7 +4,6 @@
 #define MAXKEYSIZE 64
 
 enum TEncrypt {ENCRYPT, DECRYPT};
-typedef int io_func (/*void* param,*/ void* buf, int size);  // Тип функции чтения/записи данных
 int docrypt (enum TEncrypt DoEncryption, int cipher, int mode, BYTE *key, int keysize, int rounds, BYTE *iv,
              CALLBACK_FUNC *callback, void *auxdata);
 

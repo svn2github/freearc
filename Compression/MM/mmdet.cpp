@@ -56,8 +56,9 @@
 // 4. image width detection
 
 #include "../Compression.h"
+extern "C" {
 #include "mmdet.h"
-
+}
 
 // MAIN ALGORITHM ************************************************************************
 // The algorithm is straightforward - calculate compressed size
@@ -183,7 +184,7 @@ void Model::calc_results()
 
         for(int i=0;i<STATSIZE;i++)
             if (stats[N][i])
-                bits += stats[N][i] * log(total/stats[N][i])/log(2);
+                bits += stats[N][i] * log(double(total/stats[N][i]))/log(double(2));
     }
     // Total result including additional bits required for extension codes
     result = (long)(bits/8 + xbits/8);
@@ -817,7 +818,7 @@ void detect_datatype (BYTE *buf, int bufsize, char *type)
     for (int i=0; i<256; i++)
     {
         if (count[i])
-            order0 += count[i] * log(bufsize/count[i])/log(2) / 8;
+            order0 += count[i] * log(double(bufsize/count[i]))/log(double(2)) / 8;
     }
 
     // Кол-во символов, занимающих 90% объёма текста

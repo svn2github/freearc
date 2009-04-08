@@ -368,7 +368,7 @@ static bool slow_check_for_data_table (int N, byte *p, uint32 &type, BYTE *&tabl
     int useful = rows - useless;  // количество полезных строк таблицы
     double skipBits = logb(mymax(table_start-bufstart,1));  // сколько бит придётся потратить на кодирование поля skip
     stat ((slow_checks++, verbose>1 && printf ("Slow check  %08x-%08x (%d*%d+%d)\n", int(table_start-buf+offset), int(table_end-buf+offset), N, useful, useless)));
-    if (useful*sqrt(N) > 30+4*skipBits) {
+    if (useful*sqrt((double)N) > 30+4*skipBits) {
         stat ((table_count++,  table_sumlen += N*rows, table_skipBits+=skipBits));
         stat (verbose>0 && printf("%08x-%08x %d*%d   ", int(table_start-buf+offset), int(table_end-buf+offset), N, rows));
 

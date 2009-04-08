@@ -2,11 +2,11 @@ include ../common.mak
 
 DLL  = facompress.dll
 DEF  = facompress.def
-OBJS = Common.obj CompressionLibrary.obj C_LZMA.obj C_PPMD.obj C_GRZip.obj C_LZP.obj C_Dict.obj
+OBJS = Common.obj CompressionLibrary.obj C_LZMA.obj C_PPMD.obj C_GRZip.obj C_LZP.obj C_Dict.obj C_REP.obj C_Delta.obj C_TTA.obj mmdet.obj
 CC   = icl
 
 CODE_FLAGS  = -EHsc -MT
-OPT_FLAGS   = -O2 -Gy -GR- -Qip
+OPT_FLAGS   = -O2 -Gy -GR- -Qip -Qinline-factor999
 DEBUG_FLAGS =
 CFLAGS      = -c -DFREEARC_DLL $(CODE_FLAGS) $(OPT_FLAGS) $(DEBUG_FLAGS) $(DEFINES)
 
@@ -34,3 +34,14 @@ C_LZP.obj: LZP\C_LZP.cpp
 C_Dict.obj: Dict\C_Dict.cpp
 	$(CC) $(CFLAGS) $<
 
+C_REP.obj: REP\C_REP.cpp
+	$(CC) $(CFLAGS) $<
+
+C_Delta.obj: Delta\C_Delta.cpp
+	$(CC) $(CFLAGS) $<
+
+C_TTA.obj: MM\C_TTA.cpp
+	$(CC) $(CFLAGS) $<
+
+mmdet.obj: MM\mmdet.cpp
+	$(CC) $(CFLAGS) $<

@@ -78,10 +78,7 @@ void tta_error (long error, const char *name);
 void *malloc1d (size_t num, size_t size);
 long **malloc2d (long num, unsigned long len);
 
-// Тип функции чтения/записи данных
-typedef int io_func (/*void* param,*/ void* buf, int size);
-
-int tta_compress   (int level, int skip_header, int is_float, int num_chan, int byte_size, int offset, int raw_data, io_func* In, void* InParam, io_func* Out, void* OutParam);
-int tta_decompress (io_func* In, void* InParam, io_func* Out, void* OutParam);
+int tta_compress (int level, int skip_header, int is_float, int num_chan, int word_size, int offset, int raw_data, CALLBACK_FUNC *callback, void *auxdata);
+int tta_decompress (CALLBACK_FUNC *callback, void *auxdata);
 
 #endif  /* TTAENC_H */

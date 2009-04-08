@@ -1,6 +1,5 @@
 #include "../Compression.h"
 
-typedef int io_func (/*void* param,*/ void* buf, int size);  // Тип функции чтения/записи данных
 int rep_compress   (MemSize BlockSize, int MinCompression, int MinMatchLen, int Barrier, int SmallestLen, int HashSizeLog, int Amplifier, CALLBACK_FUNC *callback, void *auxdata);
 int rep_decompress (MemSize BlockSize, int MinCompression, int MinMatchLen, int Barrier, int SmallestLen, int HashSizeLog, int Amplifier, CALLBACK_FUNC *callback, void *auxdata);
 

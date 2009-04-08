@@ -25,7 +25,12 @@ REP_METHOD::REP_METHOD()
 // Функция распаковки
 int REP_METHOD::decompress (CALLBACK_FUNC *callback, void *auxdata)
 {
-  return rep_decompress (BlockSize, MinCompression, MinMatchLen, Barrier, SmallestLen, HashSizeLog, Amplifier, callback, auxdata);
+  // Use faster function from DLL if possible
+  static FARPROC f = LoadFromDLL ("rep_decompress");
+  if (!f) f = (FARPROC) rep_decompress;
+
+  return ((int (__cdecl *)(MemSize, int, int, int, int, int, int, CALLBACK_FUNC*, void*)) f)
+                          (BlockSize, MinCompression, MinMatchLen, Barrier, SmallestLen, HashSizeLog, Amplifier, callback, auxdata);
 }
 
 #ifndef FREEARC_DECOMPRESS_ONLY
@@ -33,7 +38,12 @@ int REP_METHOD::decompress (CALLBACK_FUNC *callback, void *auxdata)
 // Функция упаковки
 int REP_METHOD::compress (CALLBACK_FUNC *callback, void *auxdata)
 {
-  return rep_compress (BlockSize, MinCompression, MinMatchLen, Barrier, SmallestLen, HashSizeLog, Amplifier, callback, auxdata);
+  // Use faster function from DLL if possible
+  static FARPROC f = LoadFromDLL ("rep_compress");
+  if (!f) f = (FARPROC) rep_compress;
+
+  return ((int (__cdecl *)(MemSize, int, int, int, int, int, int, CALLBACK_FUNC*, void*)) f)
+                          (BlockSize, MinCompression, MinMatchLen, Barrier, SmallestLen, HashSizeLog, Amplifier, callback, auxdata);
 }
 
 // Записать в buf[MAX_METHOD_STRLEN] строку, описывающую метод сжатия и его параметры (функция, обратная к parse_REP)

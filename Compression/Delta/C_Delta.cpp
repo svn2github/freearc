@@ -20,7 +20,12 @@ DELTA_METHOD::DELTA_METHOD()
 // Функция распаковки
 int DELTA_METHOD::decompress (CALLBACK_FUNC *callback, void *auxdata)
 {
-  return delta_decompress (BlockSize, ExtendedTables, callback, auxdata);
+  // Use faster function from DLL if possible
+  static FARPROC f = LoadFromDLL ("delta_decompress");
+  if (!f) f = (FARPROC) delta_decompress;
+
+  return ((int (__cdecl *)(MemSize, int, CALLBACK_FUNC*, void*)) f)
+                          (BlockSize, ExtendedTables, callback, auxdata);
 }
 
 #ifndef FREEARC_DECOMPRESS_ONLY
@@ -28,7 +33,12 @@ int DELTA_METHOD::decompress (CALLBACK_FUNC *callback, void *auxdata)
 // Функция упаковки
 int DELTA_METHOD::compress (CALLBACK_FUNC *callback, void *auxdata)
 {
-  return delta_compress (BlockSize, ExtendedTables, callback, auxdata);
+  // Use faster function from DLL if possible
+  static FARPROC f = LoadFromDLL ("delta_compress");
+  if (!f) f = (FARPROC) delta_compress;
+
+  return ((int (__cdecl *)(MemSize, int, CALLBACK_FUNC*, void*)) f)
+                          (BlockSize, ExtendedTables, callback, auxdata);
 }
 
 // Записать в buf[MAX_METHOD_STRLEN] строку, описывающую метод сжатия и его параметры (функция, обратная к parse_DELTA)

@@ -28,7 +28,11 @@ TTA_METHOD::TTA_METHOD()
 // Функция распаковки
 int TTA_METHOD::decompress (CALLBACK_FUNC *callback, void *auxdata)
 {
-  return tta_decompress (callback, auxdata);
+  // Use faster function from DLL if possible
+  static FARPROC f = LoadFromDLL ("tta_decompress");
+  if (!f) f = (FARPROC) tta_decompress;
+
+  return ((int (__cdecl *)(CALLBACK_FUNC*, void*)) f) (callback, auxdata);
 }
 
 #ifndef FREEARC_DECOMPRESS_ONLY
@@ -36,7 +40,12 @@ int TTA_METHOD::decompress (CALLBACK_FUNC *callback, void *auxdata)
 // Функция упаковки
 int TTA_METHOD::compress (CALLBACK_FUNC *callback, void *auxdata)
 {
-  return tta_compress (level, skip_header, is_float, num_chan, word_size, offset, raw_data, callback, auxdata);
+  // Use faster function from DLL if possible
+  static FARPROC f = LoadFromDLL ("tta_compress");
+  if (!f) f = (FARPROC) tta_compress;
+
+  return ((int (__cdecl *)(int, int, int, int, int, int, int, CALLBACK_FUNC*, void*)) f)
+                          (level, skip_header, is_float, num_chan, word_size, offset, raw_data, callback, auxdata);
 }
 
 // Записать в buf[MAX_METHOD_STRLEN] строку, описывающую метод сжатия и его параметры (функция, обратная к parse_TTA)
