@@ -121,6 +121,7 @@ extractDialog fm' exec cmd arcnames arcdir files = do
                (overwriteOption  `select`  ",-o+,-u -o+,-o-")))++
              decryptionOptions++
              (logfile'         &&&  ["--logfile="++clear logfile'])++
+             ["--fullnames"]++
              ["--noarcext"]++
              (optionsEnabled   &&&  words (clear optionsStr'))++
              ["--", clear arcname]++files))
