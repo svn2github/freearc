@@ -194,10 +194,9 @@ ftFilesIn dir artificial = f (splitDirectories dir)
 
 -- |Превращает список файлов в дерево
 buildTree x = x
-  .$sortOn fdPackedDirectory                  -- Сортируем весь список по каталогам
   .$splitt 0                                  -- Разбиваем на группы по каталогам, начиная с 0-го уровня
 splitt n x = x
-  .$groupOn (dirPart n)                       -- Разбиваем на группы по имени каталога очередного уровня
+  .$sort_and_groupOn (dirPart n)              -- Сортируем/группируем по имени каталога очередного уровня
   .$partition ((=="").dirPart n.head)         -- Отделяем группу с файлами, находящимися непосредственно в этом каталоге
   .$(\(root,other) -> FileTree (concat root)  -- Остальные группы обрабатываем рекурсивно на (n+1)-м уровне
                                (map2s (dirPart n.head, splitt (n+1)) other))

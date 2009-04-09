@@ -224,27 +224,25 @@ archiveReadDir arc_basedir   -- базовый каталог в архиве
       readIntegers n = replicateM n readInteger
 
   -- 1. Прочитаем описания блоков архива
-  num_of_blocks <- readLength                   -- кол-во блоков
+  num_of_blocks <- readLength                     -- кол-во блоков
   -- Для каждого блока прочитаем:
-  num_of_files  <- readIntegers num_of_blocks   -- кол-во файлов
-  blCompressors <- readList     num_of_blocks   -- метод сжатия
-  blOffsets     <- readList     num_of_blocks   -- относительную позицию блока в файле архива
-  blCompSizes   <- readList     num_of_blocks   -- размер блока в упакованном виде
+  num_of_files  <- readIntegers num_of_blocks     -- кол-во файлов
+  blCompressors <- readList     num_of_blocks     -- метод сжатия
+  blOffsets     <- readList     num_of_blocks     -- относительную позицию блока в файле архива
+  blCompSizes   <- readList     num_of_blocks     -- размер блока в упакованном виде
 
   -- 2. Прочитаем имена каталогов
-  -- Сколько всего имён каталогов сохранено в этом оглавлении архива
-  total_dirs  <-  readLength
-  -- Массив имён каталогов
-  storedName  <-  readList total_dirs >>== toP
+  total_dirs    <-  readLength                    -- Сколько всего имён каталогов сохранено в этом оглавлении архива
+  storedName    <-  readList total_dirs >>== toP  -- Массив имён каталогов
 
   -- 3. Прочитаем списки данных для каждого поля в CompressedFile/FileInfo
-  let total_files = sum num_of_files         -- суммарное кол-во файлов в каталоге
-  names        <- readList     total_files   -- Имена файлов (без имени каталога)
-  dir_numbers  <- readIntegers total_files   -- Номер каталога для каждого из файлов
-  sizes        <- readList     total_files   -- Размеры файлов
-  times        <- readList     total_files   -- Время модификации файлов
-  dir_flags    <- readList     total_files   -- Булевские флаги "это каталог?"
-  crcs         <- readList     total_files   -- CRC файлов
+  let total_files = sum num_of_files              -- суммарное кол-во файлов в каталоге
+  names         <- readList     total_files       -- Имена файлов (без имени каталога)
+  dir_numbers   <- readIntegers total_files       -- Номер каталога для каждого из файлов
+  sizes         <- readList     total_files       -- Размеры файлов
+  times         <- readList     total_files       -- Время модификации файлов
+  dir_flags     <- readList     total_files       -- Булевские флаги "это каталог?"
+  crcs          <- readList     total_files       -- CRC файлов
 
   -- 4. Дополнительные поля, префиксируются своими тегами, в конце - тег окончания дополнительных полей
 {-repeat_while (read) (/=aTAG_END) $ \tag -> do
