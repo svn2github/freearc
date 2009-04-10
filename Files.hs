@@ -199,6 +199,9 @@ myregCreateStringValue root bracnch key val =
 -- |OS-specific thread id
 foreign import stdcall unsafe "windows.h GetCurrentThreadId"
   getOsThreadId :: IO DWORD
+#else
+foreign import stdcall unsafe "pthread.h pthread_self"
+  getOsThreadId :: IO Int
 #endif
 
 
