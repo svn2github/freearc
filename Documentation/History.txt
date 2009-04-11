@@ -318,7 +318,6 @@
     filetype detection: check for MM on large files
     Priorityio.doc
   bugs
-    "user error" при ошибках в консольной версии
     -max - exe+rep вместо rep+exe
     -m9x $bmp mm+delta+...
     *Last в истории - локализуется после первого же использования

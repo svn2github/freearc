@@ -58,7 +58,10 @@ main         =  (doMain =<< myGetArgs) >> shutdown "" aEXIT_CODE_SUCCESS
 arc cmdline  =  doMain (words cmdline)
 
 -- |Превратить командную строку в набор команд и выполнить их
-doMain args  =  bg $ do             -- выполняем в новом треде, не являющемся bound thread
+doMain args  = do
+#ifdef FREEARC_GUI
+  bg $ do                           -- выполняем в новом треде, не являющемся bound thread
+#endif
   setUncaughtExceptionHandler handler
   setCtrlBreakHandler $ do          -- Организуем обработку ^Break
   ensureCtrlBreak (resetConsoleTitle) $ do
@@ -72,9 +75,14 @@ doMain args  =  bg $ do             -- выполняем в новом треде, не являющемся bo
   commands <- parseCmdline args     -- Превратить командную строку в список команд на выполнение
   mapM_ run commands                -- Выполнить каждую полученную команду
   uiDoneProgram                     -- Закрыть UI
+
  where
-  handler ex  =  --registerError$ GENERAL_ERROR$
-    mapM_ (condPrintLineLn "n") $
+  handler ex  =
+#ifdef FREEARC_GUI
+    mapM_ doNothing $
+#else
+    registerError$ GENERAL_ERROR$
+#endif
       case ex of
         Deadlock    -> ["0011 No threads to run: infinite loop or deadlock?"]
         ErrorCall s -> [s]
