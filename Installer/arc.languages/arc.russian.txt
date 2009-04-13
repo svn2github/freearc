@@ -467,7 +467,7 @@ Archive comment dialog
 0338 skipped %1 fake files=пропущено %1 виртуальных файлов
 0339 bad password for archive %1=неправильный пароль для архива %1
 0340 bad password for %1 in archive %2=неправильный пароль для файла %1 в архиве %2
-0341 archive %1 corrupt: %2. Please recover it using 'r' command or use -tp- option to ignore Recovery Record=архив %1 неисправен: %2. Пожалуйста восстановите его командой 'r' или используйте опцию -tp- чтобы игнорировать защитную запись архива
+0341 %1 isn't archive or this archive is corrupt: %2. Please recover it using 'r' command or use -tp- option to ignore Recovery Record=%1 - не архив или этот архив повреждён: %2. Пожалуйста восстановите его командой 'r' или используйте опцию -tp- чтобы игнорировать защитную запись архива
 0342 SFX module %1 is not found=SFX-модуль %1 не найден
 0343 %1 isn't implemented=%1 не реализовано
 0344 only first of %1 recovery records can be processed by this program version. Please use newer versions to process the rest=только первая из %1 защитных записей архива может быть использована этой версией программы. Пожалуйста используйте более свежую версию программы для обработки остальных

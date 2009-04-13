@@ -189,7 +189,7 @@ errormsg (GENERAL_ERROR msgs) =
 
 errormsg (BROKEN_ARCHIVE arcname msgs) = do
   msg <- i18fmt msgs
-  i18fmt ["0341 archive %1 corrupt: %2. Please recover it using 'r' command or use -tp- option to ignore Recovery Record", arcname, msg]
+  i18fmt ["0341 %1 isn't archive or this archive is corrupt: %2. Please recover it using 'r' command or use -tp- option to ignore Recovery Record", arcname, msg]
 
 errormsg (INTERNAL_ERROR msg) =
   return$ "FreeArc internal error: "++msg
