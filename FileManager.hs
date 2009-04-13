@@ -272,6 +272,10 @@ myGUI run args = do
 ---- Сохранение/восстановление размера и положения главного окна и колонок в нём -------------------
 ----------------------------------------------------------------------------------------------------
 
+  -- Установить иконку главного окна
+  iconfile <- findFile configFilePlaces aICON_FILE
+  window `windowSetIconFromFile` iconfile
+
   window `windowSetPosition` WinPosCenter
   --windowSetGeometryHints window (Just window) (Just (1,1)) (Just (32000,32000)) Nothing Nothing Nothing
   --widgetSetSizeRequest window 700 500
@@ -286,9 +290,6 @@ myGUI run args = do
 
   -- При старте восстановим сохранённый размер окна
   restoreSizePos fm' window "MainWindow" "0 0 720 500"
-
-  -- temporary: удалим старые теги :)
-  mapM_ (fmDeleteTagFromHistory fm') $ words "MainWindowPos MainWindowSize ExtractDialogPos ExtractDialogSize AddDialogPos AddDialogSize SettingsDialogPos SettingsDialogSize ArcInfoPos ArcInfoSize"
 
 
   -- При закрытии программы сохраним порядок и ширину колонок

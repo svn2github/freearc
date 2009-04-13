@@ -46,6 +46,9 @@ aLANG_DIR = "arc.languages"
 -- |Имя конфиг-файла где хранятся душераздирающие истории открытых архивов
 aHISTORY_FILE = "freearc.history"
 
+-- |Имя файла с иконкой программы
+aICON_FILE = "FreeArc.ico"
+
 -- |Фильтры для выбора архива
 aARCFILE_FILTER = ["0307 FreeArc archives (*.arc)", "0308 Archives and SFXes (*.arc;*.exe)"]
 
