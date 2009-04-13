@@ -12,7 +12,3 @@ EXPORTS
   dict_decompress
   rep_compress
   rep_decompress
-  delta_compress
-  delta_decompress
-  tta_compress
-  tta_decompress

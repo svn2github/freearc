@@ -2,11 +2,11 @@ include ../common.mak
 
 DLL  = facompress.dll
 DEF  = facompress.def
-OBJS = Common.obj CompressionLibrary.obj C_LZMA.obj C_PPMD.obj C_GRZip.obj C_LZP.obj C_Dict.obj C_REP.obj C_Delta.obj C_TTA.obj mmdet.obj
+OBJS = Common.obj CompressionLibrary.obj C_LZMA.obj C_PPMD.obj C_GRZip.obj C_LZP.obj C_Dict.obj C_REP.obj
 CC   = icl
 
 CODE_FLAGS  = -EHsc -MT
-OPT_FLAGS   = -O2 -Gy -GR- -Qip -Qinline-factor999
+OPT_FLAGS   = -O2 -Gy -GR- -Qip
 DEBUG_FLAGS =
 CFLAGS      = -c -DFREEARC_DLL $(CODE_FLAGS) $(OPT_FLAGS) $(DEBUG_FLAGS) $(DEFINES)
 
