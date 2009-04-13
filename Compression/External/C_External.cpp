@@ -8,17 +8,13 @@ extern "C" {
 int external_program (bool IsCompressing, CALLBACK_FUNC *callback, void *auxdata, char *infile, char *outfile, char *cmd, char *name, int MinCompression, double *addtime)
 {
     BYTE* Buf = (BYTE*) BigAlloc(LARGE_BUFFER_SIZE);  // буфер, используемый для чтения/записи данных
-    int x;                                            // код, возвращённый последней операцией чтения/записи
-    int ExitCode = 0;                                 // код возврата внешней программы (увы, только в Unix)
     if (!Buf)  {return FREEARC_ERRCODE_NOT_ENOUGH_MEMORY;}
-
-
-    // TRUE, если в начало сжатого потока записывается 0/1 - данные несжаты/сжаты
-    bool useHeader = !strequ(name,"tempfile");
+    int x;                                            // код, возвращённый последней операцией чтения/записи
+    int ExitCode = 0;                                 // код возврата внешней программы
+    bool useHeader = !strequ(name,"tempfile");        // TRUE, если в начало сжатого потока записывается 0/1 - данные несжаты/сжаты
 
     // Перепишем входные данные во временный файл
     remove (infile);
-    remove (outfile);
     FILE *f = NULL;
     uint64 bytes = 0;
     BYTE runCmd = 1;
@@ -42,9 +38,9 @@ int external_program (bool IsCompressing, CALLBACK_FUNC *callback, void *auxdata
     fclose (f);    f = NULL;
     if (x)  {remove (infile); return x;}   // Если при чтении/записи произошла ошибка - выходим
 
-
     // Если cmd пусто - диск используется просто для буферизации данных перед дальнейшим сжатием.
     // Если runCmd==0 - данные были скопированы без сжатия
+    remove (outfile);
     registerTemporaryFile (infile);
     registerTemporaryFile (outfile);
     if (*cmd && runCmd) {
@@ -52,13 +48,14 @@ int external_program (bool IsCompressing, CALLBACK_FUNC *callback, void *auxdata
         printf ("\n%s %s bytes with %s\n", IsCompressing? "Compressing":"Unpacking", show3(bytes,temp), cmd);
         double time0 = GetGlobalTime();
         ExitCode = system (cmd);
+        printf ("\nExitcode=%d\n", ExitCode);
         if (addtime)  *addtime += GetGlobalTime() - time0;
     } else {
         rename (infile, outfile);
     }
 
-    // Прочитаем выходные данные из временного файла, если команда завершилась успешно и его можно открыть
-    if(ExitCode==0)  f = fopen (outfile, "rb" );
+    // Откроем выходной файл, если команда завершилась успешно и его можно открыть
+    if(ExitCode==0)    f = fopen (outfile, "rb" );
     if (f) {
         registerTemporaryFile (outfile,f);
         unregisterTemporaryFile (infile);
@@ -71,13 +68,15 @@ int external_program (bool IsCompressing, CALLBACK_FUNC *callback, void *auxdata
         if (IsCompressing && !useHeader)    {remove (infile); return FREEARC_ERRCODE_GENERAL;}
         remove (outfile);
         if (!IsCompressing)                 {remove (infile); return FREEARC_ERRCODE_INVALID_COMPRESSOR;}
-        outfile = infile;
+        rename (infile, outfile);
         f = fopen (outfile, "rb" );
-        if (!f)                             {remove (outfile); return FREEARC_ERRCODE_IO;}
+        if (!f)                             {remove (infile); remove (outfile); return FREEARC_ERRCODE_IO;}
         registerTemporaryFile (outfile,f);
         BYTE uncompressed[1] = {0};
         if (IsCompressing)                  checked_write(uncompressed,1);
     }
+
+    // Прочитаем выходные данные из файла
     QUASIWRITE (get_flen(f));
     Buf = (BYTE*) BigAlloc(LARGE_BUFFER_SIZE);
     while ((x = file_read (f, Buf, LARGE_BUFFER_SIZE)) > 0)
