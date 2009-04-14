@@ -327,8 +327,7 @@ Checking for updates
 0114 Compression level: %1=Уровень сжатия: %1
 0115 Compression speed: %1, memory: %2=Упаковка: скорость %1, память %2
 0116 Decompression speed: %1, memory: %2=Распаковка: скорость %1, память %2
-0117 All speeds were measured on 1GHz single-core Duron,=Все скорости измерены на 1ГГц одноядерном Duron,
-0118 and your horse will probably run faster=так что ваша лошадка наверняка будет побыстрее
+0390 All speeds were measured on 3GHz Core2Duo=Все скорости измерены на 3ГГц Core2Duo
 --Solid block size
 0177 Limit solid blocks=Ограничить солид-блоки
 0138 Bytes, no more than:=Байтов, не более:

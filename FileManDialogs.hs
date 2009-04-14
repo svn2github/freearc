@@ -438,18 +438,17 @@ compressionPage fm' vbox = do
                                    .$ limitDecompressionMem (1*gb)
             cmem = compressor.$ compressorGetShrinkedCompressionMem
             dmem = compressor.$ compressorGetShrinkedDecompressionMem
-        let level  =         "     ccm     uharc     7-zip       rar     ace     zip"
-            cspeed = x.$bool " 350kb/s   400kb/s   600kb/s   1.5mb/s   5mb/s  12mb/s" --m9,m5..m1
-                             " 250kb/s   300kb/s   500kb/s   1.5mb/s   6mb/s  12mb/s" --m9x,m5x..m1x
-            dspeed = x.$bool "2-10mb/s  2-10mb/s  2-10mb/s  2-10mb/s  10mb/s  25mb/s" --m9,m5..m1
-                             "  10mb/s    10mb/s    10mb/s    10mb/s  15mb/s  25mb/s" --m9x,m5x..m1x
+        let level  =         "      ccm      uharc     7-zip        rar        ace      zip"
+            cspeed = x.$bool "    3mb/s      3mb/s     4mb/s     10mb/s     20mb/s   50mb/s" --m9,m5..m1
+                             "  2.5mb/s    2.5mb/s     4mb/s      8mb/s     15mb/s   50mb/s" --m9x,m5x..m1x
+            dspeed = x.$bool " 4-40mb/s   4-40mb/s  4-40mb/s     25mb/s     40mb/s  100mb/s" --m9,m5..m1
+                             "   40mb/s     40mb/s    40mb/s     40mb/s     60mb/s  100mb/s" --m9x,m5x..m1x
         labelSetMarkup methodText . deleteIf (=='_') . unlines =<< mapM i18fmt
             [ ["0114 Compression level: %1",               bold((words level!!m).$replace '_' ' ')]
             , ["0115 Compression speed: %1, memory: %2",   bold(words cspeed!!m), bold(showMem cmem)]
             , ["0116 Decompression speed: %1, memory: %2", bold(words dspeed!!m), bold(showMem dmem)]
             , [""]
-            , ["0117 All speeds were measured on 1GHz single-core Duron,"]
-            , ["0118 and your horse will probably run faster"]]
+            , ["0390 All speeds were measured on 3GHz Core2Duo"]]
         w1 <- i18n (levels!!m)
         w2 <- i18n "0226 (fast, low-memory decompression)"
         autodetect'   <- val autodetect
