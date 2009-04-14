@@ -339,13 +339,19 @@ saveSizePos fm' window name = do
     (w,h) <- widgetGetSize     window
     fmReplaceHistory fm' (name++"Coord") (unwords$ map show [x,y,w,h])
 
+-- |Запомним, было ли окно максимизировано
+saveMaximized fm' name = fmReplaceHistoryBool fm' (name++"Maximized")
+
 -- |Восстановить размеры и положение окна из истории
 restoreSizePos fm' window name deflt = do
-    a <- split ' '  `fmap`  fmGetHistory1 fm' (name++"Coord" ) deflt
-    when (length(a)==4  &&  all (all isDigit) a) $ do  -- проверим что a состоит ровно из 4 чисел
-      let [x,y,w,h] = map readInt a
-      windowMove   window x y  `on` x>0
-      windowResize window w h  `on` w>0
+    coord <- fmGetHistory1 fm' (name++"Coord") deflt
+    let a  = coord.$split ' '
+    when (length(a)==4  &&  all isSignedInt a) $ do  -- проверим что a состоит ровно из 4 чисел
+      let [x,y,w,h] = map readSignedInt a
+      windowMove   window x y  `on` x/= -10000
+      windowResize window w h  `on` w/= -10000
+    whenM (fmGetHistoryBool fm' (name++"Maximized") False) $ do
+      windowMaximize window
 
 
 ----------------------------------------------------------------------------------------------------

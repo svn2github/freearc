@@ -91,7 +91,12 @@ readI = foldl f 0
               | otherwise  =  error ("Non-digit "++[c]++" in readI")
 
 readInt :: String -> Int
-readInt = fromInteger.readI
+readInt = readI
+
+readSignedInt ('-':xs) = - readInt xs
+readSignedInt      xs  =   readInt xs
+
+isSignedInt = all isDigit.tryToSkip "-"
 
 lb :: Integral a =>  a -> Int
 lb 0 = 0

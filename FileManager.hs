@@ -272,7 +272,7 @@ myGUI run args = do
 ---- Сохранение/восстановление размера и положения главного окна и колонок в нём -------------------
 ----------------------------------------------------------------------------------------------------
 
-  -- Установить иконку главного окна
+  -- Назначим иконку главному окну
   iconfile <- findFile configFilePlaces aICON_FILE
   window `windowSetIconFromFile` iconfile
 
@@ -283,13 +283,21 @@ myGUI run args = do
   --window `windowSetPosition` WinPosNone
   --windowSetDefaultSize window 200 100
 
+  -- При старте восстановим сохранённый размер окна
+  restoreSizePos fm' window "MainWindow" "-10000 -10000 720 500"
+
   -- Сохраним размер и положение главного окна после его перемещения
   window `onConfigure` \e -> do
     saveSizePos fm' window "MainWindow"
     return False
 
-  -- При старте восстановим сохранённый размер окна
-  restoreSizePos fm' window "MainWindow" "0 0 720 500"
+  -- Запомним, было ли окно максимизировано
+  window `onWindowState` \e -> do
+    let isMax x = case x of
+                    WindowStateMaximized -> True
+                    _                    -> False
+    saveMaximized fm' "MainWindow" (any isMax (eventWindowState e))
+    return False
 
 
   -- При закрытии программы сохраним порядок и ширину колонок
