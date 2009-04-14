@@ -48,7 +48,7 @@ int external_program (bool IsCompressing, CALLBACK_FUNC *callback, void *auxdata
         printf ("\n%s %s bytes with %s\n", IsCompressing? "Compressing":"Unpacking", show3(bytes,temp), cmd);
         double time0 = GetGlobalTime();
         ExitCode = system (cmd);
-        printf ("\nExitcode=%d\n", ExitCode);
+        printf ("\nErrorlevel=%d\n", ExitCode);
         if (addtime)  *addtime += GetGlobalTime() - time0;
     } else {
         rename (infile, outfile);

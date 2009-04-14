@@ -86,6 +86,10 @@ runIndicators = do
   set window [windowWindowPosition := WinPosCenter,
               containerBorderWidth := 10, containerChild := vbox]
 
+  -- Назначим иконку окну
+  iconfile <- findFile configFilePlaces aICON_FILE
+  window `windowSetIconFromFile` iconfile
+
   -- Размер окна индикатора прогресса
   let sz = settings.$lookup aINITAG_PROGRESS `defaultVal` "350 200"
   let (w,h) = sz.$ split2 ' '
