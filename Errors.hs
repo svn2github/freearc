@@ -56,7 +56,7 @@ data ErrorTypes = GENERAL_ERROR                 [String]
                 | SKIPPED_FAKE_FILES            Int
                 | BROKEN_ARCHIVE                FilePath [String]
                 | INTERNAL_ERROR                String
-                | COMPRESSION_ERROR             String
+                | COMPRESSION_ERROR             [String]
                 | BAD_PASSWORD                  FilePath FilePath
 
 --foreign import "&errCounter" :: Ptr Int
@@ -194,8 +194,8 @@ errormsg (BROKEN_ARCHIVE arcname msgs) = do
 errormsg (INTERNAL_ERROR msg) =
   return$ "FreeArc internal error: "++msg
 
-errormsg (COMPRESSION_ERROR msg) =
-  i18fmt [msg]
+errormsg (COMPRESSION_ERROR msgs) =
+  i18fmt msgs
 
 errormsg (CMDLINE_GENERAL msgs) =
   i18fmt msgs
@@ -417,6 +417,12 @@ count_warnings action = do
 
 -- |Счётчик ошибок, возникших в ходе работы программы
 warnings = unsafePerformIO$ newIORef 0 :: IORef Int
+
+#ifdef FREEARC_GUI
+registerThreadError = registerWarning
+#else
+registerThreadError = registerError
+#endif
 
 -- Операции, выполняемые при появлении ошибки/предупреждения (регистрируются в других частях программы)
 errorHandlers   = unsafePerformIO$ newIORef [] :: IORef [String -> IO ()]

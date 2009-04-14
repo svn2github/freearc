@@ -170,17 +170,17 @@ aFREEARC_ERRCODE_OPERATION_TERMINATED  = -10
 
 compressionErrorMessage x
   | x==aFREEARC_OK                            = "All OK"
-  | x==aFREEARC_ERRCODE_GENERAL               = "0365 general (de)compression error"
-  | x==aFREEARC_ERRCODE_INVALID_COMPRESSOR    = "0366 invalid compression method or parameters"
+  | x==aFREEARC_ERRCODE_GENERAL               = "0365 general (de)compression error in %1"
+  | x==aFREEARC_ERRCODE_INVALID_COMPRESSOR    = "0366 invalid compression method or parameters in %1"
   | x==aFREEARC_ERRCODE_ONLY_DECOMPRESS       = "program build with FREEARC_DECOMPRESS_ONLY, so don't try to use compress"
-  | x==aFREEARC_ERRCODE_OUTBLOCK_TOO_SMALL    = "output block size in (de)compressMem is not enough for all output data"
-  | x==aFREEARC_ERRCODE_NOT_ENOUGH_MEMORY     = "0367 can't allocate memory required for (de)compression"
-  | x==aFREEARC_ERRCODE_IO                    = "0368 I/O error in compression algorithm"
-  | x==aFREEARC_ERRCODE_BAD_COMPRESSED_DATA   = "0369 bad compressed data"
-  | x==aFREEARC_ERRCODE_NOT_IMPLEMENTED       = "requested feature isn't supported"
+  | x==aFREEARC_ERRCODE_OUTBLOCK_TOO_SMALL    = "output block size in (de)compressMem is not enough for all output data in %1"
+  | x==aFREEARC_ERRCODE_NOT_ENOUGH_MEMORY     = "0367 can't allocate memory required for (de)compression in %1"
+  | x==aFREEARC_ERRCODE_IO                    = "0368 I/O error in compression algorithm %1"
+  | x==aFREEARC_ERRCODE_BAD_COMPRESSED_DATA   = "0369 bad compressed data in %1"
+  | x==aFREEARC_ERRCODE_NOT_IMPLEMENTED       = "requested feature isn't supported in %1"
   | x==aFREEARC_ERRCODE_NO_MORE_DATA_REQUIRED = "required part of data was already decompressed"
   | x==aFREEARC_ERRCODE_OPERATION_TERMINATED  = "operation terminated by user"
-  | otherwise                                 = "unknown (de)compression error "++show x
+  | otherwise                                 = "unknown (de)compression error "++show x++" in %1"
 
 
 ----------------------------------------------------------------------------------------------------

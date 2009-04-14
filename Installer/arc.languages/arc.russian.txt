@@ -491,11 +491,11 @@ Archive comment dialog
 0378 bad name or parameters in encryption algorithm %1=неправильное имя или параметры в алгоритме шифрования %1
 
 Errors returned by compression methods
-0365 general (de)compression error=ошибка (рас)паковки
-0366 invalid compression method or parameters=ошибочный метод сжатия или его параметр
-0367 can't allocate memory required for (de)compression=невозможно выделить память, необходимую для (рас)паковки
-0368 I/O error in compression algorithm=ошибка чтения/записи в алгоритме (рас)паковки
-0369 bad compressed data=ошибка в сжатых данных
+0365 general (de)compression error in %1=ошибка (рас)паковки в %1
+0366 invalid compression method or parameters in %1=ошибочный метод сжатия или его параметр в %1
+0367 can't allocate memory required for (de)compression in %1=невозможно выделить память, необходимую для (рас)паковки в %1
+0368 I/O error in compression algorithm %1=ошибка чтения/записи в алгоритме (рас)паковки %1
+0369 bad compressed data in %1=ошибка в сжатых данных алгоритма %1
 
 
 === Standard profiles ====================================================

@@ -187,7 +187,7 @@ de_compress_PROCESS1 de_compress reader times comprMethod num pipe = do
   -- Выйдем с сообщением, если произошла ошибка
   unlessM (val operationTerminated) $ do
     when (result `notElem` [aFREEARC_OK, aFREEARC_ERRCODE_NO_MORE_DATA_REQUIRED]) $ do
-      registerWarning$ COMPRESSION_ERROR$ compressionErrorMessage result++" in "++comprMethod
+      registerThreadError$ COMPRESSION_ERROR [compressionErrorMessage result, comprMethod]
       operationTerminated =: True
   -- Сообщим предыдущему процессу, что данные больше не нужны, а следующему - что данных больше нет
   send_backP  pipe aFREEARC_ERRCODE_NO_MORE_DATA_REQUIRED
