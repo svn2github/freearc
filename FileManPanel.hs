@@ -476,7 +476,7 @@ fmFileBox fm' dialog tag dialogType makeControl dialogTitle filters filter_p pro
   hbox     <- hBoxNew False 0
   control  <- makeControl
   filename <- fmEntryWithHistory fm' tag filter_p process
-  chooserButton <- button "0999 ..."
+  chooserButton <- button "9999 ..."
   chooserButton `onClick` do
     chooseFile dialog dialogType dialogTitle filters (val filename) (filename =:)
   boxPackStart  hbox  (widget control)        PackNatural 0

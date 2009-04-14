@@ -362,11 +362,11 @@ settingsDialog fm' = do
     (_, saveEncryptionHistories)  <-  encryptionPage fm' dialog okButton =<< newPage "0119 Encryption"
 
 ------ Закладка информации о системе ----------------------------------------------------------
-    vbox <- newPage "0999 Info";  let pack n makeControl = do control <- makeControl
+    vbox <- newPage "0388 Info";  let pack n makeControl = do control <- makeControl
                                                               boxPackStart vbox control PackNatural n
 
     maxBlock <- getMaxMemToAlloc
-    pack 10 $twoColumnTable [("0999 Largest contiguous free memblock:", showMem (maxBlock `roundDown` mb))]
+    pack 10 $twoColumnTable [("0389 Largest contiguous free memblock:", showMem (maxBlock `roundDown` mb))]
 
 
 -----------------------------------------------------------------------------------------------

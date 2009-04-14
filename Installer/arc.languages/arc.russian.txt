@@ -20,12 +20,12 @@ Language name in english and mother tongue
 
 Language-specific URLs relative to http://freearc.org/ and helpfiles
 Filled only for languages providing their own translations
-0254 Homepage=ru
-0255 News page=ru/News.aspx
-0371 Forum page=viewforum.php?f=4
-0372 Wiki page=??
-0256 Helpfile=FreeArc-GUI-Rus.htm
-0257 Command-line help=FreeArc040-rus.htm
+0254 Homepage (URL, not translation!)=ru
+0255 News page (URL, not translation!)=ru/News.aspx
+0371 Forum page (URL, not translation!)=viewforum.php?f=4
+0372 Wiki page (URL, not translation!)=??
+0256 Helpfile (URL, not translation!)=FreeArc-GUI-Rus.htm
+0257 Command-line help (URL, not translation!)=FreeArc040-rus.htm
 
 
 === Menu ========================================================================
@@ -292,6 +292,10 @@ Settings dialog
 0370 Watch for new versions via Internet=Отслеживать появление новых версий через Интернет
 0168 You should restart FreeArc in order for a language settings to take effect.=Вы должны перезапустить FreeArc чтобы заработали новые настройки локализации.
 0169 Passwords need to be entered again after restart.=Пароли должны быть введены заново после перезапуска
+--
+0388 Info=Информация
+0389 Largest contiguous free memblock:=Наибольший непрерывный блок свободной памяти:
+
 
 Logfiles
 0303 No log file specified in Settings dialog!=Логфайл не задан в диалоге Настройки!
