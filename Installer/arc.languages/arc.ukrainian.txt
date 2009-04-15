@@ -16,16 +16,16 @@
 
 Language name in english and mother tongue
 0000 Language=Ukrainian (Українська)
-0159 Copyright=chornobyl 2009-04-04
+0159 Copyright=chornobyl 2009-04-15
 
 Language-specific URLs relative to http://freearc.org/ and helpfiles
 Filled only for languages providing their own translations
-0254 Homepage=/ru
-0255 News page=/ru/News.aspx
-0371 Forum page=viewforum.php?f=4
-0372 Wiki page=??
-0256 Helpfile=FreeArc-GUI-Rus.htm
-0257 Command-line help=FreeArc040-rus.htm
+0254 Homepage (URL, not translation!)=ru
+0255 News page (URL, not translation!)=ru/News.aspx
+0371 Forum page (URL, not translation!)=viewforum.php?f=4
+0372 Wiki page (URL, not translation!)=??
+0256 Helpfile (URL, not translation!)=FreeArc-GUI-Rus.htm
+0257 Command-line help (URL, not translation!)=FreeArc040-rus.htm
 
 
 === Menu ========================================================================
@@ -56,8 +56,6 @@ File menu/toolbar
 Commands menu/toolbar
 0030 Add=Додати
 0040 Add files to archive(s)=Додати файли до архів(ів)
-0031 Modify=Модифікувати
-0041 Modify archive(s)=Модифікувати архів(и)
 0035 Extract=Розпакувати
 0045 Extract files from archive(s)=Розпакувати файли з архів(ів)
 0034 Test=Тестувати
@@ -80,6 +78,10 @@ Tools menu/toolbar
 0273 Encrypt archive contents=Зашифрувати вміст архіву
 0274 Protect=Захистити
 0275 Add Recovery record to archive=Додати інформацію для відновлення
+0379 Repair=Відновити
+0380 Repair damaged archive=Відновити пошкоджений архів
+0031 Modify=Модифікувати
+0041 Modify archive(s)=Модифікувати архів(и)
 0032 Join=Об'єднати
 0042 Join archives together=Об'єднати архіви
 
@@ -196,7 +198,7 @@ Add dialog
 --
 0209 Recompression mode:=Режим перепакування:
 0210 Quickly append new files=Швидко додати нові файли в кінці архіву
-0211 Smart recompression of solid blocks (default)=Інтелектуальне перепакування солід-блоків (за замовчуванням)
+0211 Smart recompression of solid blocks (default)=Інтелектуальне перепакування суцільних блоків (за замовчуванням)
 0212 Recompress all files=Перепакувати усі файли
 0213 Store only fileinfo=Зберегти лише зміст архіву
 0214 Store only fileinfo & crcs=Зберегти лише зміст архіву і CRC файлів
@@ -258,7 +260,7 @@ Archive information dialog
 0091 Ratio:=Ступінь стискання:
 --
 0104 Directory blocks:=Блоків каталогу:
-0092 Solid blocks:=Солід-блоків:
+0092 Solid blocks:=Суцільних блоків:
 0093 Avg. blocksize:=Середній розмір:
 --
 0099 Compression memory:=Необхідно пам'яті для стискання:
@@ -290,6 +292,10 @@ Settings dialog
 0370 Watch for new versions via Internet=Слідкувати за появою нових версій через Інтернет
 0168 You should restart FreeArc in order for a language settings to take effect.=Ви маєте перезапустити FreeArc щоб активувати нові налаштування локалізації.
 0169 Passwords need to be entered again after restart.=Паролі мають бути ведені знову після перезапуску
+--
+0388 Info=Інформація
+0389 Largest contiguous free memblock:=Найбільший безперервний блок вільної пам'яті:
+
 
 Logfiles
 0303 No log file specified in Settings dialog!=Файл записів не вказаний в діалозі Налаштувань!
@@ -321,10 +327,9 @@ Checking for updates
 0114 Compression level: %1=Ступінь стиснення: %1
 0115 Compression speed: %1, memory: %2=Упаковка: швидкість %1, пам'ять %2
 0116 Decompression speed: %1, memory: %2=Розпакування: швидкість %1, пам'ять %2
-0117 All speeds were measured on 1GHz single-core Duron,=Усі швидкості виміряні на 1ГГц одноядерному Duron,
-0118 and your horse will probably run faster=отож ваш комп'ютер, певно буде швидше
+0390 All speeds were measured on 3GHz Core2Duo=Усі швидкості виміряні на 3ГГц Core2Duo
 --Solid block size
-0177 Limit solid blocks=Обмежити солід-блоки
+0177 Limit solid blocks=Обмежити суцільні блоки
 0138 Bytes, no more than:=Байтів, не більше:
 0139 Files, no more than:=Файлів, не більше:
 0140 Split by extension=Розділити по розширенню
@@ -375,6 +380,9 @@ Progress indicator
 0248 Analyzed %1 files=Проаналізовано %1 файлів
 0249 Reading archive directory=Читання змісту архіву
 0250 Sorting filelist=Сортування списку файлів
+0385 Scanning archive for damages=Перевірка цілісності архіву
+0386 Protecting archive from damages=Додавання захисного запису
+0387 Recovering archive=Відновлення архіву
 
 File overwrite dialog
 0078 Confirm File Replace=Підтвердження заміни файлу
@@ -426,6 +434,11 @@ Archive comment dialog
 0301 SUCCESFULLY LOCKED ARCHIVE %1=УСПІШНО ЗАХИЩЕНО АРХІВ %1
 0302 %2 WARNINGS WHILE LOCKING ARCHIVE %1=%2 ПОПЕРЕДЖЕНЬ ПРИ ЗАХИСТІ АРХІВУ %1
 
+0381 Repair archive(s)? Repaired archive(s) will be placed into files named fixed.*=відновити пошкоджені архіви? Відновлені архіви будуть названі fixed.*
+0382 Repairing archive %1=Відновлення архіву %1
+0383 SUCCESFULLY REPAIRED ARCHIVE %1=УСПІШНО ВІДНОВЛЕНИЙ АРХІВ %1
+0384 %2 WARNINGS WHILE REPAIRING ARCHIVE %1=%2 ПОПЕРЕДЖЕНЬ ПРИ ВІДНОВЛЕННІ АРХІВУ %1
+
 
 === Error messages =======================================================
 0316 ERROR: %1=ПОМИЛКА: %1
@@ -457,7 +470,7 @@ Archive comment dialog
 0338 skipped %1 fake files=пропущено %1 віртуальних файлів
 0339 bad password for archive %1=невірний пароль для архіву %1
 0340 bad password for %1 in archive %2=невірний пароль для  файлу %1 в архіві %2
-0341 archive %1 corrupt: %2. Please recover it using 'r' command or use -tp- option to ignore Recovery Record=архів %1 пошкоджений: %2. Будь ласка відновіть його командою 'r' або використайте опцію -tp- щоб ігнорувати Захисний Запис архіву
+0341 %1 isn't archive or this archive is corrupt: %2. Please recover it using 'r' command or use -tp- option to ignore Recovery Record=%1 - не архів або пошкоджений: %2. Будь ласка відновіть його командою 'r' або використайте опцію -tp- щоб ігнорувати захисний запис архіву
 0342 SFX module %1 is not found=SFX-модуль %1 не знайдено
 0343 %1 isn't implemented=%1 не реалізовано
 0344 only first of %1 recovery records can be processed by this program version. Please use newer versions to process the rest=тільки перший із %1 захисних записів архіву може бути використана цією версією програми. Будь ласка використайте свіжішу версію програми для обробки інших
@@ -481,33 +494,30 @@ Archive comment dialog
 0378 bad name or parameters in encryption algorithm %1=невірне ім'я чи параметри в алгоритмі шифрування %1
 
 Errors returned by compression methods
-0365 general (de)compression error=помилка (роз)пакування
-0366 invalid compression method or parameters=помилковий метод стиснення чи його параметр
-0367 can't allocate memory required for (de)compression=неможливо виділити пам'ять, необхідну для (роз)пакування
-0368 I/O error in compression algorithm=помилка читання/запису в алгоритмі (роз)пакування
-0369 bad compressed data=помилка в стиснутих даних
+0365 general (de)compression error in %1=помилка (роз)пакування в %1
+0366 invalid compression method or parameters in %1=помилковий метод стиснення чи його параметр в %1
+0367 can't allocate memory required for (de)compression in %1=неможливо виділити пам'ять, необхідну для (роз)пакування в %1
+0368 I/O error in compression algorithm %1=помилка читання/запису в алгоритмі (роз)пакування %1
+0369 bad compressed data in %1=помилка в стиснутих даних алгоритму %1
 
 
 === Standard profiles ====================================================
 Compression
-0727 Maximum (1gb decompression)=Максимальне (1ГБ для розпакування)
-0728 Maximum (192mb decompression)=Максимальне (192МБ для розпакування)
-0729 Maximum (fast, low-memory decompression)=Максимальне зі швидким розпакуванням
+0771 Maximum=Максимальне
+0772 Maximum with fast decompression=Максимальне зі швидким розпакуванням
 0752 No compression=Без стиснення
 
 Encryption
+0733 Strongest=Найсильніше
+0732 Strong=Сильне
 0730 Standard=Стандартне
 0731 Fast=Швидке
-0732 Strong=Сильне
-0733 Strongest=Максимальне
 
 Protection
-0734 Add=Додати
+0769 Add (autosize, 1-4%)=Додати (авто-розмір, 1-4%)
 0735 Remove=Видалити
-0736 Internet-only (4kb blocks)=Тільки для відновлення через Internet (4КБ блоки)
-0737 Internet-only (64kb blocks)=Тільки для відновлення через Internet (64КБ блоки)
-0738 Percents, example=У відсотках, приклад
-0739 Fixed-size, example=Фіксованого розміру, приклад
+0734 Add=Додати
+0770 Add for recovery via Internet=Додати для відновлення через Інтернет
 
 Comment
 0740 Add from textbox=Додати введений на закладці текст
@@ -574,7 +584,7 @@ Add dialog
 1201 Compress each marked file/directory into separate archive=для кожного файлу буде створено окремий архів
 1202 Add to archive name=додає вибраний параметр до ім'я архіву\nнаприклад час, дата
 --
-1207 Delete previous archive contents=Увага! перед додаванням нових даних, старі видаляються назавжди.
+1207 Delete previous archive contents=Увага! перед додаванням нових даних, старі видаляться назавжди.
 1208 Order of files in archive=може покращити стиснення, залежно від методу сортування та типу файлів
 --
 1222 Include only files=вкажіть файли лише які ви хочете додати (наприклад *.txt)
@@ -583,14 +593,14 @@ Add dialog
 --Compression settings
 1113 Fast, low-memory decompression=Відключає використання алгоритмів, які вимагають багато часу чи пам'яті при розпакуванні. Використання цієї опції трохи сповільнює й погіршує стискання
 1176 Filetype auto-detection=При включенні цієї опції FreeArc аналізує вміст кожного файлу, а потім вибирає для нього оптимальний алгоритм стиснення, при її відключенні алгоритми вибираються згідно з arc.groups
-1138 Bytes, no more than:=вказати розмір солід-блоку
-1139 Files, no more than:=вказати кількість файлів котру міститиме солід-блок
-1140 Split by extension=додатково розділити солід-блоки, кожен солід-блок міститиме лише один тип файлів
+1138 Bytes, no more than:=вказати розмір суцільного блоку
+1139 Files, no more than:=вказати кількість файлів котру міститиме суцільний блок
+1140 Split by extension=додатково розділити суцільні блоки, кожен суцільний блок міститиме лише один тип файлів
 
 --Encryption settings
 1120 Encrypt archive directory=Зашифровує мета інформацію архіву (імена, розміри, CRC файлів), навіть для відкриття архіву потрібно вказати пароль/файл-ключ. Особливо рекомендується включити цю опцію для отримання реального захисту даних
 1123 Keyfile:=Файл-ключ - це додатковий пароль, що записаний у файл на диску, без якого неможливо відкрити архів. Особливо рекомендується використовувати його для повної реалізації потенціалу криптостійкості AES.
-1125 Generate new keyfile=Створити новий файл-ключ, записав криптографічні випадкові дані в зазначений користувачем файл
+1125 Generate new keyfile=Створити новий файл-ключ, записавши криптографічні випадкові дані в зазначений користувачем файл.
 1181 Use password=позначте цю опцію для використання паролю \nтримайте пароль у секреті
 
 

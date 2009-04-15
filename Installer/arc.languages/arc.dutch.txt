@@ -20,12 +20,12 @@ Language name in english and mother tongue
 
 Language-specific URLs relative to http://freearc.org/ and helpfiles
 Filled only for languages providing their own translations
-0254 Homepage=??
-0255 News page=??
-0371 Forum page=??
-0372 Wiki page=??
-0256 Helpfile=??
-0257 Command-line help=??
+0254 Homepage (URL, not translation!)=??
+0255 News page (URL, not translation!)=??
+0371 Forum page (URL, not translation!)=??
+0372 Wiki page (URL, not translation!)=??
+0256 Helpfile (URL, not translation!)=??
+0257 Command-line help (URL, not translation!)=??
 
 
 === Menu ========================================================================
@@ -292,6 +292,10 @@ Settings dialog
 0370 Watch for new versions via Internet=Automatisch controleren voor nieuwere versies via internet
 0168 You should restart FreeArc in order for a language settings to take effect.=U dient FreeArc te herstarten alvorens de taalinstellingen geactiveerd worden.
 0169 Passwords need to be entered again after restart.=Wachtwoorden dienen na herstarten opnieuw ingevoerd te worden.
+--
+0388 Info=Informatie
+0389 Largest contiguous free memblock:=Grootste aaneensluitend vrij geheugenblok:
+
 
 Logfiles
 0303 No log file specified in Settings dialog!=Geen logbestand in "instellingen" gedefinieerd
@@ -323,8 +327,7 @@ Checking for updates
 0114 Compression level: %1=Comp.&niveau: %1
 0115 Compression speed: %1, memory: %2=Comp. snelheid:%1, Geheugengebruik: %2
 0116 Decompression speed: %1, memory: %2=Decomp. snelheid:%1, Geheugengebruik: %2
-0117 All speeds were measured on 1GHz single-core Duron,=Snelheden zijn gebasseerd op een:\n1GHz AMD Duron computer met 1 Core.
-0118 and your horse will probably run faster=\nUw machine zal waarschijnlijk sneller zijn...
+0390 All speeds were measured on 3GHz Core2Duo=Snelheidsmetingen gedaan op 3GHz Core2Duo
 --Solid block size
 0177 Limit solid blocks=Limiteer solide blokken
 0138 Bytes, no more than:=Grootte, niet meer dan:
@@ -467,14 +470,14 @@ Archive comment dialog
 0338 skipped %1 fake files= aantal fake bestanden overgeslagen %1
 0339 bad password for archive %1=ongeldig paswoord voor archief %1
 0340 bad password for %1 in archive %2=ongeldig paswoord voor %1 in archief %2
-0341 archive %1 corrupt: %2. Please recover it using 'r' command or use -tp- option to ignore Recovery Record=archief %1 is beschadigd: %2. Herstel archief met 'r' opdracht of gebruik de -tp- optie om de herstelinformatie niet te gebruiken
+0341 %1 isn't archive or this archive is corrupt: %2. Please recover it using 'r' command or use -tp- option to ignore Recovery Record=%1 is geen archief of is een beschadigd archief: %2. Herstel archief met 'r' opdracht of gebruik de -tp- optie om de herstelinformatie niet te gebruiken
 0342 SFX module %1 is not found=SFX module %1 niet gevonden
 0343 %1 isn't implemented=%1 is niet geimplementeerd
 0344 only first of %1 recovery records can be processed by this program version. Please use newer versions to process the rest=Alleen the eerste herstelinformatie van %1 kunnen worden verwerkt met de huidige versie van FreeArc. Gebruik een nieuwere versie van FreeArc om de resr te verwerken
 0345 you need FreeArc %1 or above to process this recovery info=FreeArc versie %1 is nodig om deze herstelinformatie te kunnen verwerken
 0346 file %1 already exists=Bestand %1 bestaat al
 0347 archive can't be recovered - recovery data absent or corrupt=Archief kan niet worden hersteld - hersteldata niet aanwezig of beschadigd
-0348 %1 unrecoverable errors (%2) found, can't restore anything!=%1 niet herstelbare fouten gevonden (%2), kan niets herstellen!=%1 
+0348 %1 unrecoverable errors (%2) found, can't restore anything!=%1 niet herstelbare fouten gevonden (%2), kan niets herstellen!
 0349 can't open original at %1=kan origineel niet openen op positie %1
 0350 %1 has size %2 so it can't be used to recover %3 having size %4=%1 is %2 groot en kan dus niet worden gebruikt om %3 te herstellen met grootte %4
 0351 %1 errors (%2) remain unrecovered=%1 fouten (%2) blijven onherstelbaar
@@ -491,11 +494,11 @@ Archive comment dialog
 0378 bad name or parameters in encryption algorithm %1=ongeldige naam of optie(s) in encryptie-algoritme
 
 Errors returned by compression methods
-0365 general (de)compression error=algemene fout bij inpakken of uitpakken
-0366 invalid compression method or parameters=ongeldige compressie methode of parameters
-0367 can't allocate memory required for (de)compression=kan nodig geheugen voor in- of uitpakken niet vrijmaken - onvoldoende vrij geheugen
-0368 I/O error in compression algorithm=I/O fout in compressie-algoritme
-0369 bad compressed data=ongeldige ingepakte gegevens
+0365 general (de)compression error in %1=algemene fout bij inpakken of uitpakken in %1
+0366 invalid compression method or parameters in %1=ongeldige compressie methode of parameters in %1
+0367 can't allocate memory required for (de)compression in %1=kan nodig geheugen voor in- of uitpakken niet vrijmaken voor %1 - onvoldoende vrij geheugen
+0368 I/O error in compression algorithm %1=I/O fout in compressie-algoritme %1
+0369 bad compressed data in %1=ongeldige ingepakte gegevens in %1
 
 
 === Standard profiles ====================================================

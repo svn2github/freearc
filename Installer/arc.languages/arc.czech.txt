@@ -1,4 +1,4 @@
-﻿******************************************************************************
+******************************************************************************
 ***  This is a language file for FreeArc (http://freearc.org).             ***
 ***  You may improve it by providing new translations.                     ***
 ***  Messages that need translation are marked by "??",                    ***
@@ -18,11 +18,14 @@ Language name in english and mother tongue
 0000 Language=Czech (Čeština)
 0159 Copyright=Radek "Black_Fox" Liška\nDodatky k překladu: Jan Ondruš, Milan Hrubý, Michal Molhanec
 
-Language-specific URLs relative to http://freearc.org and helpfiles
-0254 Homepage=??
-0255 News page=??
-0256 Helpfile=??
-0257 Command-line help=??
+Language-specific URLs relative to http://freearc.org/ and helpfiles
+Filled only for languages providing their own translations
+0254 Homepage (URL, not translation!)=??
+0255 News page (URL, not translation!)=??
+0371 Forum page (URL, not translation!)=??
+0372 Wiki page (URL, not translation!)=??
+0256 Helpfile (URL, not translation!)=??
+0257 Command-line help (URL, not translation!)=??
 
 
 === Menu ========================================================================
@@ -53,8 +56,6 @@ File menu/toolbar
 Commands menu/toolbar
 0030 Add=Přidat
 0040 Add files to archive(s)=Přidá vybrané položky do archivu
-0031 Modify=Upravit
-0041 Modify archive(s)=Upraví archiv(y)
 0035 Extract=Rozbalit
 0045 Extract files from archive(s)=Rozbalí soubory z vybraného archivu
 0034 Test=Test
@@ -70,13 +71,17 @@ Tools menu/toolbar
 0268 Comment=Komentář
 0269 Edit archive comment=Upraví komentář archivu
 0293 Recompress=Překomprimovat
-0294 Recompress files in archive=Překomprimovat soubory v archivu
+0294 Recompress files in archive=Překomprimuje soubory v archivu
 0270 Convert to SFX=Převést na SFX
 0271 Convert archive to SFX=Převede archiv na samorozbalovací
 0272 Encrypt=Zašifrovat
 0273 Encrypt archive contents=Zašifruje obsah archivu
 0274 Protect=Ochránit
 0275 Add Recovery record to archive=Přidá do archivu záznam pro opravu dat
+0379 Repair=Opravit
+0380 Repair damaged archive=Opraví poškozený archiv
+0031 Modify=Upravit
+0041 Modify archive(s)=Upraví archiv(y)
 0032 Join=Spojit
 0042 Join archives together=Spojí archivy dohromady
 
@@ -93,8 +98,12 @@ Help menu/toolbar
 0281 Help on using FreeArc=Návod k použití FreeArcu
 0282 Cmdline help=Nápověda k příkazové řádce
 0283 Help on FreeArc command line=Návod k použití FreeArcu v příkazové řádce
-0284 Goto Homepage=Jít na domovskou stránku
+0284 Open Homepage=Otevřít domovskou stránku
 0285 Open program site=Otevře domovskou stránku programu
+0373 Open forum=Otevřít fórum
+0374 Open program forum=Otevře fórum programu
+0375 Open wiki=Otevřít wiki
+0376 Open program wiki=Otevře wiki stránku programu
 0286 Check for update=Zkontrolovat aktualizace
 0287 Check for new program versions=Zkontroluje, jestli nevyšly nové aktualizace programu
 0288 About=O programu FreeArc
@@ -283,6 +292,10 @@ Settings dialog
 0370 Watch for new versions via Internet=Sledovat nové verze na internetu
 0168 You should restart FreeArc in order for a language settings to take effect.=Aby se změna jazyka projevila, musí být FreeArc restartován.
 0169 Passwords need to be entered again after restart.=Hesla musí být po restartu znovu zadána.
+--
+0388 Info=Info
+0389 Largest contiguous free memblock:=Největší celistvé volné místo v paměti
+
 
 Logfiles
 0303 No log file specified in Settings dialog!=V dialogu Nastavení není specifikovaný soubor záznamu!
@@ -314,8 +327,7 @@ Checking for updates
 0114 Compression level: %1=Úroveň komprese: %1
 0115 Compression speed: %1, memory: %2=Spotřeba paměti pro zabalení: %2  Rychlost: %1
 0116 Decompression speed: %1, memory: %2=Spotřeba paměti pro rozbalení: %2  Rychlost: %1
-0117 All speeds were measured on 1GHz single-core Duron,=Všechny rychlosti byly měřeny na 1GHz Duronu,
-0118 and your horse will probably run faster=tento stroj pravděpodobně poběží rychleji
+0390 All speeds were measured on 3GHz Core2Duo=Všechny rychlosti byly měřeny na procesoru Core2Duo 3GHz
 --Solid block size
 0177 Limit solid blocks=Limitovat solid bloky
 0138 Bytes, no more than:=Bajtů, ne více než
@@ -368,6 +380,9 @@ Progress indicator
 0248 Analyzed %1 files=Analyzováno %1 souborů
 0249 Reading archive directory=Načítám hlavičku archivu
 0250 Sorting filelist=Třídím seznam souborů
+0385 Scanning archive for damages=Zjišťuji chyby v archivu
+0386 Protecting archive from damages=Ochraňuji archiv před poškozením
+0387 Recovering archive=Obnovuji archiv
 
 File overwrite dialog
 0078 Confirm File Replace=Potvrzení nahrazení souboru
@@ -419,6 +434,11 @@ Archive comment dialog
 0301 SUCCESFULLY LOCKED ARCHIVE %1=ARCHIV %1 ÚSPĚŠNĚ BYL ÚSPĚŠNĚ ZAMKNUT
 0302 %2 WARNINGS WHILE LOCKING ARCHIVE %1=%2 VAROVÁNÍ BĚHEM ZAMYKÁNÍ ARCHIVU %1
 
+0381 Repair archive(s)? Repaired archive(s) will be placed into files named fixed.*=Opravit archiv(y)? Všechny opravy budou umístěny do souborů pojmenovaných fixed.*
+0382 Repairing archive %1=Opravuji archiv %1
+0383 SUCCESFULLY REPAIRED ARCHIVE %1=ARCHIV %1 BYL ÚSPĚŠNĚ OPRAVEN
+0384 %2 WARNINGS WHILE REPAIRING ARCHIVE %1=%2 VAROVÁNÍ BĚHEM OPRAVOVÁNÍ ARCHIVU %1
+
 
 === Error messages =======================================================
 0316 ERROR: %1=CHYBA: %1
@@ -450,7 +470,7 @@ Archive comment dialog
 0338 skipped %1 fake files=přeskočeno %1 falešných souborů
 0339 bad password for archive %1=špatné heslo pro archiv %1
 0340 bad password for %1 in archive %2=špatné heslo pro %1 v archivu %2
-0341 archive %1 corrupt: %2. Please recover it using 'r' command or use -tp- option to ignore Recovery Record=archiv %1 je poškozen: %2. Prosím opravte jej pomocí příkazu 'r' nebo použijte volbu -tp- k ignorování záznamu pro opravu dat
+0341 %1 isn't archive or this archive is corrupt: %2. Please recover it using 'r' command or use -tp- option to ignore Recovery Record=%1 není archiv nebo je tento archiv poškozen: %2. Prosím opravte jej pomocí příkazu 'r' nebo použijte volbu -tp- k ignorování záznamu pro opravu dat
 0342 SFX module %1 is not found=nenalezen SFX modul %1
 0343 %1 isn't implemented=%1 není implementováno
 0344 only first of %1 recovery records can be processed by this program version. Please use newer versions to process the rest=jen prvních %1 záznamů pro opravu dat může být zpracováno touto verzí programu. Prosím použijte novější verze ke zpracování zbytku
@@ -470,35 +490,34 @@ Archive comment dialog
 0356 archive directory not found=hlavička archivu nebyla nalezena
 0357 archive signature not found at the end of archive=nebyl nalezen identifikátor archivu
 0358 last block of archive is not footer block=poslední blok archivu není ukončovací blok
+0377 command "%1" shouldn't have additional arguments=příkaz "%1" by neměl mít další parametry
+0378 bad name or parameters in encryption algorithm %1=špatné jméno nebo parametry šifrovacího algoritmu %1
 
 Errors returned by compression methods
-0365 general (de)compression error=obecná chyba (de)komprese
-0366 invalid compression method or parameters=neplatná kompresní metoda nebo parametry
-0367 can't allocate memory required for (de)compression=nelze alokovat paměť nutnou pro (de)kompresi
-0368 I/O error in compression algorithm=I/O chyba v kompresním algoritmu
-0369 bad compressed data=špatná komprimovaná data
+0365 general (de)compression error in %1=obecná chyba (de)komprese v %1
+0366 invalid compression method or parameters in %1=neplatná kompresní metoda nebo parametry v %1
+0367 can't allocate memory required for (de)compression in %1=nelze alokovat paměť nutnou pro (de)kompresi v %1
+0368 I/O error in compression algorithm %1=I/O chyba v kompresním algoritmu %1
+0369 bad compressed data in %1=špatná komprimovaná data v %1
 
 
 === Standard profiles ====================================================
 Compression
-0727 Maximum (1gb decompression)=Maximum (1 GB paměti pro dekompresi)
-0728 Maximum (192mb decompression)=Maximum (192 MB paměti pro dekompresi)
-0729 Maximum (fast, low-memory decompression)=Maximum (rychlá, paměťově nenáročná dekomprese)
+0771 Maximum=Maximální
+0772 Maximum with fast decompression=Maximální s rychlou dekompresí
 0752 No compression=Žádná komprese
 
 Encryption
+0733 Strongest=Nejsilnější
+0732 Strong=Silné
 0730 Standard=Standardní
 0731 Fast=Rychlé
-0732 Strong=Silné
-0733 Strongest=Nejsilnější
 
 Protection
-0734 Add=Přidat
+0769 Add (autosize, 1-4%)=Přidat (autovelikost, 1-4%)
 0735 Remove=Odstranit
-0736 Internet-only (4kb blocks)=Internetová (4kB bloky)
-0737 Internet-only (64kb blocks)=Internetová (64kB bloky)
-0738 Percents, example=Procenta, příklad
-0739 Fixed-size, example=Pevná velikost, příklad
+0734 Add=Přidat
+0770 Add for recovery via Internet=Přidat pro obnovu přes internet
 
 Comment
 0740 Add from textbox=Přidat z textboxu
@@ -531,7 +550,16 @@ Archive name template
 0759 Weekday=Den v týdnu
 
 Exclude
-0760 Backup files=Zálohovat soubory
+0753 Backup files=Zálohovat soubory
+
+Additional compression options
+0760 Perform full backup=Provést plnou zálohu
+0761 Full archive test before and after operation=Kompletní test archivu před a po provedení operace
+
+Additional extraction options
+0762 Remove pathnames=Odstranit cesty
+0763 Restore absolute pathnames=Obnovit absolutní cesty
+0764 Full archive test before performing operation=Kompletní test archivu před provedením operace
 
 
 === Tooltips (index=N+1000) ===========================================

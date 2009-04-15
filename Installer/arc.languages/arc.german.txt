@@ -16,16 +16,16 @@
 
 Language name in english and mother tongue
 0000 Language=German (Deutsch)
-0159 Copyright=Vacon\nPeter Bauder alias JangoFat (based on 7zip language file;edited for FreeArc-0.50-win32-alpha-2009-04-07)\nOriginal copyrights:\nTranslated by Soeren Finster\n7-Zip 4.07 beta\nUpdated by JAK-Software.DE\n7-Zip 4.55 beta\nMaintained by Joachim Henke (since 4.12 beta)
+0159 Copyright=Vacon\nPeter Bauder alias JangoFat (based on 7zip language file;edited for FreeArc-0.50-win32-alpha-2009-04-15)\nOriginal copyrights:\nTranslated by Soeren Finster\n7-Zip 4.07 beta\nUpdated by JAK-Software.DE\n7-Zip 4.55 beta\nMaintained by Joachim Henke (since 4.12 beta)
 
 Language-specific URLs relative to http://freearc.org/ and helpfiles
 Filled only for languages providing their own translations
-0254 Homepage=??
-0255 News page=??
-0371 Forum page=??
-0372 Wiki page=??
-0256 Helpfile=??
-0257 Command-line help=??
+0254 Homepage (URL, not translation!)=??
+0255 News page (URL, not translation!)=??
+0371 Forum page (URL, not translation!)=??
+0372 Wiki page (URL, not translation!)=??
+0256 Helpfile (URL, not translation!)=??
+0257 Command-line help (URL, not translation!)=??
 
 
 === Menu ========================================================================
@@ -292,6 +292,10 @@ Settings dialog
 0370 Watch for new versions via Internet=Neue Version über das Internet suchen
 0168 You should restart FreeArc in order for a language settings to take effect.=Zum Übernehmen der Spracheinstellungen muss FreeArc neugestartet werden.
 0169 Passwords need to be entered again after restart.=Passwörter müssen nach dem Neustarten neu eingegeben werden.
+--
+0388 Info=Informationen
+0389 Largest contiguous free memblock:=Größter zusammenhängender freier Speicherblock:
+
 
 Logfiles
 0303 No log file specified in Settings dialog!=Keine Logdatei in den Einstellungen spezifiziert!
@@ -323,8 +327,7 @@ Checking for updates
 0114 Compression level: %1=&Kompressionsstärke: %1
 0115 Compression speed: %1, memory: %2=Packgeschwindigkeit:    %1, Speicherbedarf: %2
 0116 Decompression speed: %1, memory: %2=Entpackgeschwindigkeit: %1, Speicherbedarf: %2
-0117 All speeds were measured on 1GHz single-core Duron,=Alle Daten wurden auf einem 1GHz Einzelkern Duron- Prozessor
-0118 and your horse will probably run faster=gemessen und dein Pferdchen wird vermutlich schneller laufen ;)
+0390 All speeds were measured on 3GHz Core2Duo=Alle Geschwindigkeitsangaben wurden auf einem 3Ghz Core2Duo gemessen
 --Solid block size
 0177 Limit solid blocks=Solide Blöcke begrenzen
 0138 Bytes, no more than:=max. Größe:
@@ -366,7 +369,7 @@ Progress indicator
 0058 Bytes=Bytes verarbeitet:
 0059 Total bytes=Gesamtdatenmenge:
 0252 Compressed=Komprimierte Größe:
-0253 Total compressed=Gesamt-Kompression
+0253 Total compressed=Gesamt-Kompression:
 0060 Ratio=Kompressionsrate:
 0061 Speed=Geschwindigkeit:
 0062 Time=Verstrichene Zeit:
@@ -467,7 +470,7 @@ Archive comment dialog
 0338 skipped %1 fake files=%1 fehlerhafte Dateien übersprungen
 0339 bad password for archive %1=falsches Passwort zu Archiv %1
 0340 bad password for %1 in archive %2=falsches Passwort zu %1 in Archiv %2
-0341 archive %1 corrupt: %2. Please recover it using 'r' command or use -tp- option to ignore Recovery Record=Archiv %1 beschädigt: %2. Bitte mit Befehl 'r' wiederherstellen oder '-tp'-Option zum Ignorieren der Wiederherstellungsinformationen verwenden
+0341 %1 isn't archive or this archive is corrupt: %2. Please recover it using 'r' command or use -tp- option to ignore Recovery Record=%1 ist kein Archiv oder diese Archiv ist beschädigt: %2. Bitte mit Befehl 'r' wiederherstellen oder '-tp'-Option zum Ignorieren der Wiederherstellungsinformationen verwenden
 0342 SFX module %1 is not found=SFX- Modul %1 nicht gefunden
 0343 %1 isn't implemented=%1 ist nicht implementiert
 0344 only first of %1 recovery records can be processed by this program version. Please use newer versions to process the rest=Mit diesee Programmversion können nur die ersten der %1 Wiederherstellungsinformationen verarbeitet werden. Bitte neuere Version verwenden um den Rest fortzusetzen.
@@ -491,11 +494,11 @@ Archive comment dialog
 0378 bad name or parameters in encryption algorithm %1=falscher Name oder Parameter in Verschlüsselungsalgorithmus
 
 Errors returned by compression methods
-0365 general (de)compression error=allgemeiner (De)Kompressionsfehler
-0366 invalid compression method or parameters=ungültige Kompressionsmethode oder Parameter
-0367 can't allocate memory required for (de)compression=kann notwendigen Speicher für (De)Kompression nicht zuweisen
-0368 I/O error in compression algorithm=I/O Fehler in Kompressionsalgorithmus
-0369 bad compressed data=fehlerhaft komprimierte Daten
+0365 general (de)compression error in %1=allgemeiner (De)Kompressionsfehler in %1
+0366 invalid compression method or parameters in %1=ungültige Kompressionsmethode oder Parameter in %1
+0367 can't allocate memory required for (de)compression in %1=kann notwendigen Speicher für (De)Kompression %1 nicht zuweisen
+0368 I/O error in compression algorithm %1=I/O Fehler in Kompressionsalgorithmus von %1
+0369 bad compressed data in %1=fehlerhaft komprimierte Daten in %1
 
 
 === Standard profiles ====================================================
