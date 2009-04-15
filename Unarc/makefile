@@ -49,7 +49,7 @@ freearc-installer.sfx: $(OBJDIR)/FreeArcInstaller.o $(LINKOBJ)
 	upx.exe -9 --lzma --compress-icons=2 freearc-installer.sfx
 
 FreeArc.fmt: $(OBJDIR)/FarPlugin.o FarPlugin.def $(LINKOBJ_FAR_PLUGIN)
-	$(DLLWRAP) --driver-name c++ $< $(LINKOBJ_FAR_PLUGIN) -L$(LIBDIR) -def FarPlugin.def -s -o FreeArc.fmt
+	$(DLLWRAP) --driver-name g++ $< $(LINKOBJ_FAR_PLUGIN) -lstdc++ -def FarPlugin.def -s -o FreeArc.fmt
 
 
 unarc: $(OBJDIR)/unarc.o $(LINKOBJ)

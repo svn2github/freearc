@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "FreeArc"
-!define PRODUCT_VERSION "0.50 alpha (June 23 2008)"
+!define PRODUCT_VERSION "0.50 alpha (April 15 2009)"
 !define PRODUCT_PUBLISHER "Bulat Ziganshin"
 !define PRODUCT_WEB_SITE "http://freearc.org"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\FreeArc.exe"
@@ -82,10 +82,9 @@ Section "Install FreeArc" SEC01
 !ifdef GTK
   SetOutPath "$INSTDIR"
   File /r "GTK\*.*"
-!endif
-; Temporary! Starting from the next version, it should go into !ifdef GTK section
   SetOutPath "$INSTDIR"
   File /r "gtk2-themes\*.*"
+!endif
 SectionEnd
 
 SubSection /e "Options" pOptions

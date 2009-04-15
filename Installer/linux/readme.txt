@@ -1,4 +1,4 @@
-Welcome to FreeArc 0.50 alpha (June 23 2008).
+Welcome to FreeArc 0.50 alpha (April 15 2009).
 
 FreeArc is free, open-source archiver for Windows and Linux. It features solid archives with smart updating, AES+Twofish+Serpent encryption, recovery record, self-extracting archives and wide range of compression profiles.
 
@@ -16,6 +16,9 @@ FreeArc GUI requires Gtk+ to work.
 ===========================================================================
 
 Main changes in this version:
+* to be written...
+
+Main changes in FreeArc 0.50 alpha (June 23 2008):
 * GUI: WinArc executable renamed to FreeArc; a lot of usability improvements
 * Windows: added "Extract here" to .arc files context menu; added "FreeArc archive" to Explorer New command; added "Change skin" shortcut; config files are searched first in user-specific "Application Data\FreeArc" directory
 * Linux: fixed archive navigation & Unicode filenames support

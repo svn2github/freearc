@@ -1,20 +1,20 @@
-set V=-alpha-2008-06-23
+set V=-alpha-2009-04-15
 
 del FreeArc*.exe FreeArc*.zip FreeArc*.bz2 FreeArc*.arc
 arc a FreeArc-console FreeArc.url Addons\ -xFreeArc.reg bin\arc.* bin\*.sfx bin\unarc.* bin\empty.arc bin\scripts\ Documentation\ -xFreeArc-GUI*.* -xDocumentation\readme.txt -z=Documentation\readme.txt -m5x -mm- -sfx=bin\freearc-tiny.sfx
 
-"C:\Program Files\NSIS\makensis.exe"       FreeArc.nsi
-"C:\Program Files\NSIS\makensis.exe" -DGTK FreeArc.nsi
+"C:\Program Files (x86)\NSIS\makensis.exe"       FreeArc.nsi
+"C:\Program Files (x86)\NSIS\makensis.exe" -DGTK FreeArc.nsi
 
 ren FreeArc-install.exe FreeArc-0.50-win32%V%.exe
 ren FreeArc-update.exe  FreeArc-update-0.50-win32%V%.exe
 ren FreeArc-console.exe FreeArc-console-0.50-win32%V%.exe
 
 7z -mx a FreeArc-portable-0.50-win32%V%.zip  -x!GTK* -x!FreeArc-* -x!*.nsi -x!*.nsh -x!*.cmd
+copy /b FreeArc-portable-0.50-win32%V%.zip FreeArc-portable-update-0.50-win32%V%.zip
 cd gtk2-themes
 7z -mx a ..\FreeArc-portable-0.50-win32%V%.zip
 cd ..
-copy /b FreeArc-portable-0.50-win32%V%.zip FreeArc-portable-update-0.50-win32%V%.zip
 cd GTK
 7z -mx a ..\FreeArc-portable-0.50-win32%V%.zip
 cd ..
