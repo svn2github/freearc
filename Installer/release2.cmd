@@ -2,6 +2,7 @@ cd arc.languages
 call tr.cmd
 cd ..
 
+del !Release /s/q
 mkdir !Release
 mkdir !Release\Addons
 mkdir !Release\bin
@@ -9,7 +10,6 @@ mkdir !Release\bin\arc.languages
 mkdir !Release\Documentation
 mkdir !Release\GTK
 mkdir !Release\gtk2-themes
-del !Release /s/q
 
 xcopy Addons        !Release\Addons        /e
 xcopy bin           !Release\bin           /e
@@ -28,6 +28,7 @@ xcopy ..\Tests\Arc.exe                      !Release\bin
 xcopy ..\Tests\FreeArc.exe                  !Release\bin
 xcopy ..\Unarc\unarc.exe                    !Release\bin
 xcopy ..\Unarc\*.sfx                        !Release\bin
+xcopy ..\Compression\facompress.dll         !Release\bin
 xcopy release3.cmd                          !Release
 xcopy *.nsi                                 !Release
 xcopy *.nsh                                 !Release

@@ -295,6 +295,7 @@
 === To-do list ====================================================================================
 
   whatsnew for windows and linux
+  запоминать/восстанавливать userid из реестра
   aARCHIVE_VERSION = make4byte 0 0 5 0
   ¬исим на Arc.exe t 5000_corrupt.arc
   descript.ion for all files in package would be nice to see
