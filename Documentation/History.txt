@@ -292,8 +292,14 @@
     testing archive with recovery record ("undefined UI::ref_ui_state")
 
 
-  aARCHIVE_VERSION = make4byte 0 0 5 0
 === To-do list ====================================================================================
+
+  whatsnew for windows and linux
+  aARCHIVE_VERSION = make4byte 0 0 5 0
+  Висим на Arc.exe t 5000_corrupt.arc
+  descript.ion for all files in package would be nice to see
+  отключить grzip m/t для sfx
+
 
   -ap
     FAR: -apdir1 + dir1/dir2/file in filelist (rar-style?)

@@ -1,7 +1,7 @@
 set V=-alpha-2009-04-15
 
 del FreeArc*.exe FreeArc*.zip FreeArc*.bz2 FreeArc*.arc
-arc a FreeArc-console FreeArc.url Addons\ -xFreeArc.reg bin\arc.* bin\*.sfx bin\unarc.* bin\empty.arc bin\scripts\ Documentation\ -xFreeArc-GUI*.* -xDocumentation\readme.txt -z=Documentation\readme.txt -m5x -mm- -sfx=bin\freearc-tiny.sfx
+arc a FreeArc-console FreeArc.url Addons\ -xFreeArc.reg bin\arc.* bin\facompress.dll bin\*.sfx bin\unarc.* bin\empty.arc bin\scripts\ Documentation\ -xFreeArc-GUI*.* -xDocumentation\readme.txt -z=Documentation\readme.txt -m5x -mm- -sfx=bin\freearc-tiny.sfx
 
 "C:\Program Files (x86)\NSIS\makensis.exe"       FreeArc.nsi
 "C:\Program Files (x86)\NSIS\makensis.exe" -DGTK FreeArc.nsi

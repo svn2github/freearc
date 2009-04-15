@@ -1,0 +1,68 @@
+<ui>
+  <menubar>
+    <menu name="File"     action="FileAction">
+      <menuitem name="OpenArchive"        action="OpenArchiveAction" />
+      <separator/>
+      <menuitem name="Select all"         action="SelectAllAction" />
+      <menuitem name="Select"             action="SelectAction" />
+      <menuitem name="Unselect"           action="UnselectAction" />
+      <menuitem name="Invert selection"   action="InvertSelectionAction" />
+      <menuitem name="Refresh"            action="RefreshAction" />
+      <separator/>
+      <placeholder name="FileMenuAdditions" />
+      <menuitem name="Exit"               action="ExitAction"/>
+    </menu>
+    <menu name="Commands" action="CommandsAction">
+      <menuitem name="Add"                action="AddAction" />
+      <menuitem name="Extract"            action="ExtractAction" />
+      <menuitem name="Test"               action="TestAction" />
+      <menuitem name="ArcInfo"            action="ArcInfoAction" />
+      <menuitem name="Delete"             action="DeleteAction" />
+    </menu>
+    <menu name="Tools"    action="ToolsAction">
+      <menuitem name="Lock"               action="LockAction" />
+      <menuitem name="Comment"            action="CommentAction" />
+      <menuitem name="Recompress"         action="RecompressAction" />
+      <menuitem name="Convert to SFX"     action="ConvertToSFXAction" />
+      <separator/>
+      <menuitem name="Encrypt"            action="EncryptAction" />
+      <menuitem name="Protect"            action="ProtectAction" />
+      <separator/>
+      <menuitem name="Modify"             action="ModifyAction" />
+      <menuitem name="Join archives"      action="JoinArchivesAction" />
+    </menu>
+    <menu name="Options"  action="OptionsAction">
+      <menuitem name="Settings"           action="SettingsAction" />
+      <separator/>
+      <menuitem name="ViewLog"            action="ViewLogAction" />
+      <menuitem name="ClearLog"           action="ClearLogAction" />
+    </menu>
+    <menu name="Help"     action="HelpAction">
+      <menuitem name="MainHelp"           action="MainHelpAction" />
+      <separator/>
+      <menuitem name="CmdlineHelp"        action="CmdlineHelpAction" />
+      <menuitem name="GotoHomepage"       action="GotoHomepageAction" />
+      <menuitem name="CheckForUpdate"     action="CheckForUpdateAction" />
+      <separator/>
+      <menuitem name="About"              action="AboutAction" />
+    </menu>
+  </menubar>
+  <toolbar>
+    <placeholder name="FileToolItems">
+      <toolitem name="OpenArchive"        action="OpenArchiveAction" />
+      <separator/>
+      <toolitem name="Add"                action="AddAction" />
+      <toolitem name="Extract"            action="ExtractAction" />
+      <toolitem name="Test"               action="TestAction" />
+      <toolitem name="ArcInfo"            action="ArcInfoAction" />
+      <toolitem name="Delete"             action="DeleteAction" />
+      <separator/>    
+      <toolitem name="Lock"               action="LockAction" />
+      <toolitem name="Recompress"         action="RecompressAction" />
+      <toolitem name="Convert to SFX"     action="ConvertToSFXAction" />
+      <toolitem name="Join archives"      action="JoinArchivesAction" />
+      <separator/>
+      <toolitem name="Refresh"            action="RefreshAction" />
+    </placeholder>
+  </toolbar>
+</ui>
