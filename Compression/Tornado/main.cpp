@@ -5,17 +5,17 @@
 #include "Tornado.cpp"
 #include "../Common.cpp"
 
-const char *PROGRAM_NAME = "Tornado";
+static const char *PROGRAM_NAME = "Tornado";
 
 // Extensions of compressed and decompressed files
-const char *COMPRESS_EXT = ".tor", *DECOMPRESS_EXT = ".untor";
+static const char *COMPRESS_EXT = ".tor", *DECOMPRESS_EXT = ".untor";
 
 // Codec and parser names for humans
-const char *codec_name[]  = {"storing", "bytecoder", "bitcoder", "hufcoder", "aricoder"};
-const char *parser_name[] = {"", "greedy", "lazy", "flexible", "optimal"};
+static const char *codec_name[]  = {"storing", "bytecoder", "bitcoder", "hufcoder", "aricoder"};
+static const char *parser_name[] = {"", "greedy", "lazy", "flexible", "optimal"};
 
 // Returns human-readable method description
-char *name (PackMethod method)
+static char *name (PackMethod method)
 {
     static char namebuf[200], h[100], b[100], auxhash_size[100], u[100], ah[100];
     const char*hashname[] = {"hash4", "chash4", "cchash4", "", "", "cchash5", "cchash6", "cchash7"};
@@ -281,7 +281,7 @@ check_for_errors:
         showMem (r.method.hashsize, h);
         showMem (r.method.auxhash_size, ah);
         showMem (r.method.buffer, b);
-        printf( "Tornado compressor v0.5 alpha (c) Bulat.Ziganshin@gmail.com  2009-03-04\n"
+        printf( "Tornado compressor v0.5 alpha (c) Bulat.Ziganshin@gmail.com  2009-04-16\n"
                 "\n"
                 " Usage: tor [options and files in any order]\n"
                 "   -#      -- compression level (1..%d), default %d\n", int(elements(std_Tornado_method))-1, default_Tornado_method);
