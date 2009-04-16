@@ -272,10 +272,6 @@ myGUI run args = do
 ---- Сохранение/восстановление размера и положения главного окна и колонок в нём -------------------
 ----------------------------------------------------------------------------------------------------
 
-  -- Назначим иконку главному окну
-  iconfile <- findFile configFilePlaces aICON_FILE
-  window `windowSetIconFromFile` iconfile
-
   window `windowSetPosition` WinPosCenter
   --windowSetGeometryHints window (Just window) (Just (1,1)) (Just (32000,32000)) Nothing Nothing Nothing
   --widgetSetSizeRequest window 700 500
@@ -675,10 +671,15 @@ myGUI run args = do
 
   -- Прочитать ИД, сгенерённый для этого компьютера
   let getUserID = do
+#ifndef FREEARC_WIN
+        -- Имитация неработающего Windows Registry для других ОС
+        let registryGetStr root branch key       = return Nothing
+            registrySetStr root branch key value = return ()
+#endif
         -- Сначала ищем его в ини-файле
         userid <- fmGetHistory1 fm' "UserID" ""
         if userid/=""  then return (Just userid)  else do
-        -- Если не получилось - читаем ключ предыдущей инсталляции из windows registry...
+        -- Если не получилось - читаем ключ предыдущей инсталляции из Windows Registry...
         userid <- do userid <- registryGetStr hKEY_LOCAL_MACHINE "SOFTWARE\\FreeArc" "UserID"
                      case userid of
                        Just userid -> return userid
