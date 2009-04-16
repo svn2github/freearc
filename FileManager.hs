@@ -675,10 +675,19 @@ myGUI run args = do
 
   -- Прочитать ИД, сгенерённый для этого компьютера
   let getUserID = do
+        -- Сначала ищем его в ини-файле
         userid <- fmGetHistory1 fm' "UserID" ""
         if userid/=""  then return (Just userid)  else do
-        userid <- generateRandomBytes 8 >>== encode16
+        -- Если не получилось - читаем ключ предыдущей инсталляции из windows registry...
+        userid <- do userid <- registryGetStr hKEY_LOCAL_MACHINE "SOFTWARE\\FreeArc" "UserID"
+                     case userid of
+                       Just userid -> return userid
+                                      -- ... или в крайнем случае - генерим новый
+                       Nothing     -> generateRandomBytes 8 >>== encode16
+        -- И записываем его повсюду
+        registrySetStr hKEY_LOCAL_MACHINE "SOFTWARE\\FreeArc" "UserID" userid
         fmReplaceHistory fm' "UserID" userid
+        -- Возвращаем его только если запись в ини-файл была успешной
         userid1 <- fmGetHistory1 fm' "UserID" ""
         return (if userid==userid1  then Just userid  else Nothing)
 

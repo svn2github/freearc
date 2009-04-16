@@ -319,7 +319,7 @@ settingsDialog fm' = do
       exe <- getExeName                                -- Name of FreeArc.exe file
       let ico   =  exe `replaceExtension` ".ico"       -- Name of FreeArc.ico file
           empty =  exe `replaceFileName` "empty.arc"   -- Name of empty archive file
-          register = myregCreateStringValue hKEY_CLASSES_ROOT
+          register = registrySetStr hKEY_CLASSES_ROOT
           regCmd name msg cmdline = do
               register ("FreeArc.arc\\shell\\"++name) "" msg
               register ("FreeArc.arc\\shell\\"++name++"\\command") "" ("\""++exe++"\" "++cmdline++" --noarcext -- \"%1\"")

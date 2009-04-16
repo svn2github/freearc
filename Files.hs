@@ -182,16 +182,27 @@ foreign import ccall safe "Environment.h RunFile"
 
 
 #if defined(FREEARC_WIN)
--- |Записать в Registry значение типа REG_SZ
-myregSetStringValue :: HKEY -> String -> String -> IO ()
-myregSetStringValue hk key val =
-  withTString val $ \ v ->
-  regSetValueEx hk key rEG_SZ v (length val*2)
+-- |Создать HKEY и прочитать из Registry значение типа REG_SZ
+registryGetStr root branch key =
+  bracket (regCreateKey root branch) regCloseKey
+    (\hk -> registryGetStringValue hk key)
+
+-- |Создать HKEY и записать в Registry значение типа REG_SZ
+registrySetStr root branch key val =
+  bracket (regCreateKey root branch) regCloseKey
+    (\hk -> registrySetStringValue hk key val)
+
+-- |Прочитать из Registry значение типа REG_SZ
+registryGetStringValue :: HKEY -> String -> IO (Maybe String)
+registryGetStringValue hk key = do
+  (regQueryValue hk (Just key) >>== Just)
+    `catch` (\e -> return Nothing)
 
 -- |Записать в Registry значение типа REG_SZ
-myregCreateStringValue root bracnch key val =
-  bracket (regCreateKey root bracnch) regCloseKey
-    (\hk -> myregSetStringValue hk key val)
+registrySetStringValue :: HKEY -> String -> String -> IO ()
+registrySetStringValue hk key val =
+  withTString val $ \v ->
+  regSetValueEx hk key rEG_SZ v (length val*2)
 #endif
 
 
