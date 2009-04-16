@@ -237,9 +237,21 @@
     Shortcut keys for add/extract/... commands
     Windows: native Open/Save dialogs
     Windows: locale-specific date/time format
-    freearc.menu support
-    "new" language simplifies adding new translations
+    Support for used-defined menu/toolbar (rename freearc.menu.example to freearc.menu and edit as you wish)
+    "New" language simplifies adding new translations
     Setting to disable captions in toolbar buttons, large icons in toolbar
+    Filters (*.arc;*.exe) in Open Archive/Select output archive dialogs
+    "Check for updates" commands runs in background, sends installation info, backups UserID to registry
+    "Watch for new versions via Internet" checkbox in Settings dialog automatically checks for updates every day
+    Run any program/document just by double-clicking (or Enter) on it
+    Added "Create" button to outdir select dialog (flagged by "*Last" tag in freearc.history)
+    Disabled move-to-top for options like Compression, Encryption...
+    Added Recover Archive command
+    Stage indicators with percents for RR operations (add, check, repair) with immediate stopping when user aborted operation
+    Modified default compression/RR options
+    added Info page to Settings dialog, now displaying only Max free memblock
+    save Maximized window state
+    Compression tab: show speeds for 3GHz Core2Duo
   Linux: "chmod +x" при создании sfx-архива, "chmod -x" при -sfx-
   CHECK - в FreeArc приводит к вызову longjmp и возврату FREEARC_ERRCODE_GENERAL из процедуры (рас)паковки
 . -sct для терминала; -sci для логфайла; -scf для имён файлов на диске (под Linux)
@@ -263,21 +275,31 @@
   Installer SFX (extracts into tempdir, runs setup.exe and then deletes extracted files)
   -m2b made faster on modern cpus; -m3b - fixed speed loss on multi-core cpus & 1% better compression
   "lt" command: technical archive listing
-  --language option: localization for console version!
+  100% GUI translation and translation of error/warning messages in CLI
+  --language=LANGFILE option: localization for console version! If present in arc.ini, it should point to the same file as freearc.ini
   -m2/-m3/-m4 now use 96mb dictionary by default! *r modes are removed, bcj moved after rep
+  arc.ini: support for External Compressors PowerPack
+  facompress.dll: (de)compression speed improved by 10%
+  -rr0.1%, -rr0.01% options support (translated to -rr0*4kb, -rr0*64kb)
+  Set arc.exe and freearc.exe icons to FreeArc.ico
+  External compressors/tempfile:
+    проверяет отсутствие ошибок при чтении/записи
+    copies data intact when compression program returns error code
+    raises error when decompression program returns error code
+    prints size of data being processed as 64-bit point-delimited value: "1.234.567 bytes" and "Error level=x" after operation
   Fixed bugs:
     in Delta filter (leading to crashes)
     showing "increase +RTS -Ksize" on multi-gigabyte files
     now it reports "Bad password" with errcode 21 when archive/file cannot be decrypted using supplied password
     program was terminating when trying to detect filetype of locked file (such as pagefile.swp)
-    external compressors/tempfile: проверяет отсутствие ошибок при чтении/записи
-    external compressors: проверяет код возврата вызванной программы
     -sfx --noarcext: не меняло расширения архива
     Logfile: hide passwords used in cmdline/cfgfile
              strip too long arguments and too long argument list down to 100 chars/elements
     Filetype detection: it was failing on pure English texts
     Fixed bug in SetWindowTitle
     Fixed RR add/check/recover execution
+    testing archive with recovery record ("undefined UI::ref_ui_state")
+    Computing estimated time and speed takes into account duration of last stage rather than whole operation
   Fixed GUI bugs:
     first file in directory was selected after any operation if nothing was selected before
     ArcInfo on empty.arc or non-archive was terminating program
@@ -289,7 +311,13 @@
     freezing on selecting two files and pressing Up
     ArcInfo: fixed counting of files and directories in archive
     All dialogs are now modal
-    testing archive with recovery record ("undefined UI::ref_ui_state")
+    report to the user and exit when we cannot open initial archive/directory
+    ensure single-threaded access to freearc.history
+    freezing when trying to open encrypted archives (password dialog should work in any thread)
+    freezing on Up from http://....arc
+    Run directly from archive showing empty "directory"
+    some files were not whown when directory names contained space
+    extraction of all files with the same name as one file extracted from root dir of archive
 
 
 === To-do list ====================================================================================
@@ -303,6 +331,7 @@
   PowerPack - обновить соответственно новому arc.ini
   иконка gtk2_prefs есть в инстале gtk2-themes-2008-01-21-ash.exe
   ctrl-f4 - сортировка по расширению
+  tranlsate errors in arc.ini/cmdline
 
   -ap
     FAR: -apdir1 + dir1/dir2/file in filelist (rar-style?)
