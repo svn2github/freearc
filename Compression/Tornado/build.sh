@@ -3,7 +3,7 @@
 # Tornado build script for Unix, written by Joachim Henke
 
 GCC_FLAGS='-pipe -O3 -fomit-frame-pointer -fstrict-aliasing -ffast-math -fforce-addr -fno-exceptions -fno-rtti'
-GCC_FLAGS_VER='-fno-threadsafe-statics -fno-ipa-cp-clone -fwhole-program -combine'
+GCC_FLAGS_VER='-fno-threadsafe-statics -fwhole-program -combine'
 ICC_FLAGS='-O2 -fp-model fast=2 -fno-exceptions -fno-rtti'
 
 cc_option () {
@@ -32,7 +32,13 @@ PARM_DEBUG='-s'
 PARM_ENDIANNES='-DFREEARC_INTEL_BYTE_ORDER'
 PARM_FULL=''
 PARM_STATS=''
-PARM_TIME='-lrt'
+if [ "$MSYSTEM" = 'MINGW32' ]; then
+	PARM_SYSTEM='-DFREEARC_WIN'
+	PARM_TIME=''
+else
+	PARM_SYSTEM='-DFREEARC_UNIX'
+	PARM_TIME='-lrt'
+fi
 
 for P; do
 	if [ "$P" = "${P##-}" ]; then
@@ -88,7 +94,7 @@ for P; do
 		esac
 	fi
 done
-CFLAGS="$CFLAGS$PARM_FULL$PARM_STATS$PARM_ADDR $PARM_ENDIANNES $PARM_TIME -D_FILE_OFFSET_BITS=64 -DFREEARC_UNIX -o tor main.cpp"
+CFLAGS="$CFLAGS$PARM_FULL$PARM_STATS$PARM_ADDR $PARM_ENDIANNES $PARM_SYSTEM $PARM_TIME -D_FILE_OFFSET_BITS=64 -o tor main.cpp"
 
 if [ "$PARM_PROF" = "$PROF_USE" ]; then
 	echo 'compiling binary for profiling...'
