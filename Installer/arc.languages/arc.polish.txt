@@ -20,12 +20,12 @@ Language name in english and mother tongue
 
 Language-specific URLs relative to http://freearc.org/ and helpfiles
 Filled only for languages providing their own translations
-0254 Homepage=??
-0255 News page=??
-0371 Forum page=??
-0372 Wiki page=??
-0256 Helpfile=??
-0257 Command-line help=??
+0254 Homepage (URL, not translation!)=??
+0255 News page (URL, not translation!)=??
+0371 Forum page (URL, not translation!)=??
+0372 Wiki page (URL, not translation!)=??
+0256 Helpfile (URL, not translation!)=??
+0257 Command-line help (URL, not translation!)=??
 
 
 === Menu ========================================================================
@@ -56,12 +56,10 @@ File menu/toolbar
 Commands menu/toolbar
 0030 Add=Dodaj
 0040 Add files to archive(s)=Dodaje wybrane pliki do archiwum
-0031 Modify=Zmodyfikuj
-0041 Modify archive(s)=Zmodyfikuj archiwum
 0035 Extract=Wypakuj
-0045 Extract files from archive(s)=Wypakowuje pliki z wybranego archiwum
+0045 Extract files from archive(s)=Wypakuj pliki z archiwum
 0034 Test=Testuj
-0044 Test files in archive(s)=Testuje poprawność wybranego archiwum
+0044 Test files in archive(s)=Testuj poprawność archiwum
 0086 ArcInfo=Właściwości
 0087 Information about archive=Informacje o archiwum
 0033 Delete=Usuń
@@ -77,9 +75,13 @@ Tools menu/toolbar
 0270 Convert to SFX=Konwertuj do SFX
 0271 Convert archive to SFX=Konwertuj archiwum do SFX
 0272 Encrypt=Szyfrowanie
-0273 Encrypt archive contents=Szyfruje zawartość archiwum
+0273 Encrypt archive contents=Szyfruj zawartość archiwum
 0274 Protect=Ochrona
-0275 Add Recovery record to archive=Dodaje rekordy naprawcze do archiwum
+0275 Add Recovery record to archive=Dodaj rekordy naprawcze do archiwum
+0379 Repair=Napraw
+0380 Repair damaged archive=Napraw uszkodzone archiwum
+0031 Modify=Zmodyfikuj
+0041 Modify archive(s)=Zmodyfikuj archiwum
 0032 Join=Połącz
 0042 Join archives together=Połącz archiwa
 
@@ -96,10 +98,14 @@ Help menu/toolbar
 0281 Help on using FreeArc=Pomoc dla programu FreeArc
 0282 Cmdline help=Spis komend
 0283 Help on FreeArc command line=Pomoc dla wersji command-line
-0284 Goto Homepage=Strona domowa
-0285 Open program site=Otwiera stronę domową programu
+0284 Open Homepage=Strona domowa
+0285 Open program site=Otwórz stronę domową programu
+0373 Open forum=Otwórz forum
+0374 Open program forum=Otwórz forum programu
+0375 Open wiki=Otwórz wiki
+0376 Open program wiki=Otwórz wiki programu
 0286 Check for update=Sprawdź aktualizacje
-0287 Check for new program versions=Sprawdza czy jest dostępna nowa wersja programu
+0287 Check for new program versions=Sprawdź czy jest dostępna nowa wersja programu
 0288 About=O FreeArc
 0289 About=Informacje o programie FreeArc
 
@@ -143,7 +149,7 @@ Add dialog
 --Title
 0134 Add %1 to archive=Dodaj %1 do archiwum
 0135 Add %2 files to archive=Dodaje plików: %2 do archiwum
-0136 Add all files to archive=Dodaje wybrane pliki do archiwum
+0136 Add all files to archive=Dodaj wybrane pliki do archiwum
 0146 Modify all archives=Modyfikuje wybrane archiwa
 0147 Modify %1=Modyfikuje %1
 0148 Modify %2 archives=Modyfikuje archiwa: %2
@@ -283,8 +289,13 @@ Settings dialog
 0167 Select logfile=Wybierz plik log
 0172 Associate FreeArc with .arc files=Skojarz FreeArc z rozszerzeniem .arc
 0361 Add captions to toolbar buttons=Pokazuj opisy na pasku narzędzi
+0370 Watch for new versions via Internet=??
 0168 You should restart FreeArc in order for a language settings to take effect.=Powinieneś zrestartować FreeArc aby ustawienia języków zostały zatwierdzone.
 0169 Passwords need to be entered again after restart.=Hasło powinno zostać wpisane ponownie po restarcie.
+--
+0388 Info=Informacje
+0389 Largest contiguous free memblock:=Największy graniczący wolny blok pamięci:
+
 
 Logfiles
 0303 No log file specified in Settings dialog!=Plik log nie został skonfigurowany!
@@ -316,8 +327,7 @@ Checking for updates
 0114 Compression level: %1=Poziom &kompresji: %1
 0115 Compression speed: %1, memory: %2=Użycie pamięci dla kompresji: %2, Prędkość: %1
 0116 Decompression speed: %1, memory: %2=Użycie pamięci dla dekompresji: %2, Prędkość: %1
-0117 All speeds were measured on 1GHz single-core Duron,=Podawane prędkości zostały zmierzone na 1-rdzeniowym procesorze Duron 1GHz,
-0118 and your horse will probably run faster=Twoja maszyna zapewne zrobi to szybciej
+0390 All speeds were measured on 3GHz Core2Duo=??
 --Solid block size
 0177 Limit solid blocks=Limituj stałe bloki
 0138 Bytes, no more than:=Bajtów, nie więcej niż:
@@ -370,6 +380,9 @@ Progress indicator
 0248 Analyzed %1 files=Przeanalizowano plików: %1
 0249 Reading archive directory=Czytanie katalogu z archiwum
 0250 Sorting filelist=Sortowanie listy plików
+0385 Scanning archive for damages=Skanowanie archiwum w poszukiwaniu błędów
+0386 Protecting archive from damages=Ochrona archiwum przed uszkodzeniami
+0387 Recovering archive=Odzyskiwanie archiwum
 
 File overwrite dialog
 0078 Confirm File Replace=Potwierdź zamianę plików
@@ -416,10 +429,15 @@ Archive comment dialog
 0244 FILES SUCCESFULLY ADDED TO %1=POMYŚLNIE DODANO PLIKI DO %1
 0245 %2 WARNINGS WHILE ADDING TO %1=OSTRZEŻENIA: %2 PODCZAS DODAWNIA PLIKÓW DO %1
 
-0299 Lock archive(s)?=??
-0300 Locking archive %1=??
-0301 SUCCESFULLY LOCKED ARCHIVE %1=??
-0302 %2 WARNINGS WHILE LOCKING ARCHIVE %1=??
+0299 Lock archive(s)?=Zablokować archiwum?
+0300 Locking archive %1=Blokowanie archiwum %1
+0301 SUCCESFULLY LOCKED ARCHIVE %1=POMYŚLNIE ZABLOKOWANO ARCHIWUM %1
+0302 %2 WARNINGS WHILE LOCKING ARCHIVE %1=OSTRZEŻENIA: %2 PODCZAS BLOKOWANIA ARCHIWUM
+
+0381 Repair archive(s)? Repaired archive(s) will be placed into files named fixed.*=Naprawić archiwum? Naprawione archiwum będzie umieszczone w tym samym katalogu ze zmienioną nazwą.*
+0382 Repairing archive %1=Naprawianie archiwum %1
+0383 SUCCESFULLY REPAIRED ARCHIVE %1=POMYŚLNIE NAPRAWIONO ARCHIWUM %1
+0384 %2 WARNINGS WHILE REPAIRING ARCHIVE %1=OSTRZEŻENIA %2 PODCZAS NAPRAWIANIA ARCHIWUM
 
 
 === Error messages =======================================================
@@ -452,7 +470,7 @@ Archive comment dialog
 0338 skipped %1 fake files=odrzucono %1 fałszywych plik(ów)
 0339 bad password for archive %1=błędne hasło do archiwum %1
 0340 bad password for %1 in archive %2=błędne hasło do %1 w archiwum %2
-0341 archive %1 corrupt: %2. Please recover it using 'r' command or use -tp- option to ignore Recovery Record=archiwum %1 jest uszkodzone: %2. Napraw je przy użyciu komendy 'r' lub użyj opcji -tp- aby zignorować sektory naprawcze
+0341 %1 isn't archive or this archive is corrupt: %2. Please recover it using 'r' command or use -tp- option to ignore Recovery Record=plik %1 nie jest archiwum lub jest uszkodzony: %2. Możesz spróbować naprawić przy użyciu komendy 'r' lub użyj opcji -tp- aby zignorować sektory naprawcze
 0342 SFX module %1 is not found=nie znaleziono modułu SFX
 0343 %1 isn't implemented=%1 nie jest zaimplementowany
 0344 only first of %1 recovery records can be processed by this program version. Please use newer versions to process the rest=tylko pierwszy z %1 sektorów naprawczych może być zinterpretowany przez aktualną wersję programu. Użyj nowszej wersji
@@ -472,35 +490,34 @@ Archive comment dialog
 0356 archive directory not found=nie znaleziono katalogu archiwum
 0357 archive signature not found at the end of archive=nie znaleziono podpisu na końcu archiwum
 0358 last block of archive is not footer block=ostatni blok archiwum nie jest poprawnym zakończeniem
+0377 command "%1" shouldn't have additional arguments=polecenie "%1" nie powinno mieć dodatkowym argumentów
+0378 bad name or parameters in encryption algorithm %1=zła nazwa lub parametr w algorytmie kodowania
 
 Errors returned by compression methods
-0365 general (de)compression error=ogólny błąd podczas (de)kompresji
-0366 invalid compression method or parameters=niepoprawna metoda kompresji lub parametry
-0367 can't allocate memory required for (de)compression=nie można przydzielić pamięci do (de)kompresji
-0368 I/O error in compression algorithm=błąd We/Wy w algorytmie kompresji
-0369 bad compressed data=błąd w skompresowanych danych
+0365 general (de)compression error in %1=ogólny błąd podczas (de)kompresji w %1
+0366 invalid compression method or parameters in %1=niepoprawna metoda kompresji lub parametry w %1
+0367 can't allocate memory required for (de)compression in %1=nie można przydzielić pamięci do (de)kompresji w %1
+0368 I/O error in compression algorithm %1=błąd We/Wy w algorytmie kompresji %1
+0369 bad compressed data in %1=błąd w skompresowanych danych w %1
 
 
 === Standard profiles ====================================================
 Compression
-0727 Maximum (1gb decompression)=Maksymalna (1gb dekompresja)
-0728 Maximum (192mb decompression)=Maksymalna (192mb dekompresja)
-0729 Maximum (fast, low-memory decompression)=Maksymalna (szybka, mało pamięci do dekompresji)
+0771 Maximum=Maksymalny
+0772 Maximum with fast decompression=Maksymalny z szybką dekompresją
 0752 No compression=Bez kompresji
 
 Encryption
+0733 Strongest=Najmocniejsze
+0732 Strong=Mocne
 0730 Standard=Standartowe
 0731 Fast=Szybkie
-0732 Strong=Mocne
-0733 Strongest=Najmocniejsze
 
 Protection
-0734 Add=Dodaj
+0769 Add (autosize, 1-4%)=Dodaj (auto-rozmiar, 1-4%)
 0735 Remove=Usuń
-0736 Internet-only (4kb blocks)=Internetowa (4kb bloki)
-0737 Internet-only (64kb blocks)=Internetowa (64kb bloki)
-0738 Percents, example=Procentowo, np
-0739 Fixed-size, example=Ustalony rozmiar, np
+0734 Add=Dodaj
+0770 Add for recovery via Internet=Dodaj dla napraw przez Internet
 
 Comment
 0740 Add from textbox=Dodaj z pola tekstowego
@@ -533,7 +550,16 @@ Archive name template
 0759 Weekday=Dzień tygodnia
 
 Exclude
-0760 Backup files=Pliki kopii zapasowych
+0753 Backup files=Kopie zapasowe plików
+
+Additional compression options
+0760 Perform full backup=Pliki kopii zapasowych
+0761 Full archive test before and after operation=Pełny test archiwum przed i po operacji
+
+Additional extraction options
+0762 Remove pathnames=Usuń nazwy ścieżek
+0763 Restore absolute pathnames=Odnów absolutne nazwy ścieżek
+0764 Full archive test before performing operation=Pełny test archiwum przed wykonaniem operacji
 
 
 === Tooltips (index=N+1000) ===========================================
