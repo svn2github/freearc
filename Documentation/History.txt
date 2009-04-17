@@ -282,10 +282,10 @@
   facompress.dll: (de)compression speed improved by 10%
   -rr0.1%, -rr0.01% options support (translated to -rr0*4kb, -rr0*64kb)
   Set arc.exe and freearc.exe icons to FreeArc.ico
-  External compressors/tempfile:
-    проверяет отсутствие ошибок при чтении/записи
+  External compressors/tempfile method:
+    checks I/O for errors
     copies data intact when compression program returns error code
-    raises error when decompression program returns error code
+    raises error when decompression program returned non-zero error code
     prints size of data being processed as 64-bit point-delimited value: "1.234.567 bytes" and "Error level=x" after operation
   Fixed bugs:
     in Delta filter (leading to crashes)
@@ -300,6 +300,7 @@
     Fixed RR add/check/recover execution
     testing archive with recovery record ("undefined UI::ref_ui_state")
     Computing estimated time and speed takes into account duration of last stage rather than whole operation
+    unarc crashed on errors instead of displaying error message
   Fixed GUI bugs:
     first file in directory was selected after any operation if nothing was selected before
     ArcInfo on empty.arc or non-archive was terminating program
@@ -330,9 +331,10 @@
   отключить grzip m/t для sfx
   arc.ini - разделить на мою часть и его добавки
   PowerPack - обновить соответственно новому arc.ini
-  translate error messages for arc.ini/cmdline
+
 
   HCAR
+
 
   -ap
     FAR: -apdir1 + dir1/dir2/file in filelist (rar-style?)
@@ -548,18 +550,16 @@
     fa научится работать с внешними упаковщиками через stdin/stdout, что позволит использовать их так же удобно, как и внутренние алгоритмы - никакой записи на диск пормежуточных данных, актуальный индикатор прогресса и т.д.
   Ошибки
     -p=... - "=" может быть частью пароля.
-    Обрезанный arc1.arc или не-архив: вылет unarc t arc1.arc
     уточнить rep:SetCompressionMem; при ограничении lzma/rep можно использовать более точные
       значения словря (и уменьшать все порчие буфера, одновременно увеличивая глубину поиска)
     lzp:2200m - запретить словари >=2gb; ppmd:2560 - сравнивать с MAX_ORDER
     -ds:r - подтаскивать ближе файлы с различающимися расширениями тоже
+    translate error messages for errors in arc.ini/cmdline
     в логфайл писать истинное имя arc/freearc.exe и заключать параметры с пробелом в кавычки
     checkingCtrlBreak в copy_data/eat_data
     rep:4gb == rep:0gb
     BigAlloc: smart alloc algorithm (alloc smallest block that's still enough for the data?)
     выполнять clearAll в uiStartArchive/uiDoneArchive
-    если нету внешних архиваторов ppmonstr, durilca и т.п. зацикливается FreeArc и размер
-      распаковываемых данных стремиться в бесконечность.
     приостанавливать инд. прогресса при вызове внешних программ
   SFX
     Жду - не дождусь, когда у GUI SFX модуля (под винду) будет ключик silent установки с возможностью

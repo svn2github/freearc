@@ -5,7 +5,7 @@
 // –аспаковать данные заданным методом сжати€ и возвратить врем€ работы в секундах
 int timed_decompress (COMPRESSION_METHOD *compressor, CALLBACK_FUNC *callback, void *auxdata)
 {
-  SET_JMP_POINT( FREEARC_ERRCODE_GENERAL);
+  //SET_JMP_POINT( FREEARC_ERRCODE_GENERAL);
   double time0 = GetThreadCPUTime();
   int result = compressor->decompress (callback, auxdata);
   double time1 = GetThreadCPUTime(), t;
@@ -90,7 +90,7 @@ int DecompressMemWithHeader (void *input, int inputSize, void *output, int outpu
 // ”паковать данные заданным методом сжати€ и возвратить врем€ работы в секундах
 int timed_compress (COMPRESSION_METHOD *compressor, CALLBACK_FUNC *callback, void *auxdata)
 {
-  SET_JMP_POINT( FREEARC_ERRCODE_GENERAL);
+  //SET_JMP_POINT( FREEARC_ERRCODE_GENERAL);
   double time0 = GetThreadCPUTime();
   int result = compressor->compress (callback, auxdata);
   double time1 = GetThreadCPUTime(), t;

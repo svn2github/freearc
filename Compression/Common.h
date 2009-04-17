@@ -388,11 +388,11 @@ extern jmp_buf jumper;
 // Процедура сообщения о неожиданных ошибочных ситуациях
 #ifndef CHECK
 #  if defined(FREEARC_WIN) && defined(FREEARC_GUI)
-#    define CHECK(a,b)           {if (!(a))  {if (jmpready) longjmp(jumper,1); char *s=(char*)malloc(MY_FILENAME_MAX*4); WCHAR *utf16=(WCHAR*) malloc(MY_FILENAME_MAX*4);  sprintf b;  utf8_to_utf16(s,utf16);  MessageBoxW(NULL, utf16, L"Error encountered", MB_ICONERROR);  exit(1);}}
+#    define CHECK(a,b)           {if (!(a))  {if (jmpready) longjmp(jumper,1); char *s=(char*)malloc(MY_FILENAME_MAX*4); WCHAR *utf16=(WCHAR*) malloc(MY_FILENAME_MAX*4);  sprintf b;  utf8_to_utf16(s,utf16);  MessageBoxW(NULL, utf16, L"Error encountered", MB_ICONERROR);  exit(2);}}
 #  elif defined(FREEARC_WIN)
-#    define CHECK(a,b)           {if (!(a))  {if (jmpready) longjmp(jumper,1); char *s=(char*)malloc(MY_FILENAME_MAX*4), *oem=(char*)malloc(MY_FILENAME_MAX*4); sprintf b; utf8_to_oem(s,oem); printf("\n%s",oem); abort();}}
+#    define CHECK(a,b)           {if (!(a))  {if (jmpready) longjmp(jumper,1); char *s=(char*)malloc(MY_FILENAME_MAX*4), *oem=(char*)malloc(MY_FILENAME_MAX*4); sprintf b; utf8_to_oem(s,oem); printf("\n%s",oem); exit(2);}}
 #  else
-#    define CHECK(a,b)           {if (!(a))  {if (jmpready) longjmp(jumper,1); char s[MY_FILENAME_MAX*4]; sprintf b; printf("\n%s",s); abort();}}
+#    define CHECK(a,b)           {if (!(a))  {if (jmpready) longjmp(jumper,1); char s[MY_FILENAME_MAX*4]; sprintf b; printf("\n%s",s); exit(2);}}
 #  endif
 #endif
 
@@ -403,6 +403,12 @@ extern jmp_buf jumper;
     /* Сюда мы попадём при возникновении ошибки в одной из вызываемых процедур */      \
     {jmpready = FALSE; return retcode;}                                                \
   jmpready = TRUE;                                                                     \
+}
+
+// Снимает Jump Point
+#define RESET_JMP_POINT()                                                              \
+{                                                                                      \
+  jmpready = FALSE;                                                                    \
 }
 
 
