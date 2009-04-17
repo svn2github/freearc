@@ -66,10 +66,9 @@ arcExtract command arcinfo = do
   uiCompressedBytes (arcDirCBytes arcinfo)
   uiStartFiles 0
   -- Создадим процесс для распаковки файлов и гарантируем его корректное завершение
-  bracketCtrlBreak "joinP decompress_pipe:ArcExtract"
-                   (runAsyncP$ decompress_PROCESS command (uiCompressedBytes.i))
-                   ( \decompress_pipe -> do sendP decompress_pipe Nothing; joinP decompress_pipe)
-                   $ \decompress_pipe -> do
+  bracket (runAsyncP$ decompress_PROCESS command (uiCompressedBytes.i))
+          ( \decompress_pipe -> do sendP decompress_pipe Nothing; joinP decompress_pipe)
+          $ \decompress_pipe -> do
   -- Распаковать каждый распаковываемый файл и выругаться на нераспаковываемые
   let (filesToSkip, filesToExtract)  =  partition isCompressedFake (arcDirectory arcinfo)
   for filesToExtract (process_file decompress_pipe)   -- runP$ enum_files |> decompress |> write_files

@@ -58,10 +58,9 @@ create_archive_structure_AND_read_files_PROCESS command archive oldarc files pro
   -- При возникновении ошибки установим флаг для прерывания работы c_compress()
   handleCtrlBreak "operationTerminated =: True" (operationTerminated =: True) $ do
   -- Создадим процесс для распаковки файлов из входных архивов и гарантируем его корректное завершение
-  bracketCtrlBreak "joinP decompress_pipe:ArcvProcessRead"
-                   (runAsyncP$ decompress_PROCESS command doNothing)
-                   ( \decompress_pipe -> do sendP decompress_pipe Nothing; joinP decompress_pipe)
-                   $ \decompress_pipe -> do
+  bracket (runAsyncP$ decompress_PROCESS command doNothing)
+          ( \decompress_pipe -> do sendP decompress_pipe Nothing; joinP decompress_pipe)
+          $ \decompress_pipe -> do
   -- Создадим кеш для упреждающего чтения архивируемых файлов
   withPool $ \pool -> do
   bufOps <- makeFileCache (opt_cache command) pool pipe
