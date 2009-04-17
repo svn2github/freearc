@@ -27,6 +27,7 @@
       <separator/>
       <menuitem name="Encrypt"            action="EncryptAction" />
       <menuitem name="Protect"            action="ProtectAction" />
+      <menuitem name="Repair"             action="RepairAction" />
       <separator/>
       <menuitem name="Modify"             action="ModifyAction" />
       <menuitem name="Join archives"      action="JoinArchivesAction" />
@@ -41,7 +42,9 @@
       <menuitem name="MainHelp"           action="MainHelpAction" />
       <separator/>
       <menuitem name="CmdlineHelp"        action="CmdlineHelpAction" />
-      <menuitem name="GotoHomepage"       action="GotoHomepageAction" />
+      <menuitem name="OpenHomepage"       action="OpenHomepageAction" />
+      <menuitem name="OpenForum"          action="OpenForumAction" />
+      <menuitem name="OpenWiki"           action="OpenWikiAction" />
       <menuitem name="CheckForUpdate"     action="CheckForUpdateAction" />
       <separator/>
       <menuitem name="About"              action="AboutAction" />
@@ -56,7 +59,7 @@
       <toolitem name="Test"               action="TestAction" />
       <toolitem name="ArcInfo"            action="ArcInfoAction" />
       <toolitem name="Delete"             action="DeleteAction" />
-      <separator/>    
+      <separator/>
       <toolitem name="Lock"               action="LockAction" />
       <toolitem name="Recompress"         action="RecompressAction" />
       <toolitem name="Convert to SFX"     action="ConvertToSFXAction" />

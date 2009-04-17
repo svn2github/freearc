@@ -324,7 +324,6 @@
 
   whatsnew for windows and linux
   aARCHIVE_VERSION = make4byte 0 0 5 0
-  Висим на Arc.exe t 5000_corrupt.arc
   Seems that 'Open Archive' button doesn't work when you're currently in the root of any disk in FA GUI browser.
   after 'Convert to SFX' inside archive Path field isn't updated
   descript.ion for all files in package would be nice to see
