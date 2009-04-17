@@ -330,8 +330,7 @@
   отключить grzip m/t для sfx
   arc.ini - разделить на мою часть и его добавки
   PowerPack - обновить соответственно новому arc.ini
-  иконка gtk2_prefs есть в инстале gtk2-themes-2008-01-21-ash.exe
-  tranlsate errors in arc.ini/cmdline
+  translate error messages for arc.ini/cmdline
 
   HCAR
 
