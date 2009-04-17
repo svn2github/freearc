@@ -577,7 +577,7 @@ splitFileTypes command  -- Определить типы файлов по arc.groups
 
     | otherwise = do let filename = (fpFullname.fiDiskName.cfFileInfo) file
                          onFail   = uiCorrectTotal (-1) (-fiSize (cfFileInfo file))
-                     bracketCtrlBreakMaybe (tryOpen filename) onFail fileClose $ \f -> do
+                     bracketCtrlBreakMaybe "fileClose:splitFileTypes" (tryOpen filename) onFail fileClose $ \f -> do
                      -- Первым делом проверим файл на MM
                      mm <- detectMM file f defaultType
                      if mm then return [defaultType]  else do

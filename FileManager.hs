@@ -784,7 +784,7 @@ myGUI run args = do
 
   -- Диалог About
   aboutAct `onActionActivate` do
-    bracketCtrlBreak aboutDialogNew widgetDestroy $ \dialog -> do
+    bracketCtrlBreak "aboutDialogDestroy" aboutDialogNew widgetDestroy $ \dialog -> do
     dialog `set` [windowTransientFor   := window
                  ,aboutDialogName      := aARC_NAME
                  ,aboutDialogVersion   := aARC_VERSION

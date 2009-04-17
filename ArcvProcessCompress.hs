@@ -140,7 +140,7 @@ storing_PROCESS pipe = do
       send _                    =  return ()
 
   -- По окончании сообщим следующему процессу, что данных больше нет
-  ensureCtrlBreak (send DataEnd)$ do
+  ensureCtrlBreak "send DataEnd" (send DataEnd)$ do
     -- Цикл перекодирования инструкций
     repeat_while (receiveP pipe) (notDataEnd) (send)
   return ()

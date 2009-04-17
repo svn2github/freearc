@@ -463,7 +463,7 @@ uiDoneProgressIndicator = do
 -- |Обернуть выполнение команды в открытие и закрытие индикатора прогресса
 uiWithProgressIndicator command arcsize action = do
   uiStartProgressIndicator INDICATOR_PERCENTS command return (return arcsize)
-  ensureCtrlBreak uiDoneProgressIndicator action
+  ensureCtrlBreak "uiDoneProgressIndicator" uiDoneProgressIndicator action
 
 {-# NOINLINE uiUpdateProgressIndicator #-}
 

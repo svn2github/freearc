@@ -56,9 +56,10 @@ notTheEnd  _       = True
 create_archive_structure_AND_read_files_PROCESS command archive oldarc files processDir arcComment writeRecoveryBlocks results backdoor pipe = do
   initPos <- archiveGetPos archive
   -- При возникновении ошибки установим флаг для прерывания работы c_compress()
-  handleCtrlBreak (operationTerminated =: True) $ do
+  handleCtrlBreak "operationTerminated =: True" (operationTerminated =: True) $ do
   -- Создадим процесс для распаковки файлов из входных архивов и гарантируем его корректное завершение
-  bracketCtrlBreak (runAsyncP$ decompress_PROCESS command doNothing)
+  bracketCtrlBreak "joinP decompress_pipe:ArcvProcessRead"
+                   (runAsyncP$ decompress_PROCESS command doNothing)
                    ( \decompress_pipe -> do sendP decompress_pipe Nothing; joinP decompress_pipe)
                    $ \decompress_pipe -> do
   -- Создадим кеш для упреждающего чтения архивируемых файлов
@@ -173,7 +174,7 @@ read_file _ pipe (receiveBuf, sendBuf) _ (DiskFile old_fi) = do
   let correctTotals files bytes  =  when (files/=0 || bytes/=0) (sendP pipe (CorrectTotals files bytes)) >> return Nothing
   -- Проверяем возможность открыть файл - он может быть залочен или его за это время могли элементарно стереть :)
   tryOpen (diskName old_fi)  >>=  maybe (correctTotals (-1) (-fiSize old_fi))  (\file -> do
-  ensureCtrlBreak (fileClose file) $ do       -- Гарантируем закрытие файла
+  ensureCtrlBreak "fileClose:read_file" (fileClose file) $ do  -- Гарантируем закрытие файла
   -- Перечитаем информацию о файле на случай, если он успел измениться
   rereadFileInfo old_fi file >>=  maybe (correctTotals (-1) (-fiSize old_fi))  (\fi -> do
   correctTotals 0 (fiSize fi - fiSize old_fi) -- Откорректируем показания UI, если размер файла успел измениться

@@ -522,7 +522,7 @@ fmCheckButtonWithHistory fm' tag deflt title = do
 fmDialog fm' title action = do
   fm <- val fm'
   title <- i18n title
-  bracketCtrlBreak dialogNew widgetDestroy $ \dialog -> do
+  bracketCtrlBreak "fmDialog" dialogNew widgetDestroy $ \dialog -> do
     set dialog [windowTitle          := title,
                 windowTransientFor   := fm_window fm,
                 containerBorderWidth := 0]

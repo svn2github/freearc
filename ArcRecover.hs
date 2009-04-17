@@ -293,7 +293,7 @@ runArchiveRecovery command@Command{ cmd_filespecs       = filespecs
     registerError$ GENERAL_ERROR ["0346 file %1 already exists", arcname_fixed]
   command <- (command.$ opt_cook_passwords) command ask_passwords  -- подготовить пароли в команде к использованию
   withPool $ \pool -> do   -- используем пул памяти, чтобы автоматически освободить выделенные буферы при выходе
-  bracketCtrlBreak (archiveReadFooter command arcname) (archiveClose.fst) $ \(archive,footer) -> do
+  bracketCtrlBreak "archiveClose1:ArcRecover" (archiveReadFooter command arcname) (archiveClose.fst) $ \(archive,footer) -> do
     -- Первый этап - сканирование архива и составление списка сбойных секторов
     result <- scanArchive command archive footer True pool
     if isNothing result
@@ -340,8 +340,8 @@ runArchiveRecovery command@Command{ cmd_filespecs       = filespecs
     uiStage              "0387 Recovering archive"
     errors' <- ref bad
     -- Переходим к созданию архива с восстановленными данными
-    handleCtrlBreak  (ignoreErrors$ fileRemove arcname_fixed) $ do
-    bracketCtrlBreak (archiveCreateRW arcname_fixed) (archiveClose) $ \new_archive -> do
+    handleCtrlBreak  "fileRemove arcname_fixed" (ignoreErrors$ fileRemove arcname_fixed) $ do
+    bracketCtrlBreak "archiveClose2:ArcRecover" (archiveCreateRW arcname_fixed) (archiveClose) $ \new_archive -> do
     withJIT (fileOpen =<< originalURL originalName arcname) fileClose $ \original' -> do   -- Лениво откроем файл, откуда можно загрузить корректные данные
     writeSFX (opt_sfx command) new_archive (dirlessArchive archive footer)   -- Начнём создание архива с записи SFX-модуля
     archiveSeek archive init_pos

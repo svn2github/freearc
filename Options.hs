@@ -584,7 +584,7 @@ luaEvent  =  liftMVar3 luaRun lua_state
 -- |Perform Start/Done procedures of givel level
 luaLevel level params action = do
   luaEvent (level++"Start") params
-  ensureCtrlBreak (luaEvent (level++"Done") [""]) action
+  ensureCtrlBreak "luaDone" (luaEvent (level++"Done") [""]) action
 
 
 ----------------------------------------------------------------------------------------------------

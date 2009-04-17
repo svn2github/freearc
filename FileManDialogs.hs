@@ -547,7 +547,7 @@ encryptionPage fm' dialog okButton vbox = do
   -- Создать новый файл-ключ, записав криптографически случайные данные в указанный пользователем файл
   createKeyfile `onClick` do
     title <- i18n "0126 Create new keyfile"
-    bracketCtrlBreak (fileChooserDialogNew (Just title) (Just$ castToWindow dialog) FileChooserActionSave [("OK",ResponseOk), ("Cancel",ResponseCancel)]) widgetDestroy $ \chooserDialog -> do
+    bracketCtrlBreak "createKeyfile" (fileChooserDialogNew (Just title) (Just$ castToWindow dialog) FileChooserActionSave [("OK",ResponseOk), ("Cancel",ResponseCancel)]) widgetDestroy $ \chooserDialog -> do
       fileChooserSetFilename    chooserDialog =<< (fmCanonicalizeDiskPath fm' "new.key" >>== unicode2utf8)
       fileChooserSetCurrentName chooserDialog "new.key"
       fileChooserSetFilename    chooserDialog =<< (fmCanonicalizeDiskPath fm' "new.key" >>== unicode2utf8)

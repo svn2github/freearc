@@ -184,7 +184,7 @@ withoutEcho action = do
                                         .$ flip withMode InterruptOnBreak
                        return origAttr
   --
-  bracketCtrlBreak disableEcho setAttr (\_ -> action)
+  bracketCtrlBreak "restoreEcho" disableEcho setAttr (\_ -> action)
 
 #endif
 

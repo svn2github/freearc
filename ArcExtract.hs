@@ -46,7 +46,7 @@ runArchiveExtract pretestArchive
   uiStage "0249 Reading archive directory"
   command <- (command.$ opt_cook_passwords) command ask_passwords  -- подготовить пароли в команде к использованию
   let openArchive = archiveReadInfo command arc_basedir disk_basedir archive_filter (pretestArchive command)
-  bracketCtrlBreak (openArchive arcname) (arcClose)$ \archive -> do
+  bracketCtrlBreak "arcClose:ArcExtract" (openArchive arcname) (arcClose)$ \archive -> do
     uiPrintArcComment (arcComment archive)            -- Напечатать комментарий
     when (arccmt_file/="-" && arccmt_file/="--") $    -- и записать его в файл, указанный опцией -z
       unParseFile 'c' arccmt_file (arcComment archive)
@@ -66,7 +66,8 @@ arcExtract command arcinfo = do
   uiCompressedBytes (arcDirCBytes arcinfo)
   uiStartFiles 0
   -- Создадим процесс для распаковки файлов и гарантируем его корректное завершение
-  bracketCtrlBreak (runAsyncP$ decompress_PROCESS command (uiCompressedBytes.i))
+  bracketCtrlBreak "joinP decompress_pipe:ArcExtract"
+                   (runAsyncP$ decompress_PROCESS command (uiCompressedBytes.i))
                    ( \decompress_pipe -> do sendP decompress_pipe Nothing; joinP decompress_pipe)
                    $ \decompress_pipe -> do
   -- Распаковать каждый распаковываемый файл и выругаться на нераспаковываемые
@@ -101,7 +102,7 @@ extract_file filename_func command decompress_pipe compressed_file = do
                         clearArchiveBit filename            -- Опция -ac - очистить атрибут Archive после распаковки
             else fileRemove filename                     -- Удалить файл, распакованный с ошибками
     do  --fileSetSize outfile (fiSize fileinfo)  -- Приличная ОС при этом выделит на диске место для файла одним куском
-        handleCtrlBreak (closeOutfile False) $ do
+        handleCtrlBreak "closeOutfile" (closeOutfile False) $ do
           ok <- run_decompress decompress_pipe compressed_file (fileWriteBuf outfile)
           closeOutfile ok
 

@@ -145,8 +145,8 @@ runArchiveCreate pretestArchive
 
   -- Сначала мы записываем содержимое создаваемого архива во временный файл и лишь затем, при успехе архивации - переименовываем его
   tempfile_wrapper arcname command deleteFiles pretestArchive $ \temp_arcname -> do
-    ensureCtrlBreak closeInputArchives $ do   -- Закроем входные архивы по завершении архивации
-      bracketCtrlBreak (archiveCreateRW temp_arcname) (archiveClose) $ \archive -> do
+    ensureCtrlBreak "closeInputArchives" closeInputArchives $ do   -- Закроем входные архивы по завершении архивации
+      bracketCtrlBreak "archiveClose:ArcCreate" (archiveCreateRW temp_arcname) (archiveClose) $ \archive -> do
         writeSFX (opt_sfx command) archive main_archive    -- Начнём создание архива с записи SFX-модуля
         -- Создание архива - последовательность отдельных процессов, передающих данные друг другу:
         --   процесса разработки структуры архива и чтения упаковываемых данных
@@ -187,13 +187,13 @@ tempfile_wrapper filename command deleteFiles pretestArchive action  =  find 0 >
 
         -- Выполнить действие, используя временное имя файла, протестировать и затем переименовать окончательный архив
         doit tempname = do old_file <- fileExist filename      -- Мы выполняем обновление существующего архива?
-                           handleCtrlBreak (ignoreErrors$ fileRemove tempname) $ do
+                           handleCtrlBreak "fileRemove tempname" (ignoreErrors$ fileRemove tempname) $ do
                              -- Выполнить архивацию
                              action tempname
                              -- Если указана опция "-t", то протестируем только что созданный архив
                              when (opt_test command) $ do
                                  test_archive tempname (opt_keep_broken command)
-                           handleCtrlBreak (condPrintLineLn "n"$ "Keeping temporary archive "++tempname) $ do
+                           handleCtrlBreak "Keeping temporary archive" (condPrintLineLn "n"$ "Keeping temporary archive "++tempname) $ do
                              -- Удалить сархивированные файлы, если использована опция -d
                              deleteFiles
                              -- Заменить старый архив новым

@@ -314,7 +314,7 @@ ask title question ref_answer answer_on_u =  do
 -- |Собственно общение с пользователем происходит здесь
 ask_user title question  =  gui $ do
   -- Создадим диалог
-  bracketCtrlBreak (messageDialogNew Nothing [] MessageQuestion ButtonsNone question) widgetDestroy $ \dialog -> do
+  bracketCtrlBreak "ask_user" (messageDialogNew Nothing [] MessageQuestion ButtonsNone question) widgetDestroy $ \dialog -> do
   set dialog [windowTitle          := title,
               windowWindowPosition := WinPosCenter]
 {-
@@ -367,7 +367,7 @@ ask_passwords = ( ask_password_dialog "0076 Enter encryption password" 2
 -- |Диалог запроса пароля.
 ask_password_dialog title' amount opt_parseData = gui $ do
   -- Создадим диалог со стандартными кнопками OK/Cancel
-  bracketCtrlBreak dialogNew widgetDestroy $ \dialog -> do
+  bracketCtrlBreak "ask_password_dialog" dialogNew widgetDestroy $ \dialog -> do
   title <- i18n title'
   set dialog [windowTitle          := title,
               windowWindowPosition := WinPosCenter]
@@ -429,7 +429,7 @@ uiPrintArcComment = doNothing
 
 {-# NOINLINE uiInputArcComment #-}
 uiInputArcComment old_comment = gui$ do
-  bracketCtrlBreak dialogNew widgetDestroy $ \dialog -> do
+  bracketCtrlBreak "uiInputArcComment" dialogNew widgetDestroy $ \dialog -> do
   title <- i18n"0073 Enter archive comment"
   set dialog [windowTitle := title,
               windowDefaultHeight := 200, windowDefaultWidth := 400,
@@ -594,7 +594,7 @@ addStdButton dialog responseId = do
 {-# NOINLINE debugMsg #-}
 -- |Диалог с отладочным сообщением
 debugMsg msg = do
-  bracketCtrlBreak (messageDialogNew (Nothing) [] MessageError ButtonsClose msg) widgetDestroy $ \dialog -> do
+  bracketCtrlBreak "debugMsg" (messageDialogNew (Nothing) [] MessageError ButtonsClose msg) widgetDestroy $ \dialog -> do
   dialogRun dialog
   return ()
 
@@ -607,7 +607,7 @@ askYesNo    = askConfirmation [ResponseYes, ResponseNo]
 {-# NOINLINE askConfirmation #-}
 askConfirmation buttons window msg = do
   -- Создадим диалог с единственной кнопкой Close
-  bracketCtrlBreak dialogNew widgetDestroy $ \dialog -> do
+  bracketCtrlBreak "askConfirmation" dialogNew widgetDestroy $ \dialog -> do
     set dialog [windowTitle        := aARC_NAME,
                 windowTransientFor := window,
                 containerBorderWidth := 10]
@@ -625,7 +625,7 @@ askConfirmation buttons window msg = do
 -- |Запросить у пользователя строку
 inputString window msg = do
   -- Создадим диалог со стандартными кнопками OK/Cancel
-  bracketCtrlBreak dialogNew widgetDestroy $ \dialog -> do
+  bracketCtrlBreak "inputString" dialogNew widgetDestroy $ \dialog -> do
     set dialog [windowTitle        := msg,
                 windowTransientFor := window]
     addStdButton dialog ResponseOk      >>= \okButton -> do
@@ -849,7 +849,7 @@ chooseFile parentWindow dialogType dialogTitle filters getFilename setFilename =
   title <- i18n dialogTitle
   filename <- getFilename
   [select,cancel] <- i18ns ["0363 _Select", "0081 _Cancel"]
-  bracketCtrlBreak (fileChooserDialogNew (Just title) (Just$ castToWindow parentWindow) dialogType [(select,ResponseOk), (cancel,ResponseCancel)]) widgetDestroy $ \chooserDialog -> do
+  bracketCtrlBreak "chooseFile" (fileChooserDialogNew (Just title) (Just$ castToWindow parentWindow) dialogType [(select,ResponseOk), (cancel,ResponseCancel)]) widgetDestroy $ \chooserDialog -> do
     fileChooserSetFilename    chooserDialog (unicode2utf8 filename)
     fileChooserSetCurrentName chooserDialog (takeFileName filename)
     fileChooserSetFilename    chooserDialog (unicode2utf8 filename)

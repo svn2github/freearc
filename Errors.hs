@@ -104,7 +104,8 @@ shutdown msg exitCode = do
   separator' =: ("","\n")
   log_separator' =: "\n"
   fin <- val finalizers
-  mapM_ (ignoreErrors.snd) fin
+  for fin $ \(name,id,action) -> do
+    action
   compressionLib_cleanup
 
   w <- val warnings
@@ -131,35 +132,35 @@ shutdown msg exitCode = do
   return undefined
 
 -- |"handle" с выполнением "onException" также при ^Break
-handleCtrlBreak onException action = do
+handleCtrlBreak name onException action = do
   failOnTerminated
   id <- newId
   handle (\e -> do onException; throwIO e) $ do
-    bracket_ (addFinalizer id onException)
+    bracket_ (addFinalizer name id onException)
              (removeFinalizer id)
              (action)
 
 -- |"bracket" с выполнением "close" также при ^Break
-bracketCtrlBreak init close action = do
+bracketCtrlBreak name init close action = do
   failOnTerminated
   id <- newId
-  bracket (do x<-init; addFinalizer id (close x); return x)
-          (\x -> do removeFinalizer id; close x)
+  bracket (do x<-init; addFinalizer name id (close x); return x)
+          (\x -> do removeFinalizer      id; close x)
           action
 
 -- |bracketCtrlBreak, выполняющий fail при возврате Nothing из init
-bracketCtrlBreakMaybe init fail close action = do
-  bracketCtrlBreak (do x<-init; when (isNothing x) fail; return x)
-                   (`whenJust_` close)
-                   (`whenJust`  action)
+bracketCtrlBreakMaybe name init fail close action = do
+  bracketCtrlBreak name (do x<-init; when (isNothing x) fail; return x)
+                        (`whenJust_` close)
+                        (`whenJust`  action)
 
 -- |Выполнить close-действие по завершению action
-ensureCtrlBreak close action  =  bracketCtrlBreak (return ()) (\_->close) (\_->action)
+ensureCtrlBreak name close action  =  bracketCtrlBreak name (return ()) (\_->close) (\_->action)
 
 -- Добавить/удалить finalizer в список
-addFinalizer id action  =  finalizers .= ((id,action):)
-removeFinalizer id      =  finalizers .= filter ((/=id).fst)
-newId                   =  do curId+=1; id<-val curId; return id
+addFinalizer name id action  =  finalizers .= ((name,id,action):)
+removeFinalizer id           =  finalizers .= filter ((/=id).snd3)
+newId                        =  do curId+=1; id<-val curId; return id
 
 -- |Уникальный номер
 curId :: IORef Int
@@ -167,7 +168,7 @@ curId = unsafePerformIO (ref 0)
 {-# NOINLINE curId #-}
 
 -- |Список действий, которые надо выполнить перед аварийным завершением программы
-finalizers :: IORef [(Int, IO ())]
+finalizers :: IORef [(String, Int, IO ())]
 finalizers = unsafePerformIO (ref [])
 {-# NOINLINE finalizers #-}
 
@@ -418,11 +419,10 @@ count_warnings action = do
 -- |Счётчик ошибок, возникших в ходе работы программы
 warnings = unsafePerformIO$ newIORef 0 :: IORef Int
 
-#ifdef FREEARC_GUI
-registerThreadError = registerWarning
-#else
-registerThreadError = registerError
-#endif
+-- В зависимости от режима зарегистрировать ошибку или предупреждение
+registerThreadError err = do
+  isFM <- val fileManagerMode
+  (iif isFM registerWarning registerError) err
 
 -- Операции, выполняемые при появлении ошибки/предупреждения (регистрируются в других частях программы)
 errorHandlers   = unsafePerformIO$ newIORef [] :: IORef [String -> IO ()]
@@ -445,9 +445,9 @@ tryOpen filename = catchJust ioErrors
 
 -- |Скопировать файл
 fileCopy srcname dstname = do
-  bracketCtrlBreak (fileOpen srcname) (fileClose) $ \srcfile -> do
-    handleCtrlBreak (ignoreErrors$ fileRemove dstname) $ do
-      bracketCtrlBreak (fileCreate dstname) (fileClose) $ \dstfile -> do
+  bracketCtrlBreak "fileClose1:fileCopy" (fileOpen srcname) (fileClose) $ \srcfile -> do
+    handleCtrlBreak "fileRemove1:fileCopy" (ignoreErrors$ fileRemove dstname) $ do
+      bracketCtrlBreak "fileClose2:fileCopy" (fileCreate dstname) (fileClose) $ \dstfile -> do
         size <- fileGetSize srcfile
         fileCopyBytes srcfile size dstfile
 

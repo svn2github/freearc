@@ -64,7 +64,7 @@ doMain args  = do
 #endif
   setUncaughtExceptionHandler handler
   setCtrlBreakHandler $ do          -- Организуем обработку ^Break
-  ensureCtrlBreak (resetConsoleTitle) $ do
+  ensureCtrlBreak "resetConsoleTitle" (resetConsoleTitle) $ do
   luaLevel "Program" [("command", args)] $ do
 #ifdef FREEARC_GUI
   if length args < 2                -- При вызове программы без аргументов или с одним аргументом (именем каталога/архива)
