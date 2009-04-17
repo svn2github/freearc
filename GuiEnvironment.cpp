@@ -59,10 +59,26 @@ int BrowseForFile(TCHAR *prompt, TCHAR *filters, TCHAR *in_filename, TCHAR *out_
   ofn.hwndOwner   = GetActiveWindow();
   ofn.lpstrFilter = filters;
   ofn.lpstrFile   = out_filename;
-  ofn.nMaxFile    = MY_FILENAME_MAX;
+  ofn.nMaxFile    = MY_FILENAME_MAX*2;
   ofn.lpstrTitle  = prompt;
 
-  _tcscpy (out_filename, in_filename);
+  // If "initial filename" looks like "something\." or "something\", it's just initial dir, really
+  if (in_filename[_tcslen(in_filename)-1] == _T('.')  &&
+      in_filename[_tcslen(in_filename)-2] == _T('\\'))
+  {
+    in_filename[_tcslen(in_filename)-1] == _T('\0');
+    ofn.lpstrInitialDir = in_filename;
+    _tcscpy (out_filename, _T(""));
+  }
+  else if (in_filename[_tcslen(in_filename)-1] == _T('\\'))
+  {
+    ofn.lpstrInitialDir = in_filename;
+    _tcscpy (out_filename, _T(""));
+  }
+  else
+  {
+    _tcscpy (out_filename, in_filename);
+  }
 
   return GetOpenFileName(&ofn)? 1 : 0;
 }
