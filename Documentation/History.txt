@@ -233,7 +233,7 @@
     FAR-like Shift+ Shift- Ctrl+ Ctrl- Alt+ Alt-
     Увеличено количество команд в меню, реализована поддержка hot-keys
     Comment editing in ArcInfo dialog
-    Searching for filename being typed
+    Searching for filename being typed, *? also allowed
     Shortcut keys for add/extract/... commands
     Windows: native Open/Save dialogs
     Windows: locale-specific date/time format
@@ -310,9 +310,9 @@
     freezing after archive operation was cancelled/returned an error
     lack of scrolling for archive comment
     freezing on selecting two files and pressing Up
-    ArcInfo: fixed counting of files and directories in archive
+    ArcInfo: fixed calculation of number of files and directories in archive
     All dialogs are now modal
-    report to the user and exit when we cannot open initial archive/directory
+    report to user and exit when we cannot open initial archive/directory
     ensure single-threaded access to freearc.history
     freezing when trying to open encrypted archives (password dialog should work in any thread)
     freezing on Up from http://....arc
@@ -324,13 +324,14 @@
 === To-do list ====================================================================================
 
   whatsnew for windows and linux
-  aARCHIVE_VERSION = make4byte 0 0 5 0
-  Seems that 'Open Archive' button doesn't work when you're currently in the root of any disk in FA GUI browser.
+  aARCHIVE_VERSION = make4byte 0 0 5 1
   after 'Convert to SFX' inside archive Path field isn't updated
-  descript.ion for all files in package would be nice to see
   отключить grzip m/t для sfx
   arc.ini - разделить на мою часть и его добавки
   PowerPack - обновить соответственно новому arc.ini
+  descript.ion for all files in package would be nice to see
+  linux: check Run and file/dir browse
+  yes/no/cancel/...: stock icons
 
 
   HCAR

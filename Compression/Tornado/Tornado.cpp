@@ -215,7 +215,7 @@ finished:
 template <class MatchFinder, class Coder>
 int tor_compress0 (PackMethod m, CALLBACK_FUNC *callback, void *auxdata)
 {
-    SET_JMP_POINT( FREEARC_ERRCODE_GENERAL);
+    //SET_JMP_POINT( FREEARC_ERRCODE_GENERAL);
     // Make buffer at least 32kb long and round its size up to 4kb chunk
     m.buffer = (mymax(m.buffer, 32*kb) + 4095) & ~4095;
     // If hash is too large - make it smaller
@@ -398,7 +398,7 @@ int tor_compress (PackMethod m, CALLBACK_FUNC *callback, void *auxdata)
 template <class Decoder>
 int tor_decompress0 (CALLBACK_FUNC *callback, void *auxdata, int _bufsize, int minlen)
 {
-    SET_JMP_POINT (FREEARC_ERRCODE_GENERAL);
+    //SET_JMP_POINT (FREEARC_ERRCODE_GENERAL);
     int errcode = FREEARC_OK;                             // Error code of last "write" call
     Decoder decoder (callback, auxdata, _bufsize);        // LZ77 decoder parses raw input bitstream and returns literals&matches
     if (decoder.error() != FREEARC_OK)  return decoder.error();
