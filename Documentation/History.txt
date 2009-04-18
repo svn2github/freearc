@@ -379,6 +379,7 @@
     tta: float32 badly compressed (vs wavpack), int32 isn't compressed at all
     +RTS -S - processed by arc.exe itself too :)
     запрещать все операци, приводящие к созданию невалидного sfx
+    после "нет такого файла или каталога" (выбор из истории) - неправильное имя в поле path
   GUI
     использовать "arc:dir" вместо "arc/dir" чтобы не иметь проблем с разделением пути на архив и каталог в нём
     перевод tooltips:

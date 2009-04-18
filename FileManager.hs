@@ -683,6 +683,7 @@ myGUI run args = do
         -- Имитация неработающего Windows Registry для других ОС
         let registryGetStr root branch key       = return Nothing
             registrySetStr root branch key value = return ()
+            hKEY_LOCAL_MACHINE                   = ()
 #endif
         -- Сначала ищем его в ини-файле
         userid <- fmGetHistory1 fm' "UserID" ""

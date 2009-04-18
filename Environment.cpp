@@ -269,7 +269,17 @@ void SetFileDateTime(const CFILENAME Filename, time_t mtime)
 // Execute file `filename` in the directory `curdir` optionally waiting until it finished
 void RunFile (const CFILENAME filename, const CFILENAME curdir, int wait_finish)
 {
-  system(filename);
+  char *olddir = (char*) malloc(MY_FILENAME_MAX*4),
+       *cmd    = (char*) malloc(strlen(filename)+10);
+  getcwd(olddir, MY_FILENAME_MAX*4);
+
+  chdir(curdir);
+  sprintf(cmd, "./%s%s", filename, wait_finish? "" : " &");
+  system(cmd);
+
+  chdir(olddir);
+  free(cmd);
+  free(olddir);
 }
 
 #endif // Windows/Unix
