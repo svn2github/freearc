@@ -11,10 +11,10 @@ ren FreeArc-update.exe  FreeArc-update-0.50-win32%V%.exe
 ren FreeArc-console.exe FreeArc-console-0.50-win32%V%.exe
 
 7z -mx a FreeArc-portable-0.50-win32%V%.zip  -x!GTK* -x!FreeArc-* -x!*.nsi -x!*.nsh -x!*.cmd
-copy /b FreeArc-portable-0.50-win32%V%.zip FreeArc-portable-update-0.50-win32%V%.zip
 cd gtk2-themes
 7z -mx a ..\FreeArc-portable-0.50-win32%V%.zip
 cd ..
+copy /b FreeArc-portable-0.50-win32%V%.zip FreeArc-portable-update-0.50-win32%V%.zip
 cd GTK
 7z -mx a ..\FreeArc-portable-0.50-win32%V%.zip
 cd ..
