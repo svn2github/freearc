@@ -100,12 +100,12 @@ chdir fm' filename' = do
   -- ќбновим статусбар и выполним все остальные запрограммированные действи€.
   sequence_ (fm_onChdir fm)
   widgetGrabFocus (fm_view fm)
-  -- ¬ыведем текущий каталог/архив в заголовке окна
-  fm <- val fm'
-  let title | isFM_Archive fm  =  takeFileName (fm_arcname fm) </> fm_arcdir fm
-            | otherwise        =  takeFileName (fm_dir fm)  |||  fm_dir fm
-  set (fm_window fm) [windowTitle := title++" - "++aARC_NAME]
 
+-- ќтобразить изменение имени архива
+fmChangeArcname fm' newname = do
+  fm' .= fm_changeArcname newname
+  fm <- val fm'
+  sequence_ (fm_onChdir fm)
 
 -- |ƒобавить action в список операций, выполн€емых при переходе в другой каталог/архив
 fmOnChdir fm' action = do

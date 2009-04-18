@@ -337,7 +337,6 @@
   encrypted - enter - cancel - происходит запуск файла
 
 
-
   HCAR
 
 

@@ -34,6 +34,7 @@ import UI
 import ArhiveStructure
 import ArhiveDirectory
 import ArcExtract
+import ArcCreate
 import FileManPanel
 import FileManUtils
 import FileManDialogs
@@ -149,7 +150,8 @@ addDialog fm' exec cmd mode = do
                     in if base==file  then dropExtension file  -- один файл    - избавимся от расширения
                                       else base                -- один каталог - избавимся от слеша в конце
           _      -> takeFileName (fm_curdir fm)                -- много файлов - используем имя текущего каталога
-    arcname =: (arcnameBase ||| "archive") ++ aDEFAULT_ARC_EXTENSION
+    arcname =: if isFM_Archive fm then fm_arcname fm
+                                  else (arcnameBase ||| "archive") ++ aDEFAULT_ARC_EXTENSION
     arcpath =: ""
 
 
@@ -217,6 +219,12 @@ addDialog fm' exec cmd mode = do
                                             , "encryptHeaders="++show encryptHeaders'
                                             , "testAfter="     ++show testAfter']
 -}
+      -- Отобразим изменение имени архива
+      when sfxEnabled $ do
+        when (isFM_Archive fm) $ do
+        let newname' = changeSfxExt True (clear sfxFile') arcname'
+        when (newname'/=arcname') $ do
+          fmChangeArcname fm' newname'
 
 ------ Формирование выполняемой команды/команд ----------------------------------------------------
       let msgs = case cmd of

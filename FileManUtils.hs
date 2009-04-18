@@ -70,6 +70,10 @@ fm_current fm | isFM_Archive fm = fm_arcname fm </> fm_arcdir fm
 fm_curdir fm | isFM_Archive fm = fm_arcname fm .$takeDirectory
              | otherwise       = fm_dir     fm
 
+-- |Изменить имя архива, открытого в FM
+fm_changeArcname arcname fm@(FM_State {subfm=subfm@FM_Archive{}}) =
+                         fm {subfm = subfm {subfm_arcname=arcname}}
+
 
 ----------------------------------------------------------------------------------------------------
 ---- Операции над именами каталогов/файлов ---------------------------------------------------------

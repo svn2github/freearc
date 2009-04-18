@@ -59,7 +59,7 @@ runArchiveCreate pretestArchive
   -- Создаём sfx-архив сразу с расширением EXE, если только мы не должны обновить уже существующий архив
   arcname <- do archiveExists <- fileExist arcname
                 if cmd=="create" || not archiveExists
-                  then return$ changeSfxExt arcname command
+                  then return$ cmdChangeSfxExt command arcname
                   else return arcname
   command <- return command {cmd_arcname = arcname}
 
@@ -316,8 +316,10 @@ writeSFX sfxname archive old_archive = do
                                         archiveCopyData sfxfile 0 size archive)
 
 -- |Новое имя архива в соответствии с тем, что мы добавили или наоборот убрали из него SFX-модуль
-changeSfxExt arcname command =
-  case (opt_noarcext command, opt_sfx command) of
+cmdChangeSfxExt command  =  changeSfxExt (opt_noarcext command) (opt_sfx command)
+
+changeSfxExt opt_noarcext opt_sfx arcname =
+  case (opt_noarcext, opt_sfx) of
 --  Отключено, поскольку мешало конвертировать в SFX архивы изнутри GUI
 --  (True, _)     -> arcname                -- Не менять расширение, если указана опция --noarcext
     (_   , "--")  -> arcname                --   или не указана опция "-sfx"
@@ -332,7 +334,7 @@ changeSfxExt arcname command =
 
 -- |Переименовать архив в соответствии с его SFX-именем
 renameArchiveAsSFX arcname command = do
-  let newname = changeSfxExt arcname command
+  let newname = cmdChangeSfxExt command arcname
   when (newname/=arcname) $ do
     condPrintLineLn "n"$ "Renaming "++arcname++" to "++newname
     fileRename arcname newname

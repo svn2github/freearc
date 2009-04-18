@@ -390,6 +390,13 @@ myGUI run args = do
     -- Перечитаем историю с диска
     rereadHistory curdir
 
+  -- При переходе в другой каталог/архив - отобразить его имя в заголовке окна
+  fm' `fmOnChdir` do
+    fm <- val fm'
+    let title | isFM_Archive fm  =  takeFileName (fm_arcname fm) </> fm_arcdir fm
+              | otherwise        =  takeFileName (fm_dir fm)  |||  fm_dir fm
+    set (fm_window fm) [windowTitle := title++" - "++aARC_NAME]
+
   -- Переходим в род. каталог по кнопке Up или нажатию BackSpace в списке файлов
   upButton  `onClick` goParentDir
   "BackSpace" `onKey` goParentDir
