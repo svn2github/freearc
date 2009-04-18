@@ -92,6 +92,8 @@ struct BaseTask
 
     // Update operation errcode
     virtual int SetErrCode (int e)  {if (e<0 && errcode==0)  errcode = e;  return e;}
+
+    virtual ~BaseTask() {};
 };
 
 // One worker thread

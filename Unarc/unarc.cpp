@@ -530,6 +530,7 @@ void ProcessArchive (COMMAND &command)
 
 int main (int argc, char *argv[])
 {
+  SetCompressionThreads (GetProcessorsCount());
   UI.DisplayHeader (HEADER1 NAME);
   COMMAND command (argc, argv);    // Распарсить команду
   if (command.ok)                  // Если парсинг был удачен и можно выполнить команду

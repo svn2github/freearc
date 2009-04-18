@@ -432,11 +432,11 @@ MemSize compressorGetDecompressionMem (COMPRESSOR c)
 
 
 // Get/set number of threads used for (de)compression. 0 means "autodetect"
-static int CompressionThreads = 4;
+static int CompressionThreads = 1;
 int  __cdecl GetCompressionThreads (void)         {return CompressionThreads;}
 void __cdecl SetCompressionThreads (int threads)
 {
-  CompressionThreads = threads==0? 4 : threads;
+  CompressionThreads = threads==0? 1 : threads;
 #ifndef FREEARC_DLL
   static FARPROC f = LoadFromDLL ("SetCompressionThreads");
   if (f)  ((void (__cdecl *)(int)) f) (threads);

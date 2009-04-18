@@ -317,22 +317,22 @@
     ensure single-threaded access to freearc.history
     freezing when trying to open encrypted archives (password dialog should work in any thread)
     freezing on Up from http://....arc
-    Run directly from archive showing empty "directory"
-    some files were not whown when directory names contained space
+    Run directly from archive shown empty "directory"
+    some files were not shown when directory names contained space
     extraction of all files with the same name as one file extracted from root dir of archive
     Use stock icons for Yes/No/OK/Cancel/Close buttons
 
 
 === To-do list ====================================================================================
 
+  linux: check Run and file/dir browse
+  encrypted - enter - cancel - происходит запуск файла
+
   whatsnew for windows and linux
   aARCHIVE_VERSION = make4byte 0 0 5 1
-  отключить grzip m/t для sfx
   arc.ini - разделить на мою часть и его добавки
   PowerPack - обновить соответственно новому arc.ini
   descript.ion for all files in package would be nice to see
-  linux: check Run and file/dir browse
-  encrypted - enter - cancel - происходит запуск файла
 
 
   HCAR
