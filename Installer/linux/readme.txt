@@ -1,4 +1,4 @@
-Welcome to FreeArc 0.50 alpha (April 18 2009).
+Welcome to FreeArc 0.50 alpha (April 19 2009).
 
 FreeArc is free, open-source archiver for Windows and Linux. It features solid archives with smart updating, AES+Twofish+Serpent encryption, recovery record, self-extracting archives and wide range of compression profiles.
 
