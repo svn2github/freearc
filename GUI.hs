@@ -371,10 +371,7 @@ ask_password_dialog title' amount opt_parseData = gui $ do
   title <- i18n title'
   set dialog [windowTitle          := title,
               windowWindowPosition := WinPosCenter]
-  okButton <- buttonNewFromStock stockOk
-  hbox     <- dialogGetActionArea dialog
-  boxPackEnd hbox okButton PackNatural 10
-  --okButton <- addStdButton dialog ResponseOk
+  okButton <- addStdButton dialog ResponseOk
   addStdButton dialog ResponseCancel
 
   -- Создаёт таблицу с полями для ввода одного или двух паролей
@@ -578,17 +575,20 @@ eventKey (Key {eventKeyName = name, eventModifier = modifier}) =
 
 
 {-# NOINLINE addStdButton #-}
--- |Добавить к диалогу стандартную кнопку
+-- |Добавить к диалогу стандартную кнопку со стандартной иконкой
 addStdButton dialog responseId = do
-  let emsg = case responseId of
-               ResponseYes    -> "0079 _Yes"
-               ResponseNo     -> "0080 _No"
-               ResponseOk     -> "0362 _OK"
-               ResponseCancel -> "0081 _Cancel"
-               ResponseClose  -> "0364 _Close"
-               _              -> "???"
+  let (emsg,item) = case responseId of
+                      ResponseYes    -> ("0079 _Yes",    stockYes         )
+                      ResponseNo     -> ("0080 _No",     stockNo          )
+                      ResponseOk     -> ("0362 _OK",     stockOk          )
+                      ResponseCancel -> ("0081 _Cancel", stockCancel      )
+                      ResponseClose  -> ("0364 _Close",  stockClose       )
+                      _              -> ("???",          stockMissingImage)
   msg <- i18n emsg
-  dialogAddButton dialog msg responseId
+  button <- dialogAddButton dialog msg responseId
+  image  <- imageNewFromStock item iconSizeButton
+  buttonSetImage button image
+  return button
 
 
 {-# NOINLINE debugMsg #-}

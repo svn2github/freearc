@@ -239,21 +239,22 @@
     Windows: locale-specific date/time format
     Support for used-defined menu/toolbar (rename freearc.menu.example to freearc.menu and edit as you wish)
     "New" language simplifies adding new translations
-    Setting to disable captions in toolbar buttons, large icons in toolbar
+    Large icons in toolbar
+    Setting to disable captions in toolbar buttons
     Filters (*.arc;*.exe) in Open Archive/Select output archive dialogs
     "Check for updates" commands runs in background, sends installation info, backups UserID to registry
     "Watch for new versions via Internet" checkbox in Settings dialog automatically checks for updates every day
     Run any program/document just by double-clicking (or Enter) on it
-    Added "Create" button to outdir select dialog (flagged by "*Last" tag in freearc.history)
-    Disabled move-to-top for options like Compression, Encryption...
+    Added "Create" button to outdir select dialog
+    Disabled move-to-top for options like Compression, Encryption... (flagged by "*Last" tag in freearc.history)
     Added Recover Archive command
     Stage indicators with percents for RR operations (add, check, repair) with immediate stopping when user aborted operation
     Modified default compression/RR options
-    added Info page to Settings dialog, now displaying only Max free memblock
-    save Maximized window state
+    Added Info page to Settings dialog, now displaying only Max free memblock
+    Saves Maximized window state
     Compression tab: show speeds for 3GHz Core2Duo
   Linux: "chmod +x" при создании sfx-архива, "chmod -x" при -sfx-
-  CHECK - в FreeArc приводит к вызову longjmp и возврату FREEARC_ERRCODE_GENERAL из процедуры (рас)паковки
+  --CHECK - в FreeArc приводит к вызову longjmp и возврату FREEARC_ERRCODE_GENERAL из процедуры (рас)паковки
 . -sct для терминала; -sci для логфайла; -scf для имён файлов на диске (под Linux)
 . Windows: unicode (utf-16) cmdline
   Разделение на модули: Files => Charsets
@@ -319,6 +320,7 @@
     Run directly from archive showing empty "directory"
     some files were not whown when directory names contained space
     extraction of all files with the same name as one file extracted from root dir of archive
+    Use stock icons for Yes/No/OK/Cancel/Close buttons
 
 
 === To-do list ====================================================================================
@@ -331,7 +333,9 @@
   PowerPack - обновить соответственно новому arc.ini
   descript.ion for all files in package would be nice to see
   linux: check Run and file/dir browse
-  yes/no/cancel/...: stock icons
+  encrypted - edit comment - cancel
+  encrypted - enter - cancel - происходит запуск файла
+
 
 
   HCAR

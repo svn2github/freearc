@@ -854,6 +854,14 @@ with' init finish action  =  do a <- init;  action a;  finish a
 -- |¬ыполнить операцию и возвратить еЄ результат внутри обрамлени€ init/finish операций
 inside init finish action  =  do init;  x <- action;  finish; return x
 
+-- |¬ыполнить "add key" c кешированием результатов
+lookupMVarCache mvar add key = do
+  modifyMVar mvar $ \assocs -> do
+    case (lookup key assocs) of
+      Just value -> return (assocs, value)
+      Nothing    -> do value <- add key
+                       return ((key,value):assocs, value)
+
 
 -- JIT-переменные инициализируютс€ только в момент их первого использовани
 newJIT init        = ref (Left init)
