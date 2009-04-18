@@ -327,13 +327,11 @@
 
   whatsnew for windows and linux
   aARCHIVE_VERSION = make4byte 0 0 5 1
-  after 'Convert to SFX' inside archive Path field isn't updated
   отключить grzip m/t для sfx
   arc.ini - разделить на мою часть и его добавки
   PowerPack - обновить соответственно новому arc.ini
   descript.ion for all files in package would be nice to see
   linux: check Run and file/dir browse
-  encrypted - edit comment - cancel
   encrypted - enter - cancel - происходит запуск файла
 
 
@@ -471,7 +469,8 @@
       Если открыто окно в FreeArc (например настройки), то при клике в панеле задач на FreeArc, основное окно FreeArc сворачивается, окно же настройки остаётся, при повторном клике, основное окно не разворачивается.
       ColumnOrder - убрать русификацию
       Maximized window - не запоминается нормальный размер
-      Ручная реализация Ctrl-XCV чтобы работлло даже в русском режиме
+      Ручная реализация Ctrl-XCV чтобы работало даже в русском режиме
+      Соображать какие изменения принесёт любая команда и отобрадать их заранее. Как пример: after 'Convert to SFX' inside archive Path field isn't updated
       Снятие пароля с заголовков:
         -hp-- - сохранять зашифрованность каталога
         -hp-  - снять шифрование

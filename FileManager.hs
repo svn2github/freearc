@@ -587,8 +587,9 @@ myGUI run args = do
 
   -- Изменить комментарий архива
   commentAct `onActionActivate` do
-    archiveOperation fm' $
-      arcinfoDialog fm' exec CommentMode
+    msgboxOnError $
+      archiveOperation fm' $
+        arcinfoDialog fm' exec CommentMode
 
   -- Преобразовать архив в SFX
   recompressAct `onActionActivate` do
