@@ -328,11 +328,16 @@
   linux: check Run and file/dir browse
   encrypted - enter - cancel - происходит запуск файла
 
+  -m2 - block*4
   whatsnew for windows and linux
   aARCHIVE_VERSION = make4byte 0 0 5 1
   arc.ini - разделить на мою часть и его добавки
   PowerPack - обновить соответственно новому arc.ini
   descript.ion for all files in package would be nice to see
+  rus: отуствие хорошие новаости, freearc wiki
+  unarc - не удаляет частично распакованный файл при неудаче
+  gtk 2.14+
+  compressed/total при распаковке архива
 
 
   HCAR
@@ -568,6 +573,8 @@
   SFX
     Жду - не дождусь, когда у GUI SFX модуля (под винду) будет ключик silent установки с возможностью
       задания пути по умолчанию, а также, как в WinRAR'е, фича запуска приложения после распаковки
+    Инсталятор: вообще нужно, как в других инсталлах - перед распаковкой делаетеся проверка (тестирование),
+      точнее даже сразу после запуска идёт проверка, а потом уже выполнение скрипта инталла.
     знать какой минимум памяти для распаковки нужен полезно, если памяти нужно больше 192мб или
       больше 3/4 физ. озу
     wopen: win95-совместимость?
@@ -589,6 +596,8 @@
     Exclude list: I'm thinking on a text-box in "add with options" where file filters could get
       entered, as well as on a global exclude filter list and finally on a folder based
       configuration (text file or registry). The filter should allow wildcards and maybe directories
+  Lua
+    предикат фильтрации упаковываемых файлов
   GUI
     окно сообщения об ошибке; подокно варнингов
     use processing time for speed/estimated time

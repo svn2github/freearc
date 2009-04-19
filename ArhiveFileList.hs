@@ -386,21 +386,25 @@ splitBy crits recompress files = splitByLen (computeLen) files where
 splitLen  GroupNone              = const 1
 splitLen  GroupByExt             = length.head.groupOn (fpLCExtension.fiFilteredName.cfFileInfo)
 splitLen (GroupBySize      size) = (1+)      . groupLen (fiSize.cfFileInfo) (+) (<i size)
-splitLen (GroupByBlockSize size) = atLeast 1 . groupLen (fiSize.cfFileInfo) (+) (<i size)
+splitLen (GroupByBlockSize size) = atLeast 1 . groupLen (fiSize.cfFileInfo) (+) (<special(i size))
 splitLen (GroupByNumber       n) = atLeast 1 . const n
 splitLen  GroupAll               = const maxBound
 
--- |Длина минимальной группы файлов, позволенной при заданном критерии (вдвое меньше номинала)
+-- |Длина минимальной группы файлов, позволенной при заданном критерии (вдвое меньше номинала, втрое - для блочных компрессоров)
 splitLenMin (GroupBySize      size) = splitLen (GroupBySize      (size `div` 2))
-splitLenMin (GroupByBlockSize size) = splitLen (GroupByBlockSize (size `div` 2))
+splitLenMin (GroupByBlockSize size) = splitLen (GroupByBlockSize (size `div` 3))
 splitLenMin (GroupByNumber       n) = splitLen (GroupByNumber    (n    `div` 2))
 splitLenMin x                       = splitLen x
 
--- |Длина максимальной группы файлов, позволенной при заданном критерии (в 1.5 раза больше номинала)
+-- |Длина максимальной группы файлов, позволенной при заданном критерии (в 1.5 раза больше номинала, за исключением блочных компрессоров)
 splitLenMax (GroupBySize      size) = splitLen (GroupBySize      (size+(size `div` 2)))
-splitLenMax (GroupByBlockSize size) = splitLen (GroupByBlockSize (size+(size `div` 2)))
+splitLenMax (GroupByBlockSize size) = splitLen (GroupByBlockSize (size))
 splitLenMax (GroupByNumber       n) = splitLen (GroupByNumber    (n   +(n    `div` 2)))
 splitLenMax x                       = splitLen x
+
+-- |Временно: специальное преобразование чтобы увеличить скорость сжатия -m2t на многоядерных машинах
+special size | size>8*mb = size
+             | otherwise = 4*size
 
 
 ----------------------------------------------------------------------------------------------------
