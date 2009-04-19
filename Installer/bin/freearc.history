@@ -47,7 +47,7 @@ sfxLast=0765 Windows GUI: freearc.sfx
 sfx=0765 Windows GUI: freearc.sfx
 sfx=0766 Windows console: arc.sfx
 sfx=0767 Linux console: arc.linux.sfx
-sfx=0768 Convert EXE back to ARC: -sfx-
+sfx=0768 Convert EXE back to ARC: -
 
 sortLast=0744 No sorting:
 sort=0744 No sorting:
