@@ -22,34 +22,96 @@ Language name in english and mother tongue
 Main menu
 0050 File=&Arquivo
 0066 Edit=&Editar
+0258 Commands=Comandos
+0259 Tools=&Ferramentas
+0260 Options=Opções
+0261 Help=&Ajuda
+
+
 
 File menu/toolbar 
-0030 Add=Adicionar
-0040 Add files to archive(s)=Adicionar arquivo(s) ao pacote.
+
+
 0031 Modify=Modificar
 0041 Modify archive(s)=Modificar pacote(s)
 0032 Join=Juntar
 0042 Join archives together=Juntar pacotes unidos
-0033 Delete=&Apagar
-0043 Delete files (from archive)=Apagar arquivos (do pacote)
-0034 Test=Testar
-0044 Test files in archive(s)=Testar a integridade do arquivo selecionado.
-0035 Extract=Extrair
-0045 Extract files from archive(s)=Extrair arquivo(s) do pacote .
-0064 Settings=Configurações
-0065 Edit program settings=Editar as configurações do programa
 0036 Exit=Sai&r
 0046 Quit application=Sair da aplicação
-
-Edit menu/toolbar 
 0037 Select=Selecionar
 0047 Select files=Selecionar arquivos
 0038 Unselect=Remover seleção
 0048 Unselect files=Remover seleção dos arquivos
 0039 Refresh=&Atualizar
 0049 Reread archive/directory=Reler pacote/diretório
+0262 Open archive=Abrir pacote
+0263 Select all=Selecionar tudo
+0264 Invert selection=Inverter seleção
+0265 Open archive=Abrir pacote
+0290 Select all files=Selecionar todos os arquivos
+0291 Invert selection=Inverter seleção
+
+
+Commands menu/toolbar
+0030 Add=Adicionar
+0040 Add files to archive(s)=Adicionar arquivo(s) ao pacote.
+0035 Extract=Extrair
+0045 Extract files from archive(s)=Extrair arquivo(s) do pacote .
+0034 Test=Testar
+0044 Test files in archive(s)=Testar a integridade do arquivo selecionado.
 0086 ArcInfo=InfoArc
 0087 Information about archive=Informação sobre o pacote
+0033 Delete=&Apagar
+0043 Delete files (from archive)=Apagar arquivos (do pacote)
+
+
+
+
+
+Tools menu/toolbar
+0266 Lock=Trancar
+0267 Lock archive from further changes=Trancar pacote de futuras mudanças
+0268 Comment=Comentar
+0269 Edit archive comment=Editar comentários do pacote
+0293 Recompress=Recomprimir
+0294 Recompress files in archive=Recomprimir arquivos do pacote
+0270 Convert to SFX=Converter para SFX
+0271 Convert archive to SFX=Converter pacote para SFX
+0272 Encrypt=Criptografar
+0273 Encrypt archive contents=Criptografar conteúdo do pacote
+0274 Protect=Proteger
+0275 Add Recovery record to archive=Adicionar informação de recuperação ao pacote
+0379 Repair=Reparar
+0380 Repair damaged archive=Reparar pacote danificado
+0031 Modify=Modificar
+0041 Modify archive(s)=Modificar pacote(s)
+0032 Join=Juntar
+0042 Join archives together=Juntar Pacotes
+
+
+Options menu/toolbar
+0064 Settings=Configurações
+0065 Edit program settings=Editar as configurações do programa
+0276 View log=Ver log
+0277 View logfile=Ver arquivo de log
+0278 Clear log=Limpar log
+0279 Clear logfile=Limpar arquivo de log
+
+Help menu/toolbar
+0280 Main help=Ajuda
+0281 Help on using FreeArc=Ajuda usando o FreeArc
+0282 Cmdline help=Ajuda da linha de comando
+0283 Help on FreeArc command line=Ajuda do FreeArc na linha de comando
+0284 Open Homepage=Abrir Homepage
+0285 Open program site=Abrir site do programa
+0373 Open forum=Abrir fórum
+0374 Open program forum=Abrir o fórum do programa
+0375 Open wiki=Abrir Wiki
+0376 Open program wiki=Abrir wiki do programa
+0286 Check for update=Verificar por atualizações
+0287 Check for new program versions=Verificar por novas versões do programa
+0288 About=Sobre
+0289 About=Sobre
 
 
 === File manager ==================================================================
@@ -75,10 +137,20 @@ Messages
 0013 There are no archives selected!=Não há pacotes selecionados!
 0071 %1: no such file or directory!= %1: Arquivo ou diretório inexistente!
 0133 You can't compress files directly from archive!=Você não pode comprimir arquivos diretamente no pacote!
-0145 You can't join archives directly from archive!=Você não pode juntar pacotes diretamente no pacote!
-
+0145 You can't join archives directly from archive!=Você não pode juntar pacotes direto do pacote!
+0145 You can't join archives directly from archive!=Você não pode juntar pacotes direto do pacote!
+0251 Abort operation?=Encerrar operação?
 
 === Dialogs =======================================================================
+Archive open dialog
+0305 Open archive=Abrir pacote
+0306 This file isn't a FreeArc archive!=Este arquivo não é um pacote FreeArc!
+0307 FreeArc archives (*.arc)=Pacotes FreeArc (*.arc)
+0308 Archives and SFXes (*.arc;*.exe)=Pacotes e SFXs (*.arc;*.exe)
+0309 All files (*)=Todos os arquivos (*)
+
+
+
 Add dialog
 --Title
 0134 Add %1 to archive=Adicionar %1 ao pacote.
@@ -221,8 +293,26 @@ Settings dialog
 0170 Full name:=Nome completo:
 0171 Copyright:=Copyright:
 0166 Logfile:=Arquivo de log:
+0292 View=&Ver
 0167 Select logfile=Selecionar o arquivo de log
 0172 Associate FreeArc with .arc files=Associar o FreeArc com os arquivos .arc
+0361 Add captions to toolbar buttons=Adicionar legendas aos botões da barra de ferramentas
+0370 Watch for new versions via Internet=Verificar por novas versões via internet
+
+
+0388 Info=Informação
+0389 Largest contiguous free memblock:=O maior bloco de memória contígua:
+
+
+Logfiles
+0303 No log file specified in Settings dialog!=Não há arquivo de log especificado na configuração!
+0304 Clear logfile %1?=Limpar o arquivo de Log %1 ?
+
+Checking for updates
+0295 Checking for updates...=Verificando por atualizações...
+0296 Cannot open %1. Do you want to check the page with browser?=Não pode abrir %1.Você quer verificar a página com o navegador?
+0297 Nothing new at %1=Nada novo em %1
+0298 Found new information at %1! Open the page with browser?=Encontrado nova informação em %1!Abrir a página com o navegador da internet?
 
 
 === Profile settings ============================================================
@@ -268,6 +358,16 @@ Settings dialog
 
 
 === Execution dialogs ============================================================
+Many dialogs
+0079 &Yes=&Sim
+0080 &No=&Não
+0362 &OK=&OK
+0081 &Cancel=&Cancelar
+0363 &Select=&Selecionar
+0364 &Close=&Fechar
+
+
+
 Progress indicator
 --Buttons
 0052 Background=&Em segundo plano
@@ -283,6 +383,22 @@ Progress indicator
 0061 Speed=Velocidade
 0062 Time=Tempo decorrido
 0063 Total time=Tempo total
+
+
+--Messages
+0246 Found %1 files= %1 arquivo(s) encontrado(s) 
+0247 Found %1 archives= %1 pacote(s) encontrado(s)
+0248 Analyzed %1 files= %1 arquivo(s) analisados(s)
+0249 Reading archive directory=Lendo diretório do pacote
+0250 Sorting filelist=Ordenando lista de arquivos
+0385 Scanning archive for damages=Analisando arquivos em busca de danos
+0386 Protecting archive from damages=Protegendo arquivo contra danos
+0387 Recovering archive=Recuperando arquivos
+
+
+
+
+
 
 File overwrite dialog
 0078 Confirm File Replace=Confirmar a substituição do arquivo
@@ -301,7 +417,7 @@ Enter password dialog
 0076 Enter encryption password=Entre com a senha de encriptação
 0077 Enter decryption password=Entre com a senha de desencriptação
 0074 Enter password:=Insira a  senha:
-0075 Reenter password:=Re-insira a senha:
+0075 Reenter password:=Insira novamente a senha:
 
 Archive comment dialog
 0073 Enter archive comment=Entre com os comentários no pacote
@@ -333,12 +449,91 @@ Archive comment dialog
 0245 %2 WARNINGS WHILE ADDING TO %1=%2 AVISOS ENQUANTO ADICIONAVA PARA %1
 
 
+0299 Lock archive(s)?=Trancar pacote(s)?
+0300 Locking archive %1=Trancando o pacote %1
+0301 SUCCESFULLY LOCKED ARCHIVE %1=ARCHIV %1 BLOQUEIO DE PACOTE COM SUCESSO
+0302 %2 WARNINGS WHILE LOCKING ARCHIVE %1=%2 AVISOS ENQUANTO TRANCAVA O PACOTE %1
+
+0381 Repair archive(s)? Repaired archive(s) will be placed into files named fixed.*=Reparar pacote(s)? Pacote(s) reparados serão colocados em seus nomes a palavra \"corrigido\".
+0382 Repairing archive %1=Reparando o pacote %1
+0383 SUCCESFULLY REPAIRED ARCHIVE %1=COM SUCESSO O PACOTE %1 FOI REPARADO 
+0384 %2 WARNINGS WHILE REPAIRING ARCHIVE %1=%2 AVISOS ENQUANTO REPARAVA O PACOTE %1
+
+
+
+
+=== Error messages =======================================================
+0316 ERROR: %1=ERRO: %1
+0317 WARNING: %1=AVISO: %1
+0310 can't modify archive locked with -k=Não pode modificar pacote com o parametro -k
+0311 can't create temporary file=Não pode criar arquivos temporários
+0312 output archive already exists, keeping temporary file %1=Pacote de saída já existe,mantendo o arquivo temporário %1
+0313 archive broken, keeping temporary file %1=Pacote danificado, mantendo o arquivo temporário %1
+0314 archive broken, deleting=Pacote danificado,apagando
+0315 can't open SFX module %1=Não é possível abrir o módulo SFX %1
+0318 command syntax is "%1"=A sintaxe do comando é  \"%1\"
+0319 options %1 and %2 can't be used together=	Opções %1 e %2 não podem ser usadas juntas
+0320 unknown command "%1". Supported commands are: %2=O comando é desconhecido \"%1\" . Os comandos suportados são: %2
+0321 unknown option "%1"=Opção desconhecida: \"%1\"
+0322 ambiguous option "%1" - is that %2?=Opção ambígua \"%1\" - é a opção \"%2\" ?
+0325 option "%1" have illegal format=A opção  \"%1\" tem o formato ilegal
+0326 %1 option must be one of: %2= A opção %1 deve ser uma da: %2
+0327 no command name in command: %1=Não há nome de comando no comando: %1
+0328 no archive name in command: %1=Não há o nome de pacote no comando: %1
+0329 no filenames in command: %1=Sem nomes de arquivo no comando: %1
+0330 can't read directory "%1"=Não pôde ler o diretório \"%1\" 
+0331 can't get info about file "%1"=Não pode obter informação soubre o arquivo \"%1\" 
+0332 can't open file "%1"=Não é possível abrir o arquivo \"%1\" 
+0333 CRC error in file "%1"=Erro de CRC no arquivo  \"%1\"
+0334 bad section %1 in %2=Seção errada %1 em %2
+0335 operation terminated!=Operação encerrada!
+0336 program terminated!=Programa encerrado!
+0337 no files, erasing empty archive=Não há arquivos,Limpando pacote vazio
+0338 skipped %1 fake files= Pulando %1 arquivo(s) falso(s)
+0339 bad password for archive %1=Senha ruim para o pacote %1
+0340 bad password for %1 in archive %2=Senha ruim para %1 no pacote %2
+0341 %1 isn't archive or this archive is corrupt: %2. Please recover it using 'r' command or use -tp- option to ignore Recovery Record=%1 não é um pacote ou é um pacote corrupto: %2 .Por favor , recupere-o com o comando 'r' ou use a opção '-tp' para ignorara a informação de recuperação.
+0342 SFX module %1 is not found=Módulo SFX %1 não encontrado
+0343 %1 isn't implemented=%1 não está implmentado 
+0344 only first of %1 recovery records can be processed by this program version. Please use newer versions to process the rest=Somente os primeiros %1 de informação de recuperação  podem ser processadas com esta versão deste programa.Por favor, use vers~eos mais novas para processar o restante.
+0345 you need FreeArc %1 or above to process this recovery info=Você precisa do FreeArc %1 or superior para processar essa informação de recordação.
+0346 file %1 already exists=Arquivo %1 já existe
+0347 archive can't be recovered - recovery data absent or corrupt=Pacote não pode ser recuperado - dado de recuperação ausente ou corrupto
+0348 %1 unrecoverable errors (%2) found, can't restore anything!=%1 erros não recuperados (%2) encontrados não pode restaurar qualquer coisa!
+0349 can't open original at %1=Não pode abrir o original no %1
+0350 %1 has size %2 so it can't be used to recover %3 having size %4=%1 tem o tamanho de  %2, então não pode ser usado para recuperar %3 tendo tamanho de %4 
+0351 %1 errors (%2) remain unrecovered=%1 Erros (%2) mantem não recuperados
+0352 found %1 errors (%2)=Encontrado %1 erros (%2)
+0353 there were %1 warnings due archive testing=Existem %1 erros devido ao teste do pacote
+0354 block descriptor at pos %1 is corrupted=Descritor de bloco na posição %1 está corrompido.
+0355 %1 is corrupted=%1 está corrompido
+0359 %1 failed decompression= %1 descompressão falhou 
+0360 %1 should be uncompressed=%1 deve ser descomprimido
+0356 archive directory not found=Diretório do pacote não encontrado
+0357 archive signature not found at the end of archive=Assinatura do pacote não encontrada no fim do pacote
+0358 last block of archive is not footer block=Último bloco do pacote não encontrado
+0377 command "%1" shouldn't have additional arguments=O comando \"%1\" não deve ter argumentos adicionais
+0378 bad name or parameters in encryption algorithm %1=Parâmetros ou nomes ruins no algoritmo de encriptação.
+
+
+
+Errors returned by compression methods
+0365 general (de)compression error in %1=Erro geral na descompressão em  %1
+0366 invalid compression method or parameters in %1=Método de compressão ou parãmetro(s) inválidos em  %1
+0367 can't allocate memory required for (de)compression in %1=Não é possível alocar a memória requirida para a compressão/descompressão em %1
+0368 I/O error in compression algorithm %1=Erro de E/S no algoritmo de compressão %1
+0369 bad compressed data in %1=Dado comprimido ruim em %1
+
 === Standard profiles ====================================================
 Compression
 0727 Maximum (1gb decompression)=Máxima (1 Gb para a descompressão)
 0728 Maximum (192mb decompression)=Máxima (192 para a descompressão)
 0729 Maximum (fast, low-memory decompression)=Máxima (rápida,baixo consumo de memória para a descompressão)
 0752 No compression=Sem compressão
+0771 Maximum=Máxima
+0772 Maximum with fast decompression=Máxima com descompressão rápida,
+
+
 
 Encryption
 0730 Standard=Padrão
@@ -353,6 +548,9 @@ Protection
 0737 Internet-only (64kb blocks)=Para envio somente na internet (Blocos de 64 Kib)
 0738 Percents, example=Percentual,exemplo
 0739 Fixed-size, example=Tamanho fixo,exemplo
+0769 Add (autosize, 1-4%)=Adicionar(Tamanho automátido, 1-4%)
+0770 Add for recovery via Internet=Adicionar recuperação via internet?
+
 
 Comment
 0740 Add from textbox=Adicionar comentário à caixa de texto
@@ -385,7 +583,18 @@ Archive name template
 0759 Weekday=Dia da semana
 
 Exclude
-0760 Backup files=Fazer a cópia de segurança dos arquivos
+0753 Backup files=Fazer a cópia de segurança dos arquivos
+
+
+
+Additional compression options
+0760 Perform full backup=Efetuar backup completo
+0761 Full archive test before and after operation=Teste de pacote completo antes e depois da operação
+
+Additional extraction options
+0762 Remove pathnames=Remover nomes do diretório
+0763 Restore absolute pathnames=Remover nomes de diretório absolutos
+0764 Full archive test before performing operation=Teste completo do pacote antes de efeturar a operação
 
 
 === Tooltips (index=N+1000) ===========================================
@@ -394,15 +603,43 @@ Exclude
 ***  DON'T FORGET THAT THIS SECTION SHOULD PROVIDE TOOLTIPS, NOT DIRECT TRANSLATIONS.  ***
 ***  You may find some tooltips in arc.english.txt                                     ***
 ******************************************************************************************
+Add dialog
+--
+1183 Compression=Escolhendo o perfil de compressão.\nPara configurações avançadas escolha a aba \"Compressão\".
+1184 Encryption=Choosing encryption profile.\nFor advanced settings choose the \"Encryption\" tab.
+1185 Protection:=Anexa ao pacote informação (por padrão  1% do tamanho do pacote), no qual permite restaurar seu conteúdo em caso de danos no armazenamento magnético ou falhas de transmissão.
+1186 Comment=Aqui você pode adicionar comentários descrevendo o conteúdo do pacote.
+1227 Make EXE:=Ative esta ooção se você quer fazer um pacote auto executável\nTais pacotes não precisam do FreeArc para extração.
+1128 Test archive after operation=Testar os pacotes depois da compressão.
+1122 Delete files successfully archived=Se você ativar esta opção , os arquivos empacotados serão deletados depois da compressão.
+1187 Finalize archive=Pacote será selado depois da compressão\n(Nenhuma mudança de conteúdo será possível).
+1072 Additional options:=Opções adicionais configuradas manualmente(para usuários avançados).
+--
+1201 Compress each marked file/directory into separate archive=Se você ativar esta opção ,todo arquivo/diretório vai ser comprimido em um pacote separados chamado de acordo com o respectivo arquivo/diretório.
+1202 Add to archive name=Anexa o parâmetros escolhido ao nome do pacote(por exemplo:data e hora).
+--
+1207 Delete previous archive contents=Atenção! Se você ativar esta opção , o conteúdo do pacote vai ser apagado antes do novo conteúdo ser adicionado.Isso não pode ser desfeito!
+1208 Order of files in archive=Ao ative esta opção , a compressão pode ser incrementado,dependendo do método de ordenação (também depedendo dos arquivos a serem empacotados).
+--
+1222 Include only files=Ative esta opção se você explicitamente quer especificar os tipos de arquivos a serem empacotados,pode exemplo *.txt.
+1223 Exclude files=Ative esta opção se você quer excluir um tipo de arquivo em específico.
+
+
+
 
 Compressão
 1113 Rápida, pouca memória para descompressão=Desativa o uso de algoritmos que possuam um lento ou alto consumo de memória para efetuar a descompressão.Claro,usar esta opção faz com que a compressão seja menos eficiente e  mais lenta
 1176 Detecção automática do tipo de arquivo=Quando ativada, FreeArc analisa o conteúdo de cada arquivo e seleciona o melhor método de compressão para ele. Quando desativado,algoritmos de compressão são selecionados de acordo com o arquivo arc.groups
+1138 Bytes, no more than:=Especifica o tamanho dos blocos sólidos.
+1139 Files, no more than:=Especifica a máxima quantidade de arquivos que um bloco sólido pode conter.
+1140 Split by extension=Dividir por extensão
+
 
 Criptografia
 1120 Criptografar o diretório do arquivo=Criptografa a meta informação do arquivo (nomes, tamanhos, CRC dos arquivos no pacote), então se alguém abrir o pacote,será necessário a senha/chave até mesmo para abrir o pacote. É altamente recomendável ativar esta opção para garantir uma real segurança  da informação
 1123 Chave criptográfica:=Uma chave criptográfica é simplesmente uma senha salva no arquivo de disco, no qual será requirido para abrir o pacote. É altamente recomendável usar uma chave criptográfica em função de utilizar completamente o potencial do AES e outros algoritmos
 1125 Criar um novo arquivo de chave=Cria um novo arquivo de chave criptográfica com o nome do usuário contendo 1 KiB de informação criptograficamente gerada aleatoriamente
+1181 Use password=Marque esta opção para especificar uma senha.Mantenha está senha segura!\n(Você pode até mesmo usar um arquivo-chave e uma senha simultâneamente em função de aumentar a segurança!).
 
 Proteção
 1185 Proteção:=Anexa ao pacote informação (por padrão 1% do tamanho do pacote) no qual permite restaurar seu conteúdo no caso de danos no armazenamento ou falhas de transmissão
@@ -411,7 +648,8 @@ Proteção
 Common words
 0101 Yes=&Sim
 0102 No=&Não
-0103 May be=Pode ser
+0323 or=ou
+0324 and=e
 
 Failure messages
 0010 Operation interrupted!=Operação Interrompida!
