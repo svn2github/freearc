@@ -44,12 +44,12 @@ public:
   virtual void ShowCompressionMethod (char *buf);
 
   // Получить/установить объём памяти, используемой при упаковке/распаковке, размер словаря или размер блока
-  virtual MemSize GetCompressionMem     (void)         {return BlockSize*9;}
-  virtual MemSize GetDecompressionMem   (void)         {return BlockSize*5;}
+  virtual MemSize GetCompressionMem     (void)         {return BlockSize*9*GetCompressionThreads();}
+  virtual MemSize GetDecompressionMem   (void)         {return BlockSize*5*GetCompressionThreads();}
   virtual MemSize GetDictionary         (void)         {return BlockSize;}
   virtual MemSize GetBlockSize          (void)         {return BlockSize;}
-  virtual void    SetCompressionMem     (MemSize mem)  {SetBlockSize (mem/9);}
-  virtual void    SetDecompressionMem   (MemSize mem)  {SetBlockSize (mem/5);}
+  virtual void    SetCompressionMem     (MemSize mem)  {SetBlockSize (mem/9/GetCompressionThreads());}
+  virtual void    SetDecompressionMem   (MemSize mem)  {SetBlockSize (mem/5/GetCompressionThreads());}
   virtual void    SetDictionary         (MemSize dict) {SetBlockSize (dict);}
   virtual void    SetBlockSize          (MemSize bs);
 #endif
