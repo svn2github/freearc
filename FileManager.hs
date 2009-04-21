@@ -217,9 +217,16 @@ myGUI run args = do
   -- Создадим переменную для хранения текущего состояния файл-менеджера
   fm' <- newFM window listView listModel listSelection statusLabel messageCombo
   fmStackMsg fm' "              "
+
+  -- Отрихтуем тулбар
+  let toolbar = castToToolbar toolBar
   toolbarCaptions <- fmGetHistoryBool fm' "ToolbarCaptions" True
-  castToToolbar toolBar `set` [toolbarStyle := if toolbarCaptions then ToolbarBoth else ToolbarIcons]
-  castToToolbar toolBar `toolbarSetIconSize` iconSizeLargeToolbar
+  toolbar `set` [toolbarStyle := if toolbarCaptions then ToolbarBoth else ToolbarIcons]
+  toolbar `toolbarSetIconSize` iconSizeLargeToolbar
+  n <- toolbarGetNItems toolbar
+  for [0..n-1] $ \i -> do
+    Just button <- toolbarGetNthItem toolbar i
+    toolItemSetHomogeneous button False
 
   -- Полоска навигации
   naviBar  <- hBoxNew False 0

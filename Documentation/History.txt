@@ -225,7 +225,7 @@
     Окно индикатора прогресса не растягивается при длинном filename processed; ProgressWindowSize в freearc.ini
     При операциях над существующими архивами (ch,d,x...) в ком. строку добавляется "--noarcext"
     "Abort operation?" - локализация и pause_timing
-    Progress indicator now shows current compressed/estimated total compressed sizes
+    Progress indicator now shows current compressed/estimated total compressed sizes when performing compression
     Сортировка нажатием на заголовок столбца
     Сохранение размера/положения диалогов и порядка/ширины/сортировки столбцов в файлменеджере
     "Change drive" button
@@ -255,18 +255,18 @@
     Compression tab: show speeds for 3GHz Core2Duo
   Linux: "chmod +x" при создании sfx-архива, "chmod -x" при -sfx-
   --CHECK - в FreeArc приводит к вызову longjmp и возврату FREEARC_ERRCODE_GENERAL из процедуры (рас)паковки
-. -sct для терминала; -sci для логфайла; -scf для имён файлов на диске (под Linux)
+. Выбор кодировки: -sct для терминала; -sci для логфайла; -scf для имён файлов на диске (под Linux)
 . Windows: unicode (utf-16) cmdline
   Разделение на модули: Files => Charsets
   FAR/TC: копирование/перенос пустых каталогов в архив/из архива; исправлены плагины
-  -ms-
+  "-ms-" disables special handling for already compressed files
 . [External compressor: ccm, ccmx]
     packcmd=ppmonstr {-option } ...
     packcmd=ppmonstr {options} ...
     unpackcmd=thor e{option} ...
     default=-o10 -m48
   Initial CLS support (external compressors in cls-*.dll)
-. -m1xx..-m4xx modes for fast decompression
+. -m1xx..-m4xx modes for fast decompression (require 1gb of free memory to decompress!)
   Tornado 0.5:
 .   better compression in -m1; faster -m3xt; modified -m1xx..-m4xx definitions; :t
     tor:7:c1 .. tor:11:c3; support for :l not power of 2
@@ -284,42 +284,44 @@
   -rr0.1%, -rr0.01% options support (translated to -rr0*4kb, -rr0*64kb)
   Set arc.exe and freearc.exe icons to FreeArc.ico
   External compressors/tempfile method:
-    checks I/O for errors
-    copies data intact when compression program returns error code
-    raises error when decompression program returned non-zero error code
-    prints size of data being processed as 64-bit point-delimited value: "1.234.567 bytes" and "Error level=x" after operation
+    Checks I/O for errors
+    Copies data intact when compression program returns error code
+    Raises error when decompression program returned non-zero error code
+    Prints size of data being processed as 64-bit point-delimited value: "1.234.567 bytes" and "Error level=x" after operation
+    Ability to use spaces in [External compressor] header:  [External compressor: ccm123, ccmx123, ccm125, ccmx125]
   Fixed bugs:
-    in Delta filter (leading to crashes)
-    showing "increase +RTS -Ksize" on multi-gigabyte files
-    now it reports "Bad password" with errcode 21 when archive/file cannot be decrypted using supplied password
-    program was terminating when trying to detect filetype of locked file (such as pagefile.swp)
+    In Delta filter (leading to crashes)
+    Решены все проблемы с кодировками
+    Showing "increase +RTS -Ksize" on multi-gigabyte files
+.   Now it reports "Bad password" with errcode 21 when archive/file cannot be decrypted using supplied password
+    Program was terminating when trying to detect filetype of locked file (such as pagefile.swp)
     -sfx --noarcext: не меняло расширения архива
     Logfile: hide passwords used in cmdline/cfgfile
              strip too long arguments and too long argument list down to 100 chars/elements
     Filetype detection: it was failing on pure English texts
     Fixed bug in SetWindowTitle
     Fixed RR add/check/recover execution
-    testing archive with recovery record ("undefined UI::ref_ui_state")
+    Testing archive with recovery record ("undefined UI::ref_ui_state")
     Computing estimated time and speed takes into account duration of last stage rather than whole operation
-    unarc crashed on errors instead of displaying error message
+    Unarc crashed on errors instead of displaying error message
   Fixed GUI bugs:
-    first file in directory was selected after any operation if nothing was selected before
+    First file in directory was selected after any operation if nothing was selected before
     ArcInfo on empty.arc or non-archive was terminating program
     DoubleClick/Enter on non-archives was terminated program, but now executes them
-    freezing on chdir "c:"
-    freezing when going into archive with encrypted directory  (вход в архивы с зашифрованным каталогом)
-    freezing after archive operation was cancelled/returned an error
-    lack of scrolling for archive comment
-    freezing on selecting two files and pressing Up
+    Freezing on chdir "c:"
+    Freezing when going into archive with encrypted directory  (вход в архивы с зашифрованным каталогом)
+    Freezing after archive operation was cancelled/returned an error
+    Lack of scrolling for archive comment
+    Freezing on selecting two files and pressing Up
     ArcInfo: fixed calculation of number of files and directories in archive
     All dialogs are now modal
-    report to user and exit when we cannot open initial archive/directory
-    ensure single-threaded access to freearc.history
-    freezing when trying to open encrypted archives (password dialog should work in any thread)
-    freezing on Up from http://....arc
+    Report to user and exit when we cannot open initial archive/directory
+    Ensure single-threaded access to freearc.history
+    Freezing when trying to open encrypted archives (password dialog should work in any thread)
+    Freezing on Up from http://....arc
     Run directly from archive shown empty "directory"
-    some files were not shown when directory names contained space
-    extraction of all files with the same name as one file extracted from root dir of archive
+    Some files were not shown when directory names contained space
+    Extraction of all files with the same name as one file extracted from root dir of archive
     Use stock icons for Yes/No/OK/Cancel/Close buttons
 
 
@@ -328,7 +330,6 @@
   linux: check Run and file/dir browse
   encrypted - enter - cancel - происходит запуск файла
 
-  -m2 - block*4
   whatsnew for windows and linux
   aARCHIVE_VERSION = make4byte 0 0 5 1
   arc.ini - разделить на мою часть и его добавки
@@ -337,7 +338,9 @@
   rus: отуствие хорошие новаости, freearc wiki
   unarc - не удаляет частично распакованный файл при неудаче
   gtk 2.14+
+    сортировка - наоборот: Если будет использован gtk2-runtime-2.16, то нужно "исправить" то, что "исправлялось" раньше.
   compressed/total при распаковке архива
+  tor:ah:al
 
 
   HCAR
@@ -708,6 +711,14 @@
       default_options:256m=5
       default_options:384m/128m=6x
     mem=:m*mb
+    New ideas:
+      numopt = o
+      numopts = --fastest --fast --normal --good --best
+      memopt = m
+      memopt:mb = m
+      packcmd:stdio = ...
+      packcmd:stdin = ...
+      packcmd:stdout = ...
   "durilca e -m256 -o12 -t2" would become "durilca:256m:12:t2"
     ofr:1 => ofr:fastest, ofr:5 => ofr:best
   Compressor-in-a-dll: fac-lzma.dll, fac-ppmd.dll...
@@ -866,6 +877,7 @@ tor: 101..104  EOB/ari  huf/3 таблицы чтобы не терять скорости при +=10
 
 to do:
   сохранение/восстановление атрибутов файлов, отбор по ним (а что делать в Unix'е?)
+  store NTFS named streams
   комментарии к файлам, files.bbs
   оптимизация архива - копирование с "-m0 --recompress", затем с нужными опциями сжатия и сортировкой
     файлов внутри архива. аналогично - добавление в архив с оптимизацией
