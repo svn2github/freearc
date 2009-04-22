@@ -227,23 +227,28 @@
     "Abort operation?" - локализация и pause_timing
     Progress indicator now shows current compressed/estimated total compressed sizes when performing compression
     Сортировка нажатием на заголовок столбца
+    Sorting by Modified now separates files and directories
     Сохранение размера/положения диалогов и порядка/ширины/сортировки столбцов в файлменеджере
+    Language selected via compact table
     "Change drive" button
     Single-click on the empty space at right clears selection, double-click selects all files
-    FAR-like Shift+ Shift- Ctrl+ Ctrl- Alt+ Alt-
+    FAR-like Shift+ Shift- Ctrl+ Ctrl- Alt+ Alt- keys for marking files
     Увеличено количество команд в меню, реализована поддержка hot-keys
-    Comment editing in ArcInfo dialog
+    Archive comment editing in ArcInfo dialog
     Searching for filename being typed, *? also allowed
     Shortcut keys for add/extract/... commands
     Windows: native Open/Save dialogs
     Windows: locale-specific date/time format
-    Support for used-defined menu/toolbar (rename freearc.menu.example to freearc.menu and edit as you wish)
-    "New" language simplifies adding new translations
+    Support for used-defined menu/toolbar (just copy freearc.menu.example to freearc.menu and edit it as you wish)
     Large icons in toolbar
     Setting to disable captions in toolbar buttons
     Filters (*.arc;*.exe) in Open Archive/Select output archive dialogs
-    "Check for updates" commands runs in background, sends installation info, backups UserID to registry
+    Uses long command names in menu and short names in toolbar
+    "New" language simplifies adding new translations
+    "Check for updates" commands runs in background
     "Watch for new versions via Internet" checkbox in Settings dialog automatically checks for updates every day
+    When checking for upodates, UserID/Version/language/OS/RAM/maxblock/cores reported to freearc.org
+    UserID is random number saved to config file and backuped to registry
     Run any program/document just by double-clicking (or Enter) on it
     Added "Create" button to outdir select dialog
     Disabled move-to-top for options like Compression, Encryption... (flagged by "*Last" tag in freearc.history)
@@ -253,20 +258,23 @@
     Added Info page to Settings dialog, now displaying only Max free memblock
     Saves Maximized window state
     Compression tab: show speeds for 3GHz Core2Duo
+    Improved freearc.history, i.e. predefined sets of options
+    Added icon for Arc.exe and FreeArc.exe
+    Skin changer: more skins
   Linux: "chmod +x" при создании sfx-архива, "chmod -x" при -sfx-
   --CHECK - в FreeArc приводит к вызову longjmp и возврату FREEARC_ERRCODE_GENERAL из процедуры (рас)паковки
 . Выбор кодировки: -sct для терминала; -sci для логфайла; -scf для имён файлов на диске (под Linux)
 . Windows: unicode (utf-16) cmdline
   Разделение на модули: Files => Charsets
   FAR/TC: копирование/перенос пустых каталогов в архив/из архива; исправлены плагины
-  "-ms-" disables special handling for already compressed files
+  "-ms-" disables fast compression of already compressed files
 . [External compressor: ccm, ccmx]
     packcmd=ppmonstr {-option } ...
     packcmd=ppmonstr {options} ...
     unpackcmd=thor e{option} ...
     default=-o10 -m48
   Initial CLS support (external compressors in cls-*.dll)
-. -m1xx..-m4xx modes for fast decompression (require 1gb of free memory to decompress!)
+. -m1xx..-m4xx modes provides very fast decompression (require 1gb of free memory to decompress!)
   Tornado 0.5:
 .   better compression in -m1; faster -m3xt; modified -m1xx..-m4xx definitions; :t
     tor:7:c1 .. tor:11:c3; support for :l not power of 2
@@ -279,8 +287,8 @@
   100% GUI translation and translation of error/warning messages in CLI
   --language=LANGFILE option: localization for console version! If present in arc.ini, it should point to the same file as freearc.ini
   -m2/-m3/-m4 now use 96mb dictionary by default! *r modes are removed, bcj moved after rep
-  arc.ini: support for External Compressors PowerPack
-  facompress.dll: (de)compression speed improved by 10%
+  arc.ini: large 45kb variant with support of External Compressors PowerPack
+  (De)compression speed improved by 10% by using facompress.dll
   -rr0.1%, -rr0.01% options support (translated to -rr0*4kb, -rr0*64kb)
   Set arc.exe and freearc.exe icons to FreeArc.ico
   External compressors/tempfile method:
@@ -298,8 +306,10 @@
     -sfx --noarcext: не меняло расширения архива
     Logfile: hide passwords used in cmdline/cfgfile
              strip too long arguments and too long argument list down to 100 chars/elements
+    Fixed error handling (it was always printed "Program terminated" instead of real error message)
     Filetype detection: it was failing on pure English texts
     Fixed bug in SetWindowTitle
+    Commands ch/k/c/rr/s shouldn't have additional arguments
     Fixed RR add/check/recover execution
     Testing archive with recovery record ("undefined UI::ref_ui_state")
     Computing estimated time and speed takes into account duration of last stage rather than whole operation
@@ -323,6 +333,11 @@
     Some files were not shown when directory names contained space
     Extraction of all files with the same name as one file extracted from root dir of archive
     Use stock icons for Yes/No/OK/Cancel/Close buttons
+    All toolbar buttons had the same width
+    Some files inside archive were not shown when directory names contained space ("1C/", "1C 2/")
+    'Open Archive' button doesn't worked when you're currently in the root of any disk in filemanager
+    When archive was converted to/from SFX, displayed archive name was not changed
+    Encrypted.arc - Edit comment - Cancel -- resulted in program crash
 
 
 === To-do list ====================================================================================
@@ -335,7 +350,6 @@
   arc.ini - разделить на мою часть и его добавки
   PowerPack - обновить соответственно новому arc.ini
   descript.ion for all files in package would be nice to see
-  rus: отуствие хорошие новаости, freearc wiki
   unarc - не удаляет частично распакованный файл при неудаче
   gtk 2.14+
     сортировка - наоборот: Если будет использован gtk2-runtime-2.16, то нужно "исправить" то, что "исправлялось" раньше.

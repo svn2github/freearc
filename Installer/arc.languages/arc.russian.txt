@@ -12,6 +12,9 @@
 ***    0185 Protection:=Protection: (written in your language, of course)  ***
 ***  It's tooltip:                                                         ***
 ***    1185 Protection:=Appends recovery information to archive            ***
+***                                                                        ***
+***  Also, one section contains relative URLs for language-specific        ***
+***  resources                                                             ***
 ******************************************************************************
 
 Language name in english and mother tongue
@@ -103,7 +106,7 @@ Help menu/toolbar
 0373 Open forum=Форум
 0374 Open program forum=Открыть форум FreeArc
 0375 Open wiki=Wiki
-0376 Open program wiki=Открыть FreeArc Wiki
+0376 Open program wiki=Открыть вики FreeArc
 0286 Check for update=Проверить обновление
 0287 Check for new program versions=Проверить появление новой версии программы
 0288 About=О программе
@@ -304,7 +307,7 @@ Logfiles
 Checking for updates
 0295 Checking for updates...=Проверка обновлений...
 0296 Cannot open %1. Do you want to check the page with browser?=Не могу открыть %1. Открыть страницу в браузере?
-0297 Nothing new at %1=Отсутствие новостей - хорошая новость. На %1 без перемен.
+0297 Nothing new at %1=На %1 ничего нового
 0298 Found new information at %1! Open the page with browser?=О, что-то новенькое на %1! Открыть страницу в браузере?
 
 
