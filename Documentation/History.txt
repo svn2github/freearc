@@ -351,8 +351,6 @@
   PowerPack - обновить соответственно новому arc.ini
   descript.ion for all files in package would be nice to see
   unarc - не удаляет частично распакованный файл при неудаче
-  gtk 2.14+
-    сортировка - наоборот: Если будет использован gtk2-runtime-2.16, то нужно "исправить" то, что "исправлялось" раньше.
   compressed/total при распаковке архива
   tor:ah:al
 

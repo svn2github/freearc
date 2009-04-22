@@ -249,7 +249,7 @@ fmModifySortOrder fm' showSortOrder f_order = do
   fm' =: fm {fm_sort_order = sort_order}
   -- Модифицируем индикатор сортировки
   let (column, order)  =  break1 isUpper sort_order
-  showSortOrder column (if order == "Asc"  then SortDescending  else SortAscending)  -- Gtk имеет своё мнение о том, как рисовать стрелочки ;)
+  showSortOrder column (if order == "Asc"  then SortAscending  else SortDescending)
 
 -- |Сохранить порядок сортировки в историю
 fmSaveSortOrder    fm'  =  fmReplaceHistory fm' "SortOrder"
