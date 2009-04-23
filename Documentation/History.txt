@@ -348,7 +348,7 @@
   encrypted - enter - cancel - происходит запуск файла
 
   whatsnew for windows and linux
-  PowerPack - обновить на сайте
+  FreeArc-delete-all.nsh - включить старые gtk/theme файлы
 
 
   HCAR

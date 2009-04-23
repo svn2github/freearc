@@ -1,4 +1,4 @@
-Welcome to FreeArc 0.50 alpha (April 19 2009)
+Welcome to FreeArc 0.51 (April 24 2009)
 
 Main changes in this version:
 * to be written...
