@@ -348,8 +348,6 @@
   encrypted - enter - cancel - происходит запуск файла
 
   whatsnew for windows and linux
-  arc.ini - разделить на мою часть и его добавки
-  compressed/total при распаковке архива
   PowerPack - обновить на сайте
 
 
