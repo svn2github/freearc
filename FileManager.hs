@@ -803,7 +803,7 @@ myGUI run args = do
     bracketCtrlBreak "aboutDialogDestroy" aboutDialogNew widgetDestroy $ \dialog -> do
     dialog `set` [windowTransientFor   := window
                  ,aboutDialogName      := aARC_NAME
-                 ,aboutDialogVersion   := aARC_VERSION
+                 ,aboutDialogVersion   := aARC_VERSION_WITH_DATE
                  ,aboutDialogCopyright := "(c) "++aARC_EMAIL
                  ,aboutDialogComments  := "High-performance archiver"
                  ,aboutDialogWebsite   := homeURL

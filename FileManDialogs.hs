@@ -232,7 +232,7 @@ settingsDialog fm' = do
     (nb,newPage) <- startNotebook dialog
 ------ Главная закладка ----------------------------------------------------------------------
     vbox <- newPage "0174 Main";  let pack x = boxPackStart vbox x PackNatural 1
-    aboutLabel         <- labelNewWithMnemonic aARC_HEADER
+    aboutLabel         <- labelNewWithMnemonic aARC_HEADER_WITH_DATE
     langLabel          <- label "0068 Language:"
     langComboBox       <- New.comboBoxNewText
     editLangButton     <- button "0069 Edit"

@@ -341,17 +341,16 @@
     Encrypted.arc - Edit comment - Cancel -- resulted in program crash
 
 
+  aARC_VERSION = "0.51", aARCHIVE_VERSION = make4byte 0 0 5 1
 === To-do list ====================================================================================
 
   linux: check Run and file/dir browse
   encrypted - enter - cancel - происходит запуск файла
 
   whatsnew for windows and linux
-  aARCHIVE_VERSION = make4byte 0 0 5 1
   arc.ini - разделить на мою часть и его добавки
-  PowerPack - обновить соответственно новому arc.ini
-  descript.ion for all files in package would be nice to see
   compressed/total при распаковке архива
+  PowerPack - обновить на сайте
 
 
   HCAR
@@ -399,6 +398,7 @@
     +RTS -S - processed by arc.exe itself too :)
     запрещать все операци, приводящие к созданию невалидного sfx
     после "нет такого файла или каталога" (выбор из истории) - неправильное имя в поле path
+    descript.ion for all files in package would be nice to see
   GUI
     использовать "arc:dir" вместо "arc/dir" чтобы не иметь проблем с разделением пути на архив и каталог в нём
     перевод tooltips:

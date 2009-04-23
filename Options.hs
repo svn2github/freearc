@@ -302,16 +302,20 @@ cmdType  _   = ADD_CMD
 {-# NOINLINE cmdType #-}
 
 -- |Версия архиватора, записываемая в HEADER BLOCK
-aARCHIVE_VERSION = make4byte 0 0 4 9
+aARCHIVE_VERSION = make4byte 0 0 5 1
 
+{-# NOINLINE aARC_VERSION_WITH_DATE #-}
+{-# NOINLINE aARC_HEADER_WITH_DATE #-}
 {-# NOINLINE aARC_HEADER #-}
 {-# NOINLINE aARC_VERSION #-}
 {-# NOINLINE aARC_AUTHOR #-}
 {-# NOINLINE aARC_EMAIL #-}
 {-# NOINLINE aARC_WEBSITE #-}
 -- |Краткое наименование программы, выводимое в начале работы
+aARC_VERSION_WITH_DATE = aARC_VERSION ++ " ("++aARC_DATE++")"   -- aARC_VERSION
+aARC_HEADER_WITH_DATE  = aARC_HEADER  ++ " ("++aARC_DATE++")"   -- aARC_HEADER
 aARC_HEADER  = aARC_NAME++" "++aARC_VERSION++" "
-aARC_VERSION = "0.50 alpha ("++aARC_DATE++")"
+aARC_VERSION = "0.51"                                  -- "0.50 alpha ("++aARC_DATE++")"
 aARC_DATE    = "Apr 19 2009"
 aARC_NAME    = "FreeArc"
 aARC_AUTHOR  = "Bulat Ziganshin"
