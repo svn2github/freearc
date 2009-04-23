@@ -381,6 +381,9 @@ static inline void setvalue64 (void *p, uint64 x)
 #define FreeAndNil(p)            ((p) && (free(p), (p)=NULL))
 #endif
 
+// Exit code used to indicate serious problems in FreeArc utilities
+#define FREEARC_EXIT_ERROR 2
+
 // Переменные, используемые для сигнализации об ошибках из глубоко вложеных процедур
 extern int jmpready;
 extern jmp_buf jumper;
@@ -388,12 +391,16 @@ extern jmp_buf jumper;
 // Процедура сообщения о неожиданных ошибочных ситуациях
 #ifndef CHECK
 #  if defined(FREEARC_WIN) && defined(FREEARC_GUI)
-#    define CHECK(a,b)           {if (!(a))  {if (jmpready) longjmp(jumper,1); char *s=(char*)malloc(MY_FILENAME_MAX*4); WCHAR *utf16=(WCHAR*) malloc(MY_FILENAME_MAX*4);  sprintf b;  utf8_to_utf16(s,utf16);  MessageBoxW(NULL, utf16, L"Error encountered", MB_ICONERROR);  exit(2);}}
+#    define CHECK(a,b)           {if (!(a))  {if (jmpready) longjmp(jumper,1);  char *s=(char*)malloc(MY_FILENAME_MAX*4);  WCHAR *utf16=(WCHAR*) malloc(MY_FILENAME_MAX*4);  sprintf b;  utf8_to_utf16(s,utf16);  MessageBoxW(NULL, utf16, L"Error encountered", MB_ICONERROR);  ON_CHECK_FAIL();  exit(FREEARC_EXIT_ERROR);}}
 #  elif defined(FREEARC_WIN)
-#    define CHECK(a,b)           {if (!(a))  {if (jmpready) longjmp(jumper,1); char *s=(char*)malloc(MY_FILENAME_MAX*4), *oem=(char*)malloc(MY_FILENAME_MAX*4); sprintf b; utf8_to_oem(s,oem); printf("\n%s",oem); exit(2);}}
+#    define CHECK(a,b)           {if (!(a))  {if (jmpready) longjmp(jumper,1);  char *s=(char*)malloc(MY_FILENAME_MAX*4),  *oem=(char*)malloc(MY_FILENAME_MAX*4);  sprintf b;  utf8_to_oem(s,oem);  printf("\n%s",oem);  ON_CHECK_FAIL();  exit(FREEARC_EXIT_ERROR);}}
 #  else
-#    define CHECK(a,b)           {if (!(a))  {if (jmpready) longjmp(jumper,1); char s[MY_FILENAME_MAX*4]; sprintf b; printf("\n%s",s); exit(2);}}
+#    define CHECK(a,b)           {if (!(a))  {if (jmpready) longjmp(jumper,1);  char s[MY_FILENAME_MAX*4];  sprintf b;  printf("\n%s",s);  ON_CHECK_FAIL();  exit(FREEARC_EXIT_ERROR);}}
 #  endif
+#endif
+
+#ifndef ON_CHECK_FAIL
+#define ON_CHECK_FAIL()
 #endif
 
 // Устанавливает Jump Point с кодом возврата retcode

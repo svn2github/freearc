@@ -318,7 +318,11 @@ enum PASS {FIRST_PASS, SECOND_PASS};  // Первый/второй проход по солид-блоку (пе
 
 // Процедура экстренного выхода
 void quit(void)   {if (outfile.isopen())  outfile.close(), delete_file(outfile.filename);
-                   exit (EXIT_FAILURE);}
+                   exit (FREEARC_EXIT_ERROR);}
+
+// Действие при ошибке в CHECK()
+#undef  ON_CHECK_FAIL
+#define ON_CHECK_FAIL()   quit()
 
 // * Нижеследующие процедуры предоставляют абстрактные средства работы с текущим выходным файлом,
 // * скрывая такие детали, как различия команд e/x/t, различие между каталогами и файлами,
@@ -536,6 +540,6 @@ int main (int argc, char *argv[])
   if (command.ok)                  // Если парсинг был удачен и можно выполнить команду
     ProcessArchive (command);      //   Выполнить разобранную команду
   printf ("\n");
-  return command.ok? EXIT_SUCCESS : EXIT_FAILURE;
+  return command.ok? EXIT_SUCCESS : FREEARC_EXIT_ERROR;
 }
 
