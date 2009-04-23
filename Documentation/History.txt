@@ -276,7 +276,7 @@
   Initial CLS support (external compressors in cls-*.dll)
 . -m1xx..-m4xx modes provides very fast decompression (require 1gb of free memory to decompress!)
   Tornado 0.5:
-.   better compression in -m1; faster -m3xt; modified -m1xx..-m4xx definitions; :t
+.   better compression in -m1; faster -m3xt; modified -m1xx..-m4xx definitions; :t :ah :al
     tor:7:c1 .. tor:11:c3; support for :l not power of 2
     checks at decoding in order to prevent segfaults; fixed one bug in decoder
   GRZip multithreading!
@@ -314,6 +314,7 @@
     Testing archive with recovery record ("undefined UI::ref_ui_state")
     Computing estimated time and speed takes into account duration of last stage rather than whole operation
     Unarc crashed on errors instead of displaying error message
+    Unarc didn't delete partially decompressed files
   Fixed GUI bugs:
     First file in directory was selected after any operation if nothing was selected before
     ArcInfo on empty.arc or non-archive was terminating program
@@ -350,9 +351,7 @@
   arc.ini - разделить на мою часть и его добавки
   PowerPack - обновить соответственно новому arc.ini
   descript.ion for all files in package would be nice to see
-  unarc - не удаляет частично распакованный файл при неудаче
   compressed/total при распаковке архива
-  tor:ah:al
 
 
   HCAR

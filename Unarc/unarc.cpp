@@ -88,7 +88,7 @@ public:
         silent = 2;
 
         // Get TEMP path and convert it into UTF-8
-        CFILENAME TempPathW = (TCHAR*)   malloc (MY_FILENAME_MAX * sizeof(TCHAR));
+        CFILENAME TempPathW = (TCHAR*)   malloc (MY_FILENAME_MAX * 4);
          FILENAME TempPath  = (FILENAME) malloc (MY_FILENAME_MAX * 4);
         GetTempPathW(MY_FILENAME_MAX, TempPathW);
         utf16_to_utf8 (TempPathW, TempPath);
@@ -516,8 +516,8 @@ void ProcessArchive (COMMAND &command)
   // Run setup.exe after unpacking
   if (command.runme)
   {
-      CFILENAME tmp  = (TCHAR*) malloc (MY_FILENAME_MAX * sizeof(TCHAR));
-      CFILENAME tmp2 = (TCHAR*) malloc (MY_FILENAME_MAX * sizeof(TCHAR));
+      CFILENAME tmp  = (TCHAR*) malloc (MY_FILENAME_MAX * 4);
+      CFILENAME tmp2 = (TCHAR*) malloc (MY_FILENAME_MAX * 4);
 
       // Execute command.runme in the directory command.outpath
       RunProgram (utf8_to_utf16 (command.runme, tmp), utf8_to_utf16 (command.outpath, tmp2), command.wipeoutdir);

@@ -50,17 +50,20 @@ void TORNADO_METHOD::SetDictionary (MemSize dict)
 // Записать в buf[MAX_METHOD_STRLEN] строку, описывающую метод сжатия и его параметры (функция, обратная к parse_TORNADO)
 void TORNADO_METHOD::ShowCompressionMethod (char *buf)
 {
-    struct PackMethod defaults = std_Tornado_method[m.number];  char NumStr[100], BufferStr[100], HashSizeStr[100], TempHashSizeStr[100], RowStr[100], EncStr[100], ParserStr[100], StepStr[100], TableStr[100];
-    showMem (m.buffer,   BufferStr);
-    showMem (m.hashsize, TempHashSizeStr);
-    sprintf (NumStr,      m.number  !=default_Tornado_method? ":%d"  : "", m.number);
-    sprintf (HashSizeStr, m.hashsize!=defaults.hashsize     ? ":h%s" : "", TempHashSizeStr);
-    sprintf (RowStr,      m.hash_row_width  !=defaults.hash_row_width?  ":l%d"  : "", m.hash_row_width);
-    sprintf (EncStr,      m.encoding_method !=defaults.encoding_method? ":c%d"  : "", m.encoding_method);
-    sprintf (ParserStr,   m.match_parser    !=defaults.match_parser?    ":p%d"  : "", m.match_parser);
-    sprintf (StepStr,     m.update_step     !=defaults.update_step?     ":u%d"  : "", m.update_step);
-    sprintf (TableStr,    m.find_tables     !=defaults.find_tables?     ":t%d"  : "", m.find_tables);
-    sprintf (buf, "tor%s:%s%s%s%s%s%s%s", NumStr, BufferStr, HashSizeStr, RowStr, EncStr, ParserStr, StepStr, TableStr);
+    struct PackMethod defaults = std_Tornado_method[m.number];  char NumStr[100], BufferStr[100], HashSizeStr[100], TempHashSizeStr[100], RowStr[100], EncStr[100], ParserStr[100], StepStr[100], TableStr[100], TempAuxHashSizeStr[100], AuxHashSizeStr[100], AuxRowStr[100];
+    showMem (m.buffer,       BufferStr);
+    showMem (m.hashsize,     TempHashSizeStr);
+    showMem (m.auxhash_size, TempAuxHashSizeStr);
+    sprintf (NumStr,         m.number            != default_Tornado_method?     ":%d"    : "", m.number);
+    sprintf (HashSizeStr,    m.hashsize          != defaults.hashsize?          ":h%s"   : "", TempHashSizeStr);
+    sprintf (RowStr,         m.hash_row_width    != defaults.hash_row_width?    ":l%d"   : "", m.hash_row_width);
+    sprintf (EncStr,         m.encoding_method   != defaults.encoding_method?   ":c%d"   : "", m.encoding_method);
+    sprintf (ParserStr,      m.match_parser      != defaults.match_parser?      ":p%d"   : "", m.match_parser);
+    sprintf (StepStr,        m.update_step       != defaults.update_step?       ":u%d"   : "", m.update_step);
+    sprintf (TableStr,       m.find_tables       != defaults.find_tables?       ":t%d"   : "", m.find_tables);
+    sprintf (AuxHashSizeStr, m.auxhash_size      != defaults.auxhash_size?      ":ah%s"  : "", TempAuxHashSizeStr);
+    sprintf (AuxRowStr,      m.auxhash_row_width != defaults.auxhash_row_width? ":al%d"  : "", m.auxhash_row_width);
+    sprintf (buf, "tor%s:%s%s%s%s%s%s%s%s%s", NumStr, BufferStr, HashSizeStr, RowStr, EncStr, ParserStr, StepStr, TableStr, AuxHashSizeStr, AuxRowStr);
 }
 
 #endif  // !defined (FREEARC_DECOMPRESS_ONLY)
@@ -87,6 +90,10 @@ COMPRESSION_METHOD* parse_TORNADO (char** parameters)
         case 'p': p->m.match_parser    = parseInt (param+1, &error); continue;
         case 'u': p->m.update_step     = parseInt (param+1, &error); continue;
         case 't': p->m.find_tables     = parseInt (param+1, &error); continue;
+        case 'a': switch (param[1]) {      // Параметры ah/al
+                    case 'h': p->m.auxhash_size       = parseMem (param+2, &error); continue;
+                    case 'l': p->m.auxhash_row_width  = parseInt (param+2, &error); continue;
+                  }
       }
       // Сюда мы попадаем, если в параметре не указано его название
       // Если этот параметр удастся разобрать как целое число (т.е. в нём - только цифры),
