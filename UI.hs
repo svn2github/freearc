@@ -88,7 +88,7 @@ uiStartArchive command @ Command {
           ++", cache "             ++showMem cache
 
 -- |Отметить начало упаковки или распаковки данных
-uiStartProcessing filelist = do
+uiStartProcessing filelist archive_total_bytes archive_total_compressed = do
   refArchiveProcessingTime =: 0
   command <- val ref_command
   let cmd = cmd_name command
@@ -97,6 +97,8 @@ uiStartProcessing filelist = do
       ui_state = UI_State {
           total_files     = total_files'
         , total_bytes     = total_bytes'
+        , archive_total_bytes      = archive_total_bytes
+        , archive_total_compressed = archive_total_compressed
         , datatype        = error "internal CUI error: datatype not initialized"
         , uiFileinfo      = Nothing
         , files           = 0

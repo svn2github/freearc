@@ -140,7 +140,7 @@ runArchiveCreate pretestArchive
                                 postProcess_processDir dir  -- враппер постпроцессинга тоже должен получить список успешно сархивированных файлов
 
   -- Сообщить пользователю о начале упаковки данных
-  uiStartProcessing (map cfFileInfo files_to_archive)
+  uiStartProcessing (map cfFileInfo files_to_archive) 0 0
   performGC   -- Почистить мусор чтобы освободить как можно больше памяти для алгоритмов сжатия данных
 
   -- Сначала мы записываем содержимое создаваемого архива во временный файл и лишь затем, при успехе архивации - переименовываем его

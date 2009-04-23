@@ -214,6 +214,8 @@ createStats = do
                   , total_bytes = total_bytes
                   , files       = files
                   , cbytes      = cbytes
+                  , archive_total_bytes      = archive_total_bytes
+                  , archive_total_compressed = archive_total_compressed
                   }  <-  val ref_ui_state
         total_bytes <- return (if indType==INDICATOR_FULL  then total_bytes  else total_b)
         -- Общее время с начала операции и момент когда начался показ текущего индикатора прогресса
@@ -222,12 +224,11 @@ createStats = do
 
         -- Для команд добавления выводится строка с Compressed/Total compressed, для остальных она скрывается
         cmd <- val ref_command >>== cmd_name
-        -- Включить/выключить надписи в строке Compressed если команда поменялась
-        last_cmd <- val last_cmd'
-        last_cmd' =: cmd
-        when (cmd /= last_cmd) $ do
-          mapM_ (if cmdType cmd == ADD_CMD then widgetShow else widgetHide)
-                (compressed++totalCompressed)
+        let total_compressed
+              | cmdType cmd == ADD_CMD              =  "~"++show3 (total_bytes*cbytes `div` b)
+              | archive_total_bytes == total_bytes  =       show3 (archive_total_compressed)
+              | archive_total_bytes == 0            =       show3 (0)
+              | otherwise                           =  "~"++show3 (archive_total_compressed*total_bytes `div` archive_total_bytes)
 
         labelSetMarkup filesLabel$           bold$ show3 files                                  `on` indType==INDICATOR_FULL
         labelSetMarkup bytesLabel$           bold$ show3 b
@@ -236,7 +237,7 @@ createStats = do
         labelSetMarkup totalBytesLabel$      bold$ show3 total_bytes
         labelSetMarkup timesLabel$           bold$ showHMS secs
         when (processed>0.001 && b>0 && secs-sec0>0.001) $ do
-        labelSetMarkup totalCompressedLabel$ bold$ "~"++show3 (total_bytes*cbytes `div` b)      `on` indType==INDICATOR_FULL
+        labelSetMarkup totalCompressedLabel$ bold$ total_compressed                             `on` indType==INDICATOR_FULL
         labelSetMarkup ratioLabel$           bold$ ratio2 cbytes b++"%"                         `on` indType==INDICATOR_FULL
         labelSetMarkup totalTimesLabel$      bold$ "~"++showHMS (sec0 + (secs-sec0)/processed)
         labelSetMarkup speedLabel$           bold$ showSpeed b (secs-sec0)

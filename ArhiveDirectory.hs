@@ -33,10 +33,12 @@ import ArhiveStructure
 data ArchiveInfo = ArchiveInfo
          { arcArchive    :: Archive           -- открытый файл архива
          , arcFooter     :: FooterBlock       -- FOOTER BLOCK архива
+         , arcDirectory  :: [CompressedFile]  -- файлы, содержащиес€ в архиве
+         , arcDataBlocks :: [ArchiveBlock]    -- список солид-блоков
          , arcDirBytes   :: FileSize          -- размер служебных блоков в распакованном виде
          , arcDirCBytes  :: FileSize          -- размер служебных блоков в упакованном виде
-         , arcDataBlocks :: [ArchiveBlock]    -- список солид-блоков
-         , arcDirectory  :: [CompressedFile]  -- файлы, содержащиес€ в архиве
+         , arcDataBytes  :: FileSize          -- размер данных в распакованном виде
+         , arcDataCBytes :: FileSize          -- размер данных в упакованном виде
          , arcPhantom    :: Bool              -- True, если архива на самом деле нет (используетс€ дл€ main_archive)
          }
 
@@ -50,7 +52,7 @@ arcComment = ftComment . arcFooter
 phantomArc  =  (dirlessArchive (error "phantomArc:arcArchive") (FooterBlock [] False "" "" 0)) {arcPhantom = True}
 
 -- |јрхив без каталога файлов - используетс€ только дл€ вызова writeSFX из runArchiveRecovery
-dirlessArchive archive footer = ArchiveInfo archive footer (error "emptyArchive:arcDirBytes") (error "emptyArchive:arcDirCBytes") [] [] False
+dirlessArchive archive footer = ArchiveInfo archive footer [] [] (error "emptyArchive:arcDirBytes") (error "emptyArchive:arcDirCBytes") (error "emptyArchive:arcDataBytes") (error "emptyArchive:arcDataCBytes") False
 
 -- |«акрыть архивный файл, если только это не фантомный архив
 arcClose arc  =  unless (arcPhantom arc) $  do archiveClose (arcArchive arc)
@@ -77,14 +79,19 @@ archiveReadInfo command               -- выполн€ема€ команда со всеми еЄ опци€ми
       (buf,size) <- archiveBlockReadAll pool (opt_decryption_info command) block
       archiveReadDir arc_basedir disk_basedir (opt_dir_exclude_path command) archive (blPos block) filter_f (return (buf,size))
 
+  let data_blocks = concatMap fst files
+      directory   = concatMap snd files
+
   -- ƒобавим в arcinfo информацию о списке файлов в архиве
-  return ArchiveInfo { arcArchive   = archive
-                     , arcFooter    = footer
-                     , arcDirBytes  = sum (map blOrigSize dir_blocks)
-                     , arcDirCBytes = sum (map blCompSize dir_blocks)
-                     , arcDataBlocks= concatMap fst files
-                     , arcDirectory = concatMap snd files
-                     , arcPhantom   = False
+  return ArchiveInfo { arcArchive    = archive
+                     , arcFooter     = footer
+                     , arcDirectory  = directory
+                     , arcDataBlocks = data_blocks
+                     , arcDirBytes   = sum (map blOrigSize dir_blocks)
+                     , arcDirCBytes  = sum (map blCompSize dir_blocks)
+                     , arcDataBytes  = sum (map blOrigSize data_blocks)
+                     , arcDataCBytes = sum (map blCompSize data_blocks)
+                     , arcPhantom    = False
                      }
 
 

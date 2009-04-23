@@ -60,7 +60,7 @@ arcExtract command arcinfo = do
                        "t"  -> test_file
                        _    -> extract_file (fpFullname.fiDiskName) command
   -- Отобразить в UI общий объём распаковываемых файлов и объём уже распакованного каталога архива
-  uiStartProcessing (map cfFileInfo (arcDirectory arcinfo))
+  uiStartProcessing (map cfFileInfo (arcDirectory arcinfo))  (arcDataBytes arcinfo)  (arcDataCBytes arcinfo)
   uiStartDirectory
   uiUnpackedBytes   (arcDirBytes  arcinfo)
   uiCompressedBytes (arcDirCBytes arcinfo)

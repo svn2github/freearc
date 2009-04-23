@@ -225,7 +225,7 @@
     Окно индикатора прогресса не растягивается при длинном filename processed; ProgressWindowSize в freearc.ini
     При операциях над существующими архивами (ch,d,x...) в ком. строку добавляется "--noarcext"
     "Abort operation?" - локализация и pause_timing
-    Progress indicator now shows current compressed/estimated total compressed sizes when performing compression
+    Progress indicator now shows current compressed/total compressed sizes
     Сортировка нажатием на заголовок столбца
     Sorting by Modified now separates files and directories
     Сохранение размера/положения диалогов и порядка/ширины/сортировки столбцов в файлменеджере
