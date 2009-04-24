@@ -3,7 +3,7 @@
 # Tornado build script for Unix, written by Joachim Henke
 
 GCC_FLAGS='-pipe -O3 -fomit-frame-pointer -fstrict-aliasing -ffast-math -fforce-addr -fno-exceptions -fno-rtti'
-GCC_FLAGS_VER='-fno-threadsafe-statics -fwhole-program -combine'
+GCC_FLAGS_VER='-fno-threadsafe-statics -fno-ipa-cp-clone -fwhole-program -combine'
 ICC_FLAGS='-O2 -fp-model fast=2 -fno-exceptions -fno-rtti'
 
 cc_option () {
