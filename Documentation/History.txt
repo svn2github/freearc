@@ -235,8 +235,8 @@
     FAR-like Shift+ Shift- Ctrl+ Ctrl- Alt+ Alt- keys for marking files
     Увеличено количество команд в меню, реализована поддержка hot-keys
     Archive comment editing in ArcInfo dialog
-    Searching for filename being typed, *? also allowed
-    Shortcut keys for add/extract/... commands
+    You can start to search file by starting type its name; *? wildcards are also supported
+    Shortcut keys for menu commands
     Windows: native Open/Save dialogs
     Windows: locale-specific date/time format
     Support for used-defined menu/toolbar (just copy freearc.menu.example to freearc.menu and edit it as you wish)
@@ -247,7 +247,7 @@
     "New" language simplifies adding new translations
     "Check for updates" commands runs in background
     "Watch for new versions via Internet" checkbox in Settings dialog automatically checks for updates every day
-    When checking for upodates, UserID/Version/language/OS/RAM/maxblock/cores reported to freearc.org
+    When checking for updates, UserID/Version/language/OS/RAM/maxblock/cores reported to freearc.org
     UserID is random number saved to config file and backuped to registry
     Run any program/document just by double-clicking (or Enter) on it
     Added "Create" button to outdir select dialog
@@ -261,25 +261,21 @@
     Improved freearc.history, i.e. predefined sets of options
     Added icon for Arc.exe and FreeArc.exe
     Skin changer: more skins
+    Made toolbar buttons non-homogeneous
   Linux: "chmod +x" при создании sfx-архива, "chmod -x" при -sfx-
   --CHECK - в FreeArc приводит к вызову longjmp и возврату FREEARC_ERRCODE_GENERAL из процедуры (рас)паковки
 . Выбор кодировки: -sct для терминала; -sci для логфайла; -scf для имён файлов на диске (под Linux)
 . Windows: unicode (utf-16) cmdline
   Разделение на модули: Files => Charsets
   FAR/TC: копирование/перенос пустых каталогов в архив/из архива; исправлены плагины
-  "-ms-" disables fast compression of already compressed files
-. [External compressor: ccm, ccmx]
-    packcmd=ppmonstr {-option } ...
-    packcmd=ppmonstr {options} ...
-    unpackcmd=thor e{option} ...
-    default=-o10 -m48
+  "-ms-": disable fast compression of already compressed files
   Initial CLS support (external compressors in cls-*.dll)
 . -m1xx..-m4xx modes provides very fast decompression (require 1gb of free memory to decompress!)
   Tornado 0.5:
 .   better compression in -m1; faster -m3xt; modified -m1xx..-m4xx definitions; :t :ah :al
     tor:7:c1 .. tor:11:c3; support for :l not power of 2
     checks at decoding in order to prevent segfaults; fixed one bug in decoder
-  GRZip multithreading!
+  GRZip multithreading! Temporary: allow blocks up to 32 mb in order to improve -m2t performance
   Prints CPU time and Real time for operation
   Installer SFX (extracts into tempdir, runs setup.exe and then deletes extracted files)
   -m2b made faster on modern cpus; -m3b - fixed speed loss on multi-core cpus & 1% better compression
@@ -293,10 +289,15 @@
   Set arc.exe and freearc.exe icons to FreeArc.ico
   External compressors/tempfile method:
     Checks I/O for errors
-    Copies data intact when compression program returns error code
+    Copies data intact when compression program returned non-zero error code
     Raises error when decompression program returned non-zero error code
     Prints size of data being processed as 64-bit point-delimited value: "1.234.567 bytes" and "Error level=x" after operation
     Ability to use spaces in [External compressor] header:  [External compressor: ccm123, ccmx123, ccm125, ccmx125]
+.   [External compressor: ccm, ccmx]
+      packcmd=ppmonstr {-option } ...
+      packcmd=ppmonstr {options} ...
+      unpackcmd=thor e{option} ...
+      default=-o10 -m48
   Fixed bugs:
     In Delta filter (leading to crashes)
     Решены все проблемы с кодировками
@@ -314,7 +315,7 @@
     Testing archive with recovery record ("undefined UI::ref_ui_state")
     Computing estimated time and speed takes into account duration of last stage rather than whole operation
     Unarc crashed on errors instead of displaying error message
-    Unarc didn't delete partially decompressed files
+    Unarc didn't deleted partially decompressed files
   Fixed GUI bugs:
     First file in directory was selected after any operation if nothing was selected before
     ArcInfo on empty.arc or non-archive was terminating program
@@ -339,16 +340,14 @@
     'Open Archive' button doesn't worked when you're currently in the root of any disk in filemanager
     When archive was converted to/from SFX, displayed archive name was not changed
     Encrypted.arc - Edit comment - Cancel -- resulted in program crash
+    Removed hack that reversed column sort indicators due to bug in old GTK versions
+    Linux: fixed warnings printed by Archive Open dialog
 
 
   aARC_VERSION = "0.51", aARCHIVE_VERSION = make4byte 0 0 5 1
 === To-do list ====================================================================================
 
-  linux: check Run and file/dir browse
   encrypted - enter - cancel - происходит запуск файла
-
-  whatsnew for windows and linux
-  FreeArc-delete-all.nsh - включить старые gtk/theme файлы
 
 
   HCAR

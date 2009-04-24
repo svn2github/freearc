@@ -851,9 +851,10 @@ chooseFile parentWindow dialogType dialogTitle filters getFilename setFilename =
   filename <- getFilename
   [select,cancel] <- i18ns ["0363 _Select", "0081 _Cancel"]
   bracketCtrlBreak "chooseFile" (fileChooserDialogNew (Just title) (Just$ castToWindow parentWindow) dialogType [(select,ResponseOk), (cancel,ResponseCancel)]) widgetDestroy $ \chooserDialog -> do
-    fileChooserSetFilename    chooserDialog (unicode2utf8 filename)
-    fileChooserSetCurrentName chooserDialog (takeFileName filename)
-    fileChooserSetFilename    chooserDialog (unicode2utf8 filename)
+    fileChooserSetFilename chooserDialog (unicode2utf8 filename)
+    case dialogType of
+      FileChooserActionSave -> fileChooserSetCurrentName chooserDialog (takeFileName filename)
+      _                     -> fileChooserSetFilename    chooserDialog (unicode2utf8 filename++"/non-existing-file") >> return ()
     prepareFilters filters >>= addFilters chooserDialog
     choice <- dialogRun chooserDialog
     when (choice==ResponseOk) $ do
