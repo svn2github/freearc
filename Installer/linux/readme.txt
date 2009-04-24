@@ -16,7 +16,43 @@ FreeArc GUI requires Gtk+ to work.
 ===========================================================================
 
 Main changes in this version:
-* to be written...
+* Significant improvements in GUI and lots of fixed problems results in that now GUI version is more stable, feature-rich and may be used for daily work
+* Fixed two (de)compression bugs
+* -m2/-m3/-m4 modes now use 96mb dictionary by default. Speed/compresion ratio was also improved in many other ways
+
+Also
+* GUI: Skin changer provides more themes; default theme was also updated
+* GUI: You can change menu/toolbar (just copy freearc.menu.example to freearc.menu and edit it as you wish)
+* GUI: Run any program/document just by double-click (or Enter) on it
+* GUI: Single-click on the empty space at right clears selection, double-click selects all files
+* GUI: If you move/resize any dialog or filemanager column - its size and position are preserved
+* GUI: You can sort columns by clocking on column header, second click reverses sorting; sorting order is preserved too
+* GUI: FAR-like keys for marking files: Shift+ Shift- Ctrl+ Ctrl- Alt+ Alt-
+* GUI: You can start to search file by typing first letters of its name; *? wildcards are also supported
+* GUI: Every day FreeArc automatically checks for program updates via Internet
+* FAR/TC plugins: support for copy/move of empty directories to/from archive
+* Windows: unicode (utf-16) cmdline processing
+* Encoding selection options: -sct for console; -sci for logfile; -scf for filenames on disk (Linux only)
+* "-ms-" option: disable fast compression of already compressed files
+* "lt" command: technical archive listing
+* --language=LANGFILE option provides translation of error/warning messages for console version
+* -rr0.1%, -rr0.01% options support (translated to -rr0*4kb, -rr0*64kb)
+* -m1xx..-m4xx: very fast decompression modes (by default, require 1gb of free memory to decompress!)
+* Tornado: support for :t :ah :al options, :l that's not power of 2;  tor:7:c1 .. tor:11:c3;  checks at decoding in order to prevent segfaults
+* Installer SFXes: freearc-installer*.sfx: extracts into tempdir, runs setup.exe and then optionally deletes extracted files
+* External compressors: Copies data intact when compression program returned non-zero error code
+* External compressors: Raises error when decompression program returned non-zero error code
+* External compressors: Improved syntax for description of external compressors
+* arc.ini: large 40kb variant with support for External Compressors PowerPack
+* Initial CLS support (external compressors in cls-*.dll), see Addons for further info
+* Error code 21 is returned when archive/file cannot be decrypted using supplied password
+* Logfile: hiding passwords used in cmdline/cfgfile
+
+Community:
+* New FreeArc forum and Wiki available via menu
+* Source repository at https://freearc.svn.sourceforge.net/svnroot/freearc
+* And yes, now we accept donations via PayPal ;)
+
 
 Main changes in FreeArc 0.50 alpha (June 23 2008):
 * GUI: WinArc executable renamed to FreeArc; a lot of usability improvements
