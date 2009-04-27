@@ -350,6 +350,11 @@
 
   HCAR
 
+  взять whatsnew с вики
+
+  не закрывать программу по Exit если выполняется архивация
+  загружать иконки для всех команд из png/ico файлов
+
 
   -ap
     FAR: -apdir1 + dir1/dir2/file in filelist (rar-style?)
@@ -488,6 +493,7 @@
       Соображать какие изменения принесёт любая команда и отобрадать их заранее. Как пример: after 'Convert to SFX' inside archive Path field isn't updated
       When keyfile is "", pressing "..." opens root dir/program dir rather than current directory
       encrypted - enter - cancel - происходит запуск файла (нужна система явной типизации ошибок, с запуском только при "это не архив")
+      Диалоги не наследуют свойство "Поверх всех окон"
       Снятие пароля с заголовков:
         -hp-- - сохранять зашифрованность каталога
         -hp-  - снять шифрование
