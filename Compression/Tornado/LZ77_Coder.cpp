@@ -1,5 +1,6 @@
-// GPL'ed code for byte/bit/huffman/arithmetic encoders for LZ77 output
 // (c) Bulat Ziganshin <Bulat.Ziganshin@gmail.com>
+// (c) Joachim Henke
+// GPL'ed code for byte/bit/huffman/arithmetic encoders for LZ77 output
 
 
 // These len/dist codes are used to encode EOF and other special cases

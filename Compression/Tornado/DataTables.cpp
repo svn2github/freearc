@@ -1,4 +1,5 @@
 // (c) Bulat Ziganshin <Bulat.Ziganshin@gmail.com>
+// (c) Joachim Henke
 // GPL'ed code for data tables preprocessing (subtracting) which improves compression
 #include "../Compression.h"
 

@@ -1,5 +1,6 @@
-// GPL'ed code of Tornado - fast LZ77 compression algorithm.
 // (c) Bulat Ziganshin <Bulat.Ziganshin@gmail.com>
+// (c) Joachim Henke
+// GPL'ed code of Tornado - fast LZ77 compression algorithm.
 #include "../Compression.h"
 #include "MatchFinder.cpp"
 #include "EntropyCoder.cpp"

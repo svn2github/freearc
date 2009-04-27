@@ -1,4 +1,5 @@
 // (c) Bulat Ziganshin <Bulat.Ziganshin@gmail.com>
+// (c) Joachim Henke
 // GPL'ed code for various streams and entropy codecs:
 //   - in/out byte streams
 //   - in/out bit streams

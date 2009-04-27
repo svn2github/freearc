@@ -1,3 +1,4 @@
+// (c) Bulat Ziganshin <Bulat.Ziganshin@gmail.com>
 // Multithreaded compression with overlapped I/O
 // 4x4 version 0.3 - now in C++
 

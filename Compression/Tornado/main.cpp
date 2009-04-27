@@ -1,6 +1,7 @@
+// (c) Bulat Ziganshin <Bulat.Ziganshin@gmail.com>
+// (c) Joachim Henke
 // Tornado - fast LZ77-based compression algorithm.
 // This module is a command-line driver to Tornado library.
-// (c) Bulat Ziganshin <Bulat.Ziganshin@gmail.com>
 #define FREEARC_STANDALONE_TORNADO
 #include "Tornado.cpp"
 #include "../Common.cpp"

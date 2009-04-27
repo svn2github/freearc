@@ -1,3 +1,5 @@
+// (c) Bulat Ziganshin <Bulat.Ziganshin@gmail.com>
+// (c) Joachim Henke
 // LZ77 model *************************************************************************************
 
 typedef uint   HashVal;      // Result of hashing function
