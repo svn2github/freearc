@@ -16,8 +16,8 @@
 #define NAME           "unpacker"
 #endif
 
-#define HEADER1        "FreeArc 0.50 "
-#define HEADER2        "  http://freearc.org  2009-04-24\n"
+#define HEADER1        "FreeArc 0.51 "
+#define HEADER2        "  http://freearc.org  2009-04-28\n"
 
 // Доступ к структуре архива
 #include "ArcStructure.h"

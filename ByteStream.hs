@@ -5,10 +5,10 @@
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  ByteStream
--- Copyright   :  (c) Bulat Ziganshin, bulat_z@mail.ru
--- License     :  BSD-style (see the file libraries/base/LICENSE)
+-- Copyright   :  (c) Bulat Ziganshin <Bulat.Ziganshin@gmail.com>
+-- License     :  Public domain
 --
--- Maintainer  :  bulat_z@mail.ru
+-- Maintainer  :  Bulat.Ziganshin@gmail.com
 -- Stability   :  experimental
 -- Portability :  GHC/Hugs on x86 processors
 --

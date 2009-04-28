@@ -1,4 +1,16 @@
 {-# OPTIONS_GHC -cpp -fvia-C #-}
+-----------------------------------------------------------------------------
+-- |
+-- Module      :  Win32Files
+-- Copyright   :  (c) Bulat Ziganshin <Bulat.Ziganshin@gmail.com>
+-- License     :  Public domain
+--
+-- Maintainer  :  Bulat.Ziganshin@gmail.com
+-- Stability   :  experimental
+-- Portability :  GHC/mingw32
+--
+-----------------------------------------------------------------------------
+
 module Win32Files where
 
 import Data.Bits

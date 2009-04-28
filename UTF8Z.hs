@@ -4,6 +4,16 @@
 ---- Имена сортируются/сравниваются с учётом или без учёта регистра в зависимости от того,      ----
 ----   откомпилирована ли программа под Windows или Unix                                        ----
 ----------------------------------------------------------------------------------------------------
+-- |
+-- Module      :  UTF8Z
+-- Copyright   :  (c) Bulat Ziganshin <Bulat.Ziganshin@gmail.com>
+-- License     :  Public domain
+--
+-- Maintainer  :  Bulat.Ziganshin@gmail.com
+-- Stability   :  experimental
+-- Portability :  GHC
+--
+-----------------------------------------------------------------------------
 
 module UTF8Z where
 
