@@ -317,6 +317,7 @@
     Computing estimated time and speed takes into account duration of last stage rather than whole operation
     Unarc crashed on errors instead of displaying error message
     Unarc didn't deleted partially decompressed files
+    TTA: crashed on recompressing WAV files
   Fixed GUI bugs:
     First file in directory was selected after any operation if nothing was selected before
     ArcInfo on empty.arc or non-archive was terminating program
@@ -349,8 +350,6 @@
 === To-do list ====================================================================================
 
   HCAR
-
-  взять whatsnew с вики
 
   не закрывать программу по Exit если выполняется архивация
   загружать иконки для всех команд из png/ico файлов

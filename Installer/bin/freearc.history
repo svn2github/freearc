@@ -1,3 +1,5 @@
+news_crc=48622d4d
+
 compressionLast=0110 Normal: -m4 -s64m
 compression=0771 Maximum: -mx -ld=192m
 compression=0772 Maximum with fast decompression: -m9x -ld=192m -s256m
