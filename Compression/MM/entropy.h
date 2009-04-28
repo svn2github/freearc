@@ -37,7 +37,8 @@
 #define ENC(x)  (((x)>0)?((x)<<1)-1:(-(x)<<1))
 #define DEC(x)  (((x)&1)?(++(x)>>1):(-(x)>>1))
 
-extern unsigned char *bit_array;
+extern unsigned char *bit_array_read;
+extern unsigned char *bit_array_write;
 
 void init_bit_array_write (void);
 void init_bit_array_read (unsigned long size);

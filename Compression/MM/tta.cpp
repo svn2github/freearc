@@ -265,7 +265,7 @@ int tta_compress (int level, int skip_header, int is_float, int num_chan, int wo
     unsigned long   frame_size, frame_len, bit_array_size;
     unsigned char   header[4];
     int             errcode, byte_size;
-    bit_array = NULL;
+    bit_array_write = NULL;
     level = mymin (level, 3);
 
     // Size of each chunk processed, in samples (num_chan*byte_size bytes each)
@@ -382,17 +382,17 @@ storing:
                 goto skip_writing_rest;
             } else {
                 WRITE4 (bit_array_size);              // write compressed data
-                WRITE  (bit_array, bit_array_size);
+                WRITE  (bit_array_write, bit_array_size);
             }
         }
         WRITE (rest, bytes_read%(num_chan*byte_size));
 skip_writing_rest:
-        FreeAndNil (bit_array);
+        FreeAndNil (bit_array_write);
         FreeAndNil (origdata);
     }
 
 finished:
-    FreeAndNil (bit_array);
+    FreeAndNil (bit_array_write);
     FreeAndNil (origdata);
     FreeAndNil (buffer);
     FreeAndNil (rest);
@@ -413,7 +413,7 @@ int tta_decompress (CALLBACK_FUNC *callback, void *auxdata)
     unsigned long   is_float, frame_len, bit_array_size;
     unsigned char   header[4];
     int errcode;
-    bit_array = NULL;
+    bit_array_read = NULL;
 
     // read TTA header
     READ (header, 4)
@@ -470,7 +470,7 @@ int tta_decompress (CALLBACK_FUNC *callback, void *auxdata)
                 continue;                            //   and go to next block
             }
             init_bit_array_read (bit_array_size);
-            READ (bit_array, bit_array_size);
+            READ (bit_array_read, bit_array_size);
         }
 
         // grab some space for a buffer
@@ -488,7 +488,7 @@ int tta_decompress (CALLBACK_FUNC *callback, void *auxdata)
         if (is_float)   combine_float (frame_len, num_chan, buffer);
         else            combine_int   (frame_len, num_chan, buffer);
 
-        FreeAndNil (bit_array);
+        FreeAndNil (bit_array_read);
         if (frame_len) {
             errcode = write_wave (buffer, byte_size, num_chan, frame_len, callback, auxdata);
             if (errcode<0)  goto finished;
@@ -502,7 +502,7 @@ int tta_decompress (CALLBACK_FUNC *callback, void *auxdata)
 finished:
     FreeAndNil (prevbuf);
     FreeAndNil (buf1);
-    FreeAndNil (bit_array);
+    FreeAndNil (bit_array_read);
     FreeAndNil (buffer);
     FreeAndNil (rest);
     return errcode;

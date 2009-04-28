@@ -45,8 +45,6 @@ typedef struct {
     long *pl;
 } fltst;
 
-static fltst fst1, fst2, fst3;
-
 ///////// Filters Settings /////////
 static int flt_set [3][3][4][3] = {
    {{{8,10,0},  {8,9,0},   {8,10,0},  {8,12,1}},
@@ -243,6 +241,8 @@ filter_init (fltst *fs, int order, int shift, int mode) {
 
 void
 filters_compress (long *data, unsigned long len, long level, long byte_size) {
+    fltst fst1, fst2, fst3;
+
     long *p = data;
     long tmp, last;
 
@@ -273,6 +273,8 @@ filters_compress (long *data, unsigned long len, long level, long byte_size) {
 
 void
 filters_decompress (long *data, unsigned long len, long level, long byte_size) {
+    fltst fst1, fst2, fst3;
+
     long *p = data;
     long last;
 
