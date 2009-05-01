@@ -557,9 +557,6 @@ void RegisterExternalCompressors()
     section++;
     p = strstr(section, ANY_HEADING);
     if (p)  *p = '\0';
-    if (start_with(section,EXT_HEADING))
-printf("section:\n%s\n\n\n", section);
-
     if (start_with(section,EXT_HEADING)  &&  AddExternalCompressor(section) != 1)
     {
       //printf("Error in config file %s section:\n%s\n", cfgfile, section);
