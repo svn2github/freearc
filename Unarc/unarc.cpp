@@ -16,11 +16,16 @@
 #define NAME           "unpacker"
 #endif
 
-#define HEADER1        "FreeArc 0.51 "
-#define HEADER2        "  http://freearc.org  2009-04-28\n"
+#define HEADER1        "FreeArc 0.52 "
+#define HEADER2        "  http://freearc.org  2009-05-01\n"
 
 // Доступ к структуре архива
 #include "ArcStructure.h"
+
+// External compressors support
+extern "C" {
+#include "../Compression/External/C_External.h"
+}
 
 // Весь диалог с пользователем описан в сменных модулях, включаемых здесь
 #ifdef FREEARC_GUI
@@ -531,9 +536,43 @@ void ProcessArchive (COMMAND &command)
 #endif
 }
 
+// Register external compressors declared in arc.ini
+void RegisterExternalCompressors()
+{
+  // Read config file into memory
+  char *cfgfile = "arc.ini";
+  FILE *f = fopen(cfgfile, "rt");                if (!f)  return;
+  FILESIZE size = get_flen(f);                   if (!size)  return;
+  char *contents = (char*) malloc(size+2);       if (!contents)  return;
+  *contents = '\n';
+  size = file_read(f, contents+1, size);         if (size<0)  return;
+  contents[size] = '\0';
+
+
+  // Register each external compressor found in config file
+  char *ANY_HEADING = "\n[", *EXT_HEADING = "[External compressor:";
+  ClearExternalCompressorsTable();
+  for (char *p, *section = strstr(contents, ANY_HEADING);  section != NULL;  section = p)
+  {
+    section++;
+    p = strstr(section, ANY_HEADING);
+    if (p)  *p = '\0';
+    if (start_with(section,EXT_HEADING))
+printf("section:\n%s\n\n\n", section);
+
+    if (start_with(section,EXT_HEADING)  &&  AddExternalCompressor(section) != 1)
+    {
+      //printf("Error in config file %s section:\n%s\n", cfgfile, section);
+    }
+  }
+
+  free(contents);
+  fclose(f);
+}
 
 int main (int argc, char *argv[])
 {
+  RegisterExternalCompressors();
   SetCompressionThreads (GetProcessorsCount());
   UI.DisplayHeader (HEADER1 NAME);
   COMMAND command (argc, argv);    // Распарсить команду

@@ -7,10 +7,10 @@ Extractor_DEFINES = -DFREEARC_DECOMPRESS_ONLY -D_NO_EXCEPTIONS -DUNARC
 OBJDIR  = $(TEMPDIR)-unarc
 LINKOBJ_FAR_PLUGIN = $(OBJDIR)/Environment.o $(OBJDIR)/Common.o $(OBJDIR)/CompressionLibrary.o \
                      $(OBJDIR)/C_LZMA.o
-LINKOBJ_TINY = $(LINKOBJ_FAR_PLUGIN) $(OBJDIR)/C_BCJ.o $(OBJDIR)/C_Dict.o $(OBJDIR)/C_Delta.o
+LINKOBJ_TINY = $(LINKOBJ_FAR_PLUGIN) $(OBJDIR)/C_External.o $(OBJDIR)/C_BCJ.o $(OBJDIR)/C_Dict.o $(OBJDIR)/C_Delta.o
 LINKOBJ_MINI = $(LINKOBJ_TINY) $(OBJDIR)/C_REP.o $(OBJDIR)/C_LZP.o $(OBJDIR)/C_PPMD.o
 LINKOBJ = $(LINKOBJ_MINI) $(OBJDIR)/C_MM.o $(OBJDIR)/C_TTA.o \
-          $(OBJDIR)/C_Tornado.o $(OBJDIR)/C_External.o $(OBJDIR)/C_GRZip.o
+          $(OBJDIR)/C_Tornado.o $(OBJDIR)/C_GRZip.o
 HEADERS =  ../Compression/Compression.h ../Compression/Common.h
 #makefile
 LINK_FLAGS = -L$(LIBDIR) -Xlinker --large-address-aware -lstdc++ -s
@@ -87,6 +87,9 @@ $(OBJDIR)/CompressionLibrary.o: ../Compression/CompressionLibrary.cpp $(HEADERS)
 $(OBJDIR)/Common.o: ../Compression/Common.cpp $(HEADERS)
 	$(GCC) -c $(CFLAGS1) -o $*.o $<
 
+$(OBJDIR)/C_External.o: ../Compression/External/C_External.cpp ../Compression/External/C_External.h $(HEADERS)
+	$(GCC) -c $(CFLAGS) -o $*.o $<
+
 
 $(OBJDIR)/C_BCJ.o: ../Compression/LZMA/C_BCJ.cpp ../Compression/LZMA/C_BCJ.h $(HEADERS)
 	$(GCC) -c $(CFLAGS) -o $*.o $<
@@ -116,9 +119,6 @@ $(OBJDIR)/C_TTA.o: ../Compression/MM/C_TTA.cpp ../Compression/MM/C_TTA.h $(HEADE
 	$(GCC) -c $(CFLAGS) -o $*.o $<
 
 $(OBJDIR)/C_Tornado.o: ../Compression/Tornado/C_Tornado.cpp ../Compression/Tornado/C_Tornado.h $(HEADERS)
-	$(GCC) -c $(CFLAGS) -o $*.o $<
-
-$(OBJDIR)/C_External.o: ../Compression/External/C_External.cpp ../Compression/External/C_External.h $(HEADERS)
 	$(GCC) -c $(CFLAGS) -o $*.o $<
 
 $(OBJDIR)/C_GRZip.o: ../Compression/GRZip/C_GRZip.cpp ../Compression/GRZip/C_GRZip.h $(HEADERS)
