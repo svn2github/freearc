@@ -37,7 +37,6 @@ public:
 
   // Получить/установить объём памяти, используемой при упаковке/распаковке, размер словаря или размер блока
   virtual MemSize GetCompressionMem     (void)         {return BlockSize*2 + (1<<HashSizeLog)*sizeof(BYTE*);}
-  virtual MemSize GetDecompressionMem   (void)         {return BlockSize*2 + (1<<HashSizeLog)*sizeof(BYTE*);}
   virtual MemSize GetDictionary         (void)         {return BlockSize;}
   virtual MemSize GetBlockSize          (void)         {return BlockSize;}
   virtual void    SetCompressionMem     (MemSize mem);
@@ -45,6 +44,7 @@ public:
   virtual void    SetDictionary         (MemSize dict) {SetBlockSize (dict);}
   virtual void    SetBlockSize          (MemSize bs);
 #endif
+  virtual MemSize GetDecompressionMem   (void)         {return BlockSize*2 + (1<<HashSizeLog)*sizeof(BYTE*);}
 };
 
 // Разборщик строки метода сжатия LZP

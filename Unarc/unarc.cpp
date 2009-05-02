@@ -467,6 +467,60 @@ int callback_func (const char *what, void *buf, int size, void *auxdata)
   } else return FREEARC_ERRCODE_NOT_IMPLEMENTED;
 }
 
+// Add "tempfile" to compressors chain if required
+char *AddTempfile (char *compressor)
+{
+  char *tempfile = "tempfile";
+  char PLUS[] = {COMPRESSION_METHODS_DELIMITER, '\0'};
+
+  char *c = (char*) malloc (strlen(compressor)+1);
+  if (!c)  return NULL;
+  strcpy(c, compressor);
+  compressor = c;
+
+  // Разобьём компрессор на отдельные алгоритмы и посчитаем расход памяти
+  CMETHOD cm[MAX_METHODS_IN_COMPRESSOR];
+  int64 memi[MAX_METHODS_IN_COMPRESSOR];
+  int N = split (compressor, COMPRESSION_METHODS_DELIMITER, cm, MAX_METHODS_IN_COMPRESSOR);
+  int64 mem = 0;
+  for (int i=0; i<N; i++)
+    mem += memi[i] = GetDecompressionMem(cm[i]);
+
+  // Maximum memory allowed to use
+  int64 maxmem = 1<<30;
+
+  // If memreqs are too large - add "tempfile" between methods
+  if (mem > maxmem)
+  {
+    char *c2 = (char*) malloc (strlen(compressor)+strlen(tempfile)+2);
+    if (!c2)  return NULL;
+    compressor = c2;
+
+    strcpy(compressor, cm[0]);
+    mem=memi[0];
+
+    for (int i=1; i<N; i++)
+    {
+      // If total memreqs of methods after last tempfile >maxmem - add one more tempfile occurence
+      if (mem>0 && mem+memi[i]>maxmem)
+      {
+        strcat (compressor, PLUS);
+        strcat (compressor, tempfile);
+        mem = 0;
+      }
+      strcat (compressor, PLUS);
+      strcat (compressor, cm[i]);
+      mem += memi[i];
+    }
+    free(c);  // we can't free c earlier since it's space used by cm[i]
+//printf("\n%s\n", compressor);
+    return compressor;
+  }
+
+  free(c);
+  return NULL;
+}
+
 // Распаковать или протестировать файлы из солид-блока с номером block_num каталога dirblock
 void ExtractFiles (DIRECTORY_BLOCK *dirblock, int block_num, COMMAND &command)
 {
@@ -491,9 +545,11 @@ void ExtractFiles (DIRECTORY_BLOCK *dirblock, int block_num, COMMAND &command)
     bytes_left = data_block.compsize;            //   Размер упакованных данных в солид-блоке
     curfile = dirblock->block_start (block_num); // Номер первого файла в этом солид-блоке
     outfile_open (SECOND_PASS);                  // Откроем первый выходной файл
-    int result = MultiDecompress (data_block.compressor, callback_func, NULL);
+    char *compressor = AddTempfile (data_block.compressor);  // Добавим "tempfile" между компрессорами если не хватает памяти для распаковки
+    int result = MultiDecompress (compressor? compressor : data_block.compressor, callback_func, NULL);
     CHECK (result!=FREEARC_ERRCODE_INVALID_COMPRESSOR, (s,"ERROR: unsupported compression method %s", data_block.compressor));
     CHECK (result>=0 || result==FREEARC_ERRCODE_NO_MORE_DATA_REQUIRED, (s,"ERROR: archive data corrupted (decompression fails)"));
+    free (compressor);
     outfile_close();                             // Закроем последний выходной файл
   }
 }

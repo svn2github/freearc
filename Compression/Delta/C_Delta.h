@@ -27,7 +27,6 @@ public:
 
   // Получить/установить объём памяти, используемой при упаковке/распаковке, размер словаря или размер блока
   virtual MemSize GetCompressionMem     (void)         {return BlockSize;}
-  virtual MemSize GetDecompressionMem   (void)         {return BlockSize;}
   virtual MemSize GetDictionary         (void)         {return 0;}
   virtual MemSize GetBlockSize          (void)         {return 0;}
   virtual void    SetCompressionMem     (MemSize mem)  {if (mem>0)   BlockSize = mem;}
@@ -35,6 +34,7 @@ public:
   virtual void    SetDictionary         (MemSize dict) {}
   virtual void    SetBlockSize          (MemSize bs)   {}
 #endif
+  virtual MemSize GetDecompressionMem   (void)         {return BlockSize;}
 };
 
 // Разборщик строки метода сжатия DELTA

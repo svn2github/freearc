@@ -187,7 +187,6 @@ int CanonizeCompressionMethod (char *method, char *canonical_method)
 
 // Информация о памяти, необходимой для упаковки/распаковки, размере словаря и размере блока.
 Generate_Getter(GetCompressionMem)
-Generate_Getter(GetDecompressionMem)
 Generate_Getter(GetDictionary)
 Generate_Getter(GetBlockSize)
 
@@ -206,6 +205,18 @@ Generate_Setter(LimitDictionary)
 Generate_Setter(LimitBlockSize)
 
 #endif  // !defined (FREEARC_DECOMPRESS_ONLY)
+
+// Информация о памяти, необходимой для распаковки
+MemSize GetDecompressionMem (char *method)
+{
+  COMPRESSION_METHOD *compressor = ParseCompressionMethod (method);
+  if (compressor){
+    MemSize bytes = compressor->GetDecompressionMem();
+    delete compressor;
+    return bytes;}
+  else
+    return (MemSize)FREEARC_ERRCODE_INVALID_COMPRESSOR;
+}
 
 
 // Универсальный метод. Параметры:

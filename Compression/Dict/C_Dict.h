@@ -32,7 +32,6 @@ public:
 
   // Получить/установить объём памяти, используемой при упаковке/распаковке, размер словаря или размер блока
   virtual MemSize GetCompressionMem     (void)         {return BlockSize*2;}
-  virtual MemSize GetDecompressionMem   (void)         {return 1*mb /*BlockSize*2*/;}
   virtual MemSize GetDictionary         (void)         {return BlockSize;}
   virtual MemSize GetBlockSize          (void)         {return BlockSize;}
   virtual void    SetCompressionMem     (MemSize mem)  {if (mem>0)   BlockSize = mem/2;}
@@ -40,6 +39,7 @@ public:
   virtual void    SetDictionary         (MemSize dict) {if (dict>0)  BlockSize = dict;}
   virtual void    SetBlockSize          (MemSize bs)   {if (bs>0)    BlockSize = bs;}
 #endif
+  virtual MemSize GetDecompressionMem   (void)         {return 1*mb /*BlockSize*2*/;}
 };
 
 // Разборщик строки препроцессора DICT

@@ -45,7 +45,6 @@ public:
 
   // Получить/установить объём памяти, используемой при упаковке/распаковке, размер словаря или размер блока
   virtual MemSize GetCompressionMem     (void)         {return BlockSize*9*GetCompressionThreads();}
-  virtual MemSize GetDecompressionMem   (void)         {return BlockSize*5*GetCompressionThreads();}
   virtual MemSize GetDictionary         (void)         {return BlockSize;}
   virtual MemSize GetBlockSize          (void)         {return BlockSize;}
   virtual void    SetCompressionMem     (MemSize mem)  {SetBlockSize (mem/9/GetCompressionThreads());}
@@ -53,6 +52,7 @@ public:
   virtual void    SetDictionary         (MemSize dict) {SetBlockSize (dict);}
   virtual void    SetBlockSize          (MemSize bs);
 #endif
+  virtual MemSize GetDecompressionMem   (void)         {return BlockSize*5*GetCompressionThreads();}
 };
 
 // Разборщик строки метода сжатия GRZIP

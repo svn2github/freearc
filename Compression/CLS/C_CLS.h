@@ -28,7 +28,6 @@ public:
 
   // Получить/установить объём памяти, используемой при упаковке/распаковке, размер словаря или размер блока
   virtual MemSize GetCompressionMem     (void)          {return 0;}
-  virtual MemSize GetDecompressionMem   (void)          {return 0;}
   virtual MemSize GetDictionary         (void)          {return 0;}
   virtual MemSize GetBlockSize          (void)          {return 0;}
   virtual void    SetCompressionMem     (MemSize)  {}
@@ -36,6 +35,7 @@ public:
   virtual void    SetDictionary         (MemSize)  {}
   virtual void    SetBlockSize          (MemSize)  {}
 #endif
+  virtual MemSize GetDecompressionMem   (void)          {return 0;}
 };
 
 // Разборщик строки препроцессора CLS

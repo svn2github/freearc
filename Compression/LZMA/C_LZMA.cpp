@@ -365,11 +365,6 @@ MemSize LZMA_METHOD::GetCompressionMem (void)
   }
 }
 
-MemSize LZMA_METHOD::GetDecompressionMem (void)
-{
-  return dictionarySize + RangeDecoderBufferSize(dictionarySize);
-}
-
 MemSize calcDictSize (LZMA_METHOD *p, MemSize mem)
 {
   double mem4 = mymax (double(mem)-256*kb, 0);
@@ -427,6 +422,11 @@ void LZMA_METHOD::SetDictionary (MemSize mem)
 }
 
 #endif  // !defined (FREEARC_DECOMPRESS_ONLY)
+
+MemSize LZMA_METHOD::GetDecompressionMem (void)
+{
+  return dictionarySize + RangeDecoderBufferSize(dictionarySize);
+}
 
 // Конструирует объект типа LZMA_METHOD с заданными параметрами упаковки
 // или возвращает NULL, если это другой метод сжатия или допущена ошибка в параметрах

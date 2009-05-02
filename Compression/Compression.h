@@ -230,7 +230,6 @@ int CompressMemWithHeader (char *method, void *input, int inputSize, void *outpu
 int CanonizeCompressionMethod (char *in_method, char *out_method);
 // Информация о памяти, необходимой для упаковки/распаковки, размере словаря и размере блока.
 MemSize GetCompressionMem   (char *method);
-MemSize GetDecompressionMem (char *method);
 MemSize GetDictionary       (char *method);
 MemSize GetBlockSize        (char *method);
 // Возвратить в out_method новый метод сжатия, настроенный на использование
@@ -246,6 +245,7 @@ int LimitDecompressionMem (char *in_method, MemSize mem,  char *out_method);
 int LimitDictionary       (char *in_method, MemSize dict, char *out_method);
 int LimitBlockSize        (char *in_method, MemSize bs,   char *out_method);
 #endif
+MemSize GetDecompressionMem (char *method);
 
 // Функция "(рас)паковки", копирующая данные один в один
 int copy_data   (CALLBACK_FUNC *callback, void *auxdata);
@@ -273,7 +273,6 @@ public:
   // размере словаря (то есть насколько далеко заглядывает алгоритм в поиске похожих данных - для lz/bs схем),
   // и размере блока (то есть сколько максимум данных имеет смысл помещать в один солид-блок - для bs схем и lzp)
   virtual MemSize GetCompressionMem   (void)         = 0;
-  virtual MemSize GetDecompressionMem (void)         = 0;
   virtual MemSize GetDictionary       (void)         = 0;
   virtual MemSize GetBlockSize        (void)         = 0;
   // Настроить метод сжатия на использование заданного кол-ва памяти, словаря или размера блока
@@ -287,6 +286,8 @@ public:
   void LimitDictionary       (MemSize dict) {if (GetDictionary()       > dict)  SetDictionary(dict);}
   void LimitBlockSize        (MemSize bs)   {if (GetBlockSize()        > bs)    SetBlockSize(bs);}
 #endif
+  virtual MemSize GetDecompressionMem (void)         = 0;
+
   // Универсальный метод. Параметры:
   //   what: "compress", "decompress", "setCompressionMem", "limitDictionary"...
   //   data: данные для операции в формате, зависящем от конкретной выполняемой операции
@@ -336,7 +337,6 @@ public:
 
   // Получить/установить объём памяти, используемой при упаковке/распаковке, размер словаря или размер блока
   virtual MemSize GetCompressionMem   (void)    {return BUFFER_SIZE;}
-  virtual MemSize GetDecompressionMem (void)    {return BUFFER_SIZE;}
   virtual MemSize GetDictionary       (void)    {return 0;}
   virtual MemSize GetBlockSize        (void)    {return 0;}
   virtual void    SetCompressionMem   (MemSize) {}
@@ -344,6 +344,7 @@ public:
   virtual void    SetDictionary       (MemSize) {}
   virtual void    SetBlockSize        (MemSize) {}
 #endif
+  virtual MemSize GetDecompressionMem (void)    {return BUFFER_SIZE;}
 };
 
 // Разборщик строки метода сжатия STORING

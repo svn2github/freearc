@@ -31,7 +31,6 @@ public:
 
   // Получить/установить объём памяти, используемой при упаковке/распаковке, размер словаря или размер блока
   virtual MemSize GetCompressionMem     (void)         {return 2*mb;}
-  virtual MemSize GetDecompressionMem   (void)         {return 1*mb;}
   virtual MemSize GetDictionary         (void)         {return 0;}
   virtual MemSize GetBlockSize          (void)         {return 0;}
   virtual void    SetCompressionMem     (MemSize mem)  {}
@@ -39,6 +38,7 @@ public:
   virtual void    SetDictionary         (MemSize dict) {}
   virtual void    SetBlockSize          (MemSize bs)   {}
 #endif
+  virtual MemSize GetDecompressionMem   (void)         {return 1*mb;}
 };
 
 // Разборщик строки метода сжатия TTA

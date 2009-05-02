@@ -22,7 +22,6 @@ public:
 
   // Получить/установить объём памяти, используемой при упаковке/распаковке, размер словаря или размер блока
   virtual MemSize GetCompressionMem     (void)         {return LARGE_BUFFER_SIZE;}
-  virtual MemSize GetDecompressionMem   (void)         {return LARGE_BUFFER_SIZE;}
   virtual MemSize GetDictionary         (void)         {return 0;}
   virtual MemSize GetBlockSize          (void)         {return 0;}
   virtual void    SetCompressionMem     (MemSize mem)  {}
@@ -30,6 +29,7 @@ public:
   virtual void    SetDictionary         (MemSize dict) {}
   virtual void    SetBlockSize          (MemSize bs)   {}
 #endif
+  virtual MemSize GetDecompressionMem   (void)         {return LARGE_BUFFER_SIZE;}
 };
 
 // Разборщик строки метода сжатия BCJ_X86
