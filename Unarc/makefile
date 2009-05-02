@@ -7,8 +7,8 @@ Extractor_DEFINES = -DFREEARC_DECOMPRESS_ONLY -D_NO_EXCEPTIONS -DUNARC
 OBJDIR  = $(TEMPDIR)-unarc
 LINKOBJ_FAR_PLUGIN = $(OBJDIR)/Environment.o $(OBJDIR)/Common.o $(OBJDIR)/CompressionLibrary.o \
                      $(OBJDIR)/C_LZMA.o
-LINKOBJ_TINY = $(LINKOBJ_FAR_PLUGIN) $(OBJDIR)/C_External.o $(OBJDIR)/C_BCJ.o $(OBJDIR)/C_Dict.o $(OBJDIR)/C_Delta.o
-LINKOBJ_MINI = $(LINKOBJ_TINY) $(OBJDIR)/C_REP.o $(OBJDIR)/C_LZP.o $(OBJDIR)/C_PPMD.o
+LINKOBJ_TINY = $(LINKOBJ_FAR_PLUGIN) $(OBJDIR)/C_BCJ.o $(OBJDIR)/C_Dict.o $(OBJDIR)/C_Delta.o
+LINKOBJ_MINI = $(LINKOBJ_TINY) $(OBJDIR)/C_REP.o $(OBJDIR)/C_LZP.o $(OBJDIR)/C_PPMD.o $(OBJDIR)/C_External.o
 LINKOBJ = $(LINKOBJ_MINI) $(OBJDIR)/C_MM.o $(OBJDIR)/C_TTA.o \
           $(OBJDIR)/C_Tornado.o $(OBJDIR)/C_GRZip.o
 HEADERS =  ../Compression/Compression.h ../Compression/Common.h
@@ -30,17 +30,17 @@ CFLAGS1= $(CODE_FLAGS) $(OPT_FLAGS) -O1 $(DEBUG_FLAGS) $(DEFINES) $(Extractor_DE
 unarc.exe: $(OBJDIR)/unarc.o $(LINKOBJ)
 	$(GCC) $< $(LINKOBJ) $(LINK_FLAGS) -o unarc.exe
 
-arc.sfx: $(OBJDIR)/ArcSFX.o $(LINKOBJ)
+arc.sfx: $(OBJDIR)/ArcSFX.o $(OBJDIR)/ArcTinySFX.o $(LINKOBJ)
 	$(GCC) $< $(LINKOBJ)      $(LINK_FLAGS) -o arc.sfx
 	$(GCC) $< $(LINKOBJ_MINI) $(LINK_FLAGS) -o arc-mini.sfx
-	$(GCC) $< $(LINKOBJ_TINY) $(LINK_FLAGS) -o arc-tiny.sfx
+	$(GCC) $(OBJDIR)/ArcTinySFX.o $(LINKOBJ_TINY) $(LINK_FLAGS) -o arc-tiny.sfx
 	upx.exe -9 --lzma --compress-icons=2 arc.sfx arc-mini.sfx arc-tiny.sfx
 
-freearc.sfx: $(OBJDIR)/FreeArcSFX.o $(LINKOBJ)
+freearc.sfx: $(OBJDIR)/FreeArcSFX.o $(OBJDIR)/FreeArcTinySFX.o $(LINKOBJ)
 	$(WINDRES) -Igui gui\main.rc gui\res.o
 	$(GCC) $< $(LINKOBJ)      $(LINK_FLAGS) gui\res.o -lcomctl32 -mwindows -o freearc.sfx
 	$(GCC) $< $(LINKOBJ_MINI) $(LINK_FLAGS) gui\res.o -lcomctl32 -mwindows -o freearc-mini.sfx
-	$(GCC) $< $(LINKOBJ_TINY) $(LINK_FLAGS) gui\res.o -lcomctl32 -mwindows -o freearc-tiny.sfx
+	$(GCC) $(OBJDIR)/FreeArcTinySFX.o $(LINKOBJ_TINY) $(LINK_FLAGS) gui\res.o -lcomctl32 -mwindows -o freearc-tiny.sfx
 	upx.exe -9 --lzma --compress-icons=2 freearc.sfx freearc-mini.sfx freearc-tiny.sfx
 
 freearc-installer.sfx: $(OBJDIR)/FreeArcInstaller.o $(LINKOBJ)
@@ -71,8 +71,14 @@ $(OBJDIR)/unarc.o: unarc.cpp ArcStructure.h CUI.h $(HEADERS)
 $(OBJDIR)/ArcSFX.o: unarc.cpp ArcStructure.h CUI.h $(HEADERS)
 	$(GCC) -c $(CFLAGS1) -DFREEARC_SFX -o $*.o $<
 
+$(OBJDIR)/ArcTinySFX.o: unarc.cpp ArcStructure.h CUI.h $(HEADERS)
+	$(GCC) -c $(CFLAGS1) -DFREEARC_SFX -DFREEARC_TINY -o $*.o $<
+
 $(OBJDIR)/FreeArcSFX.o: unarc.cpp ArcStructure.h gui\gui.h gui\gui.cpp $(HEADERS)
 	$(GCC) -c $(CFLAGS1) -DFREEARC_SFX -DFREEARC_GUI -Igui -o $*.o $<
+
+$(OBJDIR)/FreeArcTinySFX.o: unarc.cpp ArcStructure.h gui\gui.h gui\gui.cpp $(HEADERS)
+	$(GCC) -c $(CFLAGS1) -DFREEARC_SFX -DFREEARC_TINY -DFREEARC_GUI -Igui -o $*.o $<
 
 $(OBJDIR)/FreeArcInstaller.o: unarc.cpp ArcStructure.h gui\gui.h gui\gui.cpp $(HEADERS)
 	$(GCC) -c $(CFLAGS1) -DFREEARC_SFX -DFREEARC_INSTALLER -DFREEARC_GUI -Igui -o $*.o $<

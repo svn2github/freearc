@@ -17,7 +17,7 @@
 #endif
 
 #define HEADER1        "FreeArc 0.52 "
-#define HEADER2        "  http://freearc.org  2009-05-01\n"
+#define HEADER2        "  http://freearc.org  2009-05-02\n"
 
 // Доступ к структуре архива
 #include "ArcStructure.h"
@@ -40,6 +40,7 @@ UI UI;
 // Register external compressors declared in arc.ini
 void RegisterExternalCompressors (char *progname)
 {
+#ifndef FREEARC_TINY
   // Open config file arc.ini found in the same dir as sfx/unarc
   char *cfgfile = "arc.ini";
   char *name = (char*) malloc (strlen(progname) + strlen(cfgfile));
@@ -72,6 +73,7 @@ void RegisterExternalCompressors (char *progname)
 
   free(contents);
   f.close();
+#endif
 }
 
 /******************************************************************************
