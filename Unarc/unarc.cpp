@@ -470,7 +470,7 @@ int callback_func (const char *what, void *buf, int size, void *auxdata)
 // Add "tempfile" to compressors chain if required
 char *AddTempfile (char *compressor)
 {
-  char *tempfile = "tempfile";
+  char *buffering = "tempfile";
   char PLUS[] = {COMPRESSION_METHODS_DELIMITER, '\0'};
 
   char *c = (char*) malloc (strlen(compressor)+1);
@@ -479,20 +479,20 @@ char *AddTempfile (char *compressor)
   compressor = c;
 
   // Разобьём компрессор на отдельные алгоритмы и посчитаем расход памяти
-  CMETHOD cm[MAX_METHODS_IN_COMPRESSOR];
-  int64 memi[MAX_METHODS_IN_COMPRESSOR];
+  CMETHOD  cm[MAX_METHODS_IN_COMPRESSOR];
+  uint64 memi[MAX_METHODS_IN_COMPRESSOR];
   int N = split (compressor, COMPRESSION_METHODS_DELIMITER, cm, MAX_METHODS_IN_COMPRESSOR);
-  int64 mem = 0;
+  uint64 mem = 0;
   for (int i=0; i<N; i++)
     mem += memi[i] = GetDecompressionMem(cm[i]);
 
   // Maximum memory allowed to use
-  int64 maxmem = 1<<30;
+  uint64 maxmem = mymin (GetPhysicalMemory()/4*3, GetMaxMemToAlloc());
 
   // If memreqs are too large - add "tempfile" between methods
   if (mem > maxmem)
   {
-    char *c2 = (char*) malloc (strlen(compressor)+strlen(tempfile)+2);
+    char *c2 = (char*) malloc (strlen(compressor)+strlen(buffering)+2);
     if (!c2)  return NULL;
     compressor = c2;
 
@@ -505,15 +505,14 @@ char *AddTempfile (char *compressor)
       if (mem>0 && mem+memi[i]>maxmem)
       {
         strcat (compressor, PLUS);
-        strcat (compressor, tempfile);
+        strcat (compressor, buffering);
         mem = 0;
       }
       strcat (compressor, PLUS);
       strcat (compressor, cm[i]);
       mem += memi[i];
     }
-    free(c);  // we can't free c earlier since it's space used by cm[i]
-//printf("\n%s\n", compressor);
+    free(c);  // we can't free c earlier since its space used by cm[i]
     return compressor;
   }
 
