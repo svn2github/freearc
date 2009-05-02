@@ -90,14 +90,9 @@ public:
   ~MYFILE()                               {if (isopen()) close();
                                            if ((char*)filename!=utf8name)  free(filename);
                                            free(oemname); free(utf8name);}
-  bool   exists (void)                    {return file_exists(filename);}
+  bool exists (void)                      {return file_exists(filename);}
 
-  MYFILE& open (FILENAME _filename, MODE mode)    // Открывает файл для чтения или записи
-  {
-    setname (_filename);
-    return open (mode);
-  }
-  MYFILE& open (MODE mode)    // Открывает файл для чтения или записи
+  bool tryOpen (MODE mode)    // Пытается открыть файл для чтения или записи
   {
     if (mode==WRITE_MODE)  BuildPathTo (filename);
 #ifdef FREEARC_WIN
@@ -105,9 +100,22 @@ public:
 #else
     handle =   ::open (filename, mode==READ_MODE? O_RDONLY : O_WRONLY|O_CREAT|O_TRUNC, S_IREAD|S_IWRITE);
 #endif
-    CHECK (handle>=0, (s,"ERROR: can't open file %s", utf8name));
+    return handle>=0;
+  }
+
+  MYFILE& open (MODE mode)    // Открывает файл для чтения или записи
+  {
+    bool success = tryOpen(mode);
+    CHECK (success, (s,"ERROR: can't open file %s", utf8name));
     return *this;
   }
+
+  MYFILE& open (FILENAME _filename, MODE mode)    // Открывает файл для чтения или записи
+  {
+    setname (_filename);
+    return open (mode);
+  }
+
   void SetFileDateTime (time_t mtime)   {::SetFileDateTime (filename, mtime);}   // Устанавливает mtime файла
   void close()    // Закрывает файл
   {

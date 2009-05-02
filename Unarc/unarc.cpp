@@ -37,6 +37,43 @@ extern "C" {
 UI UI;
 
 
+// Register external compressors declared in arc.ini
+void RegisterExternalCompressors (char *progname)
+{
+  // Open config file arc.ini found in the same dir as sfx/unarc
+  char *cfgfile = "arc.ini";
+  char *name = (char*) malloc (strlen(progname) + strlen(cfgfile));
+                                                 if (!name)  return;
+  strcpy(name, progname);
+  strcpy(drop_dirname(name), cfgfile);
+  MYFILE f(name);
+  if (!f.tryOpen(READ_MODE))                     return;
+
+  // Read config file into memory
+  FILESIZE size = f.size();                      if (!size)  return;
+  char *contents = (char*) malloc(size+2);       if (!contents)  return;
+  *contents = '\n';
+  size = f.tryRead(contents+1, size);            if (size<0)  return;
+  contents[size] = '\0';
+
+  // Register each external compressor found in config file
+  char *ANY_HEADING = "\n[", *EXT_HEADING = "[External compressor:";
+  ClearExternalCompressorsTable();
+  for (char *p, *section = strstr(contents, ANY_HEADING);  section != NULL;  section = p)
+  {
+    section++;
+    p = strstr(section, ANY_HEADING);
+    if (p)  *p = '\0';
+    if (start_with(section,EXT_HEADING)  &&  AddExternalCompressor(section) != 1)
+    {
+      //printf("Error in config file %s section:\n%s\n", cfgfile, section);
+    }
+  }
+
+  free(contents);
+  f.close();
+}
+
 /******************************************************************************
 ** Информация о выполняемой деархиватором команде *****************************
 ******************************************************************************/
@@ -73,6 +110,9 @@ public:
     }
     argv[argc] = NULL;
 #endif
+    // Register external compressors using arc.ini in the same dir as argv[0]
+    RegisterExternalCompressors(argv[0]);
+
     // Default options
     noarcext  = FALSE;
     nooptions = FALSE;
@@ -536,40 +576,8 @@ void ProcessArchive (COMMAND &command)
 #endif
 }
 
-// Register external compressors declared in arc.ini
-void RegisterExternalCompressors()
-{
-  // Read config file into memory
-  char *cfgfile = "arc.ini";
-  FILE *f = fopen(cfgfile, "rt");                if (!f)  return;
-  FILESIZE size = get_flen(f);                   if (!size)  return;
-  char *contents = (char*) malloc(size+2);       if (!contents)  return;
-  *contents = '\n';
-  size = file_read(f, contents+1, size);         if (size<0)  return;
-  contents[size] = '\0';
-
-
-  // Register each external compressor found in config file
-  char *ANY_HEADING = "\n[", *EXT_HEADING = "[External compressor:";
-  ClearExternalCompressorsTable();
-  for (char *p, *section = strstr(contents, ANY_HEADING);  section != NULL;  section = p)
-  {
-    section++;
-    p = strstr(section, ANY_HEADING);
-    if (p)  *p = '\0';
-    if (start_with(section,EXT_HEADING)  &&  AddExternalCompressor(section) != 1)
-    {
-      //printf("Error in config file %s section:\n%s\n", cfgfile, section);
-    }
-  }
-
-  free(contents);
-  fclose(f);
-}
-
 int main (int argc, char *argv[])
 {
-  RegisterExternalCompressors();
   SetCompressionThreads (GetProcessorsCount());
   UI.DisplayHeader (HEADER1 NAME);
   COMMAND command (argc, argv);    // Распарсить команду
