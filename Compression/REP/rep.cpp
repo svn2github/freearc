@@ -510,11 +510,9 @@ int rep_decompress (unsigned BlockSize, int MinCompression, int MinMatchLen, int
     // Если выделить память одним куском не удалось - разобьём буфер LZ-словаря на две части
     if (data0==NULL)
     {
-      for (data0_size=BlockSize;  data0==NULL && data0_size>1*mb;  data0_size-=1*mb)
-        data0 = (byte*) BigAlloc (data0_size);
-
-      if (data0_size < BlockSize)
-        data1 = (byte*) BigAlloc (BlockSize - data0_size);
+      while (data0==NULL && data0_size>1*mb)
+        data0 = (byte*) BigAlloc (data0_size -= 1*mb);
+      data1   = (byte*) BigAlloc (BlockSize - data0_size);
     }
     end0 = data0 + data0_size;
     end1 = data1 + BlockSize - data0_size;
