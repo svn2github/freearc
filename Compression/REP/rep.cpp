@@ -223,6 +223,7 @@ rep:512 (по умолчанию) к rep:4096? с дальнейшей обработкой lzma и без оной.
 
 // ХОЗЧАСТЬ ************************************************************************
 #include "../Compression.h"
+#include "../../Environment.h"
 
 
 #ifdef REP_LIBRARY
@@ -498,19 +499,35 @@ finished:
 // Classical LZ77 decoder with sliding window
 int rep_decompress (unsigned BlockSize, int MinCompression, int MinMatchLen, int Barrier, int SmallestLen, int HashBits, int Amplifier, CALLBACK_FUNC *callback, void *auxdata)
 {
-    int errcode, bufsize, ComprSize; byte *data0=NULL, *data, *buf0=NULL;
+    int errcode=FREEARC_OK;
+    byte *buf0=NULL, *data0=NULL, *data1=NULL, *end0, *end1;
+    MemSize bufsize, data0_size, ComprSize;
+    bool block0 = TRUE;
 
     // Фактический размер словаря сохранён во входных данных
     READ4(BlockSize);
-    data = data0 = (byte*) BigAlloc (BlockSize);
+    data0_size = BlockSize;
+    data0 = (byte*) BigAlloc (BlockSize);
+    // Если выделить память одним куском не удалось - разобьём буфер LZ-словаря на две части
+    if (data0==NULL)
+    {
+      data0_size = GetMaxMemToAlloc();
+      if (data0_size >= BlockSize)
+        data0_size = BlockSize-1;
+      data0 = (byte*) BigAlloc (data0_size);
+      data1 = (byte*) BigAlloc (BlockSize - data0_size);
+    }
+    end0 = data0 + data0_size;
+    end1 = data1 + BlockSize - data0_size;
+    if (data0==NULL || (data0_size<BlockSize && data1==NULL))  ReturnErrorCode (FREEARC_ERRCODE_NOT_ENOUGH_MEMORY);
 
     // Буфер, куда будут помещаться входные данные
     bufsize = mymin(BlockSize,MAX_READ)+1024;
     buf0 = (byte*) BigAlloc (bufsize);
-    if (data0==NULL || buf0==NULL)  ReturnErrorCode (FREEARC_ERRCODE_NOT_ENOUGH_MEMORY);
+    if (buf0==NULL)  ReturnErrorCode (FREEARC_ERRCODE_NOT_ENOUGH_MEMORY);
 
     // Цикл, каждая итерация которого обрабатывает один блок сжатых данных
-    for (byte *last_data=data; ; last_data=data) {
+    for (byte *last_data=data0, *start=data0, *data=data0, *end=end0; ; last_data=data) {
 
         // Прочитаем один блок сжатых данных
         READ4(ComprSize);
@@ -519,7 +536,7 @@ int rep_decompress (unsigned BlockSize, int MinCompression, int MinMatchLen, int
         if (ComprSize > bufsize)
         {
             BigFree(buf0); bufsize=ComprSize; buf0 = (byte*) BigAlloc(bufsize);
-            if (buf0==NULL)  ReturnErrorCode (FREEARC_ERRCODE_NOT_ENOUGH_MEMORY);       // Error: not enough memory
+            if (buf0==NULL)  ReturnErrorCode (FREEARC_ERRCODE_NOT_ENOUGH_MEMORY);
         }
         byte *buf = buf0;
 
@@ -531,26 +548,66 @@ int rep_decompress (unsigned BlockSize, int MinCompression, int MinMatchLen, int
         int32*  offsets =  (int32*)buf;  buf += num*sizeof(int32);
         int32* datalens =  (int32*)buf;  buf += (num+1)*sizeof(int32);   // Точнее, datalens содержит num+1 записей
 
-        // Каждая итерация этого цикла копирует один блок несжатых данных и один match, которые interleaved в нашей реализации процеса упаковки
-        for (int i=0; i<num; i++) {
+        // Каждая итерация этого цикла копирует один блок несжатых данных и один match, которые interleaved в нашей реализации процесса упаковки
+        for (int i=0; ; i++) {
+            // Пока копируемая строка пересекает границу буфера
+            while (end-data < datalens[i])
+            { //printf("  %d %d %d %d\n", BlockSize, data-data0, end-data, datalens[i]);
+
+              // Копируем влезающий кусочек, записываем заполненный буфер, и переключаемся на другой
+              int len = end-data;
+              memcpy (data, buf, len);  buf += len;  data += len;  datalens[i] -= len;
+
+              WRITE(last_data, data-last_data);
+
+              if (data0_size<BlockSize)  block0 = !block0;
+              last_data = start = data = block0? data0 : data1;
+              end = block0? end0 : end1;
+            }
+            // Копирование без пересечения границы буфера
             memcpy (data, buf, datalens[i]);  buf += datalens[i];  data += datalens[i];
-            debug (verbose>1 && printf ("Match %d %d %d\n", -offsets[i], data-data0, lens[i]));
-            // Если смещение попадает за начало буфера, то вычесть из него BlockSize, чтобы "обернуться" вокруг границы буфера
-            int offset = offsets[i] <= data-data0 ?  offsets[i] : offsets[i]-BlockSize;
+
+
+            if (i==num)  break;   // В самом конце у нас ещё один блок несжавшихся данных (возможно, нулевой длины) без парного ему lz-матча
+
+
+            debug (verbose>1 && printf ("Match %d %d %d\n", -offsets[i], block0? data-data0 : data-data1+data0_size, lens[i]));
+            int offset = offsets[i];
+            // Пока одна из копируемых строк пересекает границу буфера
+            while (offset > data-start && lens[i]  ||  end-data < lens[i])
+            {
+              MemSize dataPos = block0? data-data0 : data-data1+data0_size;                     // Absolute position of LZ dest
+              MemSize fromPos = offset<=dataPos? dataPos-offset : dataPos-offset+BlockSize;     // Absolute position of LZ src
+              byte *from = fromPos<data0_size? data0+fromPos : data1+(fromPos-data0_size);      // Memory address of LZ src
+              byte *fromEnd = fromPos<data0_size? end0 : end1;                                  // End of membuf containing LZ src
+              int len = mymin(end-data, fromEnd-from);  // How much bytes we can copy without overrunning src or dest buffers
+                  len = mymin(len, lens[i]);
+              //printf("? %d-%d=%d %d(%d %d)\n", dataPos, offset, fromPos, len, end-data, fromEnd-from);
+
+              // Копируем влезающий кусочек
+              memcpy_lz_match (data, from, len);  data += len;  lens[i] -= len;
+
+              // Если dest буфер кончился - записываем заполненный буфер, и переключаемся на другой
+              if (data==end)
+              {
+                WRITE(last_data, data-last_data);
+
+                if (data0_size<BlockSize)  block0 = !block0;
+                last_data = start = data = block0? data0 : data1;
+                end = block0? end0 : end1;
+              }
+            }
+            // Копирование без пересечения границы буфера
             memcpy_lz_match (data, data-offset, lens[i]);  data += lens[i];
         }
-        // Плюс ещё один блок несжавшихся данных в самом конце (возможно, нулевой длины)
-        memcpy (data, buf, datalens[num]);  buf += datalens[num];  data += datalens[num];
 
         // Вывод распакованных данных, печать отладочной статистики и подготовка к следующей итерации цикла
         WRITE(last_data, data-last_data);
         debug (verbose>0 && printf( " Decompressed: %u => %u bytes\n", ComprSize+sizeof(int32), data-last_data) );
-        if (data==data0+BlockSize)  data=data0;   // оборачивание через границу буфера может произойти только в конце блока
         // NB! check that buf==buf0+Size, data==data0+UncomprSize, and add buffer overflowing checks inside cycle
     }
-    errcode = FREEARC_OK;
 finished:
-    BigFree(data0);  BigFree(buf0);  return errcode;
+    BigFree(buf0);  BigFree(data1);  BigFree(data0);  return errcode;
 }
 
 
