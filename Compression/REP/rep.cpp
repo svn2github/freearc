@@ -223,7 +223,6 @@ rep:512 (по умолчанию) к rep:4096? с дальнейшей обработкой lzma и без оной.
 
 // ’ќ«„ј—“№ ************************************************************************
 #include "../Compression.h"
-#include "../../Environment.h"
 
 
 #ifdef REP_LIBRARY
@@ -511,11 +510,11 @@ int rep_decompress (unsigned BlockSize, int MinCompression, int MinMatchLen, int
     // ≈сли выделить пам€ть одним куском не удалось - разобьЄм буфер LZ-словар€ на две части
     if (data0==NULL)
     {
-      data0_size = GetMaxMemToAlloc();
-      if (data0_size >= BlockSize)
-        data0_size = BlockSize-1;
-      data0 = (byte*) BigAlloc (data0_size);
-      data1 = (byte*) BigAlloc (BlockSize - data0_size);
+      for (data0_size=BlockSize;  data0==NULL && data0_size>1*mb;  data0_size-=1*mb)
+        data0 = (byte*) BigAlloc (data0_size);
+
+      if (data0_size < BlockSize)
+        data1 = (byte*) BigAlloc (BlockSize - data0_size);
     }
     end0 = data0 + data0_size;
     end1 = data1 + BlockSize - data0_size;
