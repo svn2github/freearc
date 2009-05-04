@@ -498,7 +498,7 @@ finished:
 // Classical LZ77 decoder with sliding window
 int rep_decompress (unsigned BlockSize, int MinCompression, int MinMatchLen, int Barrier, int SmallestLen, int HashBits, int Amplifier, CALLBACK_FUNC *callback, void *auxdata)
 {
-    int errcode=FREEARC_OK;
+    int errcode;
     byte *buf0=NULL, *data0=NULL, *data1=NULL, *end0, *end1;
     MemSize bufsize, data0_size, ComprSize;
     bool block0 = TRUE;
@@ -603,6 +603,7 @@ int rep_decompress (unsigned BlockSize, int MinCompression, int MinMatchLen, int
         debug (verbose>0 && printf( " Decompressed: %u => %u bytes\n", ComprSize+sizeof(int32), data-last_data) );
         // NB! check that buf==buf0+Size, data==data0+UncomprSize, and add buffer overflowing checks inside cycle
     }
+    errcode = FREEARC_OK;
 finished:
     BigFree(buf0);  BigFree(data1);  BigFree(data0);  return errcode;
 }
