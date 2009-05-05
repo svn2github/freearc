@@ -1,11 +1,11 @@
 //---------------------------------------------------------------------------
 // Copyright 2002-2008 Andre Burgaud <andre@burgaud.com>
 // See license.txt
-// $Id: wscitecm.cpp 497 2008-12-07 03:17:37Z andre $
+// $Id: ArcShellExt.cpp 497 2008-12-07 03:17:37Z andre $
 //---------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------
-// wscitecm.cpp
+// ArcShellExt.cpp
 // Defines the entry point for the DLL application.
 //---------------------------------------------------------------------------
 
@@ -45,8 +45,8 @@ typedef struct{
   LPTSTR szData;
 } DOREGSTRUCT, *LPDOREGSTRUCT;
 
-char szSciTEName[] = "SciTE.exe";
-char szShellExtensionTitle[] = "SciTE";
+char szSciTEName[] = "FreeArc.exe";
+char szShellExtensionTitle[] = "FreeArc";
 
 BOOL RegisterServer(CLSID, LPTSTR);
 BOOL UnregisterServer(CLSID, LPTSTR);
@@ -132,7 +132,7 @@ BOOL RegisterServer(CLSID clsid, LPTSTR lpszTitle) {
   LPWSTR   pwsz;
 
   if (!CheckSciTE()) {
-    MsgBoxError("To register the SciTE context menu extension,\r\ninstall wscitecm.dll in the same directory than SciTE.exe.");
+    MsgBoxError("To register the FreeArc context menu extension,\r\ninstall ArcShellExt.dll in the same directory than FreeArc.exe.");
     return FALSE;
   }
 
@@ -157,7 +157,7 @@ BOOL RegisterServer(CLSID clsid, LPTSTR lpszTitle) {
     HKEY_CLASSES_ROOT,   TEXT("CLSID\\%s"),                              NULL,                   lpszTitle,
     HKEY_CLASSES_ROOT,   TEXT("CLSID\\%s\\InprocServer32"),              NULL,                   szModule,
     HKEY_CLASSES_ROOT,   TEXT("CLSID\\%s\\InprocServer32"),              TEXT("ThreadingModel"), TEXT("Apartment"),
-    HKEY_CLASSES_ROOT,   TEXT("*\\shellex\\ContextMenuHandlers\\SciTE"), NULL,                   szCLSID,
+    HKEY_CLASSES_ROOT,   TEXT("*\\shellex\\ContextMenuHandlers\\FreeArc"), NULL,                   szCLSID,
     NULL,                NULL,                                           NULL,                   NULL
   };
 
@@ -231,7 +231,7 @@ void MsgBoxDebug(LPTSTR lpszMsg) {
 void MsgBox(LPTSTR lpszMsg) {
   MessageBox(NULL,
              lpszMsg,
-             "SciTE Extension",
+             "FreeArc Extension",
              MB_OK);
 }
 
@@ -241,7 +241,7 @@ void MsgBox(LPTSTR lpszMsg) {
 void MsgBoxError(LPTSTR lpszMsg) {
   MessageBox(NULL,
              lpszMsg,
-             "SciTE Extension",
+             "FreeArc Extension",
              MB_OK | MB_ICONSTOP);
 }
 
@@ -354,7 +354,7 @@ STDMETHODIMP CShellExt::Initialize(LPCITEMIDLIST pIDFolder, LPDATAOBJECT pDataOb
 STDMETHODIMP CShellExt::QueryContextMenu(HMENU hMenu, UINT indexMenu, UINT idCmdFirst, UINT idCmdLast, UINT uFlags) {
   UINT idCmd = idCmdFirst;
   BOOL bAppendItems=TRUE;
-  char szItemSciTE[]="Edit with &SciTE";
+  char szItemSciTE[]="Open with &FreeArc";
 
   FORMATETC fmte = {
     CF_HDROP,
@@ -397,7 +397,7 @@ STDMETHODIMP CShellExt::InvokeCommand(LPCMINVOKECOMMANDINFO lpcmi) {
 
 STDMETHODIMP CShellExt::GetCommandString(UINT_PTR idCmd, UINT uFlags, UINT FAR *reserved, LPSTR pszName, UINT cchMax) {
   if (uFlags == GCS_HELPTEXT && cchMax > 35)
-    lstrcpy(pszName, "Edits the selected file(s) with SciTE");
+    lstrcpy(pszName, "Opens the selected archive(s) with FreeArc");
   return NOERROR;
 }
 
@@ -457,8 +457,8 @@ STDMETHODIMP CShellExt::InvokeSciTE(HWND hParent, LPCSTR pszWorkingDir, LPCSTR p
   si.wShowWindow = SW_RESTORE;
   if (!CreateProcess (NULL, pszCommand, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi)) {
     MessageBox(hParent,
-               "Error creating process: wscitecm.dll needs to be in the same directory as SciTE.exe",
-               "SciTE Extension",
+               "Error creating process: ArcShellExt.dll needs to be in the same directory as FreeArc.exe",
+               "FreeArc Extension",
                MB_OK);
   }
 
