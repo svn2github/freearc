@@ -73,7 +73,7 @@ extractDialog fm' exec cmd arcnames arcdir files = do
                                 "dir" FileChooserActionSelectFolder
                          (label "0004 Output directory:")
                                 "0021 Select output directory"
-                                []
+                                aANYFILE_FILTER
                                 (const$ return True)
                                 (fmCanonicalizeDiskPath fm')
     ; boxPackStart vbox hbox                  PackNatural 0
@@ -242,7 +242,7 @@ settingsDialog fm' = do
                                           "logfile" FileChooserActionSave
                                    (label "0166 Logfile:")
                                           "0167 Select logfile"
-                                          []
+                                          aANYFILE_FILTER
                                           (const$ return True)
                                           (fmCanonicalizeDiskPath fm')
     ; viewLogfileButton <- button "0292 View"
@@ -332,6 +332,12 @@ settingsDialog fm' = do
       regCmd   "extract-folder" "Extract to new folder" "x -ad"
       regCmd   "extract-here"   "Extract here"          "x"
       regCmd   "test"           "Test"                  "t"
+      -- Add compression operation to EVERY filetype (including .arc)
+      register "*\\shell\\FreeArc" "" "Compress with FreeArc"
+      register "*\\shell\\FreeArc\\command" "" ("\""++exe++"\" a --noarcext -ep1 -- \"%1\".arc \"%1\"")
+      -- Add compression operation to directories
+      register "Directory\\shell\\FreeArc" "" "Compress with FreeArc"
+      register "Directory\\shell\\FreeArc\\command" "" ("\""++exe++"\" a --noarcext -ep1 -- \"%1\".arc \"%1\"")
       -- todo: extract to ...;    *: add to archive; add to ...; выбор надписи и профайла/опций пользователя
       return ()
 #endif
@@ -526,7 +532,7 @@ encryptionPage fm' dialog okButton vbox = do
                                           "akeyfile" FileChooserActionOpen
                                 (checkBox "0123 Keyfile:")
                                           "0124 Select keyfile"
-                                          []
+                                          aANYFILE_FILTER
                                           (const$ return True)
                                           (fmCanonicalizeDiskPath fm')
   ; createKeyfile <- button "0125 Create"
@@ -546,20 +552,12 @@ encryptionPage fm' dialog okButton vbox = do
 
   -- Создать новый файл-ключ, записав криптографически случайные данные в указанный пользователем файл
   createKeyfile `onClick` do
-    title <- i18n "0126 Create new keyfile"
-    bracketCtrlBreak "createKeyfile" (fileChooserDialogNew (Just title) (Just$ castToWindow dialog) FileChooserActionSave [("OK",ResponseOk), ("Cancel",ResponseCancel)]) widgetDestroy $ \chooserDialog -> do
-      fileChooserSetFilename    chooserDialog =<< (fmCanonicalizeDiskPath fm' "new.key" >>== unicode2utf8)
-      fileChooserSetCurrentName chooserDialog "new.key"
-      fileChooserSetFilename    chooserDialog =<< (fmCanonicalizeDiskPath fm' "new.key" >>== unicode2utf8)
-      fileChooserSetDoOverwriteConfirmation chooserDialog True
-      choice <- dialogRun chooserDialog
-      windowPresent dialog
-      when (choice==ResponseOk) $ do
-        whenJustM_ (fileChooserGetFilename chooserDialog) $ \fn8 -> do
-          let filename = utf8_to_unicode fn8
-          filePutBinary filename =<< generateRandomBytes 1024
-          keyfile   =: filename
-          keyfileOn =: True
+    let default_keyfile = do fm <- val fm'; return$ fm_curdir fm </> "new.key"
+    chooseFile dialog FileChooserActionSave "0126 Create new keyfile" aANYFILE_FILTER default_keyfile $ \filename -> do
+      --to do: fileChooserSetDoOverwriteConfirmation chooserDialog True
+      filePutBinary filename =<< generateRandomBytes 1024
+      keyfile   =: filename
+      keyfileOn =: True
 
   -- Инициализация: прочитаем пароли из глобальных переменных
   pwd1 =:: val encryptionPassword
@@ -617,7 +615,7 @@ decryptionBox fm' dialog = do
                                         "keyfile" FileChooserActionOpen
                                  (label "0123 Keyfile:")
                                         "0124 Select keyfile"
-                                        []
+                                        aANYFILE_FILTER
                                         (const$ return True)
                                         (fmCanonicalizeDiskPath fm')
   hbox <- hBoxNew False 0
