@@ -109,7 +109,7 @@ $(OBJDIR)/C_Dict.o: ../Compression/Dict/C_Dict.cpp ../Compression/Dict/C_Dict.h 
 $(OBJDIR)/C_Delta.o: ../Compression/Delta/C_Delta.cpp ../Compression/Delta/C_Delta.h $(HEADERS)
 	$(GCC) -c $(CFLAGS) -o $*.o $<
 
-$(OBJDIR)/C_REP.o: ../Compression/REP/C_REP.cpp ../Compression/REP/C_REP.h $(HEADERS)
+$(OBJDIR)/C_REP.o: ../Compression/REP/C_REP.cpp ../Compression/REP/C_REP.h ../Compression/REP/rep.cpp $(HEADERS)
 	$(GCC) -c $(CFLAGS) -o $*.o $<
 
 $(OBJDIR)/C_LZP.o: ../Compression/LZP/C_LZP.cpp ../Compression/LZP/C_LZP.h $(HEADERS)

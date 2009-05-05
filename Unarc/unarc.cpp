@@ -17,7 +17,7 @@
 #endif
 
 #define HEADER1        "FreeArc 0.52 "
-#define HEADER2        "  http://freearc.org  2009-05-02\n"
+#define HEADER2        "  http://freearc.org  2009-05-04\n"
 
 // Доступ к структуре архива
 #include "ArcStructure.h"
@@ -103,6 +103,9 @@ public:
 #ifdef FREEARC_WIN
     // Instead of those ANSI-codepage encoded argv[] strings provide true UTF-8 data!
     WCHAR **argv_w = CommandLineToArgvW (GetCommandLineW(), &argc);
+    argv_w[0] = (WCHAR*) malloc (MY_FILENAME_MAX * 4);
+    GetExeName (argv_w[0], MY_FILENAME_MAX * 2);
+
     argv = (char**) malloc ((argc+1) * sizeof(*argv));
     for (int i=0; i<argc; i++)
     {
@@ -111,6 +114,7 @@ public:
       argv[i] = (char*) realloc (argv[i], strlen(argv[i]) + 1);
     }
     argv[argc] = NULL;
+    free (argv_w[0]);
 #endif
     // Register external compressors using arc.ini in the same dir as argv[0]
     RegisterExternalCompressors(argv[0]);
