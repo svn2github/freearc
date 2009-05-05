@@ -94,7 +94,7 @@ END
 // Bitmap
 //
 
-IDB_SCITE               BITMAP  DISCARDABLE     "ArcShellExt.bmp"
+IDB_SCITE               BITMAP  DISCARDABLE     "FreeArc.bmp"
 #endif    // English (U.S.) resources
 /////////////////////////////////////////////////////////////////////////////
 

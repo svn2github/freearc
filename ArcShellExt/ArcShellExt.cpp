@@ -132,7 +132,7 @@ BOOL RegisterServer(CLSID clsid, LPTSTR lpszTitle) {
   LPWSTR   pwsz;
 
   if (!CheckSciTE()) {
-    MsgBoxError("To register the FreeArc context menu extension,\r\ninstall ArcShellExt.dll in the same directory than FreeArc.exe.");
+    MsgBoxError("To register the FreeArc context menu extension,\r\ninstall ArcShellExt.dll in the same directory as FreeArc.exe.");
     return FALSE;
   }
 
@@ -154,11 +154,11 @@ BOOL RegisterServer(CLSID clsid, LPTSTR lpszTitle) {
   GetModuleFileName(_hModule, szModule, MAX_PATH);
 
   DOREGSTRUCT ClsidEntries[] = {
-    HKEY_CLASSES_ROOT,   TEXT("CLSID\\%s"),                              NULL,                   lpszTitle,
-    HKEY_CLASSES_ROOT,   TEXT("CLSID\\%s\\InprocServer32"),              NULL,                   szModule,
-    HKEY_CLASSES_ROOT,   TEXT("CLSID\\%s\\InprocServer32"),              TEXT("ThreadingModel"), TEXT("Apartment"),
+    HKEY_CLASSES_ROOT,   TEXT("CLSID\\%s"),                                NULL,                   lpszTitle,
+    HKEY_CLASSES_ROOT,   TEXT("CLSID\\%s\\InprocServer32"),                NULL,                   szModule,
+    HKEY_CLASSES_ROOT,   TEXT("CLSID\\%s\\InprocServer32"),                TEXT("ThreadingModel"), TEXT("Apartment"),
     HKEY_CLASSES_ROOT,   TEXT("*\\shellex\\ContextMenuHandlers\\FreeArc"), NULL,                   szCLSID,
-    NULL,                NULL,                                           NULL,                   NULL
+    NULL,                NULL,                                             NULL,                   NULL
   };
 
   // Register the CLSID entries
@@ -351,6 +351,39 @@ STDMETHODIMP CShellExt::Initialize(LPCITEMIDLIST pIDFolder, LPDATAOBJECT pDataOb
   return NOERROR;
 }
 
+static void getSciTEName(char *name) {
+  TCHAR szModuleFullName[MAX_PATH];
+  int nLenPath = 0;
+  TCHAR* pDest;
+
+  name[0] = 0;
+  GetModuleFileName(_hModule, szModuleFullName, MAX_PATH);
+  pDest = strrchr(szModuleFullName, '\\' );
+  pDest++;
+  pDest[0] = 0;
+  strcpy_s(name, MAX_PATH, szModuleFullName);
+  strcat_s(name, MAX_PATH, szSciTEName);
+
+  if (name[0] == 0)
+    strcpy_s(name, MAX_PATH, szSciTEName);
+}
+
+
+//---------------------------------------------------------------------------
+// Worker code
+//---------------------------------------------------------------------------
+
+struct {
+  char *ext, *title, *command;
+}
+commands = {
+  "arc", "Open with FreeArc",     "",
+  "arc", "Extract to new folder", "x -ad --noarcext --",
+  "arc", "Extract here",          "x --noarcext --",
+  "arc", "Test",                  "t --noarcext --",
+  "*",   "Compress with FreeArc", "a --noarcext -- default.arc"};
+
+
 STDMETHODIMP CShellExt::QueryContextMenu(HMENU hMenu, UINT indexMenu, UINT idCmdFirst, UINT idCmdLast, UINT uFlags) {
   UINT idCmd = idCmdFirst;
   BOOL bAppendItems=TRUE;
@@ -399,23 +432,6 @@ STDMETHODIMP CShellExt::GetCommandString(UINT_PTR idCmd, UINT uFlags, UINT FAR *
   if (uFlags == GCS_HELPTEXT && cchMax > 35)
     lstrcpy(pszName, "Opens the selected archive(s) with FreeArc");
   return NOERROR;
-}
-
-static void getSciTEName(char *name) {
-  TCHAR szModuleFullName[MAX_PATH];
-  int nLenPath = 0;
-  TCHAR* pDest;
-
-  name[0] = 0;
-  GetModuleFileName(_hModule, szModuleFullName, MAX_PATH);
-  pDest = strrchr(szModuleFullName, '\\' );
-  pDest++;
-  pDest[0] = 0;
-  strcpy_s(name, MAX_PATH, szModuleFullName);
-  strcat_s(name, MAX_PATH, szSciTEName);
-
-  if (name[0] == 0)
-    strcpy_s(name, MAX_PATH, szSciTEName);
 }
 
 STDMETHODIMP CShellExt::InvokeSciTE(HWND hParent, LPCSTR pszWorkingDir, LPCSTR pszCmd, LPCSTR pszParam, int iShowCmd) {

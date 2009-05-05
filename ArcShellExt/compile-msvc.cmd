@@ -4,3 +4,5 @@ nmake clean
 nmake
 copy ArcShellExt.dll ArcShellExt32.dll
 del ArcShellExt.dll
+regsvr32 /s /c ArcShellExt32.dll
+start C:\Base\Tools\ARC\7-ZIP4_58\7zFM.exe
