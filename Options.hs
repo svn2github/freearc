@@ -302,7 +302,7 @@ cmdType  _   = ADD_CMD
 {-# NOINLINE cmdType #-}
 
 -- |Версия архиватора, записываемая в HEADER BLOCK
-aARCHIVE_VERSION = make4byte 0 0 5 1
+aARCHIVE_VERSION = make4byte 0 0 5 2
 
 {-# NOINLINE aARC_VERSION_WITH_DATE #-}
 {-# NOINLINE aARC_HEADER_WITH_DATE #-}
@@ -312,11 +312,11 @@ aARCHIVE_VERSION = make4byte 0 0 5 1
 {-# NOINLINE aARC_EMAIL #-}
 {-# NOINLINE aARC_WEBSITE #-}
 -- |Краткое наименование программы, выводимое в начале работы
-aARC_VERSION_WITH_DATE = aARC_VERSION ++ " ("++aARC_DATE++")"   -- aARC_VERSION
-aARC_HEADER_WITH_DATE  = aARC_HEADER  ++ " ("++aARC_DATE++")"   -- aARC_HEADER
+aARC_VERSION_WITH_DATE = aARC_VERSION    -- aARC_VERSION ++ " ("++aARC_DATE++")"
+aARC_HEADER_WITH_DATE  = aARC_HEADER     -- aARC_HEADER  ++ " ("++aARC_DATE++")"
 aARC_HEADER  = aARC_NAME++" "++aARC_VERSION++" "
-aARC_VERSION = "0.51"                                  -- "0.50 alpha ("++aARC_DATE++")"
-aARC_DATE    = "Apr 28 2009"
+aARC_VERSION = "0.52 alpha ("++aARC_DATE++")"                                  --  "0.51"
+aARC_DATE    = "May 4 2009"
 aARC_NAME    = "FreeArc"
 aARC_AUTHOR  = "Bulat Ziganshin"
 aARC_EMAIL   = "Bulat.Ziganshin@gmail.com"
