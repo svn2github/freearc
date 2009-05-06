@@ -101,26 +101,6 @@ STDAPI DllUnregisterServer(void) {
 }
 
 //---------------------------------------------------------------------------
-// CheckSciTE
-//---------------------------------------------------------------------------
-BOOL CheckSciTE() {
-  TCHAR szModuleFullName[MAX_PATH];
-  TCHAR szExeFullName[MAX_PATH];
-  int nLenPath = 0;
-  TCHAR* pDest;
-  LPTSTR *lpFilePart = NULL;
-
-  GetModuleFileName(_hModule, szModuleFullName, MAX_PATH);
-  pDest = strrchr(szModuleFullName, '\\' );
-  pDest++;
-  pDest[0] = 0;
-
-  DWORD dw = SearchPath(szModuleFullName, szShellExtensionTitle, ".exe", MAX_PATH, szExeFullName, lpFilePart);
-
-  return (dw ? TRUE : FALSE);
-}
-
-//---------------------------------------------------------------------------
 // RegisterServer
 //---------------------------------------------------------------------------
 BOOL RegisterServer(CLSID clsid, LPTSTR lpszTitle) {
@@ -132,11 +112,6 @@ BOOL RegisterServer(CLSID clsid, LPTSTR lpszTitle) {
   TCHAR    szCLSID[MAX_PATH];
   TCHAR    szModule[MAX_PATH];
   LPWSTR   pwsz;
-
-  if (!CheckSciTE()) {
-    MsgBoxError("To register the FreeArc context menu extension,\r\ninstall ArcShellExt.dll in the same directory as FreeArc.exe.");
-    return FALSE;
-  }
 
   StringFromIID(clsid, &pwsz);
   if(pwsz) {
@@ -375,58 +350,24 @@ static void getSciTEName(char *name) {
 // Worker code
 //---------------------------------------------------------------------------
 
-struct {
-  char *ext, *text, *command, *help;
-}
-commands[] = {
-  "arc", "Open with &FreeArc",    "",                              "Open the selected archive(s) with FreeArc",
-  "arc", "Extract to new folder", "x -ad --noarcext --",           "Extract the selected archive(s) to new folder",
-  "arc", "Extract here",          "x --noarcext --",               "Extract the selected archive(s) to the same folder",
-  "arc", "Test",                  "t --noarcext --",               "Test the selected archive(s)",
-  "*",   "Compress with FreeArc", "a --noarcext -- default.arc",   "Compress the selected files using FreeArc"};
-
-unsigned COMMANDS = sizeof(commands)/sizeof(*commands);
-
-//to do
-// проверка расширений
-// перенос меню в ini-файл
-// поддержка %0 %* and so on
-// каскадные меню
-// bmp из файла
-
-static void stackDump (lua_State *L) {
-  int i;
-  int top = lua_gettop(L);
-  for (i = 1; i <= top; i++) {  /* repeat for each level */
-    int t = lua_type(L, i);        //// lua_isnumber(L, -2)
-    switch (t) {
-
-      case LUA_TSTRING:  /* strings */
-        printf("`%s'", lua_tostring(L, i));
-        break;
-
-      case LUA_TBOOLEAN:  /* booleans */
-        printf(lua_toboolean(L, i) ? "true" : "false");
-        break;
-
-      case LUA_TNUMBER:  /* numbers */
-        printf("%g", lua_tonumber(L, i));
-        break;
-
-      default:  /* other values */
-        printf("%s", lua_typename(L, t));
-        break;
-
-    }
-    printf("  ");  /* put a separator */
-  }
-  printf("\n");  /* end the listing */
-}
-
 lua_State *L;
 UINT idCmd;
 UINT indexMenu;
 HMENU hMenu;
+
+void load_user_funcs() {
+  TCHAR szModuleFullName[MAX_PATH];
+  TCHAR* pDest;
+
+  GetModuleFileName(_hModule, szModuleFullName, MAX_PATH);
+  pDest = strrchr(szModuleFullName, '\\' );
+  pDest++;
+  pDest[0] = 0;
+
+  strcat_s (szModuleFullName, MAX_PATH, "ArcShellExt.lua");
+
+  luaL_dofile (L, szModuleFullName);
+}
 
 static int add_menu_item (lua_State *L) {
   const char *text = luaL_checkstring(L, 1);
@@ -467,13 +408,13 @@ STDMETHODIMP CShellExt::QueryContextMenu(HMENU _hMenu, UINT _indexMenu, UINT idC
 
 
   L = luaL_newstate();  luaL_openlibs(L);
+  //lua_checkstack(lua, int sz);
 
   // 1. регистрируем функцию, которая добавляет пункт в меню
   lua_register (L, "add_menu_item", add_menu_item);
 
-  // 2. втягиваем L script
-  luaL_dofile  (L, "C:\\!\\FreeArchiver\\ArcShellExt\\ArcShellExt.lua");
-  //lua_checkstack(lua, int sz);
+  // 2. втягиваем Lua script
+  load_user_funcs();
 
   // 3. вызываем build_menu, передав ему список имён файлов
   lua_getglobal  (L, "build_menu");
@@ -513,7 +454,7 @@ STDMETHODIMP CShellExt::GetCommandString(UINT_PTR idCmd, UINT uFlags, UINT FAR *
   const char *z = lua_tostring(L, -1);
 
   if (uFlags == GCS_HELPTEXT  &&  cchMax > strlen(z))
-    lstrcpy(pszName, commands[idCmd].help);
+    lstrcpy(pszName, z);
 
   lua_pop(L, 1);  /* pop returned value */
 
@@ -566,3 +507,8 @@ STDMETHODIMP CShellExt::InvokeSciTE(HWND hParent, LPCSTR pszWorkingDir, LPCSTR c
 
   return NOERROR;
 }
+
+//to do
+// cascaded menu
+// icons
+

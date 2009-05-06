@@ -1,2 +1,2 @@
-regsvr32 ArcShellExt32.dll
-regsvr32 ArcShellExt64.dll
+regsvr32 /s /c ArcShellExt.dll
+regsvr32 /s /c ArcShellExt-64.dll
