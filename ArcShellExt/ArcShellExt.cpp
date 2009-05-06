@@ -19,6 +19,8 @@
 #include <windowsx.h>
 #include <shlobj.h>
 
+#include "Lua\lua.hpp"
+
 #define GUID_SIZE 128
 #define MAX_FILES 10
 #define MAX_CMDSTR (MAX_PATH * MAX_FILES)
@@ -374,20 +376,77 @@ static void getSciTEName(char *name) {
 //---------------------------------------------------------------------------
 
 struct {
-  char *ext, *title, *command;
+  char *ext, *text, *command, *help;
 }
-commands = {
-  "arc", "Open with FreeArc",     "",
-  "arc", "Extract to new folder", "x -ad --noarcext --",
-  "arc", "Extract here",          "x --noarcext --",
-  "arc", "Test",                  "t --noarcext --",
-  "*",   "Compress with FreeArc", "a --noarcext -- default.arc"};
+commands[] = {
+  "arc", "Open with &FreeArc",    "",                              "Open the selected archive(s) with FreeArc",
+  "arc", "Extract to new folder", "x -ad --noarcext --",           "Extract the selected archive(s) to new folder",
+  "arc", "Extract here",          "x --noarcext --",               "Extract the selected archive(s) to the same folder",
+  "arc", "Test",                  "t --noarcext --",               "Test the selected archive(s)",
+  "*",   "Compress with FreeArc", "a --noarcext -- default.arc",   "Compress the selected files using FreeArc"};
 
+unsigned COMMANDS = sizeof(commands)/sizeof(*commands);
 
-STDMETHODIMP CShellExt::QueryContextMenu(HMENU hMenu, UINT indexMenu, UINT idCmdFirst, UINT idCmdLast, UINT uFlags) {
-  UINT idCmd = idCmdFirst;
-  BOOL bAppendItems=TRUE;
-  char szItemSciTE[]="Open with &FreeArc";
+//to do
+// проверка расширений
+// перенос меню в ini-файл
+// поддержка %0 %* and so on
+// каскадные меню
+// bmp из файла
+
+static void stackDump (lua_State *L) {
+  int i;
+  int top = lua_gettop(L);
+  for (i = 1; i <= top; i++) {  /* repeat for each level */
+    int t = lua_type(L, i);        //// lua_isnumber(L, -2)
+    switch (t) {
+
+      case LUA_TSTRING:  /* strings */
+        printf("`%s'", lua_tostring(L, i));
+        break;
+
+      case LUA_TBOOLEAN:  /* booleans */
+        printf(lua_toboolean(L, i) ? "true" : "false");
+        break;
+
+      case LUA_TNUMBER:  /* numbers */
+        printf("%g", lua_tonumber(L, i));
+        break;
+
+      default:  /* other values */
+        printf("%s", lua_typename(L, t));
+        break;
+
+    }
+    printf("  ");  /* put a separator */
+  }
+  printf("\n");  /* end the listing */
+}
+
+lua_State *L;
+UINT idCmd;
+UINT indexMenu;
+HMENU hMenu;
+
+static int add_menu_item (lua_State *L) {
+  const char *text = luaL_checkstring(L, 1);
+
+  UINT nIndex = indexMenu++;
+  InsertMenu(hMenu, nIndex, MF_STRING|MF_BYPOSITION, idCmd++, text);
+
+//  if (m_hSciteBmp) {
+//    SetMenuItemBitmaps (hMenu, nIndex, MF_BYPOSITION, m_hSciteBmp, m_hSciteBmp);
+//  }
+  lua_pushnumber (L, nIndex);
+  return 1;
+}
+
+// Insert items into context menu
+STDMETHODIMP CShellExt::QueryContextMenu(HMENU _hMenu, UINT _indexMenu, UINT idCmdFirst, UINT idCmdLast, UINT uFlags) {
+
+  idCmd = idCmdFirst;
+  indexMenu = _indexMenu;
+  hMenu = _hMenu;
 
   FORMATETC fmte = {
     CF_HDROP,
@@ -404,66 +463,93 @@ STDMETHODIMP CShellExt::QueryContextMenu(HMENU hMenu, UINT indexMenu, UINT idCmd
       m_cbFiles = DragQueryFile((HDROP)m_stgMedium.hGlobal, (UINT)-1, 0, 0);
   }
 
-  UINT nIndex = indexMenu++;
-  InsertMenu(hMenu, nIndex, MF_STRING|MF_BYPOSITION, idCmd++, szItemSciTE);
 
-  if (m_hSciteBmp) {
-    SetMenuItemBitmaps (hMenu, nIndex, MF_BYPOSITION, m_hSciteBmp, m_hSciteBmp);
+
+
+  L = luaL_newstate();  luaL_openlibs(L);
+
+  // 1. регистрируем функцию, которая добавляет пункт в меню
+  lua_register (L, "add_menu_item", add_menu_item);
+
+  // 2. втягиваем L script
+  luaL_dofile  (L, "C:\\!\\FreeArchiver\\ArcShellExt\\ArcShellExt.lua");
+  //lua_checkstack(lua, int sz);
+
+  // 3. вызываем build_menu, передав ему список имён файлов
+  lua_getglobal  (L, "build_menu");
+
+  // push filenames
+  for (UINT i = 0; i < m_cbFiles; i++) {
+    TCHAR *szFileUserClickedOn = (LPTSTR)m_pAlloc->Alloc(MAX_PATH * sizeof(TCHAR));
+    if (!szFileUserClickedOn) {
+      MsgBoxError("Insufficient memory available.");
+      return E_FAIL;
+    }
+    DragQueryFile((HDROP)m_stgMedium.hGlobal, i, szFileUserClickedOn, MAX_PATH);
+    lua_pushstring (L, szFileUserClickedOn);
   }
+
+  if (lua_pcall(L, 1, 0, 0) != 0)
+    ;//error(L, "error running function `f': %s",
+     //        lua_tostring(L, -1));
+
+  //lua_close    (L);
 
   return ResultFromShort(idCmd-idCmdFirst);
 }
 
+// Return help to show in the status line
+STDMETHODIMP CShellExt::GetCommandString(UINT_PTR idCmd, UINT uFlags, UINT FAR *reserved, LPSTR pszName, UINT cchMax) {
+
+  lua_getglobal  (L, "get_help");
+  lua_pushnumber (L, idCmd);
+
+  if (lua_pcall(L, 1, 1, 0) != 0)
+    ;//error(L, "error running function `f': %s",
+     //        lua_tostring(L, -1));
+
+  if (!lua_isstring(L, -1))
+    ;//error(L, "function `f' must return a string");
+  const char *z = lua_tostring(L, -1);
+
+  if (uFlags == GCS_HELPTEXT  &&  cchMax > strlen(z))
+    lstrcpy(pszName, commands[idCmd].help);
+
+  lua_pop(L, 1);  /* pop returned value */
+
+  return NOERROR;
+}
+
+// Perform selected command
 STDMETHODIMP CShellExt::InvokeCommand(LPCMINVOKECOMMANDINFO lpcmi) {
   HRESULT hr = E_INVALIDARG;
 
   if (!HIWORD(lpcmi->lpVerb)) {
     UINT idCmd = LOWORD(lpcmi->lpVerb);
-    switch(idCmd) {
-      case 0:
-        hr = InvokeSciTE(lpcmi->hwnd, lpcmi->lpDirectory, lpcmi->lpVerb, lpcmi->lpParameters, lpcmi->nShow);
-        break;
-    }
+
+    lua_getglobal  (L, "get_command");
+    lua_pushnumber (L, idCmd);
+
+    if (lua_pcall(L, 1, 1, 0) != 0)
+      ;//error(L, "error running function `f': %s",
+       //        lua_tostring(L, -1));
+
+    if (!lua_isstring(L, -1))
+      ;//error(L, "function `f' must return a string");
+    const char *z = lua_tostring(L, -1);
+
+    hr = InvokeSciTE(lpcmi->hwnd, lpcmi->lpDirectory, z, lpcmi->lpParameters, lpcmi->nShow);
+
+    lua_pop(L, 1);  /* pop returned value */
   }
   return hr;
 }
 
-STDMETHODIMP CShellExt::GetCommandString(UINT_PTR idCmd, UINT uFlags, UINT FAR *reserved, LPSTR pszName, UINT cchMax) {
-  if (uFlags == GCS_HELPTEXT && cchMax > 35)
-    lstrcpy(pszName, "Opens the selected archive(s) with FreeArc");
-  return NOERROR;
-}
-
-STDMETHODIMP CShellExt::InvokeSciTE(HWND hParent, LPCSTR pszWorkingDir, LPCSTR pszCmd, LPCSTR pszParam, int iShowCmd) {
+STDMETHODIMP CShellExt::InvokeSciTE(HWND hParent, LPCSTR pszWorkingDir, LPCSTR cmd, LPCSTR pszParam, int iShowCmd) {
   TCHAR szFileUserClickedOn[MAX_PATH];
   LPTSTR pszCommand;
   UINT nSizeCommand;
   UINT i;
-
-  FORMATETC fmte = {
-    CF_HDROP,
-    (DVTARGETDEVICE FAR *)NULL,
-    DVASPECT_CONTENT,
-    -1,
-    TYMED_HGLOBAL
-  };
-
-  nSizeCommand = MAX_PATH * (m_cbFiles + 1) * sizeof(TCHAR);
-  pszCommand = (LPTSTR)m_pAlloc->Alloc(nSizeCommand);
-
-  if (pszCommand)
-    getSciTEName(pszCommand);
-  else {
-    MsgBoxError("Insufficient memory available.");
-    return E_FAIL;
-  }
-
-  for (i = 0; i < m_cbFiles; i++) {
-    DragQueryFile((HDROP)m_stgMedium.hGlobal, i, szFileUserClickedOn, MAX_PATH);
-    strcat_s(pszCommand, nSizeCommand, " \"");
-    strcat_s(pszCommand, nSizeCommand, szFileUserClickedOn);
-    strcat_s(pszCommand, nSizeCommand, "\"");
-  }
 
   STARTUPINFO si;
   PROCESS_INFORMATION pi;
@@ -471,13 +557,12 @@ STDMETHODIMP CShellExt::InvokeSciTE(HWND hParent, LPCSTR pszWorkingDir, LPCSTR p
   si.cb = sizeof(si);
   si.dwFlags = STARTF_USESHOWWINDOW;
   si.wShowWindow = SW_RESTORE;
-  if (!CreateProcess (NULL, pszCommand, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi)) {
+  if (!CreateProcess (NULL, (LPSTR)cmd, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi)) {
     MessageBox(hParent,
                "Error creating process: ArcShellExt.dll needs to be in the same directory as FreeArc.exe",
                "FreeArc Extension",
                MB_OK);
   }
 
-  m_pAlloc->Free(pszCommand);
   return NOERROR;
 }

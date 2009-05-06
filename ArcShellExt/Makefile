@@ -9,7 +9,7 @@ all: ArcShellExt.dll
 
 ArcShellExt.dll: ArcShellExt.obj ArcShellExt.res
 	$(implib) -machine:$(CPU) -def:ArcShellExt.def $** -out:ArcShellExt.lib
-	$(link) $(dlllflags) -base:0x1C000000 -out:$*.dll $** $(olelibsdll) shell32.lib ArcShellExt.lib comctl32.lib ArcShellExt.exp
+	$(link) $(dlllflags) -base:0x1C000000 -out:$*.dll $** $(olelibsdll) shell32.lib ArcShellExt.lib comctl32.lib ArcShellExt.exp Lua\lua5.1.lib
 
 .cpp.obj:
 	$(cc) $(cflags) $*.cpp
