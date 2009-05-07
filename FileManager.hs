@@ -682,7 +682,7 @@ myGUI run args = do
         file <- findFile libraryFilePlaces ("../Documentation" </> doc)
         case file of
           "" -> return ()
-          _  -> openWebsite file
+          _  -> openWebsite ((isWindows&&&windosifyPath) file)
 
   -- Прочитать ИД, сгенерённый для этого компьютера
   let getUserID = do
