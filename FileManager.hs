@@ -216,7 +216,6 @@ myGUI run args = do
 
   -- Создадим переменную для хранения текущего состояния файл-менеджера
   fm' <- newFM window listView listModel listSelection statusLabel messageCombo
-  fmStackMsg fm' "              "
 
   -- Отрихтуем тулбар
   let toolbar = castToToolbar toolBar

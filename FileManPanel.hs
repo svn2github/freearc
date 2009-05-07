@@ -12,6 +12,7 @@ import Data.IORef
 import Data.List
 import Data.Maybe
 import System.IO.Unsafe
+import System.Time
 
 import Graphics.UI.Gtk
 import Graphics.UI.Gtk.ModelView as New
@@ -120,18 +121,21 @@ fmStatusBarTotals fm' = do
   fmStatusBarMsg fm' $ (selected &&& (format sel   selected++"     "))
                                  ++   format total (fm_filelist fm)
 
--- |Вывести сообщение в строку сообщений
+-- |Вывести информацию в статус-строку
 fmStatusBarMsg fm' msg = do
   fm <- val fm'
   labelSetText (fm_statusLabel fm) msg
   return ()
 
 -- |Добавить сообщение в pop-up список сообщений
-fmStackMsg fm' msg = do
+fmStackMsg fm' emsg = do
   fm <- val fm'
   let (box,n')  =  fm_messageCombo fm
   n <- val n';  n' += 1
-  New.comboBoxAppendText box =<< i18n msg
+  current_time <- getClockTime
+  let timestr = showtime "%H:%M:%S " current_time
+  imsg <- i18n emsg
+  New.comboBoxAppendText box (imsg &&& (timestr++imsg))
   New.comboBoxSetActive  box n
   return ()
 
