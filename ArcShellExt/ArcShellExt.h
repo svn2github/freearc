@@ -29,6 +29,7 @@ public:
 };
 typedef CShellExtClassFactory *LPCSHELLEXTCLASSFACTORY;
 
+  HBITMAP m_hSciteBmp;
 class CShellExt : public IContextMenu, IShellExtInit {
 public:
 protected:
@@ -36,7 +37,6 @@ protected:
   UINT m_cbFiles;
   STGMEDIUM m_stgMedium;
   LPDATAOBJECT m_pDataObj;
-  HBITMAP m_hSciteBmp;
   LPMALLOC m_pAlloc;
   TCHAR m_szDllDir [MAX_PATH];
 

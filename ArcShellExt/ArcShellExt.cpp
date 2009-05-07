@@ -362,10 +362,13 @@ void load_user_funcs() {
   GetModuleFileName(_hModule, szModuleFullName, MAX_PATH);
   pDest = strrchr(szModuleFullName, '\\' );
   pDest++;
+
   pDest[0] = 0;
+  strcat_s (szModuleFullName, MAX_PATH, "ArcShellExt-system.lua");
+  luaL_dofile (L, szModuleFullName);
 
-  strcat_s (szModuleFullName, MAX_PATH, "ArcShellExt.lua");
-
+  pDest[0] = 0;
+  strcat_s (szModuleFullName, MAX_PATH, "ArcShellExt-user.lua");
   luaL_dofile (L, szModuleFullName);
 }
 
@@ -375,9 +378,9 @@ static int add_menu_item (lua_State *L) {
   UINT nIndex = indexMenu++;
   InsertMenu(hMenu, nIndex, MF_STRING|MF_BYPOSITION, idCmd++, text);
 
-//  if (m_hSciteBmp) {
-//    SetMenuItemBitmaps (hMenu, nIndex, MF_BYPOSITION, m_hSciteBmp, m_hSciteBmp);
-//  }
+  if (m_hSciteBmp) {
+    SetMenuItemBitmaps (hMenu, nIndex, MF_BYPOSITION, m_hSciteBmp, m_hSciteBmp);
+  }
   lua_pushnumber (L, nIndex);
   return 1;
 }
