@@ -65,7 +65,7 @@ createP p1 p2 create_inner (Pipe pid finished income income_back outcome outcome
   p1_finished <- newEmptyMVar      -- Признак завершения выполнения p1
 
   -- Запустим первый процесс в отдельном треде, а второй исполним напрямую
-  p1_id <- forkOS$ (p1 (Pipe pid finished income income_back inner inner_back) >> return ())
+  p1_id <- forkIO$ (p1 (Pipe pid finished income income_back inner inner_back) >> return ())
                        `finally` (putMVar p1_finished ())
   --
   p2 (Pipe (Just p1_id) (Just p1_finished) inner inner_back outcome outcome_back)
@@ -90,7 +90,7 @@ runAsyncP p = do
   outcome_back <- newChan
   parent_id    <- myThreadId
   p_finished   <- newEmptyMVar
-  p_id         <- forkOS (p (Pipe Nothing Nothing income income_back outcome outcome_back)
+  p_id         <- forkIO (p (Pipe Nothing Nothing income income_back outcome outcome_back)
                             `catch` (\e -> do killThread parent_id; throwIO e)
                             `finally` putMVar p_finished ())
   return (Pipe (Just p_id) (Just p_finished) outcome outcome_back income income_back)
