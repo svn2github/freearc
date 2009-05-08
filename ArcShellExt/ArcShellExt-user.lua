@@ -17,3 +17,4 @@ register_menu_handler (function (filenames)
   }
 end)
 
+--os.execute ("start "..arg)

@@ -9,10 +9,10 @@ all: ArcShellExt$(XVER).dll
 
 ArcShellExt$(XVER).dll: ArcShellExt.obj ArcShellExt.res
 	$(implib) -machine:$(CPU) -def:ArcShellExt.def $** -out:ArcShellExt.lib
-	$(link) $(dlllflags) -base:0x1C000000 -out:$*.dll $** $(olelibsdll) shell32.lib ArcShellExt.lib comctl32.lib ArcShellExt.exp Lua\lua5.1$(XVER).lib
+	$(link) $(dlllflags) -base:0x00400000  -out:$*.dll $** $(olelibsdll) shell32.lib ArcShellExt.lib comctl32.lib ArcShellExt.exp Lua\lua5.1$(XVER).lib
 
 .cpp.obj:
-	$(cc) $(cflags) $*.cpp
+	$(cc) $(cflags) -I..\HsLua\src $*.cpp
 
 ArcShellExt.res: ArcShellExt.rc
 	$(rc) $(rcflags) $(rcvars) ArcShellExt.rc

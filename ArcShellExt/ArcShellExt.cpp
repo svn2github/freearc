@@ -47,7 +47,6 @@ typedef struct{
   LPTSTR szData;
 } DOREGSTRUCT, *LPDOREGSTRUCT;
 
-char szSciTEName[] = "FreeArc.exe";
 char szShellExtensionTitle[] = "FreeArc";
 
 BOOL RegisterServer(CLSID, LPTSTR);
@@ -131,11 +130,12 @@ BOOL RegisterServer(CLSID clsid, LPTSTR lpszTitle) {
   GetModuleFileName(_hModule, szModule, MAX_PATH);
 
   DOREGSTRUCT ClsidEntries[] = {
-    HKEY_CLASSES_ROOT,   TEXT("CLSID\\%s"),                                NULL,                   lpszTitle,
-    HKEY_CLASSES_ROOT,   TEXT("CLSID\\%s\\InprocServer32"),                NULL,                   szModule,
-    HKEY_CLASSES_ROOT,   TEXT("CLSID\\%s\\InprocServer32"),                TEXT("ThreadingModel"), TEXT("Apartment"),
-    HKEY_CLASSES_ROOT,   TEXT("*\\shellex\\ContextMenuHandlers\\FreeArc"), NULL,                   szCLSID,
-    NULL,                NULL,                                             NULL,                   NULL
+    HKEY_CLASSES_ROOT,   TEXT("CLSID\\%s"),                                     NULL,                   lpszTitle,
+    HKEY_CLASSES_ROOT,   TEXT("CLSID\\%s\\InprocServer32"),                     NULL,                   szModule,
+    HKEY_CLASSES_ROOT,   TEXT("CLSID\\%s\\InprocServer32"),                     TEXT("ThreadingModel"), TEXT("Apartment"),
+    HKEY_CLASSES_ROOT,   TEXT("*\\shellex\\ContextMenuHandlers\\FreeArc"),      NULL,                   szCLSID,
+    HKEY_CLASSES_ROOT,   TEXT("Folder\\shellex\\ContextMenuHandlers\\FreeArc"), NULL,                   szCLSID,
+    NULL,                NULL,                                                  NULL,                   NULL
   };
 
   // Register the CLSID entries
@@ -181,6 +181,9 @@ BOOL UnregisterServer(CLSID clsid, LPTSTR lpszTitle) {
 
   lstrcpy(szCLSIDKey, TEXT("CLSID\\"));
   lstrcat(szCLSIDKey, szCLSID);
+
+  wsprintf(szKeyTemp, TEXT("Folder\\shellex\\ContextMenuHandlers\\%s"), lpszTitle);
+  RegDeleteKey(HKEY_CLASSES_ROOT, szKeyTemp);
 
   wsprintf(szKeyTemp, TEXT("*\\shellex\\ContextMenuHandlers\\%s"), lpszTitle);
   RegDeleteKey(HKEY_CLASSES_ROOT, szKeyTemp);
@@ -328,23 +331,6 @@ STDMETHODIMP CShellExt::Initialize(LPCITEMIDLIST pIDFolder, LPDATAOBJECT pDataOb
   return NOERROR;
 }
 
-static void getSciTEName(char *name) {
-  TCHAR szModuleFullName[MAX_PATH];
-  int nLenPath = 0;
-  TCHAR* pDest;
-
-  name[0] = 0;
-  GetModuleFileName(_hModule, szModuleFullName, MAX_PATH);
-  pDest = strrchr(szModuleFullName, '\\' );
-  pDest++;
-  pDest[0] = 0;
-  strcpy_s(name, MAX_PATH, szModuleFullName);
-  strcat_s(name, MAX_PATH, szSciTEName);
-
-  if (name[0] == 0)
-    strcpy_s(name, MAX_PATH, szSciTEName);
-}
-
 
 //---------------------------------------------------------------------------
 // Worker code
@@ -373,7 +359,11 @@ void load_user_funcs() {
 }
 
 static int add_menu_item (lua_State *L) {
+////lua_Alloc lua_getallocf (lua_State *L, void **ud);
+
   const char *text = luaL_checkstring(L, 1);
+  if (!text)
+    return 0;  ////lua_pushstring (L, errormsg); luaL_error / lua_error
 
   UINT nIndex = indexMenu++;
   InsertMenu(hMenu, nIndex, MF_STRING|MF_BYPOSITION, idCmd++, text);
@@ -411,7 +401,6 @@ STDMETHODIMP CShellExt::QueryContextMenu(HMENU _hMenu, UINT _indexMenu, UINT idC
 
 
   L = luaL_newstate();  luaL_openlibs(L);
-  //lua_checkstack(lua, int sz);
 
   // 1. регистрируем функцию, которая добавляет пункт в меню
   lua_register (L, "add_menu_item", add_menu_item);
@@ -422,15 +411,14 @@ STDMETHODIMP CShellExt::QueryContextMenu(HMENU _hMenu, UINT _indexMenu, UINT idC
   // 3. вызываем build_menu, передав ему список имён файлов
   lua_getglobal  (L, "build_menu");
 
-  // push filenames
+  if (!lua_checkstack (L, m_cbFiles))
+    ;//error
+
+  // push filenames of files selected
   for (UINT i = 0; i < m_cbFiles; i++) {
-    TCHAR *szFileUserClickedOn = (LPTSTR)m_pAlloc->Alloc(MAX_PATH * sizeof(TCHAR));
-    if (!szFileUserClickedOn) {
-      MsgBoxError("Insufficient memory available.");
-      return E_FAIL;
-    }
-    DragQueryFile((HDROP)m_stgMedium.hGlobal, i, szFileUserClickedOn, MAX_PATH);
-    lua_pushstring (L, szFileUserClickedOn);
+    TCHAR filename[MAX_PATH];
+    DragQueryFile((HDROP)m_stgMedium.hGlobal, i, filename, MAX_PATH);
+    lua_pushstring (L, filename);
   }
 
   if (lua_pcall(L, 1, 0, 0) != 0)
@@ -484,17 +472,12 @@ STDMETHODIMP CShellExt::InvokeCommand(LPCMINVOKECOMMANDINFO lpcmi) {
 
     hr = InvokeSciTE(lpcmi->hwnd, lpcmi->lpDirectory, z, lpcmi->lpParameters, lpcmi->nShow);
 
-    lua_pop(L, 1);  /* pop returned value */
+    lua_pop(L, 1);  /* pop returned value after use */
   }
   return hr;
 }
 
 STDMETHODIMP CShellExt::InvokeSciTE(HWND hParent, LPCSTR pszWorkingDir, LPCSTR cmd, LPCSTR pszParam, int iShowCmd) {
-  TCHAR szFileUserClickedOn[MAX_PATH];
-  LPTSTR pszCommand;
-  UINT nSizeCommand;
-  UINT i;
-
   STARTUPINFO si;
   PROCESS_INFORMATION pi;
   ZeroMemory(&si, sizeof(si));
@@ -512,6 +495,13 @@ STDMETHODIMP CShellExt::InvokeSciTE(HWND hParent, LPCSTR pszWorkingDir, LPCSTR c
 }
 
 //to do
+// unicode
 // cascaded menu
+// memory management
+// arbitrary actions
+
 // icons
+// multiple user.lua files
+// persistent Lua_state auto-reloaded on *user.lua changes
+// "Software\\Microsoft\\Windows\\CurrentVersion\\Shell Extensions\\Approved" ?
 
