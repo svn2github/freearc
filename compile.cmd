@@ -5,7 +5,7 @@
 @md  %ctempdir% >nul 2>nul
 @md  Tests      >nul 2>nul
 @set defines=-DFREEARC_PACKED_STRINGS -DFREEARC_WIN -DFREEARC_INTEL_BYTE_ORDER -optc-DFREEARC_WIN -optc-DFREEARC_INTEL_BYTE_ORDER -optc-DWIN32 -optc-D_WINDOWS -optc-D_UNICODE -optc-DUNICODE
-@rem ******** -DFREEARC_UNIX -DFREEARC_MOTOROLA_BYTE_ORDER -DFREEARC_ONLY_ALIGNED_ACCESS *******
+@rem ******** -DFREEARC_UNIX -DFREEARC_MOTOROLA_BYTE_ORDER -DFREEARC_ONLY_ALIGNED_ACCESS -DFREEARC_NO_LUA *******
 @copy win32-common.mak common.mak
 @cd Compression
 @call compile

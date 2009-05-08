@@ -11,7 +11,7 @@ DEBUG_FLAGS =
 CFLAGS      = -c -DFREEARC_DLL $(CODE_FLAGS) $(OPT_FLAGS) $(DEBUG_FLAGS) $(DEFINES)
 
 $(DLL): $(DEF) $(OBJS)
-	cmd /c link -DLL -DEF:$(DEF) -out:$(DLL) $(OBJS) user32.lib oleaut32.lib
+	cmd /c link -DLL -base:0x00400000 -DEF:$(DEF) -out:$(DLL) $(OBJS) user32.lib oleaut32.lib
 
 Common.obj: Common.cpp Common.h Compression.h
 	$(CC) $(CFLAGS) $(CFLAGS) $<

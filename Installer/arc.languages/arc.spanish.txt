@@ -23,12 +23,12 @@ Language name in english and mother tongue
 
 Language-specific URLs relative to http://freearc.org/ and helpfiles
 Filled only for languages providing their own translations
-0254 Homepage (URL, not translation!)=
-0255 News page (URL, not translation!)=
-0371 Forum page (URL, not translation!)=
-0372 Wiki page (URL, not translation!)=
-0256 Helpfile (URL, not translation!)=
-0257 Command-line help (URL, not translation!)=
+0254 Homepage (URL, not translation!)=??
+0255 News page (URL, not translation!)=??
+0371 Forum page (URL, not translation!)=??
+0372 Wiki page (URL, not translation!)=??
+0256 Helpfile (URL, not translation!)=??
+0257 Command-line help (URL, not translation!)=??
 
 
 === Menu ========================================================================
