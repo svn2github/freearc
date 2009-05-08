@@ -340,6 +340,8 @@ lua_State *L;
 UINT idCmd;
 UINT indexMenu;
 HMENU hMenu;
+HMENU menu_stack[10];
+int menu_level;
 
 void load_user_funcs() {
   TCHAR szModuleFullName[MAX_PATH];
@@ -365,12 +367,36 @@ static int add_menu_item (lua_State *L) {
   if (!text)
     return 0;  ////lua_pushstring (L, errormsg); luaL_error / lua_error
 
-  UINT nIndex = indexMenu++;
-  InsertMenu(hMenu, nIndex, MF_STRING|MF_BYPOSITION, idCmd++, text);
+  // Submenu direction:
+  //  +1 - make submenu
+  //   0 - the same menu level
+  //  -1 - return from submenu
+  int menutype = luaL_checknumber(L, 2);
 
-  if (m_hSciteBmp) {
+  UINT nIndex = indexMenu++;
+
+  HMENU hSubMenu;
+  if (menutype==1)
+  {
+     hSubMenu = ::CreateMenu();   ////if (!HMENU)  error
+     InsertMenu(hMenu, nIndex, MF_POPUP|MF_BYPOSITION, (UINT)hSubMenu, text);
+  }
+  else
+  {
+     if (menutype == -1)  hMenu = menu_stack[--menu_level];
+     InsertMenu(hMenu, nIndex, MF_STRING|MF_BYPOSITION, idCmd++, text);
+  }
+
+  if (m_hSciteBmp && menu_level==0) {
     SetMenuItemBitmaps (hMenu, nIndex, MF_BYPOSITION, m_hSciteBmp, m_hSciteBmp);
   }
+
+  if (menutype==1)
+  {
+     menu_stack[menu_level++] = hMenu;
+     hMenu = hSubMenu;
+  }
+
   lua_pushnumber (L, nIndex);
   return 1;
 }
@@ -381,6 +407,10 @@ STDMETHODIMP CShellExt::QueryContextMenu(HMENU _hMenu, UINT _indexMenu, UINT idC
   idCmd = idCmdFirst;
   indexMenu = _indexMenu;
   hMenu = _hMenu;
+  menu_level = 0;
+
+
+
 
   FORMATETC fmte = {
     CF_HDROP,
@@ -504,4 +534,5 @@ STDMETHODIMP CShellExt::InvokeSciTE(HWND hParent, LPCSTR pszWorkingDir, LPCSTR c
 // multiple user.lua files
 // persistent Lua_state auto-reloaded on *user.lua changes
 // "Software\\Microsoft\\Windows\\CurrentVersion\\Shell Extensions\\Approved" ?
+// GCS_VERB
 

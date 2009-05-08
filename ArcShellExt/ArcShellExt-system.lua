@@ -16,10 +16,17 @@ function build_menu (...)
 
   -- Iterate menu items passing them to C function that really adds them to the menu
   items = {}
-  for _,item in ipairs(menu) do
-    i = add_menu_item (item.text)
-    items[i] = item
+  make_menu = function(menu)
+    for _,item in ipairs(menu) do
+      if item.submenu  then menu_level=1  else menu_level=0 end
+      i = add_menu_item (item.text, menu_level)
+      items[i] = item
+      if item.submenu then
+        make_menu (item.submenu)
+      end
+    end
   end
+  make_menu(menu)
 end
 
 -- function called from C to get help on menu item i
