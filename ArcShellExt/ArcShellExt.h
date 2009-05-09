@@ -40,6 +40,15 @@ protected:
   LPMALLOC m_pAlloc;
   TCHAR m_szDllDir [MAX_PATH];
 
+  lua_State *L;
+  HMENU hMenu;
+  UINT nIndex;
+  UINT idCmdFirst;
+  UINT idCmd;
+  HMENU menu_stack [100];
+  UINT  index_stack[100];
+  int menu_level;
+
   STDMETHODIMP InvokeSciTE(HWND hParent,
     LPCSTR pszWorkingDir,
     LPCSTR pszCmd,
@@ -50,12 +59,15 @@ public:
   CShellExt();
   ~CShellExt();
 
+  void load_user_funcs();
+  int  add_menu_item();
+
   STDMETHODIMP QueryInterface(REFIID, LPVOID FAR *);
   STDMETHODIMP_(ULONG) AddRef();
   STDMETHODIMP_(ULONG) Release();
 
   STDMETHODIMP QueryContextMenu(HMENU hMenu,
-    UINT indexMenu,
+    UINT nIndex,
     UINT idCmdFirst,
     UINT idCmdLast,
     UINT uFlags);

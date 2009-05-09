@@ -5,7 +5,7 @@ freearc = "\"C:\\Program Files (x86)\\FreeArc\\bin\\FreeArc.exe\" "
 arcext = "arc"
 
 -- 1 for cascaded menus, nil for flat
-cascaded = nil
+cascaded = 1
 
 
 -- user-defined function that returns Right-Click Menu items for given filename(s)

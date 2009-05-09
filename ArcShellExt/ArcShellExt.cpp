@@ -276,6 +276,23 @@ STDMETHODIMP CShellExtClassFactory::LockServer(BOOL fLock) {
 //---------------------------------------------------------------------------
 // CShellExt
 //---------------------------------------------------------------------------
+static void *l_alloc (void *ud, void *ptr, size_t osize, size_t nsize) {
+  (void)ud;
+  (void)osize;
+  if (nsize == 0) {
+    free(ptr);
+    return NULL;
+  }
+  else
+    return realloc(ptr, nsize);
+}
+
+static int add_menu_item (lua_State *L) {
+  CShellExt *obj;
+  lua_getallocf (L, (void**)&obj);
+  return obj->add_menu_item();
+}
+
 CShellExt::CShellExt() {
   m_cRef = 0L;
   m_pDataObj = NULL;
@@ -285,9 +302,18 @@ CShellExt::CShellExt() {
   hr = SHGetMalloc(&m_pAlloc);
   if (FAILED(hr))
     m_pAlloc = NULL;
+
+  // 0. создаём интерпретатор Lua
+  L = lua_newstate (l_alloc, this);  luaL_openlibs(L);
+  // 1. регистрируем функцию, которая добавляет пункт в меню
+  lua_register (L, "add_menu_item", ::add_menu_item);
+  // 2. втягиваем Lua scripts
+  load_user_funcs();
 }
 
 CShellExt::~CShellExt() {
+  lua_close(L);
+
   if (m_pDataObj)
   m_pDataObj->Release();
   _cRef--;
@@ -336,14 +362,7 @@ STDMETHODIMP CShellExt::Initialize(LPCITEMIDLIST pIDFolder, LPDATAOBJECT pDataOb
 // Worker code
 //---------------------------------------------------------------------------
 
-lua_State *L;
-UINT idCmd;
-UINT indexMenu;
-HMENU hMenu;
-HMENU menu_stack[10];
-int menu_level;
-
-void load_user_funcs() {
+void CShellExt::load_user_funcs() {
   TCHAR szModuleFullName[MAX_PATH];
   TCHAR* pDest;
 
@@ -360,65 +379,74 @@ void load_user_funcs() {
   luaL_dofile (L, szModuleFullName);
 }
 
-static int add_menu_item (lua_State *L) {
-////lua_Alloc lua_getallocf (lua_State *L, void **ud);
-
+int CShellExt::add_menu_item() {
   const char *text = luaL_checkstring(L, 1);
   if (!text)
     return 0;  ////lua_pushstring (L, errormsg); luaL_error / lua_error
 
-  // Submenu direction:
-  //  +1 - make submenu
-  //   0 - the same menu level
-  //  -1 - return from submenu
-  int menutype = luaL_checknumber(L, 2);
+  // Submenu flag
+  int menu_down = luaL_checknumber(L, 2);
 
-  UINT nIndex = indexMenu++;
+  // Return from submenu flag
+  int menu_up = luaL_checknumber(L, 3);
+
+
+  if (menu_up)
+  {
+    --menu_level;
+    hMenu  = menu_stack [menu_level];
+    nIndex = index_stack[menu_level];
+  }
 
   HMENU hSubMenu;
-  if (menutype==1)
+  if (menu_down)
   {
      hSubMenu = ::CreateMenu();   ////if (!HMENU)  error
      InsertMenu(hMenu, nIndex, MF_POPUP|MF_BYPOSITION, (UINT)hSubMenu, text);
   }
   else
   {
-     if (menutype == -1)  hMenu = menu_stack[--menu_level];
-     InsertMenu(hMenu, nIndex, MF_STRING|MF_BYPOSITION, idCmd++, text);
+     InsertMenu(hMenu, nIndex, MF_STRING|MF_BYPOSITION, idCmd, text);
   }
 
   if (m_hSciteBmp && menu_level==0) {
     SetMenuItemBitmaps (hMenu, nIndex, MF_BYPOSITION, m_hSciteBmp, m_hSciteBmp);
   }
 
-  if (menutype==1)
+  nIndex++;
+
+  if (menu_down)
   {
-     menu_stack[menu_level++] = hMenu;
+     menu_stack[menu_level]  = hMenu;
+     index_stack[menu_level] = nIndex;
+     menu_level++;
      hMenu = hSubMenu;
+     nIndex = 0;
   }
 
-  lua_pushnumber (L, nIndex);
+  lua_pushnumber (L, idCmd);
+  idCmd++;
   return 1;
 }
 
 // Insert items into context menu
-STDMETHODIMP CShellExt::QueryContextMenu(HMENU _hMenu, UINT _indexMenu, UINT idCmdFirst, UINT idCmdLast, UINT uFlags) {
+STDMETHODIMP CShellExt::QueryContextMenu(HMENU _hMenu, UINT _nIndex, UINT _idCmdFirst, UINT idCmdLast, UINT uFlags) {
 
-  idCmd = idCmdFirst;
-  indexMenu = _indexMenu;
-  hMenu = _hMenu;
+  // If the flags include CMF_DEFAULTONLY then we shouldn't do anything.
+  if ( uFlags & CMF_DEFAULTONLY ) ////0
+    return MAKE_HRESULT ( SEVERITY_SUCCESS, FACILITY_NULL, 0 );
+
+
+
+  hMenu  = _hMenu;
+  nIndex = _nIndex;
+  idCmd  = idCmdFirst = _idCmdFirst;
   menu_level = 0;
 
 
 
 
-  FORMATETC fmte = {
-    CF_HDROP,
-    (DVTARGETDEVICE FAR *)NULL,
-    DVASPECT_CONTENT,
-    -1,
-    TYMED_HGLOBAL
-  };
+  FORMATETC fmte = {CF_HDROP, (DVTARGETDEVICE FAR *)NULL, DVASPECT_CONTENT, -1, TYMED_HGLOBAL};
 
   HRESULT hres = m_pDataObj->GetData(&fmte, &m_stgMedium);
 
@@ -430,16 +458,8 @@ STDMETHODIMP CShellExt::QueryContextMenu(HMENU _hMenu, UINT _indexMenu, UINT idC
 
 
 
-  L = luaL_newstate();  luaL_openlibs(L);
-
-  // 1. регистрируем функцию, которая добавляет пункт в меню
-  lua_register (L, "add_menu_item", add_menu_item);
-
-  // 2. втягиваем Lua script
-  load_user_funcs();
-
   // 3. вызываем build_menu, передав ему список имён файлов
-  lua_getglobal  (L, "build_menu");
+  lua_getglobal (L, "build_menu");
 
   if (!lua_checkstack (L, m_cbFiles))
     ;//error
@@ -455,8 +475,6 @@ STDMETHODIMP CShellExt::QueryContextMenu(HMENU _hMenu, UINT _indexMenu, UINT idC
     ;//error(L, "error running function `f': %s",
      //        lua_tostring(L, -1));
 
-  //lua_close    (L);
-
   return ResultFromShort(idCmd-idCmdFirst);
 }
 
@@ -464,7 +482,7 @@ STDMETHODIMP CShellExt::QueryContextMenu(HMENU _hMenu, UINT _indexMenu, UINT idC
 STDMETHODIMP CShellExt::GetCommandString(UINT_PTR idCmd, UINT uFlags, UINT FAR *reserved, LPSTR pszName, UINT cchMax) {
 
   lua_getglobal  (L, "get_help");
-  lua_pushnumber (L, idCmd);
+  lua_pushnumber (L, idCmdFirst+idCmd);
 
   if (lua_pcall(L, 1, 1, 0) != 0)
     ;//error(L, "error running function `f': %s",
@@ -474,8 +492,11 @@ STDMETHODIMP CShellExt::GetCommandString(UINT_PTR idCmd, UINT uFlags, UINT FAR *
     ;//error(L, "function `f' must return a string");
   const char *z = lua_tostring(L, -1);
 
-  if (uFlags == GCS_HELPTEXT  &&  cchMax > strlen(z))
-    lstrcpy(pszName, z);
+  if (uFlags == GCS_HELPTEXTA)
+    strcpy_s(pszName, cchMax, z);
+
+  if (uFlags == GCS_HELPTEXTW)
+    MultiByteToWideChar (CP_UTF8, 0, z, -1, (LPWSTR)pszName, cchMax);
 
   lua_pop(L, 1);  /* pop returned value */
 
@@ -490,7 +511,7 @@ STDMETHODIMP CShellExt::InvokeCommand(LPCMINVOKECOMMANDINFO lpcmi) {
     UINT idCmd = LOWORD(lpcmi->lpVerb);
 
     lua_getglobal  (L, "get_command");
-    lua_pushnumber (L, idCmd);
+    lua_pushnumber (L, idCmdFirst+idCmd);
 
     if (lua_pcall(L, 1, 1, 0) != 0)
       ;//error(L, "error running function `f': %s",
@@ -526,13 +547,14 @@ STDMETHODIMP CShellExt::InvokeSciTE(HWND hParent, LPCSTR pszWorkingDir, LPCSTR c
 
 //to do
 // unicode
-// cascaded menu
 // memory management
 // arbitrary actions
+// "Software\\Microsoft\\Windows\\CurrentVersion\\Shell Extensions\\Approved"
 
 // icons
 // multiple user.lua files
 // persistent Lua_state auto-reloaded on *user.lua changes
-// "Software\\Microsoft\\Windows\\CurrentVersion\\Shell Extensions\\Approved" ?
 // GCS_VERB
 
+// WideCharToMultiByte
+// MultiByteToWideChar
