@@ -47,7 +47,8 @@ protected:
   UINT idCmd;
   HMENU menu_stack [100];
   UINT  index_stack[100];
-  int menu_level;
+  int   menu_level;
+  TCHAR SelectedFilename[MAX_PATH];
 
   STDMETHODIMP InvokeSciTE(HWND hParent,
     LPCSTR pszWorkingDir,

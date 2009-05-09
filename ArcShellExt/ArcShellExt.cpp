@@ -433,8 +433,8 @@ int CShellExt::add_menu_item() {
 STDMETHODIMP CShellExt::QueryContextMenu(HMENU _hMenu, UINT _nIndex, UINT _idCmdFirst, UINT idCmdLast, UINT uFlags) {
 
   // If the flags include CMF_DEFAULTONLY then we shouldn't do anything.
-  if ( uFlags & CMF_DEFAULTONLY ) ////0
-    return MAKE_HRESULT ( SEVERITY_SUCCESS, FACILITY_NULL, 0 );
+  if ( uFlags & CMF_DEFAULTONLY )
+    return MAKE_HRESULT (SEVERITY_SUCCESS, FACILITY_NULL, 0);
 
 
 
@@ -466,9 +466,8 @@ STDMETHODIMP CShellExt::QueryContextMenu(HMENU _hMenu, UINT _nIndex, UINT _idCmd
 
   // push filenames of files selected
   for (UINT i = 0; i < m_cbFiles; i++) {
-    TCHAR filename[MAX_PATH];
-    DragQueryFile((HDROP)m_stgMedium.hGlobal, i, filename, MAX_PATH);
-    lua_pushstring (L, filename);
+    DragQueryFile((HDROP)m_stgMedium.hGlobal, i, SelectedFilename, MAX_PATH);
+    lua_pushstring (L, SelectedFilename);
   }
 
   if (lua_pcall(L, 1, 0, 0) != 0)
@@ -481,25 +480,27 @@ STDMETHODIMP CShellExt::QueryContextMenu(HMENU _hMenu, UINT _nIndex, UINT _idCmd
 // Return help to show in the status line
 STDMETHODIMP CShellExt::GetCommandString(UINT_PTR idCmd, UINT uFlags, UINT FAR *reserved, LPSTR pszName, UINT cchMax) {
 
-  lua_getglobal  (L, "get_help");
-  lua_pushnumber (L, idCmdFirst+idCmd);
+  if (uFlags == GCS_HELPTEXTA || uFlags == GCS_HELPTEXTW)
+  {
+    lua_getglobal  (L, "get_help");
+    lua_pushnumber (L, idCmdFirst+idCmd);
 
-  if (lua_pcall(L, 1, 1, 0) != 0)
-    ;//error(L, "error running function `f': %s",
-     //        lua_tostring(L, -1));
+    if (lua_pcall(L, 1, 1, 0) != 0)
+      ;//error(L, "error running function `f': %s",
+       //        lua_tostring(L, -1));
 
-  if (!lua_isstring(L, -1))
-    ;//error(L, "function `f' must return a string");
-  const char *z = lua_tostring(L, -1);
+    if (!lua_isstring(L, -1))
+      ;//error(L, "function `f' must return a string");
+    const char *z = lua_tostring(L, -1);
 
-  if (uFlags == GCS_HELPTEXTA)
-    strcpy_s(pszName, cchMax, z);
+    if (uFlags == GCS_HELPTEXTA)
+      strcpy_s(pszName, cchMax, z);
 
-  if (uFlags == GCS_HELPTEXTW)
-    MultiByteToWideChar (CP_UTF8, 0, z, -1, (LPWSTR)pszName, cchMax);
+    if (uFlags == GCS_HELPTEXTW)
+      MultiByteToWideChar (CP_UTF8, 0, z, -1, (LPWSTR)pszName, cchMax);
 
-  lua_pop(L, 1);  /* pop returned value */
-
+    lua_pop(L, 1);  /* pop returned value */
+  }
   return NOERROR;
 }
 
@@ -529,13 +530,20 @@ STDMETHODIMP CShellExt::InvokeCommand(LPCMINVOKECOMMANDINFO lpcmi) {
 }
 
 STDMETHODIMP CShellExt::InvokeSciTE(HWND hParent, LPCSTR pszWorkingDir, LPCSTR cmd, LPCSTR pszParam, int iShowCmd) {
+
+  TCHAR* pDest = strrchr(SelectedFilename, '\\');
+  if (pDest==SelectedFilename || pDest[-1]==':')  pDest++;
+  pDest[0] = 0;
+  TCHAR* CurrentDir = SelectedFilename;
+
+
   STARTUPINFO si;
   PROCESS_INFORMATION pi;
   ZeroMemory(&si, sizeof(si));
   si.cb = sizeof(si);
   si.dwFlags = STARTF_USESHOWWINDOW;
   si.wShowWindow = SW_RESTORE;
-  if (!CreateProcess (NULL, (LPSTR)cmd, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi)) {
+  if (!CreateProcess (NULL, (LPSTR)cmd, NULL, NULL, FALSE, 0, NULL, CurrentDir, &si, &pi)) {
     MessageBox(hParent,
                "Error creating process: ArcShellExt.dll needs to be in the same directory as FreeArc.exe",
                "FreeArc Extension",
@@ -546,15 +554,16 @@ STDMETHODIMP CShellExt::InvokeSciTE(HWND hParent, LPCSTR pszWorkingDir, LPCSTR c
 }
 
 //to do
-// unicode
-// memory management
-// arbitrary actions
 // "Software\\Microsoft\\Windows\\CurrentVersion\\Shell Extensions\\Approved"
+// unicode
+// arbitrary actions
 
 // icons
 // multiple user.lua files
 // persistent Lua_state auto-reloaded on *user.lua changes
 // GCS_VERB
+// memory management - use SHMalloc
 
 // WideCharToMultiByte
 // MultiByteToWideChar
+
