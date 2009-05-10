@@ -108,6 +108,7 @@ BOOL RegisterServer(CLSID clsid, LPTSTR lpszTitle) {
   LRESULT  lResult;
   DWORD    dwDisp;
   TCHAR    szSubKey[MAX_PATH];
+  TCHAR    szData[MAX_PATH];
   TCHAR    szCLSID[MAX_PATH];
   TCHAR    szModule[MAX_PATH];
   LPWSTR   pwsz;
@@ -126,32 +127,42 @@ BOOL RegisterServer(CLSID clsid, LPTSTR lpszTitle) {
     pMalloc->Release();
   }
 
+  //If running on NT, register the extension as approved.
+  OSVERSIONINFO  osvi;
+
+  osvi.dwOSVersionInfoSize = sizeof(osvi);
+  GetVersionEx(&osvi);
+
   //get this app's path and file name
   GetModuleFileName(_hModule, szModule, MAX_PATH);
 
   DOREGSTRUCT ClsidEntries[] = {
-    HKEY_CLASSES_ROOT,   TEXT("CLSID\\%s"),                                     NULL,                   lpszTitle,
-    HKEY_CLASSES_ROOT,   TEXT("CLSID\\%s\\InprocServer32"),                     NULL,                   szModule,
-    HKEY_CLASSES_ROOT,   TEXT("CLSID\\%s\\InprocServer32"),                     TEXT("ThreadingModel"), TEXT("Apartment"),
-    HKEY_CLASSES_ROOT,   TEXT("*\\shellex\\ContextMenuHandlers\\FreeArc"),      NULL,                   szCLSID,
-    HKEY_CLASSES_ROOT,   TEXT("Folder\\shellex\\ContextMenuHandlers\\FreeArc"), NULL,                   szCLSID,
-    NULL,                NULL,                                                  NULL,                   NULL
+    HKEY_CLASSES_ROOT,   TEXT("CLSID\\%s"),                                                                NULL,                   lpszTitle,
+    HKEY_CLASSES_ROOT,   TEXT("CLSID\\%s\\InprocServer32"),                                                NULL,                   szModule,
+    HKEY_CLASSES_ROOT,   TEXT("CLSID\\%s\\InprocServer32"),                                                TEXT("ThreadingModel"), TEXT("Apartment"),
+    HKEY_CLASSES_ROOT,   TEXT("*\\shellex\\ContextMenuHandlers\\FreeArc"),                                 NULL,                   szCLSID,
+    HKEY_CLASSES_ROOT,   TEXT("Folder\\shellex\\ContextMenuHandlers\\FreeArc"),                            NULL,                   szCLSID,
+    HKEY_LOCAL_MACHINE,  TEXT("Software\\Microsoft\\Windows\\CurrentVersion\\Shell Extensions\\Approved"), szCLSID,                lpszTitle,
+    NULL,                NULL,                                                                             NULL,                   NULL
   };
 
   // Register the CLSID entries
   for(i = 0; ClsidEntries[i].hRootKey; i++) {
-    // Create the sub key string - for this case, insert the file extension
-    wsprintf(szSubKey, ClsidEntries[i].szSubKey, szCLSID);
-    lResult = RegCreateKeyEx(ClsidEntries[i].hRootKey, szSubKey, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_WRITE, NULL, &hKey, &dwDisp);
-    if(NOERROR == lResult) {
-      TCHAR szData[MAX_PATH];
-      // If necessary, create the value string
-      wsprintf(szData, ClsidEntries[i].szData, szModule);
-      lResult = RegSetValueEx(hKey, ClsidEntries[i].lpszValueName, 0, REG_SZ, (LPBYTE)szData, (lstrlen(szData) + 1) * sizeof(TCHAR));
-      RegCloseKey(hKey);
+    // NT needs to have shell extensions "approved".
+    if (ClsidEntries[i].hRootKey==HKEY_CLASSES_ROOT  ||  VER_PLATFORM_WIN32_NT==osvi.dwPlatformId)
+    {
+      // Create the sub key string - for this case, insert the file extension
+      wsprintf(szSubKey, ClsidEntries[i].szSubKey, szCLSID);
+      lResult = RegCreateKeyEx(ClsidEntries[i].hRootKey, szSubKey, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_WRITE, NULL, &hKey, &dwDisp);
+      if(NOERROR == lResult) {
+        // If necessary, create the value string
+        wsprintf(szData, ClsidEntries[i].szData, szModule);
+        lResult = RegSetValueEx(hKey, ClsidEntries[i].lpszValueName, 0, REG_SZ, (LPBYTE)szData, (lstrlen(szData) + 1) * sizeof(TCHAR));
+        RegCloseKey(hKey);
+      }
+      else
+        return FALSE;
     }
-    else
-      return FALSE;
   }
   return TRUE;
 }
@@ -181,6 +192,14 @@ BOOL UnregisterServer(CLSID clsid, LPTSTR lpszTitle) {
 
   lstrcpy(szCLSIDKey, TEXT("CLSID\\"));
   lstrcat(szCLSIDKey, szCLSID);
+
+  HKEY     hKey;
+  LRESULT  lResult = RegOpenKeyEx(HKEY_LOCAL_MACHINE, TEXT("Software\\Microsoft\\Windows\\CurrentVersion\\Shell Extensions\\Approved"), 0, KEY_SET_VALUE, &hKey);
+  if(NOERROR == lResult)
+  {
+    RegDeleteValue(hKey, szCLSID);
+    RegCloseKey(hKey);
+  }
 
   wsprintf(szKeyTemp, TEXT("Folder\\shellex\\ContextMenuHandlers\\%s"), lpszTitle);
   RegDeleteKey(HKEY_CLASSES_ROOT, szKeyTemp);
@@ -557,6 +576,9 @@ STDMETHODIMP CShellExt::InvokeSciTE(HWND hParent, LPCSTR pszWorkingDir, LPCSTR c
 // "Software\\Microsoft\\Windows\\CurrentVersion\\Shell Extensions\\Approved"
 // unicode
 // arbitrary actions
+// multiple selection
+// return from many nested menus - menu_up>1
+// paths are included in archive created
 
 // icons
 // multiple user.lua files
