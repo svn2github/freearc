@@ -489,7 +489,7 @@ STDMETHODIMP CShellExt::QueryContextMenu(HMENU _hMenu, UINT _nIndex, UINT _idCmd
     lua_pushstring (L, SelectedFilename);
   }
 
-  if (lua_pcall(L, 1, 0, 0) != 0)
+  if (lua_pcall(L, m_cbFiles, 0, 0) != 0)
     ;//error(L, "error running function `f': %s",
      //        lua_tostring(L, -1));
 
@@ -577,8 +577,6 @@ STDMETHODIMP CShellExt::InvokeSciTE(HWND hParent, LPCSTR pszWorkingDir, LPCSTR c
 //to do
 // unicode
 // arbitrary actions
-// multiple selection
-// paths are included in archive created
 
 // icons
 // multiple user.lua files

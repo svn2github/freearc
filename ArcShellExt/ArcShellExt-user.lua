@@ -2,7 +2,7 @@
 cascaded = 1
 
 -- Path to FreeArc
-freearc = "\"xC:\\Program Files (x86)\\FreeArc\\bin\\FreeArc.exe\" "
+freearc = "\"C:\\Program Files (x86)\\FreeArc\\bin\\FreeArc.exe\""
 
 -- Suffix for FreeArc archives
 arcext = ".arc"
@@ -18,25 +18,34 @@ archive_extensions = "arc"
 --                   for commands: text, command, help
 --                   for submenus: text, submenu, help (where submenu is, recursively, array of menu elements)
 register_menu_handler (function (filenames)
-  --if filenames.getn
-  filename     = "\""..filenames[1].."\""
-  filename_arc = "\""..filenames[1]..arcext.."\""
-  path     = get_path(filenames[1])
-  nameext  = drop_path(filenames[1])
+  nameext  = drop_dir(filenames[1])
+  path     = get_dir(filenames[1])
   basename = drop_ext(nameext)
   ext      = get_ext(nameext)
   subdir   = basename..DIR_SEPARATOR
+  filename = "\""..nameext.."\""
 
-  -- Menu item for Compresion operation - the only menu item for non-archive files
-  compress_item = {text = "Add to "..nameext..arcext,  command = freearc.."a --noarcext -- "..filename_arc.." "..filename,  help = "Compress the selected files using FreeArc"}
+  -- Menu item for Compresion operation - the only menu item for non-archive files or multiple selection
+  if #filenames==1 then
+    arcname = "\""..nameext..arcext.."\""
+    add_options = ""   -- "-ep1": disabled due to bug in FreeArc
+  else
+    arcname = "\""..drop_dir(path)..arcext.."\""
+    filename = ""
+    for i,_ in ipairs(filenames) do
+      filename = filename.." \""..drop_dir(filenames[i]).."\""
+    end
+    add_options = ""
+  end
+  compress_item = {text = "Add to "..arcname,  command = freearc.." a --noarcext "..add_options.." -- "..arcname.." "..filename,  help = "Compress the selected files using FreeArc"}
 
-  -- If this is an archive - add more items to menu and optionally make it cascaded
-  if string.match(ext,"^"..archive_extensions.."$") then
+  -- If single archive is selected - add more items to menu and optionally make it cascaded
+  if #filenames==1  and  string.match(ext,"^"..archive_extensions.."$") then
     menu = {
-      {text = "Open with &FreeArc",   command = freearc..filename,                          help = "Open the selected archive(s) with FreeArc"},
-      {text = "Extract to "..subdir,  command = freearc.."x -ad --noarcext -- "..filename,  help = "Extract the selected archive(s) to new folder"},
-      {text = "Extract here",         command = freearc.."x --noarcext -- "..filename,      help = "Extract the selected archive(s) to the same folder"},
-      {text = "Test",                 command = freearc.."t --noarcext -- "..filename,      help = "Test the selected archive(s)"},
+      {text = "Open with &FreeArc",   command = freearc.." "..filename,                      help = "Open the selected archive(s) with FreeArc"},
+      {text = "Extract to "..subdir,  command = freearc.." x -ad --noarcext -- "..filename,  help = "Extract the selected archive(s) to new folder"},
+      {text = "Extract here",         command = freearc.." x --noarcext -- "..filename,      help = "Extract the selected archive(s) to the same folder"},
+      {text = "Test",                 command = freearc.." t --noarcext -- "..filename,      help = "Test the selected archive(s)"},
       compress_item
     }
 

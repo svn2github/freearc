@@ -47,12 +47,12 @@ end
 -- Auxiliary functions ---------------------------------------------
 
 -- Return filename directory: c:\dir\file.ext -> c:\dir
-function get_path(filename)
+function get_dir(filename)
   return (string.match (filename, "(.*)"..DIR_SEPARATOR..".+"))
 end
 
 -- Return filename without directory: c:\dir\file.ext -> file.ext
-function drop_path(filename)
+function drop_dir(filename)
   return (string.match (filename, ".*"..DIR_SEPARATOR.."(.+)"))
 end
 
