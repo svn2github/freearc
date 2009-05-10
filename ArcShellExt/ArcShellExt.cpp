@@ -563,9 +563,11 @@ STDMETHODIMP CShellExt::InvokeSciTE(HWND hParent, LPCSTR pszWorkingDir, LPCSTR c
   si.dwFlags = STARTF_USESHOWWINDOW;
   si.wShowWindow = SW_RESTORE;
   if (!CreateProcess (NULL, (LPSTR)cmd, NULL, NULL, FALSE, 0, NULL, CurrentDir, &si, &pi)) {
+    TCHAR message[MAX_PATH];
+    wsprintf(message, "Cannot run program: %s", cmd);
     MessageBox(hParent,
-               "Error creating process: ArcShellExt.dll needs to be in the same directory as FreeArc.exe",
-               "FreeArc Extension",
+               message,
+               "FreeArc Shell Extension",
                MB_OK);
   }
 

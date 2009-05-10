@@ -2,7 +2,7 @@
 cascaded = 1
 
 -- Path to FreeArc
-freearc = "\"C:\\Program Files (x86)\\FreeArc\\bin\\FreeArc.exe\" "
+freearc = "\"xC:\\Program Files (x86)\\FreeArc\\bin\\FreeArc.exe\" "
 
 -- Suffix for FreeArc archives
 arcext = ".arc"

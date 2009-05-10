@@ -20,7 +20,7 @@ function build_menu (...)
   make_menu = function(menu)
     for _,item in ipairs(menu) do
       if item.submenu  then menu_down=1  else menu_down=0 end
-      i = add_menu_item (menu_up..item.text, menu_down, menu_up)
+      i = add_menu_item (item.text, menu_down, menu_up)
       items[i] = item
       menu_up = 0
       if item.submenu then
