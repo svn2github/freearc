@@ -41,3 +41,29 @@ end
 function get_command(i)
   return items[i].command
 end
+
+
+
+-- Auxiliary functions
+function get_path(filename)
+  return (string.match (filename, "(.*)"..DIR_SEPARATOR..".+"))
+end
+
+function drop_path(filename)
+  return (string.match (filename, ".*"..DIR_SEPARATOR.."(.+)"))
+end
+
+function get_ext(filename)
+  ext = (string.match (filename, ".*[.](.*)"))
+  if ext==nil then ext="" end
+  return ext
+end
+
+function drop_ext(filename)
+  name = (string.match (filename, "(.*)[.].*"))
+  if name==nil then name=filename end
+  return name
+end
+
+-- OS-dependent directory separator
+DIR_SEPARATOR = "\\"
