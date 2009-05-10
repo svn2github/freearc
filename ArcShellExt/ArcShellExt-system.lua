@@ -20,12 +20,12 @@ function build_menu (...)
   make_menu = function(menu)
     for _,item in ipairs(menu) do
       if item.submenu  then menu_down=1  else menu_down=0 end
-      i = add_menu_item (item.text, menu_down, menu_up)
+      i = add_menu_item (menu_up..item.text, menu_down, menu_up)
       items[i] = item
       menu_up = 0
       if item.submenu then
         make_menu (item.submenu)    -- recursive call to handle submenu
-        menu_up = 1
+        menu_up = menu_up+1
       end
     end
   end
@@ -44,21 +44,28 @@ end
 
 
 
--- Auxiliary functions
+-- Auxiliary functions ---------------------------------------------
+
+-- Return filename directory: c:\dir\file.ext -> c:\dir
 function get_path(filename)
   return (string.match (filename, "(.*)"..DIR_SEPARATOR..".+"))
 end
 
+-- Return filename without directory: c:\dir\file.ext -> file.ext
 function drop_path(filename)
   return (string.match (filename, ".*"..DIR_SEPARATOR.."(.+)"))
 end
 
+-- Return extension: file.ext -> ext
+-- Filename passed shouldn't contain path!
 function get_ext(filename)
   ext = (string.match (filename, ".*[.](.*)"))
   if ext==nil then ext="" end
   return ext
 end
 
+-- Drop extension: file.ext -> file
+-- Filename passed shouldn't contain path!
 function drop_ext(filename)
   name = (string.match (filename, "(.*)[.].*"))
   if name==nil then name=filename end

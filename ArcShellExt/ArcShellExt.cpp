@@ -406,13 +406,13 @@ int CShellExt::add_menu_item() {
   // Submenu flag
   int menu_down = luaL_checknumber(L, 2);
 
-  // Return from submenu flag
+  // Return from submenu (menu_level -= menu_up)
   int menu_up = luaL_checknumber(L, 3);
 
 
   if (menu_up)
   {
-    --menu_level;
+    menu_level -= menu_up;
     hMenu  = menu_stack [menu_level];
     nIndex = index_stack[menu_level];
   }
@@ -573,11 +573,9 @@ STDMETHODIMP CShellExt::InvokeSciTE(HWND hParent, LPCSTR pszWorkingDir, LPCSTR c
 }
 
 //to do
-// "Software\\Microsoft\\Windows\\CurrentVersion\\Shell Extensions\\Approved"
 // unicode
 // arbitrary actions
 // multiple selection
-// return from many nested menus - menu_up>1
 // paths are included in archive created
 
 // icons
