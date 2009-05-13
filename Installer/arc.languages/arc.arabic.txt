@@ -1,0 +1,619 @@
+﻿******************************************************************************
+***  This is a language file for FreeArc (http://freearc.org).             ***
+***  You may improve it by providing new translations.                     ***
+***  Messages that need translation are marked by "??",                    ***
+***  You just need to find all those question signs and replace them with  ***
+***  appropriate translations of the text at left side.                    ***
+***                                                                        ***
+***  Please note that Tooltips section should include not direct           ***
+***  translations but TOOLTIPS diplayed at the top of appropriate labels.  ***
+***  You may assign tooltip to any label - just use its number +1000 at    ***
+***  the left side. For example, label:                                    ***
+***    0185 Protection:=Protection: (written in your language, of course)  ***
+***  It's tooltip:                                                         ***
+***    1185 Protection:=Appends recovery information to archive            ***
+***                                                                        ***
+***  Also, one section contains relative URLs for language-specific        ***
+***  resources                                                             ***
+******************************************************************************
+
+Language name in english and mother tongue
+0000 Language=Arabic (العربية)
+0159 Copyright=Automatic translation from 7-Zip language file.\nPlease edit it to finish translation.\nOriginal copyrights:\nTranslated by SolVanDyck AKA SoLo
+
+Language-specific URLs relative to http://freearc.org/ and helpfiles
+Filled only for languages providing their own translations
+0254 Homepage (URL, not translation!)=الصفحة الرئيسية
+0255 News page (URL, not translation!)=صفحة أخبارِ
+0371 Forum page (URL, not translation!)=صفحة منتدى
+0372 Wiki page (URL, not translation!)=صفحة Wiki
+0256 Helpfile (URL, not translation!)=االملف لمساعدة
+0257 Command-line help (URL, not translation!)=مساعدة خَطِّ قيادةِ
+
+
+=== Menu ========================================================================
+Main menu
+0050 File=الملف
+0066 Edit=حرِّر
+0258 Commands=الأوامر
+0259 Tools=الأدوات
+0260 Options=خيارات
+0261 Help=المساعدة
+
+File menu/toolbar
+0262 Open archive=افتح الأرشيف
+0265 Open archive=الأرشيف المفتوح
+0263 Select all=اخ&تر الكل
+0290 Select all files=إخترْ كُلّ الملفات
+0037 Select=اختر
+0047 Select files=الملفات المنتقاة
+0038 Unselect=غير منتقى
+0048 Unselect files=الملفات الغير منتقاة
+0264 Invert selection=اعك&س الاختيار
+0291 Invert selection=إختيار مقلوبِ
+0039 Refresh=أنعشْ
+0049 Reread archive/directory=أعدْ قراءة أرشيفاً / دليل
+0036 Exit=الخروج
+0046 Quit application=توقّفِ تطبيق
+
+Commands menu/toolbar
+0030 Add=أضف
+0040 Add files to archive(s)=يضيف العناصر المختارة إلى أرشيف
+0035 Extract=استخرج
+0045 Extract files from archive(s)=يستخرج الملفات من الأرشيف المختار
+0034 Test=افحص
+0044 Test files in archive(s)=يفحص سلامة الأرشيف المختار
+0086 ArcInfo=معلومات
+0087 Information about archive=معلومات حول الأرشيفِ
+0033 Delete=اإحذفْ
+0043 Delete files (from archive)=إحذفْ الملفاتَ مِنْ الأرشيفِ
+
+Tools menu/toolbar
+0266 Lock=القفل
+0267 Lock archive from further changes=أرشيف قفلِ مِنْ التغييراتِ الأخرى
+0268 Comment=تعليق
+0269 Edit archive comment=حرّرْ تعليقَ أرشيفِ
+0293 Recompress=إعادة ضغطِ
+0294 Recompress files in archive=تَدْخلُ إعادة ضغطِ أرشيفاً
+0270 Convert to SFX=حوّلْ إلى إس إف إكس
+0271 Convert archive to SFX=تغييرِ أرشيف إلى إس إف إكس
+0272 Encrypt=التعمية
+0273 Encrypt archive contents=شفّرْ محتويات الأرشيفِ
+0274 Protect=إحمَ
+0275 Add Recovery record to archive=أضفْ سجلَ تحسّنِ للإرْشاف
+0379 Repair=التصليح
+0380 Repair damaged archive=التصليح الأرشيف المتضرّر
+0031 Modify=عدّلْ
+0041 Modify archive(s)=??
+0032 Join=الموصّل
+0042 Join archives together=يُرشفُ الموصّلُ سوية
+
+Options menu/toolbar
+0064 Settings=تضبيطات
+0065 Edit program settings=حرّرْ أماكنَ البرنامجِ
+0276 View log=سجلّ وجهةِ نظر
+0277 View logfile=ملف سجلِّ وجهةِ نظر
+0278 Clear log=السجلّ الواضح
+0279 Clear logfile=ملف السجلِّ الواضحِ
+
+Help menu/toolbar
+0280 Main help=المساعدة الرئيسية
+0281 Help on using FreeArc=مساعدة على إستعمال FreeArc
+0282 Cmdline help=مساعدة Cmdline
+0283 Help on FreeArc command line=مساعدة على خَطِّ قيادةِ FreeArc
+0284 Open Homepage=إفتحْ صفحة رئيسيةَ
+0285 Open program site=موقع البرنامجِ المفتوحِ
+0373 Open forum=المنتدى المفتوح
+0374 Open program forum=منتدى البرنامجِ المفتوحِ
+0375 Open wiki=wiki إفتحْ
+0376 Open program wiki=البرنامج افتحْ wiki
+0286 Check for update=مراقبة للتجديدِ
+0287 Check for new program versions=مراقبة لنسخِ البرنامجِ الجديدةِ
+0288 About=حول
+0289 About=حول
+
+
+=== File manager ==================================================================
+Navibar
+0006 Up=فوق
+0007 Save=إحفظْ
+0008 Select files=‮اختر…
+0009 Unselect files=‮دع…
+
+Filelist
+0015 Name=الاسم
+0016 Size=الحجم
+0017 Modified=عُدِّل في
+0018 DIRECTORY=‮<دليل>
+
+Statusbar
+0022 Selected %1 bytes in %2 file(s)=‮%2 عناصر مختارة, ‮%1 بايت
+0023 Total %1 bytes in %2 file(s)=‮%2 عناصر, ‮%1 بايت
+
+Messages
+0012 There are no files selected!=??
+0013 There are no archives selected!=??
+0071 %1: no such file or directory!=??
+0133 You can't compress files directly from archive!=??
+0145 You can't join archives directly from archive!=??
+0251 Abort operation?=??
+
+
+=== Dialogs =======================================================================
+Archive open dialog
+0305 Open archive=??
+0306 This file isn't a FreeArc archive!=??
+0307 FreeArc archives (*.arc)=??
+0308 Archives and SFXes (*.arc;*.exe)=??
+0309 All files (*)=??
+
+
+Add dialog
+--Title
+0134 Add %1 to archive=يضيف العناصر المختارة إلى أرشيف
+0135 Add %2 files to archive=يضيف العناصر المختارة إلى أرشيف
+0136 Add all files to archive=يضيف العناصر المختارة إلى أرشيف
+0146 Modify all archives=??
+0147 Modify %1=??
+0148 Modify %2 archives=??
+0149 Join all archives=??
+0150 Join %1 with another archive=??
+0151 Join %2 archives=??
+---------
+0182 Main=??
+0131 Output archive:=‮الأر&شيف:
+0132 Select output archive=??
+0141 Base directory inside archive:=??
+--
+0188 Store file paths:=??
+0189 No=??
+0190 Relative to compressed dir=??
+0191 Relative to curdir (default)=??
+0192 Absolute (relative to root dir)=??
+0193 Full (including drive letter)=??
+--
+0194 Update mode:=‮طور الت&حديث:
+0195 Add and replace files (default)=إضافة و استبدال الملفات
+0196 Add and update files=تحديث و إضافة الملفات
+0197 Fresh existing files=تحديث الملفات الموجودة فقط
+0198 Synchronize archive with disk contents=مزامنة الملفات
+--
+0183 Compression:=الضغط
+0184 Encryption:=التعمية
+0185 Protection:=??
+0186 Comment:=‮ت&عليق:
+0227 Make EXE:=أنشئ أرشيفا ذاتي الاستخراج
+0128 Test archive after operation=??
+0122 Delete files successfully archived=??
+0187 Finalize archive=??
+---------
+0200 Archive=??
+0201 Compress each file into separate archive=??
+0202 Add to archive name:=??
+--
+0203 Set archive time to:=??
+0204 Current system time=??
+0205 Original archive time=??
+0206 Latest file time=??
+--
+0207 Delete previous archive contents=??
+0208 Order of files in archive:=??
+--
+0209 Recompression mode:=??
+0210 Quickly append new files=??
+0211 Smart recompression of solid blocks (default)=??
+0212 Recompress all files=??
+0213 Store only fileinfo=??
+0214 Store only fileinfo & crcs=??
+0215 No archive headers=??
+--
+0216 Backup mode:=??
+0217 No (default)=??
+0218 Full: clear \"Archive\" attribute of files succesfully archived=??
+0219 Differential: select only files with \"Archive\" attribute set=??
+0220 Incremental: select by \"Archive\" attribute & clear it after compression=??
+---------
+0221 Files=الملفات
+0222 Include only files:=??
+0223 Exclude files:=??
+0224 Include only files larger than:=??
+0225 Include only files smaller than:=??
+---------
+0199 Comment=تعليق
+
+
+Delete dialog
+0160 Delete %1 from archive?=‮أمتأكد أنك تريد حذف '‪%1‬'؟
+0161 Delete %1?=‮أمتأكد أنك تريد حذف '‪%1‬'؟
+0019 Delete %2 file(s) from archive?=‮أمتأكد أنك تريد حذف ‪%2‬ عناصر هذه؟
+0020 Delete %2 file(s)?=‮أمتأكد أنك تريد حذف ‪%2‬ عناصر هذه؟
+
+
+Extract dialog
+0024 Extract files from %3=استخرج %3
+0025 Extract %1 from %3=??
+0026 Extract %2 files from %3=??
+0027 Extract files from %4 archives=??
+0158 Extract all archives=??
+0152 Test %3=افحص الأرشيف %3
+0153 Test %1 from %3=??
+0154 Test %2 files from %3=??
+0155 Test %4 archives=??
+0157 Test all archives=??
+--Overwrite mode
+0005 Overwrite mode=طور استبدال الملفات
+0001 Ask before overwrite=اسأل قبل الاستبدال
+0002 Overwrite without prompt=استبدل بلا توكيد
+0003 Update old files=??
+0051 Skip existing files=تجاوز الملفات الموجودة
+--Output directory
+0004 Output directory:=‮ا&ستخرج إلى:
+0021 Select output directory=حدد موضع المفات المستخرجة.
+0014 Append archive name to the output directory=??
+--Other
+0072 Additional options:=??
+
+
+Archive information dialog
+0085 All about %1=??
+0173 Directories:=‮أدلة:
+0088 Files:=‮ملفات:
+0089 Total bytes:=‮الحجم:
+0090 Compressed bytes:=‮الحجم المضغوط:
+0091 Ratio:=نسبة الضغط:
+--
+0104 Directory blocks:=??
+0092 Solid blocks:=??
+0093 Avg. blocksize:=??
+--
+0099 Compression memory:=‮الذاكرة اللازمة للضغط:
+0100 Decompression memory:=‮الذاكرة اللازمة للاستخراج:
+0105 Dictionary:=‮حجم المع&جم:
+--
+0094 Archive locked:=??
+0095 Recovery info:=??
+0096 SFX size:=??
+0156 Headers encrypted:=&عمِّ أسماء الملفات
+--
+0097 Encryption algorithms:=طريقة التعمية:
+0098 Archive comment:=‮ت&عليق:
+
+
+Settings dialog
+0067 Settings=تضبيطات
+0174 Main=??
+0068 Language:=‮اللغة:
+0069 Edit=&حرِّر
+0070 Import=??
+0170 Full name:=??
+0171 Copyright:=??
+0166 Logfile:=??
+0292 View=است&عرض
+0167 Select logfile=??
+0172 Associate FreeArc with .arc files=‮اربط ‪FreeArc‬ بامتدادات الأسماء التالية .arc
+0361 Add captions to toolbar buttons=??
+0370 Watch for new versions via Internet=??
+0168 You should restart FreeArc in order for a language settings to take effect.=??
+0169 Passwords need to be entered again after restart.=??
+--
+0388 Info=??
+0389 Largest contiguous free memblock:=??
+
+
+Logfiles
+0303 No log file specified in Settings dialog!=??
+0304 Clear logfile %1?=??
+
+Checking for updates
+0295 Checking for updates...=??
+0296 Cannot open %1. Do you want to check the page with browser?=??
+0297 Nothing new at %1=??
+0298 Found new information at %1! Open the page with browser?=??
+
+
+=== Profile settings ============================================================
+--Compression settings
+0106 Compression=الضغط
+0175 Compression profile:=??
+0178 Save=??
+0107 Compression level=‮&درجة الضغط:
+0108 Maximum=الأقصى
+0109 High=??
+0110 Normal=اعتيادي
+0111 Fast=سريع
+0112 Very fast=الأسرع
+0127 HDD-speed=??
+0113 Fast, low-memory decompression=??
+0226 (fast, low-memory decompression)=??
+0176 Filetype auto-detection=??
+--Description of compression method selected
+0114 Compression level: %1=‮&درجة الضغط: %1
+0115 Compression speed: %1, memory: %2=‮الذاكرة اللازمة للضغط: %2, ‮السرعة: %1
+0116 Decompression speed: %1, memory: %2=‮الذاكرة اللازمة للاستخراج: %2, ‮السرعة: %1
+0390 All speeds were measured on 3GHz Core2Duo=??
+--Solid block size
+0177 Limit solid blocks=??
+0138 Bytes, no more than:=‮الحجم:
+0139 Files, no more than:=‮ملفات:
+0140 Split by extension=??
+
+--Encryption settings
+0119 Encryption=التعمية
+0179 Encryption profile:=??
+0180 Save=??
+0120 Encrypt archive directory=&عمِّ أسماء الملفات
+0181 Use password=??
+0123 Keyfile:=??
+0124 Select keyfile=??
+0125 Create=??
+0126 Create new keyfile=??
+0121 Encryption algorithm:=طريقة التعمية:
+--Decryption settings
+0144 Decryption=??
+
+
+=== Execution dialogs ============================================================
+Many dialogs
+0079 &Yes=ن&عم
+0080 &No=&لا
+0362 &OK=حسن
+0081 &Cancel=أل&غِ
+0363 &Select=??
+0364 &Close=أغل&ق
+
+Progress indicator
+--Buttons
+0052 &Background=ال&خلفية
+0053 &Pause=&جمِّد
+0054 &Continue=&واصل
+--Labels
+0056 Files=‮ملفات:
+0057 Total files=??
+0058 Bytes=الملفات المعالَجة:
+0059 Total bytes=‮الحجم:
+0252 Compressed=‮الحجم المضغوط:
+0253 Total compressed=??
+0060 Ratio=نسبة الضغط:
+0061 Speed=‮السرعة:
+0062 Time=‮الزمن المنقضي:
+0063 Total time=??
+--Messages
+0246 Found %1 files=??
+0247 Found %1 archives=??
+0248 Analyzed %1 files=??
+0249 Reading archive directory=??
+0250 Sorting filelist=??
+0385 Scanning archive for damages=??
+0386 Protecting archive from damages=??
+0387 Recovering archive=??
+
+File overwrite dialog
+0078 Confirm File Replace=أكد قبل استبدال ملف
+0162 Destination folder already contains processed file.=الدليل الوجهة يحوي ملف بذات الاسم.
+0163 Would you like to replace the existing file=أتريد استبدال الملف الموجود
+0164 with this one?=بهذا الملف؟
+0165 %1\n%2 bytes\nmodified on %3=%1\n‮%2 بايت\nعُدِّل في %3
+0082 Yes to &All=&نعم للكل
+0083 No to A&ll=لا لل&كل 
+0084 &Update all=??
+
+Enter password dialog
+0076 Enter encryption password=أدخل كلمة السر
+0077 Enter decryption password=أدخل كلمة السر
+0074 Enter password:=‮أدخل كلمة السر:
+0075 Reenter password:=أعد إدخال كلمة السر:
+
+Archive comment dialog
+0073 Enter archive comment=??
+
+
+=== Infoline messages ====================================================
+0228 Deleting from %1=??
+0229 FILES SUCCESFULLY DELETED FROM %1=??
+0230 %2 WARNINGS WHILE DELETING FROM %1=??
+
+0231 Testing %1=??
+0232 SUCCESFULLY TESTED %1=??
+0233 %2 WARNINGS WHILE TESTING %1=??
+
+0234 Extracting files from %1=??
+0235 FILES SUCCESFULLY EXTRACTED FROM %1=??
+0236 %2 WARNINGS WHILE EXTRACTING FILES FROM %1=??
+
+0237 Modifying %1=??
+0238 SUCCESFULLY MODIFIED %1=??
+0239 %2 WARNINGS WHILE MODIFYING %1=??
+
+0240 Joining archives to %1=??
+0241 SUCCESFULLY JOINED ARCHIVES TO %1=??
+0242 %2 WARNINGS WHILE JOINING ARCHIVES TO %1=??
+
+0243 Adding to %1=??
+0244 FILES SUCCESFULLY ADDED TO %1=??
+0245 %2 WARNINGS WHILE ADDING TO %1=??
+
+0299 Lock archive(s)?=??
+0300 Locking archive %1=??
+0301 SUCCESFULLY LOCKED ARCHIVE %1=??
+0302 %2 WARNINGS WHILE LOCKING ARCHIVE %1=??
+
+0381 Repair archive(s)? Repaired archive(s) will be placed into files named fixed.*=??
+0382 Repairing archive %1=??
+0383 SUCCESFULLY REPAIRED ARCHIVE %1=??
+0384 %2 WARNINGS WHILE REPAIRING ARCHIVE %1=??
+
+
+=== Error messages =======================================================
+0316 ERROR: %1=??
+0317 WARNING: %1=??
+0310 can't modify archive locked with -k=??
+0311 can't create temporary file=??
+0312 output archive already exists, keeping temporary file %1=??
+0313 archive broken, keeping temporary file %1=??
+0314 archive broken, deleting=??
+0315 can't open SFX module %1=??
+0318 command syntax is "%1"=??
+0319 options %1 and %2 can't be used together=??
+0320 unknown command "%1". Supported commands are: %2=??
+0321 unknown option "%1"=??
+0322 ambiguous option "%1" - is that %2?=??
+0325 option "%1" have illegal format=??
+0326 %1 option must be one of: %2=??
+0327 no command name in command: %1=??
+0328 no archive name in command: %1=??
+0329 no filenames in command: %1=??
+0330 can't read directory "%1"=??
+0331 can't get info about file "%1"=??
+0332 can't open file "%1"=??
+0333 CRC error in file "%1"=??
+0334 bad section %1 in %2=??
+0335 operation terminated!=??
+0336 program terminated!=??
+0337 no files, erasing empty archive=??
+0338 skipped %1 fake files=??
+0339 bad password for archive %1=??
+0340 bad password for %1 in archive %2=??
+0341 %1 isn't archive or this archive is corrupt: %2. Please recover it using 'r' command or use -tp- option to ignore Recovery Record=??
+0342 SFX module %1 is not found=??
+0343 %1 isn't implemented=??
+0344 only first of %1 recovery records can be processed by this program version. Please use newer versions to process the rest=??
+0345 you need FreeArc %1 or above to process this recovery info=??
+0346 file %1 already exists=??
+0347 archive can't be recovered - recovery data absent or corrupt=??
+0348 %1 unrecoverable errors (%2) found, can't restore anything!=??
+0349 can't open original at %1=??
+0350 %1 has size %2 so it can't be used to recover %3 having size %4=??
+0351 %1 errors (%2) remain unrecovered=??
+0352 found %1 errors (%2)=??
+0353 there were %1 warnings due archive testing=??
+0354 block descriptor at pos %1 is corrupted=??
+0355 %1 is corrupted=??
+0359 %1 failed decompression=??
+0360 %1 should be uncompressed=??
+0356 archive directory not found=??
+0357 archive signature not found at the end of archive=??
+0358 last block of archive is not footer block=??
+0377 command "%1" shouldn't have additional arguments=??
+0378 bad name or parameters in encryption algorithm %1=??
+
+Errors returned by compression methods
+0365 general (de)compression error in %1=??
+0366 invalid compression method or parameters in %1=??
+0367 can't allocate memory required for (de)compression in %1=??
+0368 I/O error in compression algorithm %1=??
+0369 bad compressed data in %1=??
+
+
+=== Standard profiles ====================================================
+Compression
+0771 Maximum=??
+0772 Maximum with fast decompression=??
+0752 No compression=??
+
+Encryption
+0733 Strongest=??
+0732 Strong=??
+0730 Standard=??
+0731 Fast=??
+
+Protection
+0769 Add (autosize, 1-4%)=??
+0735 Remove=??
+0734 Add=??
+0770 Add for recovery via Internet=??
+
+Comment
+0740 Add from textbox=??
+0741 Remove=??
+0742 Add short comment, example=??
+0743 Add from a file, example=??
+
+SFX
+0765 Windows GUI=??
+0766 Windows console=??
+0767 Linux console=??
+0768 Convert EXE back to ARC=??
+
+Sorting
+0744 No sorting=??
+0745 Standard=??
+0746 Advanced=??
+0747 Smart+Path=??
+0748 Smart+Name=??
+0750 Extension+Path=??
+0749 Extension+Name=??
+0751 Extension+Size=??
+
+Archive name template
+0754 Date+Time=??
+0755 Date=??
+0756 Time=??
+0757 Month=??
+0758 Monthday=??
+0759 Weekday=??
+
+Exclude
+0753 Backup files=??
+
+Additional compression options
+0760 Perform full backup=??
+0761 Full archive test before and after operation=??
+
+Additional extraction options
+0762 Remove pathnames=??
+0763 Restore absolute pathnames=??
+0764 Full archive test before performing operation=??
+
+
+=== Tooltips (index=N+1000) ===========================================
+
+******************************************************************************************
+***  DON'T FORGET THAT THIS SECTION SHOULD PROVIDE TOOLTIPS, NOT DIRECT TRANSLATIONS.  ***
+***  You may find some tooltips in arc.english.txt                                     ***
+******************************************************************************************
+
+Add dialog
+--
+1183 Compression=??
+1184 Encryption=??
+1185 Protection:=??
+1186 Comment=??
+1227 Make EXE:=??
+1128 Test archive after operation=??
+1122 Delete files successfully archived=??
+1187 Finalize archive=??
+1072 Additional options:=??
+--
+1201 Compress each marked file/directory into separate archive=??
+1202 Add to archive name=??
+--
+1207 Delete previous archive contents=??
+1208 Order of files in archive=??
+--
+1222 Include only files=??
+1223 Exclude files=??
+
+--Compression settings
+1113 Fast, low-memory decompression=??
+1176 Filetype auto-detection=??
+1138 Bytes, no more than:=??
+1139 Files, no more than:=??
+1140 Split by extension=??
+
+--Encryption settings
+1120 Encrypt archive directory=شفّرْ دليلَ أرشيفِ
+1123 Keyfile:=الملف الرئيسي
+1125 Generate new keyfile=ولّدْ ملفَ رئيسيَ جديدَ
+1181 Use password=كلمة سر إستعمالِ
+
+
+=== Everything else ====================================================
+Common words
+0101 Yes=نعم
+0102 No=لا
+0323 or=أَو
+0324 and=و
+
+Failure messages
+0010 Operation interrupted!=عملية مُقَاطَعة!
+0011 No threads to run: infinite loop or deadlock?=لا خيوطَ للرَكْض: الحلقة أَو الجمود اللانهائي؟

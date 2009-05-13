@@ -19,7 +19,7 @@
 
 Language name in english and mother tongue
 0000 Language=Spanish (Español)
-0159 Copyright=Based on 7-zip spanish translation\nModified by Guillermo Gabrielli for FreeArc - 13/09/2008\nUpdated by Yuri Grille grillexx@gmail.com - 2/05/2009
+0159 Copyright=Por Gaspar Peña para FreeArc - 02/05/2009
 
 Language-specific URLs relative to http://freearc.org/ and helpfiles
 Filled only for languages providing their own translations
@@ -38,80 +38,79 @@ Main menu
 0258 Commands=Comandos
 0259 Tools=&Herramientas
 0260 Options=Opciones
-0261 Help=Ayuda	
+0261 Help=Ay&uda
 
 File menu/toolbar
 0262 Open archive=Abrir comprimido
-0265 Open archive=Abrir archivo
-0263 Select all=Seleccionar &todo
-0290 Select all files=Seleccionar todos los archivos
+0265 Open archive=Abrir comprimido
+0263 Select all=Seleccionar &todos
+0290 Select all files=Seleccionar &todos los archivos
 0037 Select=Seleccionar
-0047 Select files=Seleccionar archivos
+0047 Select files=Seleccionar archivos...
 0038 Unselect=Deseleccionar
-0048 Unselect files=Deseleccionar archivos
+0048 Unselect files=Deseleccionar archivos...
 0264 Invert selection=&Invertir selección
-0291 Invert selection=Invertir selección
+0291 Invert selection=&Invertir selección
 0039 Refresh=&Actualizar
 0049 Reread archive/directory=Releer archivo comprimido/directorio
 0036 Exit=&Salir
-0046 Quit application=Salir del programa
+0046 Quit application=Cerrar
 
 Commands menu/toolbar
 0030 Add=Agregar
-0040 Add files to archive(s)=Agrega los ficheros seleccionados al archivo.
+0040 Add files to archive(s)=Agregar ficheros seleccionados al archivo
 0035 Extract=Extraer
-0045 Extract files from archive(s)=Extrae los ficheros del archivo(s) seleccionado(s).
-0034 Test=Probar
-0044 Test files in archive(s)=Comprueba la integridad del archivo seleccionado.
+0045 Extract files from archive(s)=Extraer ficheros del archivo seleccionado
+0034 Test=Comprobar
+0044 Test files in archive(s)=Comprobar integridad del archivo seleccionado
 0086 ArcInfo=Información
-0087 Information about archive=Información acerca del archivo comprimido
+0087 Information about archive=Información del archivo comprimido
 0033 Delete=&Borrar
-0043 Delete files (from archive)=Borra ficheros dentro del archivo comprimido
+0043 Delete files (from archive)=Borra ficheros del archivo comprimido
 
 Tools menu/toolbar
 0266 Lock=Bloquear
-0267 Lock archive from further changes=Bloquear el Archivo contra cambios futuros
+0267 Lock archive from further changes=Bloquear archivo desde los cambios
 0268 Comment=Comentario
-0269 Edit archive comment=Editar comentario del archivo
+0269 Edit archive comment=Editar comentario
 0293 Recompress=Recomprimir
-0294 Recompress files in archive=Recomprimir archivos de un comprimido
-0270 Convert to SFX=Convertir a (.exe)
-0271 Convert archive to SFX=Convierte el archivo (.arc) a (.exe) para poder ser \ndescompactado en un PC que no tenga FreeArc.
-
-0272 Encrypt=Encriptar
-0273 Encrypt archive contents=Encriptar nombres del compactado
+0294 Recompress files in archive=Recomprimir ficheros del archivo
+0270 Convert to SFX=Convertir a SFX
+0271 Convert archive to SFX=Convertir archivo a SFX
+0272 Encrypt=Encriptación
+0273 Encrypt archive contents=Encriptar contenido del archivo
 0274 Protect=Proteger
-0275 Add Recovery record to archive=Agregar al archivo protección contra fallos.
+0275 Add Recovery record to archive=Agregar registro de recuperación
 0379 Repair=Reparar
-0380 Repair damaged archive=Reparar un archivo dañado
+0380 Repair damaged archive=Reparar archivo dañado
 0031 Modify=Modificar
-0041 Modify archive(s)=Modifica Archivo(s)
+0041 Modify archive(s)=Modificar archivo(s)
 0032 Join=Unir
-0042 Join archives together=Une archivos comprimidos
+0042 Join archives together=Unir archivos comprimidos
 
 Options menu/toolbar
 0064 Settings=Configuración
-0065 Edit program settings=Cambia la configuración del programa
-0276 View log=Ver resultados (Memoria, tiempo y velocidad)
-0277 View logfile=Ver resultados (Memoria, tiempo y velocidad)
-0278 Clear log=Borrar los resultados
-0279 Clear logfile=Borrar los resultados
+0065 Edit program settings=Configuración
+0276 View log=Ver registro
+0277 View logfile=Ver archivo de registro
+0278 Clear log=Borrar registro
+0279 Clear logfile=Borrar archivo de registro
 
 Help menu/toolbar
-0280 Main help=Ayuda Principal
-0281 Help on using FreeArc=Ayuda de FreeArc
-0282 Cmdline help=Ayuda de la linea de comandos.
-0283 Help on FreeArc command line=Ayuda de la línea de comandos.
-0284 Open Homepage=Web de FreeArc
-0285 Open program site=Web de FreeArc 
-0373 Open forum=Abrir el Web Forum de FreeArc
-0374 Open program forum=Abrir el Web Forum de FreeArc
-0375 Open wiki=Web de FreeArc 
-0376 Open program wiki=Web de FreeArc (en Sourceforge.net)
-0286 Check for update=Ver si hay actualizaciones
-0287 Check for new program versions=Ver si hay una nueva versión
-0288 About=Acerca de FreArc
-0289 About=Acerca de FreArc
+0280 Main help=Ayuda
+0281 Help on using FreeArc=¿Cómo usar FreeArc?
+0282 Cmdline help=Ayuda sobre la línea de comandos
+0283 Help on FreeArc command line=Ayuda sobre línea de comandos de FreeArc
+0284 Open Homepage=Ir a la página de FreeArc
+0285 Open program site=Ir al sitio web de FreeArc
+0373 Open forum=Ir al foro
+0374 Open program forum=Ir al foro del programa
+0375 Open wiki=Ir a la wiki
+0376 Open program wiki=Ir a la wiki del programa
+0286 Check for update=Comprobar actualizaciones
+0287 Check for new program versions=Comprobar nuevas versiones del programa
+0288 About=Acerca
+0289 About=Acerca
 
 
 === File manager ==================================================================
@@ -134,65 +133,65 @@ Statusbar
 Messages
 0012 There are no files selected!=No hay ficheros seleccionados
 0013 There are no archives selected!=No hay archivos comprimidos seleccionados
-0071 %1: no such file or directory!=No existe dicho fichero o directorio
-0133 You can't compress files directly from archive!=No se puede comprimir directamente archivos en el archivo comprimido 
-0145 You can't join archives directly from archive!=No se puede unir  directamente archivos del archivo comprimido
-0251 Abort operation?=Abortar la compresion ?
+0071 %1: no such file or directory!=No existe el fichero o directorio
+0133 You can't compress files directly from archive!=No se pueden comprimir directamente archivos de un archivo comprimido 
+0145 You can't join archives directly from archive!=No se pueden unir directamente archivos de un archivo comprimido
+0251 Abort operation?=¿Cancelar operación?
 
 
 === Dialogs =======================================================================
 Archive open dialog
-0305 Open archive=Abrir archivo
-0306 This file isn't a FreeArc archive!=Este no es un archivo de FreeArc!
-0307 FreeArc archives (*.arc)=Archivos FreeArc (*.arc)
-0308 Archives and SFXes (*.arc;*.exe)=Archivos y Auto-extraíbles (*.arc;*.exe)
-0309 All files (*)=Todos los Archivos (*)
+0305 Open archive=Abrir archivo comprimido
+0306 This file isn't a FreeArc archive!=Este no es un archivo de FreeArc
+0307 FreeArc archives (*.arc)=Archivos FreeArc
+0308 Archives and SFXes (*.arc;*.exe)=Archivos y SFXs
+0309 All files (*)=Todos los archivos
 
 
 Add dialog
 --Title
-0134 Add %1 to archive=Añade los ficheros seleccionados al archivo.
-0135 Add %2 files to archive=Añade los ficheros seleccionados al archivo.
-0136 Add all files to archive=Añade los ficheros seleccionados al archivo.
+0134 Add %1 to archive=Añadir %1 para comprimir
+0135 Add %2 files to archive=Añadir %2 ficheros seleccionados para comprimir
+0136 Add all files to archive=Añadir todos los ficheros para comprimir
 0146 Modify all archives=Modificar todos los archivos
 0147 Modify %1=Modificar %1
-0148 Modify %2 archives=Modificar %2 archivos
+0148 Modify %2 archives=Modificar %2 archivos comprimidos
 0149 Join all archives=Unir todos los archivos comprimidos
-0150 Join %1 with another archive=Unir %1 con otro archivo
+0150 Join %1 with another archive=Unir %1 con otro archivo comprimido
 0151 Join %2 archives=Unir %2 archivos comprimidos
 ---------
-0182 Main=Principal
+0182 Main=General
 0131 Output archive:=&Archivo:
 0132 Select output archive=Seleccionar archivo de salida
 0141 Base directory inside archive:=Directorio base del archivo comprimido:
 --
 0188 Store file paths:=Guardar rutas de ficheros:
 0189 No=No
-0190 Relative to compressed dir=Con respecto al directorio comprimido
-0191 Relative to curdir (default)=Con respecto al directorio actual
-0192 Absolute (relative to root dir)=Absoluto (con respecto al directorio principal del disco)
-0193 Full (including drive letter)=Completos (incluyendo la letra del disco)
+0190 Relative to compressed dir=Relativo al directorio comprimido
+0191 Relative to curdir (default)=Relativo al directorio actual (predeterminado)
+0192 Absolute (relative to root dir)=Absoluto (relativo al directorio principal de la unidad)
+0193 Full (including drive letter)=Completo (incluyendo la letra de unidad)
 --
 0194 Update mode:=M&odo de actualización:
-0195 Add and replace files (default)=Añadir y sustituir archivos
-0196 Add and update files=Actualizar y añadir archivos
+0195 Add and replace files (default)=Añadir y sustituir archivos (predeterminado)
+0196 Add and update files=Añadir y actualizar archivos
 0197 Fresh existing files=Sólo actualizar archivos
-0198 Synchronize archive with disk contents=Sincronizar archivos
+0198 Synchronize archive with disk contents=Sincronizar archivos con contenido del disco
 --
-0183 Compression:=Compresión
-0184 Encryption:=Encriptación
-0185 Protection:=Protección
+0183 Compression:=Compresión:
+0184 Encryption:=Encriptación:
+0185 Protection:=Protección:
 0186 Comment:=&Comentario:
-0227 Make EXE:=Crear archivo SFX (auto-extraíble)
+0227 Make EXE:=Crear archivo SF&X (auto-extraible):
 0128 Test archive after operation=Comprobar el archivo después de la operación
 0122 Delete files successfully archived=Borrar ficheros comprimidos exitosamente
 0187 Finalize archive=Terminar archivo
 ---------
 0200 Archive=Archivo comprimido
-0201 Compress each file into separate archive=Comprimir cada fichero en su propio archivo
-0202 Add to archive name:=Agregar al archivo
+0201 Compress each file into separate archive=Comprimir cada fichero en archivos separados
+0202 Add to archive name:=Agregar al archivo:
 --
-0203 Set archive time to:=Establecer tiempo del archivo comprimido como
+0203 Set archive time to:=Establecer tiempo del archivo comprimido a:
 0204 Current system time=Tiempo actual del sistema
 0205 Original archive time=Tiempo del archivo original
 0206 Latest file time=Tiempo del último fichero
@@ -200,34 +199,31 @@ Add dialog
 0207 Delete previous archive contents=Eliminar el contenido anterior del archivo
 0208 Order of files in archive:=Orden de ficheros en el archivo comprimido
 --
-0209 Recompression mode:=Modo de Recomprensión
+0209 Recompression mode:=Modo de recompresión
 0210 Quickly append new files=Agregar rápidamente nuevos ficheros
-0211 Smart recompression of solid blocks (default)=Recomprensión inteligente de bloques sólidos 
+0211 Smart recompression of solid blocks (default)=Recompresión inteligente de bloques compactos (predeterminado)
 0212 Recompress all files=Recomprimir todos los ficheros
 0213 Store only fileinfo=Guardar solamente la información del fichero
 0214 Store only fileinfo & crcs=Guardar solamente la información del fichero y CRCs
 0215 No archive headers=Sin cabeceras del archivo
 --
 0216 Backup mode:=Modo de respaldo
-0217 No (default)=No (por defecto)
-0218 Full: clear \"Archive\" attribute of files succesfully archived=Completo: borrar atributo "Archivar" de los ficheros  
-comprimidos
-0219 Differential: select only files with \"Archive\" attribute set=Diferencial : Seleccionar sólo ficheros con el atributo  
-"Archivar" 
-0220 Incremental: select by \"Archive\" attribute & clear it after compression=Incremental: Seleccionar según el atributo  
-"Archivar" y borrar el atributo después de la compresión.
+0217 No (default)=No (predeterminado)
+0218 Full: clear \"Archive\" attribute of files succesfully archived=Completo: borrar atributo "Archivo" de los ficheros comprimidos
+0219 Differential: select only files with \"Archive\" attribute set=Diferencial: Seleccionar sólo ficheros con el atributo "Archivo" 
+0220 Incremental: select by \"Archive\" attribute & clear it after compression=Incremental: Seleccionar según el atributo "Archivo" y borrar el atributo después de la compresión
 ---------
 0221 Files=Archivos
-0222 Include only files:=Incluir solo ficheros
-0223 Exclude files:=Excluir ficheros
-0224 Include only files larger than:=Incluir sólo ficheros más grande que:
+0222 Include only files:=Incluir sólo ficheros:
+0223 Exclude files:=Excluir ficheros:
+0224 Include only files larger than:=Incluir sólo ficheros más grandes que:
 0225 Include only files smaller than:=Incluir sólo ficheros más pequeños que:
 ---------
 0199 Comment=Comentario
 
 
 Delete dialog
-0160 Delete %1 from archive?=¿Está seguro de querer borrar '%1'?
+0160 Delete %1 from archive?=¿Está seguro de querer borrar %1 del archivo?
 0161 Delete %1?=¿Está seguro de querer borrar '%1'?
 0019 Delete %2 file(s) from archive?=¿Está seguro de querer borrar estos %2 elementos?
 0020 Delete %2 file(s)?=¿Está seguro de querer borrar estos %2 elementos?
@@ -245,47 +241,47 @@ Extract dialog
 0155 Test %4 archives=Probar %4 archivos
 0157 Test all archives=Probar todos los archivos
 --Overwrite mode
-0005 Overwrite mode=Modo de sobre escritura
-0001 Ask before overwrite=Con confirmación
-0002 Overwrite without prompt=Sin confirmación
+0005 Overwrite mode=Modo de sobreescritura
+0001 Ask before overwrite=Preguntar antes de sobrescribir
+0002 Overwrite without prompt=Sobrescribir sin preguntar
 0003 Update old files=Actualizar ficheros antiguos
 0051 Skip existing files=Conservar archivos existentes
 --Output directory
-0004 Output directory:=Extraer a:
+0004 Output directory:=E&xtraer a:
 0021 Select output directory=Seleccione destino para los archivos extraídos.
 0014 Append archive name to the output directory=Agregar nombre del archivo al directorio de salida
 --Other
-0072 Additional options:=Opciones adicionales:
+0072 Additional options:=Optiones adicionales:
 
 
 Archive information dialog
 0085 All about %1=Todo sobre %1
 0173 Directories:=Directorios:
-0088 Files:=Ficheros:
-0089 Total bytes:=Tamaño:
-0090 Compressed bytes:=Tamaño Comprimido:
-0091 Ratio:=Razón de Compresión:
+0088 Files:=Archivos:
+0089 Total bytes:=Bytes totales:
+0090 Compressed bytes:=Bytes comprimidos:
+0091 Ratio:=Razón de compresión:
 --
 0104 Directory blocks:=Bloques de directorios:
-0092 Solid blocks:=Bloques compactos:
-0093 Avg. blocksize:=Tamaño Promedio:
+0092 Solid blocks:=Bloques sólidos:
+0093 Avg. blocksize:=Tamaño de bloque promedio:
 --
-0099 Compression memory:=Memoria usada para Comprimir:
-0100 Decompression memory:=Memoria usada para Descomprimir:
-0105 Dictionary:=Tamaño de &Diccionario:
+0099 Compression memory:=Memoria usada para comprimir:
+0100 Decompression memory:=Memoria usada para descomprimir:
+0105 Dictionary:=Tamaño de &diccionario:
 --
-0094 Archive locked:=Archivo bloqueado
-0095 Recovery info:=Información de recuperación
-0096 SFX size:=Tamaño de SFX
-0156 Headers encrypted:=Encriptar &nombres de fichero
+0094 Archive locked:=Archivo bloqueado:
+0095 Recovery info:=Información de recuperación:
+0096 SFX size:=Tamaño de SFX:
+0156 Headers encrypted:=Encriptar &nombres de fichero:
 --
-0097 Encryption algorithms:=Método de &Encriptación:
+0097 Encryption algorithms:=Método de &encriptación:
 0098 Archive comment:=&Comentario:
 
 
 Settings dialog
 0067 Settings=Propiedades
-0174 Main=Principal
+0174 Main=General
 0068 Language:=Idioma:
 0069 Edit=&Editar
 0070 Import=Importar
@@ -295,27 +291,24 @@ Settings dialog
 0292 View=&Ver
 0167 Select logfile=Seleccionar archivo de registro
 0172 Associate FreeArc with .arc files=Asociar FreeArc con .arc
-0361 Add captions to toolbar buttons=Adicionar titulos a los botones en la barra.
-0370 Watch for new versions via Internet=Comprobar si hay actualizaciones en Internet
-0168 You should restart FreeArc in order for a language settings to take effect.=Debe reiniciar FreeArc para cambiar de  
-idioma.
-0169 Passwords need to be entered again after restart.=Las contraseñas deben cambiarse después del reinicio.
+0361 Add captions to toolbar buttons=Mostrar etiquetas de ayuda en la barra de herramientas
+0370 Watch for new versions via Internet=Buscar nuevas versiones en internet
+0168 You should restart FreeArc in order for a language settings to take effect.=Debe reiniciar FreeArc para que el cambio de idioma tenga efecto.
+0169 Passwords need to be entered again after restart.=Debe reingresar las contraseñas luego de reiniciar.
 --
-0388 Info=Informacion
-0389 Largest contiguous free memblock:=Bloques de memoria libre:
+0388 Info=Información
+0389 Largest contiguous free memblock:=Tamaño máximo contiguo de bloque libre
 
 
 Logfiles
-0303 No log file specified in Settings dialog!=No hay configurado un registro de los resultados.
-0304 Clear logfile %1?=Borrar los Resultados
+0303 No log file specified in Settings dialog!=No se especificó un archivo de registro en la configuración
+0304 Clear logfile %1?=¿Borrar archivo de registro %1?
 
 Checking for updates
-0295 Checking for updates...=Comprobar si hay actualizaciones
-0296 Cannot open %1. Do you want to check the page with browser?=No se pudo abrir %1 .Usted desea abrir la pagina con el  
-explorador?
+0295 Checking for updates...=Comprobando actualizaciones...
+0296 Cannot open %1. Do you want to check the page with browser?=No se puede abrir %1. ¿Desea comprobar en la página desde el navegador?
 0297 Nothing new at %1=Nada nuevo en %1
-0298 Found new information at %1! Open the page with browser?=Encontrada nueva información en %1! Abrir la página con el  
-explorador?
+0298 Found new information at %1! Open the page with browser?=Se encontró nueva información de %1. ¿Abrir la página en el navegador?
 
 
 === Profile settings ============================================================
@@ -323,26 +316,26 @@ explorador?
 0106 Compression=Compresión
 0175 Compression profile:=Perfil de compresión
 0178 Save=Guardar
-0107 Compression level=Nive&l de Compresión:
+0107 Compression level=Nive&l de compresión:
 0108 Maximum=Máxima
 0109 High=Alta
 0110 Normal=Normal
 0111 Fast=Rápida
 0112 Very fast=Muy rápida
 0127 HDD-speed=Velocidad de disco duro
-0113 Fast, low-memory decompression=Decomprensión rápida con poca memoria
-0226 (fast, low-memory decompression)=(Decomprensión rápida con poca memoria)
-0176 Filetype auto-detection=Detectar tipo automáticamente
+0113 Fast, low-memory decompression=Rápida (requiere poca memoria)
+0226 (fast, low-memory decompression)=(Rápida - requiere poca memoria)
+0176 Filetype auto-detection=Autodetectar tipos de archivo
 --Description of compression method selected
-0114 Compression level: %1=Nive&l de Compresión: %1
-0115 Compression speed: %1, memory: %2=Memoria usada para Comprimir: %2, Velocidad: %1
-0116 Decompression speed: %1, memory: %2=Memoria usada para Descomprimir: %2, Velocidad: %1
-0390 All speeds were measured on 3GHz Core2Duo=Todas la velocidades fueron probadas en un 3GHz Core2Duo \n(Esto varia en dependencia de la PC)
+0114 Compression level: %1=Nive&l de compresión: %1
+0115 Compression speed: %1, memory: %2=Memoria usada para comprimir: %2, Velocidad: %1
+0116 Decompression speed: %1, memory: %2=Memoria usada para descomprimir: %2, Velocidad: %1
+0390 All speeds were measured on 3GHz Core2Duo=Las velocidades fueron medidas en base a Core2Duo 3GHz
 --Solid block size
-0177 Limit solid blocks=Limitar tamaño de bloques compactos
-0138 Bytes, no more than:=Máximo Tamaño (bytes):
+0177 Limit solid blocks=Limitar tamaño de bloques sólidos
+0138 Bytes, no more than:=Tamaño máximo (bytes):
 0139 Files, no more than:=No más ficheros que:
-0140 Split by extension=Dividir según extensión
+0140 Split by extension=Dividir por extensión
 
 --Encryption settings
 0119 Encryption=Encriptación
@@ -350,13 +343,13 @@ explorador?
 0180 Save=Guardar
 0120 Encrypt archive directory=Encriptar &nombres de fichero
 0181 Use password=Usar contraseña
-0123 Keyfile:=Fichero clave
-0124 Select keyfile=Seleccionar Fichero clave
+0123 Keyfile:=Fichero de clave
+0124 Select keyfile=Seleccionar fichero de clave
 0125 Create=Crear
-0126 Create new keyfile=Crear nuevo fichero clave
-0121 Encryption algorithm:=Método de &Encriptación:
+0126 Create new keyfile=Crear nuevo fichero de clave
+0121 Encryption algorithm:=Método de &encriptación:
 --Decryption settings
-0144 Decryption=Desencripción 
+0144 Decryption=Decodificación
 
 
 === Execution dialogs ============================================================
@@ -365,33 +358,33 @@ Many dialogs
 0080 &No=&No
 0362 &OK=Aceptar
 0081 &Cancel=&Cancelar
-0363 &Select=Seleccionar
+0363 &Select=&Seleccionar
 0364 &Close=&Cerrar
 
 Progress indicator
 --Buttons
-0052 &Background=Se&gundo Plano
-0053 &Pause=&Pausa
+0052 &Background=Se&gundo plano
+0053 &Pause=&Pausar
 0054 &Continue=&Continuar
 --Labels
-0056 Files=Ficheros:
+0056 Files=Ficheros
 0057 Total files=Total de ficheros
-0058 Bytes=Bytes:
-0059 Total bytes=Tamaño de bytes:
-0252 Compressed=Tamaño Comprimido:
-0253 Total compressed=Total Comprimido
-0060 Ratio=Razón de Compresión:
-0061 Speed=Velocidad:
-0062 Time=Tiempo transcurrido:
+0058 Bytes=Bytes
+0059 Total bytes=Bytes totales
+0252 Compressed=Comprimido
+0253 Total compressed=Total comprimido
+0060 Ratio=Razón de compresión
+0061 Speed=Velocidad
+0062 Time=Tiempo transcurrido
 0063 Total time=Tiempo total
 --Messages
-0246 Found %1 files=Se encontró %1 ficheros
-0247 Found %1 archives=Se encontró %1 archivos comprimidos
-0248 Analyzed %1 files=Se analizó %1 ficheros
+0246 Found %1 files=Se encontraron %1 ficheros
+0247 Found %1 archives=Se encontraron %1 archivos comprimidos
+0248 Analyzed %1 files=Se analizaron %1 ficheros
 0249 Reading archive directory=Leyendo carpeta del archivo
 0250 Sorting filelist=Ordenando lista de ficheros
-0385 Scanning archive for damages=Comprobar daños en el archivo
-0386 Protecting archive from damages=Proteger el archivo contra daños
+0385 Scanning archive for damages=Analizando archivo en busca de errores
+0386 Protecting archive from damages=Protegiendo archivo contra daños
 0387 Recovering archive=Recuperando archivo
 
 File overwrite dialog
@@ -408,7 +401,7 @@ Enter password dialog
 0076 Enter encryption password=Introducir contraseña
 0077 Enter decryption password=Introducir contraseña
 0074 Enter password:=E&scriba la contraseña:
-0075 Reenter password:=Escriba nuevamente la contraseña:
+0075 Reenter password:=Escriba nue&vamente la contraseña:
 
 Archive comment dialog
 0073 Enter archive comment=Ingresar comentario
@@ -439,105 +432,83 @@ Archive comment dialog
 0244 FILES SUCCESFULLY ADDED TO %1=ARCHIVOS AGREGADOS EXITOSAMENTE A %1 
 0245 %2 WARNINGS WHILE ADDING TO %1=%2 ADVERTENCIAS MIENTRAS SE AGREGABA A %1
 
-0299 Lock archive(s)?=Bloquear archivo(s)
+0299 Lock archive(s)?=¿Bloquear archivos?
 0300 Locking archive %1=Bloqueando archivo %1
-0301 SUCCESFULLY LOCKED ARCHIVE %1=Bloqueo de archivo completado %1
-0302 %2 WARNINGS WHILE LOCKING ARCHIVE %1=%2 Advertencias cuando se bloqueaba el archivo %1
+0301 SUCCESFULLY LOCKED ARCHIVE %1=ARCHIVO BLOQUEADO CORRECTAMENTE %1
+0302 %2 WARNINGS WHILE LOCKING ARCHIVE %1=%2 ADVERTENCIAS MIENTRAS SE BLOQUEABA EL ARCHIVO %1
 
-0381 Repair archive(s)? Repaired archive(s) will be placed into files named fixed.*=Reparar archivo(s)? Archivo(s) Reparados  
-serán puestos dentro de archivos nombrados fixed.*
-0382 Repairing archive %1=Reparando archivo
-0383 SUCCESFULLY REPAIRED ARCHIVE %1=Archivo reparado satisfactoriamente
-0384 %2 WARNINGS WHILE REPAIRING ARCHIVE %1=%2 Advertencias cuando se reparaba el archivo %1
+0381 Repair archive(s)? Repaired archive(s) will be placed into files named fixed.*=¿Reparar archivo(s)? Los archivos reparados serán colocados en archivos de nombre fixed.*
+0382 Repairing archive %1=Reparando archivo %1
+0383 SUCCESFULLY REPAIRED ARCHIVE %1=ARCHIVO REPARADO CORRECTAMENTE %1
+0384 %2 WARNINGS WHILE REPAIRING ARCHIVE %1=%2 ADVERTENCIAS MIENTRAS SE REPARABA EL ARCHIVO %1
 
 
 === Error messages =======================================================
-0316 ERROR: %1=Error: %1
-0317 WARNING: %1=Aviso: %1
-0310 can't modify archive locked with -k=No se puede modificar archivo bloqueado con (-k)
-0311 can't create temporary file=No se puede crear archivo temporal
-0312 output archive already exists, keeping temporary file %1=Archivo de salida ya existe, manteniedo el archivo temporal %1
-0313 archive broken, keeping temporary file %1=Archivo corrupto , manteniendo archivo temporal %1
-0314 archive broken, deleting=Archivo corrupto , borrando
-0315 can't open SFX module %1=No se puede abrir el auto-extrible 
-0318 command syntax is "%1"=La sintaxis del comando es "%1"
-0319 options %1 and %2 can't be used together=Opcion %1 y %2 no pueden ser usados juntos
-0320 unknown command "%1". Supported commands are: %2=Comando desconocido "%1".Los comandos soportados son : %2
-0321 unknown option "%1"=Opción desconocida "%1"
-0322 ambiguous option "%1" - is that %2?=Opción ambigua "%1"
-0325 option "%1" have illegal format=Opción "%1" tiene un formato ilegal
-0326 %1 option must be one of: %2=opción %1 debe de ser una de estas: %2
-0327 no command name in command: %1=No hay nombre de comando en el comando: %1
-0328 no archive name in command: %1=No hay nombres de archivo en el comando: %1
-0329 no filenames in command: %1=No hay nombres de archivo en el comando: %1
-0330 can't read directory "%1"=No se puede leer el directorio "%1"
-
-0331 can't get info about file "%1"=No se puede obtener información acerca del archivo "%1"
-0332 can't open file "%1"=No se puede abrir el archivo "%1"
-0333 CRC error in file "%1"=Error en el CRC en el archivo "%1"
-0334 bad section %1 in %2=Sección corrupta en %1 in %2
-0335 operation terminated!=Operación terminada!
-0336 program terminated!=Programa terminado!
-
-0337 no files, erasing empty archive=No hay archivos, borrando comprimido vacío
-
-0338 skipped %1 fake files=Se ignoro %1 archivos falsos
-
-0339 bad password for archive %1=Contraseña incorrecta para el archivo %1
-
-0340 bad password for %1 in archive %2=Contraseña incorrecta para %1 en archivo %2
-
-0341 %1 isn't archive or this archive is corrupt: %2. Please recover it using 'r' command or use -tp- option to ignore  
-Recovery Record=%1 no es un archivo o este archivo esta corrupto: %2. Por favor recuperelo usando el comando "r" o use la  
-opcion -tp- para ignorar los Registros de Recuperación
-
-0342 SFX module %1 is not found=Modulo auto-extraíble %1 no encontrado
-
-
-0343 %1 isn't implemented=%1 no esta implementado
-
-0344 only first of %1 recovery records can be processed by this program version. Please use newer versions to process the  
-rest=Only la primera %1 de los registros de recuperación pueden ser procesados por esta version. Use una versión nueva para  
-procesar el resto
-
-
-0345 you need FreeArc %1 or above to process this recovery info=Usted necesita FreeArc %1 o superior para procesar esta  
-información de recuperación
-0346 file %1 already exists=Archivo %1 ya existe
-
-0347 archive can't be recovered - recovery data absent or corrupt=El archivo no puede ser recuperado - los datos de  
-recuperacion esta ausentes o corruptos.
-
-0348 %1 unrecoverable errors (%2) found, can't restore anything!=%1 Error irrecuperable (%2) , no se puede recuperar nada!
-0349 can't open original at %1=No se puede abrir el original en %1
-
-0350 %1 has size %2 so it can't be used to recover %3 having size %4=%1 tiene tamaño %2 este no puede ser usado para recuperar %3 teniendo el tamaño %1
-0351 %1 errors (%2) remain unrecovered=%1 errores (%2) irrecuperables
-0352 found %1 errors (%2)=Encontrado %1 errores (%2)
-0353 there were %1 warnings due archive testing=encontradas %1 advertencias durante el testeo del archivo
-0354 block descriptor at pos %1 is corrupted=Descripción del bloque en la posición %1 esta corrupto
-0355 %1 is corrupted=%1 esta corrupto
-0359 %1 failed decompression=%1 fallo la descompresión
-0360 %1 should be uncompressed=%1 pudiera ser descomprimido
-0356 archive directory not found=Directorio del archivo no encontrado
-0357 archive signature not found at the end of archive=características del compactado no fueron encontradas al final del archivo
-0358 last block of archive is not footer block=El ultimo bloque del archivo no es valido
-0377 command "%1" shouldn't have additional arguments=Comando "%1" no debe tener argumentos adicionales
-0378 bad name or parameters in encryption algorithm %1=Nombre incorrecto o parametros en el algoritmo de encripcion %
+0316 ERROR: %1=ERROR: %1
+0317 WARNING: %1=ADVERTENCIA: %1
+0310 can't modify archive locked with -k=No se puede modificar archivo bloqueado con -k
+0311 can't create temporary file=No se puede crear el archivo temporal
+0312 output archive already exists, keeping temporary file %1=El archivo ya existe, descartando archivo temporal %1
+0313 archive broken, keeping temporary file %1=Archivo dañado, descartando archivo temporal %1
+0314 archive broken, deleting=Archivo dañado, borrando
+0315 can't open SFX module %1=No se puede abrir el módulo SFX %1
+0318 command syntax is "%1"=Sintáxis de comando %1
+0319 options %1 and %2 can't be used together=Las opciones %1 y %2 no pueden usarse a la vez
+0320 unknown command "%1". Supported commands are: %2=comando desconocido "%1". Los comandos soportados son: %2
+0321 unknown option "%1"=opción desconocida "%1"
+0322 ambiguous option "%1" - is that %2?=opción ambigua "%1" - es %2?
+0325 option "%1" have illegal format=la opción "%1" tiene formato no permitido
+0326 %1 option must be one of: %2=%1 opción debe ser una de: %2
+0327 no command name in command: %1=falta nombre de comando en el comando: %1
+0328 no archive name in command: %1=falta nombre de archivo en el comando: %1
+0329 no filenames in command: %1=faltan nombres de archivos en el comando: %1
+0330 can't read directory "%1"=no se puede leer el directorio "%1"
+0331 can't get info about file "%1"=no se puede obtener información del archivo "%1"
+0332 can't open file "%1"=no se puede abrir el archivo "%1"
+0333 CRC error in file "%1"=error de CRC en el archivo "%1"
+0334 bad section %1 in %2=sector %1 con errores en %2
+0335 operation terminated!=operación finalizada
+0336 program terminated!=programa finalizado
+0337 no files, erasing empty archive=no hay archivos, borrando archivo vacío
+0338 skipped %1 fake files=descartados %1 archivos falsos
+0339 bad password for archive %1=contraseña incorrecta para el archivo %1 
+0340 bad password for %1 in archive %2=contraseña incorrecta para %1 en el archivo %2
+0341 %1 isn't archive or this archive is corrupt: %2. Please recover it using 'r' command or use -tp- option to ignore Recovery Record=%1 no es un archivo comprimido o este archivo está dañado: %2. Por favor, recuperar usando el comando 'r' o usar la opción -tp- para ignorar el registro de recuperación
+0342 SFX module %1 is not found=no se encuentra módulo SFX %1
+0343 %1 isn't implemented=%1 no implementado
+0344 only first of %1 recovery records can be processed by this program version. Please use newer versions to process the rest=??
+0345 you need FreeArc %1 or above to process this recovery info=??
+0346 file %1 already exists=??
+0347 archive can't be recovered - recovery data absent or corrupt=??
+0348 %1 unrecoverable errors (%2) found, can't restore anything!=??
+0349 can't open original at %1=??
+0350 %1 has size %2 so it can't be used to recover %3 having size %4=??
+0351 %1 errors (%2) remain unrecovered=??
+0352 found %1 errors (%2)=??
+0353 there were %1 warnings due archive testing=??
+0354 block descriptor at pos %1 is corrupted=??
+0355 %1 is corrupted=??
+0359 %1 failed decompression=??
+0360 %1 should be uncompressed=??
+0356 archive directory not found=??
+0357 archive signature not found at the end of archive=??
+0358 last block of archive is not footer block=??
+0377 command "%1" shouldn't have additional arguments=??
+0378 bad name or parameters in encryption algorithm %1=??
 
 Errors returned by compression methods
-0365 general (de)compression error in %1=Erorr general en la (de)compresión de %1
-0366 invalid compression method or parameters in %1=Método de compresión o parámetros incorrectos en %1
-0367 can't allocate memory required for (de)compression in %1=No hay memoria disponible para la (de)compresión en %1
-0368 I/O error in compression algorithm %1=I/O error en el algoritmo de compresión
-0369 bad compressed data in %1=Datos comprimidos están corruptos en %1
+0365 general (de)compression error in %1=??
+0366 invalid compression method or parameters in %1=??
+0367 can't allocate memory required for (de)compression in %1=??
+0368 I/O error in compression algorithm %1=??
+0369 bad compressed data in %1=??
 
 
 === Standard profiles ====================================================
 Compression
-0771 Maximum=Maxima
-0772 Maximum with fast decompression=Máxima,con descompresión rápida
-0752 No compression=Sin Compresión
+0771 Maximum=Máxima
+0772 Maximum with fast decompression=Máxima con descompresión rápida
+0752 No compression=No comprimir
 
 Encryption
 0733 Strongest=La más fuerte
@@ -546,27 +517,27 @@ Encryption
 0731 Fast=Rápida
 
 Protection
-0769 Add (autosize, 1-4%)=Adicionar (tamaño automático, 1-4%)
+0769 Add (autosize, 1-4%)=Añadir (tamaño automático, 1-4%)
 0735 Remove=Quitar
-0734 Add=Agregar
-0770 Add for recovery via Internet=Adicionar para recuperación vía Internet
+0734 Add=Añadir
+0770 Add for recovery via Internet=Añadir para recuperar vía internet
 
 Comment
 0740 Add from textbox=Agregar del cuadro de texto
-0741 Remove=Eliminar
-0742 Add short comment, example=Agregar comentario corto, por ejemplo
-0743 Add from a file, example=Agregar desde un fichero, por ejemplo
+0741 Remove=Quitar
+0742 Add short comment, example=Agregar comentario corto, ejemplo
+0743 Add from a file, example=Agregar desde un fichero, ejemplo
 
 SFX
-0765 Windows GUI=GUI de Windows
+0765 Windows GUI=Interface gráfica de Windows
 0766 Windows console=Consola de Windows
 0767 Linux console=Consola de Linux
-0768 Convert EXE back to ARC=Convertir EXE a ARC
+0768 Convert EXE back to ARC=Convertir EXE en ARC
 
 Sorting
-0744 No sorting=Sin Orden
+0744 No sorting=No ordenar
 0745 Standard=Estándar
-0746 Advanced=Avanzado
+0746 Advanced=Advanzado
 0747 Smart+Path=Inteligente+Ruta
 0748 Smart+Name=Inteligente+Nombre
 0750 Extension+Path=Extensión+Ruta
@@ -578,20 +549,20 @@ Archive name template
 0755 Date=Fecha
 0756 Time=Hora
 0757 Month=Mes
-0758 Monthday=Día del Mes
-0759 Weekday=Día de la Semana
+0758 Monthday=Día del mes
+0759 Weekday=Día de la semana
 
 Exclude
-0753 Backup files=Archivos de Backup
+0753 Backup files=Copias de seguridad
 
 Additional compression options
-0760 Perform full backup=Hace un archivos de respaldo
-0761 Full archive test before and after operation=Hacer un test completo antes y despues de la operacion
+0760 Perform full backup=Copia de seguridad completa
+0761 Full archive test before and after operation=Verificar el archivo antes y después de la operación
 
 Additional extraction options
-0762 Remove pathnames=Remover rutas de los ficheros en el compactado
-0763 Restore absolute pathnames=Restaurar con las rutas completas de los ficheros.
-0764 Full archive test before performing operation=Hacer un test completo antes de la operacion
+0762 Remove pathnames=Quitar nombres de directorio
+0763 Restore absolute pathnames=Restaurar nombres de directorio absolutos
+0764 Full archive test before performing operation=Verificar el archivo antes de la operación
 
 
 === Tooltips (index=N+1000) ===========================================
@@ -603,44 +574,37 @@ Additional extraction options
 
 Add dialog
 --
-1183 Compression=Compresión
-1184 Encryption=Encripción
-1185 Protection:=Agrega información (1% por defecto) al archivo comprimido que permite restaurarlo en caso de falla del medio  
-o errores de transmición
-1186 Comment=Comentario
-1227 Make EXE:=Hacer un .EXE
-1128 Test archive after operation=Testar el archivo después de la operación
-1122 Delete files successfully archived=Borrar los archivos una ves comprimidos
-1187 Finalize archive=Finalizar archivo
+1183 Compression=Seleccionar el nivel de compresión
+1184 Encryption=Seleccionar método de encriptación
+1185 Protection:=Agrega información (%1 por defecto) al archivo comprimido que permite restaurarlo en caso de errores
+1186 Comment=Tipo de comentario
+1227 Make EXE:=Elegir el formato gráfico o de consola para el archivo EXE
+1128 Test archive after operation=Verifica el archivo luego de la operación en busca de errores
+1122 Delete files successfully archived=Los archivos originales comprimidos correctamente se borrarán
+1187 Finalize archive=Cierra el archivo comprimido
 1072 Additional options:=Opciones adicionales
 --
-1201 Compress each marked file/directory into separate archive=Comprimir cada archivo seleccionado en comprimidos separados
-1202 Add to archive name=Adicionar a el archivo con nombre
+1201 Compress each marked file/directory into separate archive=Los archivos/directorios seleccionados, se comprimen cada uno por separado con su mismo nombre
+1202 Add to archive name=Estos datos se añaden al nombre del archivo final
 --
-1207 Delete previous archive contents=Borrar previamente el contenido del comprimido
-1208 Order of files in archive=Orden de los archivos en el comprimido
+1207 Delete previous archive contents=Elimina el contenido previo del archivo comprimido
+1208 Order of files in archive=El método que se utilizará para ordenar los archivos dentro del archivo comprimido
 --
-1222 Include only files=Incluir solo archivos
-1223 Exclude files=Excluir archivos
+1222 Include only files=Sólo se incluirá este tipo de archivo
+1223 Exclude files=Estos archivos no se incluirán al comprimir
 
 --Compression settings
-1113 Fast, low-memory decompression=Desactiva el uso de algoritmos lentos o que usen mucha memoria durante la descompresión.  
-Sin embargo, la compresión es más lenta y menos efectiva.
-1176 Filetype auto-detection= FreeArc analiza el contenido de cada fichero y selecciona el método óptimo. Si se desactiva los  
-algoritmos se eligen de acuerdo a arc.groups
-1138 Bytes, no more than:=Bytes, no mas de :
-1139 Files, no more than:=Archivos,no mas de:
-1140 Split by extension=Dividir por extencion.
+1113 Fast, low-memory decompression=Desactiva el uso de algoritmos lentos o que usen mucha memoria durante la descompresión. Sin embargo, la compresión es más lenta y menos efectiva.
+1176 Filetype auto-detection= FreeArc analiza el contenido de cada fichero y selecciona el método óptimo. Si se desactiva los algoritmos se eligen de acuerdo a arc.groups
+1138 Bytes, no more than:=??
+1139 Files, no more than:=??
+1140 Split by extension=??
 
 --Encryption settings
-1120 Encrypt archive directory=Encripta la meta-información (nombres , tamaño, CRS de los archivos contenidos) del archivo,  
-así que sera necesario ingresar la contraseña o fichero clave para abrir el archivo comprimido. Se recomienda activar esta  
-opción para asegurar la seguridad de sus datos.
-1123 Keyfile:=El fichero clave es una contraseña adicional guardada en un archivo en el disco, que será pedido para abrir el  
-archivo comprimido. Se recomienda usarla para aprovechar al máximo el potencial del AES y otros algoritmos
-1125 Generate new keyfile=Crea nuevo fichero clave con un nombre elegido por el usuario conteniendo 1kb de datos aleatorios  
-generados criptográficamente
-1181 Use password=Usar password
+1120 Encrypt archive directory=Encripta la meta-information (names, sizes, CRS of files in archive) del archivo, así que sera necesario ingresar la contraseña o fichero clave paa abrir el archivo comprimido. Se recomienda activar esta opción para asegurar la seguridad de sus datos.
+1123 Keyfile:=El fichero clave es una contraseña adicional guardada en un archivo en el disco, que será pedido para abrir el archivo comprimido. Se recomienda usarla para aprovechar al máximo el potencial del AES y otros algoritmos
+1125 Generate new keyfile=Crea nuevo fichero clave con un nombre elegido por el usuario conteniendo 1kb de datos aleatorios generados criptográficamente
+1181 Use password=??
 
 
 === Everything else ====================================================
@@ -651,5 +615,5 @@ Common words
 0324 and=y
 
 Failure messages
-0010 Operation interrupted!=¡Operación Cancelada!
+0010 Operation interrupted!=Operación interrumpida
 0011 No threads to run: infinite loop or deadlock?=No hay hilos que correr: Bucle Infinito o Deadlock

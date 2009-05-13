@@ -7,6 +7,7 @@ mkdir arc.languages
 del /q arc.languages\*.*
 cd arc.languages
 for %%a in (%szip%\Lang\*.txt) do ..\7tr ..\arc.russian.txt %%a
+..\7tr.exe ..\arc.russian.txt %szip%\Lang\ar.txt ..\arc.arabic.txt
 ..\7tr.exe ..\arc.russian.txt %szip%\Lang\de.txt ..\arc.german.txt
 ..\7tr.exe ..\arc.russian.txt %szip%\Lang\cs.txt ..\arc.czech.txt
 ..\7tr.exe ..\arc.russian.txt %szip%\Lang\fr.txt ..\arc.french.txt
