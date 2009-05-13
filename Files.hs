@@ -194,9 +194,9 @@ foreign import ccall safe "Environment.h RunFile"
 
 
 #if defined(FREEARC_WIN)
--- |Создать HKEY и прочитать из Registry значение типа REG_SZ
+-- |Открыть HKEY и прочитать из Registry значение типа REG_SZ
 registryGetStr root branch key =
-  bracket (regCreateKey root branch) regCloseKey
+  bracket (regOpenKey root branch) regCloseKey
     (\hk -> registryGetStringValue hk key)
 
 -- |Создать HKEY и записать в Registry значение типа REG_SZ

@@ -249,7 +249,6 @@ settingsDialog fm' = do
     -- Прочее
     toolbarTextButton   <- fmCheckButtonWithHistory fm' "ToolbarCaptions" True "0361 Add captions to toolbar buttons"
     checkNewsButton     <- fmCheckButtonWithHistory fm' "CheckNews"       True "0370 Watch for new versions via Internet"
-    registerButton      <- button "0172 Associate FreeArc with .arc files"
     notes               <- label . joinWith "\n" =<<
       i18ns["0168 You should restart FreeArc in order for a language settings to take effect.",
             "0169 Passwords need to be entered again after restart."]
@@ -314,41 +313,6 @@ settingsDialog fm' = do
     editLangButton    `onClick` (runEditCommand =<< getCurrentLangFile)
     viewLogfileButton `onClick` (runViewCommand =<< val logfile)
 
-#if defined(FREEARC_WIN)
-    registerButton `onClick` do
-      exe <- getExeName                                -- Name of FreeArc.exe file
-      let ico   =  exe `replaceExtension` ".ico"       -- Name of FreeArc.ico file
-          dir   =  exe.$takeDirectory                  -- FreeArc.exe directory
-          shext =  dir </> "ArcShellExt"               -- Shell extension directory
-          empty =  dir </> "empty.arc"                 -- Name of empty archive file
-          register = registrySetStr hKEY_CLASSES_ROOT
-          regCmd name msg cmdline = do
-              register ("FreeArc.arc\\shell\\"++name) "" msg
-              register ("FreeArc.arc\\shell\\"++name++"\\command") "" ("\""++exe++"\" "++cmdline++" --noarcext -- \"%1\"")
-      register ".arc" "" "FreeArc.arc"
-      register ".arc\\ShellNew" "FileName" empty
-      register "FreeArc.arc" "" "FreeArc archive"
-      register "FreeArc.arc\\DefaultIcon" "" (ico++",0")
-      register "FreeArc.arc\\shell" "" "open"
-      register "FreeArc.arc\\shell\\open\\command" "" ("\""++exe++"\" \"%1\"")
-
-      -- Generate ArcShellExt lua scripts
-      let script = unlines [ "-- 1 for cascaded menus, nil for flat"
-                           , "cascaded = 1"
-                           , ""
-                           , "-- Path to FreeArc"
-                           , "freearc = \"\\\""++(exe.$replaceAll "\\" "\\\\")++"\\\"\""
-                           ]
-      filePutBinary (shext </> "ArcShellExt-config.lua") script
-
-      -- Register ArcShellExt dlls
-      system$ "regsvr32 /s /c \""++(shext </> "ArcShellExt.dll\"")
-      system$ "regsvr32 /s /c \""++(shext </> "ArcShellExt-64.dll\"")
-
-      -- todo: extract to ...;    *: add to archive; add to ...; выбор надписи и профайла/опций пользователя
-      return ()
-#endif
-
     ; langFrame <- frameNew
     ;   vbox1 <- vBoxNew False 0
     ;   set langFrame [containerChild := vbox1, containerBorderWidth := 5]
@@ -365,8 +329,18 @@ settingsDialog fm' = do
     boxPackStart vbox                logfileBox          PackNatural 5
     boxPackStart vbox       (widget  toolbarTextButton)  PackNatural 5
     boxPackStart vbox       (widget  checkNewsButton)    PackNatural 5
-    boxPackStart vbox       (widget  registerButton)     PackNatural 5   `on` isWindows
     boxPackStart vbox       (widget  notes)              PackNatural 5
+
+------ Закладка интеграции с Explorer ---------------------------------------------------------
+#if defined(FREEARC_WIN)
+    vbox <- newPage "0999 Explorer integration";  let pack x = boxPackStart vbox x PackNatural 1
+
+    registerButton <- fmCheckButtonWithHistory fm' "ExplorerIntegration" True "0172 Associate FreeArc with .arc files"
+    cascadedButton <- fmCheckButtonWithHistory fm' "CascadedMenu"        True "0999 Cascaded context menu"
+
+    boxPackStart vbox (widget  registerButton)     PackNatural 5
+    boxPackStart vbox (widget  cascadedButton)     PackNatural 5
+#endif
 
 ------ Закладка сжатия ------------------------------------------------------------------------
     (_, saveCompressionHistories) <- compressionPage fm' =<< newPage "0106 Compression"
@@ -393,9 +367,59 @@ settingsDialog fm' = do
       io$ buildPathTo inifile
       io$ saveConfigFile inifile$ map (join2 "=") [(aINITAG_LANGUAGE, takeFileName langFile)]
       logfile' <- val logfile;  saveHistory logfile
-      saveHistory `mapM_` [toolbarTextButton, checkNewsButton]
+      saveHistory `mapM_` [toolbarTextButton, checkNewsButton, registerButton, cascadedButton]
+      register  <- val registerButton
+      cascading <- val cascadedButton
+      registerShellExtensions register cascading
       saveCompressionHistories
       saveEncryptionHistories ""
+      return ()
+
+
+----------------------------------------------------------------------------------------------------
+---- (Де)регистрация shell extension ---------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+
+registerShellExtensions enabled cascaded = do
+      -- When registering Shell Extension - let's first unregister any old version
+      when enabled (registerShellExtensions False cascaded)
+
+      exe <- getExeName                                -- Name of FreeArc.exe file
+      let ico   =  exe `replaceExtension` ".ico"       -- Name of FreeArc.ico file
+          dir   =  exe.$takeDirectory                  -- FreeArc.exe directory
+          shext =  dir </> "ArcShellExt"               -- Shell extension directory
+          empty =  dir </> "empty.arc"                 -- Name of empty archive file
+          register hk key val | enabled                 = registrySetStr hKEY_CLASSES_ROOT hk key val
+--                              | not enabled && key==""  = regDeleteKey hKEY_CLASSES_ROOT hk
+                              | not enabled             = return ()
+          regCmd name msg cmdline = do
+              register ("FreeArc.arc\\shell\\"++name) "" msg
+              register ("FreeArc.arc\\shell\\"++name++"\\command") "" ("\""++exe++"\" "++cmdline++" --noarcext -- \"%1\"")
+      register ".arc" "" "FreeArc.arc"
+      register ".arc\\ShellNew" "FileName" empty
+      register "FreeArc.arc" "" "FreeArc archive"
+      register "FreeArc.arc\\DefaultIcon" "" (ico++",0")
+      register "FreeArc.arc\\shell" "" "open"
+      register "FreeArc.arc\\shell\\open\\command" "" ("\""++exe++"\" \"%1\"")
+
+      -- Generate ArcShellExt config script
+      let script = unlines [ "-- 1 for cascaded menus, nil for flat"
+                           , "cascaded = "++(iif cascaded "1" "nil")
+                           , ""
+                           , "-- Path to FreeArc"
+                           , "freearc = \"\\\""++(exe.$replaceAll "\\" "\\\\")++"\\\"\""
+                           , ""
+                           , "-- Path to All2Arc"
+                           , "all2arc = \"\\\""++((windosifyPath(dir </> "all2arc.exe")).$replaceAll "\\" "\\\\")++"\\\"\""
+                           ]
+      filePutBinary (shext </> "ArcShellExt-config.lua") script  `on` enabled
+
+      -- Register ArcShellExt dlls
+      let u = iif enabled "" "/u"
+      system$ "regsvr32 "++u++" /s /c \""++(shext </> "ArcShellExt.dll\"")
+      system$ "regsvr32 "++u++" /s /c \""++(shext </> "ArcShellExt-64.dll\"")
+
+      -- todo: extract to ...;    *: add to archive; add to ...; выбор надписи и профайла/опций пользователя
       return ()
 
 

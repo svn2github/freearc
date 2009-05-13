@@ -1,9 +1,3 @@
--- 1 for cascaded menus, nil for flat
-cascaded = 1
-
--- Path to FreeArc
-freearc = "\"C:\\Program Files (x86)\\FreeArc\\bin\\FreeArc.exe\""
-
 -- Suffix for FreeArc archives
 arcext = ".arc"
 
@@ -21,7 +15,7 @@ register_menu_handler (function (filenames)
   nameext  = drop_dir(filenames[1])
   path     = get_dir(filenames[1])
   basename = drop_ext(nameext)
-  ext      = get_ext(nameext)
+  ext      = string.lower(get_ext(nameext))
   subdir   = basename..DIR_SEPARATOR
   filename = "\""..nameext.."\""
 
@@ -38,23 +32,33 @@ register_menu_handler (function (filenames)
     add_options = ""
   end
   compress_item = {text = "Add to "..arcname,  command = freearc.." a --noarcext "..add_options.." -- "..arcname.." "..filename,  help = "Compress the selected files using FreeArc"}
+  menu = {compress_item}
 
-  -- If single archive is selected - add more items to menu and optionally make it cascaded
-  if #filenames==1  and  string.match(string.lower(ext), "^"..archive_extensions.."$") then
-    menu = {
-      {text = "Open with &FreeArc",   command = freearc.." "..filename,                      help = "Open the selected archive(s) with FreeArc"},
-      {text = "Extract to "..subdir,  command = freearc.." x -ad --noarcext -- "..filename,  help = "Extract the selected archive(s) to new folder"},
-      {text = "Extract here",         command = freearc.." x --noarcext -- "..filename,      help = "Extract the selected archive(s) to the same folder"},
-      {text = "Test",                 command = freearc.." t --noarcext -- "..filename,      help = "Test the selected archive(s)"},
-      compress_item
-    }
+  -- If single archive is selected - add more items to menu
+  if #filenames==1  then
+    -- FreeArc archive
+    if string.match(ext,"^"..archive_extensions.."$") then
+      menu = {
+        {text = "Open with &FreeArc",   command = freearc.." "..filename,                      help = "Open the selected archive(s) with FreeArc"},
+        {text = "Extract to "..subdir,  command = freearc.." x -ad --noarcext -- "..filename,  help = "Extract the selected archive(s) to new folder"},
+        {text = "Extract here",         command = freearc.." x --noarcext -- "..filename,      help = "Extract the selected archive(s) to the same folder"},
+        {text = "Test",                 command = freearc.." t --noarcext -- "..filename,      help = "Test the selected archive(s)"},
+        compress_item
+      }
 
-    if cascaded then
-      menu = { {text = "FreeArc",  submenu = menu,  help = "FreeArc commands"} }
+    -- rar/7z/zip/tar.gz/tar.bz2 archive
+    elseif ext=="rar" or ext=="7z" or ext=="zip" or string.match(string.lower(nameext),"[.]tar[.]bz2$") or string.match(string.lower(nameext),"[.]tar[.]gz$") then
+      menu = {
+        {text = "Recompress with All2Arc",  command = all2arc.." "..filename,  help = "Recompress selected archive(s) with All2Arc"},
+        compress_item
+      }
     end
-  else
-    menu = {compress_item}
   end
+
+  if cascaded then
+    menu = { {text = "FreeArc",  submenu = menu,  help = "FreeArc commands"} }
+  end
+
 
   return menu
 end)
