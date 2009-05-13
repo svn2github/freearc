@@ -40,7 +40,7 @@ register_menu_handler (function (filenames)
   compress_item = {text = "Add to "..arcname,  command = freearc.." a --noarcext "..add_options.." -- "..arcname.." "..filename,  help = "Compress the selected files using FreeArc"}
 
   -- If single archive is selected - add more items to menu and optionally make it cascaded
-  if #filenames==1  and  string.match(ext,"^"..archive_extensions.."$") then
+  if #filenames==1  and  string.match(string.lower(ext), "^"..archive_extensions.."$") then
     menu = {
       {text = "Open with &FreeArc",   command = freearc.." "..filename,                      help = "Open the selected archive(s) with FreeArc"},
       {text = "Extract to "..subdir,  command = freearc.." x -ad --noarcext -- "..filename,  help = "Extract the selected archive(s) to new folder"},

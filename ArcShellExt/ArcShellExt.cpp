@@ -394,6 +394,10 @@ void CShellExt::load_user_funcs() {
   luaL_dofile (L, szModuleFullName);
 
   pDest[0] = 0;
+  strcat_s (szModuleFullName, MAX_PATH, "ArcShellExt-config.lua");
+  luaL_dofile (L, szModuleFullName);
+
+  pDest[0] = 0;
   strcat_s (szModuleFullName, MAX_PATH, "ArcShellExt-user.lua");
   luaL_dofile (L, szModuleFullName);
 }

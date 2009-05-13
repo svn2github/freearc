@@ -318,7 +318,9 @@ settingsDialog fm' = do
     registerButton `onClick` do
       exe <- getExeName                                -- Name of FreeArc.exe file
       let ico   =  exe `replaceExtension` ".ico"       -- Name of FreeArc.ico file
-          empty =  exe `replaceFileName` "empty.arc"   -- Name of empty archive file
+          dir   =  exe.$takeDirectory                  -- FreeArc.exe directory
+          shext =  dir </> "ArcShellExt"               -- Shell extension directory
+          empty =  dir </> "empty.arc"                 -- Name of empty archive file
           register = registrySetStr hKEY_CLASSES_ROOT
           regCmd name msg cmdline = do
               register ("FreeArc.arc\\shell\\"++name) "" msg
@@ -329,15 +331,20 @@ settingsDialog fm' = do
       register "FreeArc.arc\\DefaultIcon" "" (ico++",0")
       register "FreeArc.arc\\shell" "" "open"
       register "FreeArc.arc\\shell\\open\\command" "" ("\""++exe++"\" \"%1\"")
-      regCmd   "extract-folder" "Extract to new folder" "x -ad"
-      regCmd   "extract-here"   "Extract here"          "x"
-      regCmd   "test"           "Test"                  "t"
-      -- Add compression operation to EVERY filetype (including .arc)
-      register "*\\shell\\FreeArc" "" "Compress with FreeArc"
-      register "*\\shell\\FreeArc\\command" "" ("\""++exe++"\" a --noarcext -ep1 -- \"%1\".arc \"%1\"")
-      -- Add compression operation to directories
-      register "Directory\\shell\\FreeArc" "" "Compress with FreeArc"
-      register "Directory\\shell\\FreeArc\\command" "" ("\""++exe++"\" a --noarcext -ep1 -- \"%1\".arc \"%1\"")
+
+      -- Generate ArcShellExt lua scripts
+      let script = unlines [ "-- 1 for cascaded menus, nil for flat"
+                           , "cascaded = 1"
+                           , ""
+                           , "-- Path to FreeArc"
+                           , "freearc = \"\\\""++(exe.$replaceAll "\\" "\\\\")++"\\\"\""
+                           ]
+      filePutBinary (shext </> "ArcShellExt-config.lua") script
+
+      -- Register ArcShellExt dlls
+      system$ "regsvr32 /s /c \""++(shext </> "ArcShellExt.dll\"")
+      system$ "regsvr32 /s /c \""++(shext </> "ArcShellExt-64.dll\"")
+
       -- todo: extract to ...;    *: add to archive; add to ...; выбор надписи и профайла/опций пользователя
       return ()
 #endif
