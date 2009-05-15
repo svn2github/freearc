@@ -215,6 +215,16 @@ registrySetStringValue :: HKEY -> String -> String -> IO ()
 registrySetStringValue hk key val =
   withTString val $ \v ->
   regSetValueEx hk key rEG_SZ v (length val*2)
+
+-- |Удалить целую ветку из Registry
+registryDeleteTree :: HKEY -> String -> IO ()
+registryDeleteTree key subkey = do
+  handle (\e -> return ()) $ do
+  withForeignPtr key $ \ p_key -> do
+  withTString subkey $ \ c_subkey -> do
+  failUnlessSuccess "registryDeleteTree" $ c_RegistryDeleteTree p_key c_subkey
+foreign import ccall unsafe "Environment.h RegistryDeleteTree"
+  c_RegistryDeleteTree :: PKEY -> LPCTSTR -> IO ErrCode
 #endif
 
 

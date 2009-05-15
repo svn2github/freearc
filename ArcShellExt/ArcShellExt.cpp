@@ -432,7 +432,7 @@ int CShellExt::add_menu_item() {
      InsertMenu(hMenu, nIndex, MF_STRING|MF_BYPOSITION, idCmd, text);
   }
 
-  if (m_hSciteBmp && menu_level==0) {
+  if (m_hSciteBmp) {
     SetMenuItemBitmaps (hMenu, nIndex, MF_BYPOSITION, m_hSciteBmp, m_hSciteBmp);
   }
 

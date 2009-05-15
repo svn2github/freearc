@@ -47,9 +47,9 @@ register_menu_handler (function (filenames)
       }
 
     -- rar/7z/zip/tar.gz/tar.bz2 archive
-    elseif ext=="rar" or ext=="7z" or ext=="zip" or string.match(string.lower(nameext),"[.]tar[.]bz2$") or string.match(string.lower(nameext),"[.]tar[.]gz$") then
+    elseif convert_enabled and (ext=="rar" or ext=="7z" or ext=="zip" or string.match(string.lower(nameext),"[.]tar[.]bz2$") or string.match(string.lower(nameext),"[.]tar[.]gz$")) then
       menu = {
-        {text = "Recompress with All2Arc",  command = all2arc.." "..filename,  help = "Recompress selected archive(s) with All2Arc"},
+        {text = "Convert to .arc",  command = all2arc.." "..filename,  help = "Convert selected archive(s) to FreeArc format"},
         compress_item
       }
     end

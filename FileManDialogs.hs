@@ -338,8 +338,15 @@ settingsDialog fm' = do
     registerButton <- fmCheckButtonWithHistory fm' "ExplorerIntegration" True "0172 Associate FreeArc with .arc files"
     cascadedButton <- fmCheckButtonWithHistory fm' "CascadedMenu"        True "0999 Cascaded context menu"
 
-    boxPackStart vbox (widget  registerButton)     PackNatural 5
-    boxPackStart vbox (widget  cascadedButton)     PackNatural 5
+    empty <- label ""
+    notes <- label =<< i18n"0999 Enable individual commands:"
+    all2arcButton  <- fmCheckButtonWithHistory fm' "EnableConvert"       True "0999 Convert archives to .arc"
+
+    pack (widget  registerButton)
+    pack (widget  cascadedButton)
+    pack (widget  empty)
+    pack (widget  notes)
+    pack (widget  all2arcButton)
 #endif
 
 ------ Закладка сжатия ------------------------------------------------------------------------
@@ -367,10 +374,11 @@ settingsDialog fm' = do
       io$ buildPathTo inifile
       io$ saveConfigFile inifile$ map (join2 "=") [(aINITAG_LANGUAGE, takeFileName langFile)]
       logfile' <- val logfile;  saveHistory logfile
-      saveHistory `mapM_` [toolbarTextButton, checkNewsButton, registerButton, cascadedButton]
-      register  <- val registerButton
-      cascading <- val cascadedButton
-      registerShellExtensions register cascading
+      saveHistory `mapM_` [toolbarTextButton, checkNewsButton, registerButton, cascadedButton, all2arcButton]
+      register <- val registerButton
+      cascaded <- val cascadedButton
+      all2arc  <- val all2arcButton
+      registerShellExtensions register cascaded all2arc
       saveCompressionHistories
       saveEncryptionHistories ""
       return ()
@@ -380,21 +388,27 @@ settingsDialog fm' = do
 ---- (Де)регистрация shell extension ---------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------
 
-registerShellExtensions enabled cascaded = do
-      -- When registering Shell Extension - let's first unregister any old version
-      when enabled (registerShellExtensions False cascaded)
-
+registerShellExtensions enabled cascaded all2arc = do
       exe <- getExeName                                -- Name of FreeArc.exe file
       let ico   =  exe `replaceExtension` ".ico"       -- Name of FreeArc.ico file
           dir   =  exe.$takeDirectory                  -- FreeArc.exe directory
           shext =  dir </> "ArcShellExt"               -- Shell extension directory
           empty =  dir </> "empty.arc"                 -- Name of empty archive file
-          register hk key val | enabled                 = registrySetStr hKEY_CLASSES_ROOT hk key val
---                              | not enabled && key==""  = regDeleteKey hKEY_CLASSES_ROOT hk
-                              | not enabled             = return ()
-          regCmd name msg cmdline = do
-              register ("FreeArc.arc\\shell\\"++name) "" msg
-              register ("FreeArc.arc\\shell\\"++name++"\\command") "" ("\""++exe++"\" "++cmdline++" --noarcext -- \"%1\"")
+          register = registrySetStr hKEY_CLASSES_ROOT
+
+      -- (Un)registering ArcShellExt dlls
+      let dll_register mode = do system$ "regsvr32 "++mode++" /s /c \""++(shext </> "ArcShellExt.dll\"")
+                                 system$ "regsvr32 "++mode++" /s /c \""++(shext </> "ArcShellExt-64.dll\"")
+
+      -- First, unregister any old version
+      dll_register "/u"
+      registryDeleteTree hKEY_CLASSES_ROOT ".arc"
+      registryDeleteTree hKEY_CLASSES_ROOT "FreeArc.arc"
+      registryDeleteTree hKEY_CLASSES_ROOT "*\\shell\\FreeArc"
+      registryDeleteTree hKEY_CLASSES_ROOT "Directory\\shell\\FreeArc"
+
+      -- The rest is performed only when registering new version
+      when enabled $ do
       register ".arc" "" "FreeArc.arc"
       register ".arc\\ShellNew" "FileName" empty
       register "FreeArc.arc" "" "FreeArc archive"
@@ -406,6 +420,9 @@ registerShellExtensions enabled cascaded = do
       let script = unlines [ "-- 1 for cascaded menus, nil for flat"
                            , "cascaded = "++(iif cascaded "1" "nil")
                            , ""
+                           , "-- 1 to enable command, nil to disable"
+                           , "convert_enabled = "++(iif all2arc "1" "nil")
+                           , ""
                            , "-- Path to FreeArc"
                            , "freearc = \"\\\""++(exe.$replaceAll "\\" "\\\\")++"\\\"\""
                            , ""
@@ -414,10 +431,8 @@ registerShellExtensions enabled cascaded = do
                            ]
       filePutBinary (shext </> "ArcShellExt-config.lua") script  `on` enabled
 
-      -- Register ArcShellExt dlls
-      let u = iif enabled "" "/u"
-      system$ "regsvr32 "++u++" /s /c \""++(shext </> "ArcShellExt.dll\"")
-      system$ "regsvr32 "++u++" /s /c \""++(shext </> "ArcShellExt-64.dll\"")
+      -- Now everything is configured and we can register DLL
+      dll_register ""
 
       -- todo: extract to ...;    *: add to archive; add to ...; выбор надписи и профайла/опций пользователя
       return ()
