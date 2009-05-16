@@ -82,10 +82,13 @@ Section "Install FreeArc" SEC01
 !ifdef GTK
   SetOutPath "$INSTDIR"
   File /r "GTK\*.*"
-!endif
-;Temporary - exclude from Update install in next version
   SetOutPath "$INSTDIR"
   File /r "gtk2-themes\*.*"
+!else
+;Temporary - exclude from Update install in next version
+  SetOutPath "$INSTDIR\bin"
+  File    "GTK\bin\zlib1.dll"
+!endif
 SectionEnd
 
 SubSection /e "Options" pOptions

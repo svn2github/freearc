@@ -46,6 +46,9 @@ end
 
 -- Auxiliary functions ---------------------------------------------
 
+-- OS-dependent directory separator
+DIR_SEPARATOR = "\\"
+
 -- Return filename directory: c:\dir\file.ext -> c:\dir
 function get_dir(filename)
   return (string.match (filename, "(.*)"..DIR_SEPARATOR..".+"))
@@ -59,18 +62,17 @@ end
 -- Return extension: file.ext -> ext
 -- Filename passed shouldn't contain path!
 function get_ext(filename)
-  ext = (string.match (filename, ".*[.](.*)"))
-  if ext==nil then ext="" end
-  return ext
+  return string.match (filename, ".+[.](.*)") or ""
 end
 
 -- Drop extension: file.ext -> file
 -- Filename passed shouldn't contain path!
 function drop_ext(filename)
-  name = (string.match (filename, "(.*)[.].*"))
-  if name==nil then name=filename end
-  return name
+  return string.match (filename, "(.+)[.].*") or filename
 end
 
--- OS-dependent directory separator
-DIR_SEPARATOR = "\\"
+-- Add "" to string passed
+function quote(filename)
+  return "\""..filename.."\""
+end
+

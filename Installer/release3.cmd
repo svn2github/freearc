@@ -1,4 +1,4 @@
-set VER=0.51
+set VER=0.52
 ::set V=-alpha-2009-04-19
 
 del FreeArc*.exe FreeArc*.zip FreeArc*.bz2 FreeArc*.arc

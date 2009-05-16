@@ -470,32 +470,31 @@ STDMETHODIMP CShellExt::QueryContextMenu(HMENU _hMenu, UINT _nIndex, UINT _idCmd
 
 
   FORMATETC fmte = {CF_HDROP, (DVTARGETDEVICE FAR *)NULL, DVASPECT_CONTENT, -1, TYMED_HGLOBAL};
-
   HRESULT hres = m_pDataObj->GetData(&fmte, &m_stgMedium);
 
-  if (SUCCEEDED(hres)) {
-    if (m_stgMedium.hGlobal)
-      m_cbFiles = DragQueryFile((HDROP)m_stgMedium.hGlobal, (UINT)-1, 0, 0);
+  if (SUCCEEDED(hres) && m_stgMedium.hGlobal)
+  {
+    m_cbFiles = DragQueryFile((HDROP)m_stgMedium.hGlobal, (UINT)-1, 0, 0);
+
+    if (m_cbFiles)
+    {
+      // вызываем build_menu, передав ему список имён файлов
+      lua_getglobal (L, "build_menu");
+
+      if (!lua_checkstack (L, m_cbFiles))
+        ;//error
+
+      // push filenames of files selected
+      for (UINT i = 0; i < m_cbFiles; i++) {
+        DragQueryFile((HDROP)m_stgMedium.hGlobal, i, SelectedFilename, MAX_PATH);
+        lua_pushstring (L, SelectedFilename);
+      }
+
+      if (lua_pcall(L, m_cbFiles, 0, 0) != 0)
+        ;//error(L, "error running function `f': %s",
+         //        lua_tostring(L, -1));
+    }
   }
-
-
-
-
-  // 3. вызываем build_menu, передав ему список имён файлов
-  lua_getglobal (L, "build_menu");
-
-  if (!lua_checkstack (L, m_cbFiles))
-    ;//error
-
-  // push filenames of files selected
-  for (UINT i = 0; i < m_cbFiles; i++) {
-    DragQueryFile((HDROP)m_stgMedium.hGlobal, i, SelectedFilename, MAX_PATH);
-    lua_pushstring (L, SelectedFilename);
-  }
-
-  if (lua_pcall(L, m_cbFiles, 0, 0) != 0)
-    ;//error(L, "error running function `f': %s",
-     //        lua_tostring(L, -1));
 
   return ResultFromShort(idCmd-idCmdFirst);
 }

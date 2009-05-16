@@ -16,18 +16,18 @@ register_menu_handler (function (filenames)
   path     = get_dir(filenames[1])
   basename = drop_ext(nameext)
   ext      = string.lower(get_ext(nameext))
-  subdir   = basename..DIR_SEPARATOR
-  filename = "\""..nameext.."\""
+  subdir   = quote(basename..DIR_SEPARATOR)
+  filename = quote(nameext)
 
   -- Menu item for Compresion operation - the only menu item for non-archive files or multiple selection
   if #filenames==1 then
-    arcname = "\""..nameext..arcext.."\""
+    arcname = quote(nameext..arcext)
     add_options = ""   -- "-ep1": disabled due to bug in FreeArc
   else
-    arcname = "\""..drop_dir(path)..arcext.."\""
+    arcname = quote(drop_dir(path)..arcext)
     filename = ""
     for i,_ in ipairs(filenames) do
-      filename = filename.." \""..drop_dir(filenames[i]).."\""
+      filename = filename.." "..quote(drop_dir(filenames[i]))
     end
     add_options = ""
   end

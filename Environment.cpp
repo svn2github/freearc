@@ -223,6 +223,53 @@ void RunFile (const CFILENAME filename, const CFILENAME curdir, int wait_finish)
 }
 
 
+// Delete entrire subtree from Windows Registry
+DWORD RegistryDeleteTree(HKEY hStartKey, LPTSTR pKeyName)
+{
+   const int MAX_KEY_LENGTH = MAX_PATH;
+   DWORD   dwRtn, dwSubKeyLength;
+   TCHAR   szSubKey[MAX_KEY_LENGTH];
+   HKEY    hKey;
+
+   // Do not allow NULL or empty key name
+   if ( pKeyName &&  lstrlen(pKeyName))
+   {
+      if( (dwRtn=RegOpenKeyEx(hStartKey,pKeyName,
+         0, KEY_ENUMERATE_SUB_KEYS | DELETE, &hKey )) == ERROR_SUCCESS)
+      {
+         while (dwRtn == ERROR_SUCCESS )
+         {
+            dwSubKeyLength = MAX_KEY_LENGTH;
+            dwRtn=RegEnumKeyEx(
+                           hKey,
+                           0,       // always index zero
+                           szSubKey,
+                           &dwSubKeyLength,
+                           NULL,
+                           NULL,
+                           NULL,
+                           NULL
+                         );
+
+            if(dwRtn == ERROR_NO_MORE_ITEMS)
+            {
+               dwRtn = RegDeleteKey(hStartKey, pKeyName);
+               break;
+            }
+            else if(dwRtn == ERROR_SUCCESS)
+               dwRtn=RegistryDeleteTree(hKey, szSubKey);
+         }
+         RegCloseKey(hKey);
+         // Do not save return code because error
+         // has already occurred
+      }
+   }
+   else
+      dwRtn = ERROR_BADKEY;
+
+   return dwRtn;
+}
+
 #else // For Unix:
 
 

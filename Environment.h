@@ -21,6 +21,7 @@ unsigned GetMaxMemToAlloc (void);                          // Макс. объём памяти
 unsigned GetAvailablePhysicalMemory (void);                // Объём свободной физической памяти компьютера
 void TestMalloc (void);                                    // Печатает статистику свободной памяти
 int GetProcessorsCount (void);                             // Общее количество процессоров (точнее, физических ядер) в системе. Используется для определения того, сколько "тяжёлых" вычислительных потоков целесообразно запустить в программе
+DWORD RegistryDeleteTree(HKEY hStartKey, LPTSTR pKeyName);  // Delete entrire subtree from Windows Registry
 uint UpdateCRC (void *Addr, uint Size, uint StartCRC);     // Обновить CRC содержимым блока данных
 uint CalcCRC (void *Addr, uint Size);                      // Вычислить CRC блока данных
 void memxor (char *dest, char *src, uint size);            // От-xor-ить два блока данных
@@ -31,7 +32,6 @@ void BuildPathTo (CFILENAME name);                         // Создать каталоги н
 int BrowseForFolder(TCHAR *prompt, TCHAR *in_filename, TCHAR *out_filename);                      // Дать пользователю выбрать каталог
 int BrowseForFile(TCHAR *prompt, TCHAR *filters, TCHAR *in_filename, TCHAR *out_filename);        // Дать пользователю выбрать файл
 void GuiFormatDateTime (time_t t, char *buf, int bufsize, char *date_format, char *time_format);  // Превратить время/дату файла в строку в соответствии с настройками locale или заданными форматами времени и даты
-DWORD RegistryDeleteTree(HKEY hStartKey, LPTSTR pKeyName);  // Delete entrire subtree from Windows Registry
 
 #ifdef  __cplusplus
 }
