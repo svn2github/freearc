@@ -538,17 +538,15 @@ static BOOL CALLBACK ProgressProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lP
 		return TRUE;
 	case WM_COMMAND:
 		if(LOWORD(wParam) == IDCANCEL)
-		{
-			ResetEvent(gui->hEvent);
-			if(MessageBox(hWnd, cancelConfirmText, cancelConfirmCaption, MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) == IDYES)
-				DestroyWindow(hWnd);
-			SetEvent(gui->hEvent);
-			return TRUE;
-		}
+			goto on_cancel;
 		return FALSE;
 	case WM_CLOSE:
-		DestroyWindow(hWnd);
-		return TRUE;
+	on_cancel:
+       		ResetEvent(gui->hEvent);
+       		if(MessageBox(hWnd, cancelConfirmText, cancelConfirmCaption, MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) == IDYES)
+       			DestroyWindow(hWnd);
+       		SetEvent(gui->hEvent);
+       		return TRUE;
 	case WM_DESTROY:
 		gui->progressResult = false;
 		PostQuitMessage(0);
