@@ -37,6 +37,33 @@ extern "C" {
 UI UI;
 
 
+#ifdef FREEARC_INSTALLER
+// Wipes entire directory with all its subdirs
+void wipedir(TCHAR *dir)
+{
+    // List all entries in this directory
+    CFILENAME dirstar  = (TCHAR*) malloc (MY_FILENAME_MAX * sizeof(TCHAR));
+    CFILENAME fullname = (TCHAR*) malloc (MY_FILENAME_MAX * sizeof(TCHAR));
+    _stprintf (dirstar, _T("%s%s*"), dir, _T(STR_PATH_DELIMITER));
+    WIN32_FIND_DATA FindData[1];
+    HANDLE h = FindFirstFileW (dirstar, FindData);
+    if (h) do {
+        // For every entry except for "." and ".., remove entire subdir (if it's a directory) or remove just file itself
+        if (_tcscmp(FindData->cFileName,_T("."))  &&  _tcscmp(FindData->cFileName,_T("..")))
+        {
+            _stprintf (fullname, _T("%s%s%s"), dir, _T(STR_PATH_DELIMITER), FindData->cFileName);
+            if (FindData->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+                wipedir (fullname);
+            else
+                DeleteFile (fullname);
+        }
+    } while (FindNextFile(h,FindData));
+    FindClose(h);
+    RemoveDirectory (dir);
+    free(fullname); free(dirstar);
+}
+#endif
+
 // Register external compressors declared in arc.ini
 void RegisterExternalCompressors (char *progname)
 {
@@ -88,6 +115,7 @@ public:
   FILENAME outpath;     // Опция -dp
   FILENAME runme;       // Файл, запускаемый после распаковки
   BOOL wipeoutdir;      // Удалить файлы из outpath после завершения работы runme?
+  BOOL tempdir;         // Мы извлекали файлы во временный каталог?
   BOOL ok;              // Команда выполняется успешно?
   int  silent;          // Опция -s
   BOOL yes;             // Опция -o+
@@ -125,6 +153,7 @@ public:
     outpath = "";
     runme = NULL;
     wipeoutdir = FALSE;
+    tempdir = FALSE;
     yes = FALSE;
     no  = FALSE;
     silent = 0;
@@ -145,13 +174,24 @@ public:
         utf16_to_utf8 (TempPathW, TempPath);
 
         // Create unique tempdir
+        tempdir = TRUE;
         outpath = (FILENAME) malloc (MY_FILENAME_MAX * 4);
-        for (unsigned i = (unsigned) GetTickCount(); ; )
+        for (unsigned i = (unsigned) GetTickCount(), cnt=0; ; cnt++)
         {
             i = i*54322457 + 137;
             sprintf (outpath, "%s%s%u", TempPath, "installer", i);
             utf8_to_utf16 (outpath, TempPathW);
             if (_wmkdir(TempPathW) == 0)   break;  // Break on success
+
+            if (cnt>1000) {
+#ifdef FREEARC_GUI
+              MessageBoxW (NULL, _T("Error creating temporary directory"), _T("Extraction impossible"), MB_OK | MB_ICONERROR);
+#else
+              printf("Error creating temporary directory");
+#endif
+              ok = false;
+              return;
+            }
         }
         free(TempPathW);
 
@@ -369,6 +409,15 @@ enum PASS {FIRST_PASS, SECOND_PASS};  // Первый/второй проход по солид-блоку (пе
 
 // Процедура экстренного выхода
 void quit(void)   {if (outfile.isopen())  outfile.close(), delete_file(outfile.filename);
+#ifdef FREEARC_INSTALLER
+                   // Wipe temporary outdir on unsuccesful extraction
+                   if (cmd->tempdir)
+                   {
+                       CFILENAME tmp  =  (TCHAR*) malloc (MY_FILENAME_MAX * 4);
+                       wipedir (utf8_to_utf16 (cmd->outpath, tmp));
+                       free(tmp);
+                   }
+#endif
                    exit (FREEARC_EXIT_ERROR);}
 
 // Действие при ошибке в CHECK()
@@ -556,33 +605,6 @@ void ExtractFiles (DIRECTORY_BLOCK *dirblock, int block_num, COMMAND &command)
     outfile_close();                             // Закроем последний выходной файл
   }
 }
-
-#ifdef FREEARC_INSTALLER
-// Wipes entire directory with all its subdirs
-void wipedir(TCHAR *dir)
-{
-    // List all entries in this directory
-    CFILENAME dirstar  = (TCHAR*) malloc (MY_FILENAME_MAX * sizeof(TCHAR));
-    CFILENAME fullname = (TCHAR*) malloc (MY_FILENAME_MAX * sizeof(TCHAR));
-    _stprintf (dirstar, _T("%s%s*"), dir, _T(STR_PATH_DELIMITER));
-    WIN32_FIND_DATA FindData[1];
-    HANDLE h = FindFirstFileW (dirstar, FindData);
-    if (h) do {
-        // For every entry except for "." and ".., remove entire subdir (if it's a directory) or remove just file itself
-        if (_tcscmp(FindData->cFileName,_T("."))  &&  _tcscmp(FindData->cFileName,_T("..")))
-        {
-            _stprintf (fullname, _T("%s%s%s"), dir, _T(STR_PATH_DELIMITER), FindData->cFileName);
-            if (FindData->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-                wipedir (fullname);
-            else
-                DeleteFile (fullname);
-        }
-    } while (FindNextFile(h,FindData));
-    FindClose(h);
-    RemoveDirectory (dir);
-    free(fullname); free(dirstar);
-}
-#endif
 
 
 /******************************************************************************
