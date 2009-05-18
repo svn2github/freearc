@@ -6,7 +6,7 @@ OBJS = Common.obj CompressionLibrary.obj C_LZMA.obj C_PPMD.obj C_GRZip.obj C_LZP
 CC   = icl
 
 CODE_FLAGS  = -EHsc -MT
-OPT_FLAGS   = -O2 -Gy -GR- -Qip
+OPT_FLAGS   = -O2 -Gy -GR- -Qip -arch:IA32
 DEBUG_FLAGS =
 CFLAGS      = -c -DFREEARC_DLL $(CODE_FLAGS) $(OPT_FLAGS) $(DEBUG_FLAGS) $(DEFINES)
 
