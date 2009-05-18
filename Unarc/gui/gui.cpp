@@ -370,6 +370,11 @@ void UI::EndProgress()
 		CloseHandle(thread);
 		thread = 0;
 	}
+	if(hWndProgress != 0)
+	{
+		PostMessage(hWndProgress, WM_DESTROY, 0, 0);
+	}
+
 }
 
 char UI::AskOverwrite(TCHAR *filename, uint64 size, time_t modified)
