@@ -58,12 +58,6 @@ extractDialog fm' exec cmd arcnames arcdir files = do
   -- Создадим диалог со стандартными кнопками OK/Cancel
   fmDialog fm' wintitle $ \(dialog,okButton) -> do
     upbox <- dialogGetUpper dialog
-    overwrite <- radioFrame "0005 Overwrite mode"
-                            [ "0001 Ask before overwrite",
-                              "0002 Overwrite without prompt",
-                              "0003 Update old files",
-                              "0051 Skip existing files" ]
-    ; boxPackStart upbox (widget overwrite) PackNatural 5         `on` cmd/="t"
 
     ; outFrame <- frameNew
     ; boxPackStart upbox outFrame           PackNatural 5         `on` cmd/="t"
@@ -80,6 +74,13 @@ extractDialog fm' exec cmd arcnames arcdir files = do
     addDirButton <- checkBox "0014 Append archive name to the output directory"
     ; boxPackStart vbox (widget addDirButton) PackNatural 0
 
+    overwrite <- radioFrame "0005 Overwrite mode"
+                            [ "0001 Ask before overwrite",
+                              "0002 Overwrite without prompt",
+                              "0003 Update old files",
+                              "0051 Skip existing files" ]
+    ; boxPackStart upbox (widget overwrite) PackNatural 5         `on` cmd/="t"
+
     (decryption, decryptionOnOK) <- decryptionBox fm' dialog   -- Настройки расшифровки
     ; boxPackStart upbox decryption           PackNatural 5
 
@@ -89,8 +90,8 @@ extractDialog fm' exec cmd arcnames arcdir files = do
 
     -- Установим выходной каталог в значение по умолчанию
     case arcnames of
-      [arcname] -> dir =: takeBaseName arcname
-      _         -> do dir=:"."; addDirButton=:True
+      [arcname] -> do dir =:: fmCanonicalizeDiskPath fm' (takeBaseName arcname)
+      _         -> do dir =:: fmCanonicalizeDiskPath fm' "."; addDirButton=:True
 
 
     widgetShowAll upbox
