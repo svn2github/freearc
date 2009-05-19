@@ -164,6 +164,8 @@ BOOL RegisterServer(CLSID clsid, LPTSTR lpszTitle) {
         return FALSE;
     }
   }
+
+  SHChangeNotify (SHCNE_ASSOCCHANGED, SHCNF_IDLIST, NULL, NULL);
   return TRUE;
 }
 
@@ -211,6 +213,7 @@ BOOL UnregisterServer(CLSID clsid, LPTSTR lpszTitle) {
   RegDeleteKey(HKEY_CLASSES_ROOT, szKeyTemp);
   RegDeleteKey(HKEY_CLASSES_ROOT, szCLSIDKey);
 
+  SHChangeNotify (SHCNE_ASSOCCHANGED, SHCNF_IDLIST, NULL, NULL);
   return TRUE;
 }
 
