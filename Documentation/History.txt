@@ -349,6 +349,12 @@
   aARC_VERSION = "0.51", aARCHIVE_VERSION = make4byte 0 0 5 1
 === To-do list ====================================================================================
 
+  англ. future plans
+  icons
+	SHFILEINFO shFileInfo;
+	SHGetFileInfo(filename, 0, &shFileInfo, sizeof(shFileInfo), SHGFI_ICON);
+	http://msdn.microsoft.com/en-us/library/dd183402(VS.85).aspx
+
   HCAR
 
   загружать иконки для всех команд из png/ico файлов

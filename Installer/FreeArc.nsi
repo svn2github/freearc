@@ -106,8 +106,10 @@ SubSection /e "Options" pOptions
     CreateShortCut  "$SMPROGRAMS\FreeArc\Documentation (rus)\What's new.lnk" "$INSTDIR\Documentation\whatsnew-rus.txt"
     CreateShortCut  "$SMPROGRAMS\FreeArc\Documentation (rus)\FreeArc GUI.lnk" "$INSTDIR\Documentation\FreeArc-GUI-Rus.htm"
     CreateShortCut  "$SMPROGRAMS\FreeArc\Documentation (rus)\FreeArc command line.lnk" "$INSTDIR\Documentation\FreeArc040-rus.htm"
+    SetOutPath "$INSTDIR\bin"
     CreateShortCut  "$SMPROGRAMS\FreeArc\FreeArc.lnk"     "$INSTDIR\bin\FreeArc.exe"
     CreateShortCut  "$SMPROGRAMS\FreeArc\Change skin.lnk" "$INSTDIR\bin\gtk2_prefs.exe"
+    SetOutPath "$INSTDIR"
     CreateShortCut  "$SMPROGRAMS\FreeArc\Website.lnk"     "$INSTDIR\${PRODUCT_NAME}.url"
     CreateShortCut  "$SMPROGRAMS\FreeArc\Uninstall.lnk"   "$INSTDIR\uninst.exe"
   SectionEnd
