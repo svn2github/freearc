@@ -34,7 +34,7 @@ public:
   virtual MemSize GetCompressionMem     (void);
   virtual MemSize GetDictionary         (void)         {return BlockSize;}
   virtual MemSize GetBlockSize          (void)         {return 0;}
-  virtual void    SetCompressionMem     (MemSize mem)  {if (mem>0)   BlockSize = 1<<lb(mem/7*6);}
+  virtual void    SetCompressionMem     (MemSize mem);
   virtual void    SetDecompressionMem   (MemSize mem)  {if (mem>0)   BlockSize = mem;}
   virtual void    SetDictionary         (MemSize dict) {if (dict>0)  BlockSize = dict;}
   virtual void    SetBlockSize          (MemSize bs)   {}
