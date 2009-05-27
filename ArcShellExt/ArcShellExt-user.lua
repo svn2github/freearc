@@ -27,7 +27,7 @@ register_menu_handler (function (filenames)
     arcbase = nameext
     add_options = ""   -- "-ep1": disabled due to bug in FreeArc
   else
-    arcbase = drop_dir(path)
+    arcbase = drop_dir(path) or "default"
     filename = ""
     for i,_ in ipairs(filenames) do
       filename = filename.." "..quote(drop_dir(filenames[i]))

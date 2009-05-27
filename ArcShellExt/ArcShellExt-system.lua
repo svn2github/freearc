@@ -47,7 +47,7 @@ end
 -- Auxiliary functions ---------------------------------------------
 
 -- OS-dependent directory separator
-DIR_SEPARATOR = "\\"
+DIR_SEPARATOR = package.config:sub(1,1)
 
 -- Return filename directory: c:\dir\file.ext -> c:\dir
 function get_dir(filename)
