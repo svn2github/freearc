@@ -18,14 +18,19 @@ function build_menu (...)
   items = {}
   menu_up = 0
   make_menu = function(menu)
-    for _,item in ipairs(menu) do
-      if item.submenu  then menu_down=1  else menu_down=0 end
-      i = add_menu_item (item.text, menu_down, menu_up)
-      items[i] = item
-      menu_up = 0
-      if item.submenu then
-        make_menu (item.submenu)    -- recursive call to handle submenu
-        menu_up = menu_up+1
+    for _,item in pairs(menu) do
+      if item and item[1] then
+        make_menu (item)    -- recursive call to handle menu items array
+
+      elseif item and item.text then -- skip empty menu items
+        if item.submenu  then menu_down=1  else menu_down=0 end
+        i = add_menu_item (item.text, menu_down, menu_up)
+        items[i] = item
+        menu_up = 0
+        if item.submenu then
+          make_menu (item.submenu)    -- recursive call to handle submenu
+          menu_up = menu_up+1
+        end
       end
     end
   end
@@ -87,3 +92,13 @@ function check_for_sfx(filename)
   f:close()
   return (string.find (data, "ArC\1", 1, true))
 end
+
+-- Build multi-action FreeArc command
+function multi_command(command, options, filenames)
+  for i,f in ipairs(filenames) do
+    if i>1 then command = command .. " ;" end
+    command = command .. options .. quote(f)
+  end
+  return command
+end
+
