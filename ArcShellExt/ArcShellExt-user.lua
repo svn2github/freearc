@@ -49,15 +49,14 @@ register_menu_handler (function (filenames)
         {text = "Extract to "..subdir,  command = freearc.." x -ad --noarcext -- "..filename,  help = "Extract the selected archive(s) to new folder"},
         {text = "Extract here",         command = freearc.." x --noarcext -- "..filename,      help = "Extract the selected archive(s) to the same folder"},
         {text = "Test",                 command = freearc.." t --noarcext -- "..filename,      help = "Test the selected archive(s)"},
-        {text = "Convert to SFX",       command = freearc.." s --noarcext -- "..filename,      help = "Convert the selected archive(s) to SFX"},
-        compress_item, compress_sfx_item
+        {text = "Convert to SFX",       command = freearc.." s --noarcext -- "..filename,      help = "Convert the selected archive(s) to SFX"}
       }
 
     -- rar/7z/zip/tar.gz/tar.bz2 archive
-    elseif convert_enabled and (ext=="rar" or ext=="7z" or ext=="zip" or string.match(string.lower(nameext),"[.]tar[.]bz2$") or string.match(string.lower(nameext),"[.]tar[.]gz$")) then
+    elseif convert_enabled and (ext=="rar" or ext=="7z" or ext=="zip" or string.match(string.lower(nameext),"[.]tar[.]bz2$") or string.match(string.lower(nameext),"[.]tar[.]gz$") or string.match(string.lower(nameext),"[.]tar[.]lzma") or string.match(string.lower(nameext),"[.]tar[.]z$")) then
       menu = {
-        {text = "Convert to .arc",  command = all2arc.." "..filename,  help = "Convert selected archive(s) to FreeArc format"},
-        compress_item, compress_sfx_item
+        {text = "Convert to .arc",      command = all2arc.."      -- "..filename,  help = "Convert selected archive(s) to FreeArc format"},
+        {text = "Convert to .arc SFX",  command = all2arc.." -sfx -- "..filename,  help = "Convert selected archive(s) to FreeArc SFX"}
       }
     end
   end
