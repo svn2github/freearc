@@ -76,3 +76,14 @@ function quote(filename)
   return "\""..filename.."\""
 end
 
+
+-- FreeArc-specific functions -----------------------------------------
+
+-- Check for SFX
+function check_for_sfx(filename)
+  f = io.open(filename, "rb")
+  f:seek("end", -256)
+  data = f:read(256)
+  f:close()
+  return (string.find (data, "ArC\1", 1, true))
+end
