@@ -33,8 +33,8 @@ register_menu_handler (function (filenames)
   else
     arcbase = drop_dir(path) or "default"
     filename = ""
-    for i,_ in ipairs(filenames) do
-      filename = filename.." "..quote(drop_dir(filenames[i]))
+    for _,f in ipairs(filenames) do
+      filename = filename.." "..quote(drop_dir(f))
     end
     add_options = ""
   end
@@ -50,10 +50,10 @@ register_menu_handler (function (filenames)
   from_sfx_item = {text = "Convert from SFX",  command = freearc.." s- --noarcext -- "..filename,  help = "Convert the selected SFX(es) to normal archive(s)"}
 
   -- Check that all files selected are archives, SFX-es or non-FreeArc archives
-  all_arcs     = nil
-  all_sfxes    = nil
-  all_archives = nil
-  all_zips     = nil
+  all_arcs     = 1
+  all_sfxes    = 1
+  all_archives = 1
+  all_zips     = 1
   for _,f in ipairs(filenames) do
     nameext  = drop_dir(f)
     ext      = string.lower(get_ext(nameext))
