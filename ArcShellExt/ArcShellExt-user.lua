@@ -75,7 +75,8 @@ register_menu_handler (function (filenames)
       {text = "Extract here",         command = multi_command (freearc, " x --noarcext -- ", filenames),      help = "Extract the selected archive(s) to the same folder"},
       {text = "Test",                 command = multi_command (freearc, " t --noarcext -- ", filenames),      help = "Test the selected archive(s)"},
       all_arcs  and to_sfx_item,     -- Provide "Convert to SFX" command if non-SFXes are selected
-      all_sfxes and from_sfx_item    -- Provide "Convert from SFX" command if SFXes are selected
+      all_sfxes and from_sfx_item,   -- Provide "Convert from SFX" command if SFXes are selected
+      {text = #filenames>1 and "Join to "..arcbase..arcext,  command = freearc.." j --noarcext -- "..arcbase..arcext.." "..filename,  help = "Join the selected archives"},
     }
 
   -- If only rar/7z/zip/tar.gz/tar.bz2 archives are selected - provide appropriate menu
