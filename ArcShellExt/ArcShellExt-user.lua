@@ -49,25 +49,40 @@ register_menu_handler (function (filenames)
   to_sfx_item   = {text = "Convert to SFX",    command = freearc.." s --noarcext -- " ..filename,  help = "Convert the selected archive(s) to SFX"}
   from_sfx_item = {text = "Convert from SFX",  command = freearc.." s- --noarcext -- "..filename,  help = "Convert the selected SFX(es) to normal archive(s)"}
 
-  -- If single archive is selected - provide appropriate menu
-  if #filenames==1  then
-    -- FreeArc archive
-    if is_sfx or string.match(ext,"^"..archive_extensions.."$") then
-      menu = {
-        {text = "Open with &FreeArc",   command = freearc.." "..filename,                      help = "Open the selected archive(s) with FreeArc"},
-        {text = "Extract to "..subdir,  command = freearc.." x -ad --noarcext -- "..filename,  help = "Extract the selected archive(s) to new folder"},
-        {text = "Extract here",         command = freearc.." x --noarcext -- "..filename,      help = "Extract the selected archive(s) to the same folder"},
-        {text = "Test",                 command = freearc.." t --noarcext -- "..filename,      help = "Test the selected archive(s)"},
-        is_sfx and from_sfx_item or to_sfx_item
-      }
+  -- Check that all files selected are archives, SFX-es or non-FreeArc archives
+  all_arcs     = nil
+  all_sfxes    = nil
+  all_archives = nil
+  all_zips     = nil
+  for _,f in ipairs(filenames) do
+    nameext  = drop_dir(f)
+    ext      = string.lower(get_ext(nameext))
+    is_arc = string.match(ext,"^"..archive_extensions.."$")
+    is_sfx = string.match(ext,"^"..sfx_extensions.."$")  and  check_for_sfx(f)
+    is_zip = ext=="rar" or ext=="7z" or ext=="zip" or string.match(string.lower(nameext),"[.]tar[.]bz2$") or string.match(string.lower(nameext),"[.]tar[.]gz$") or string.match(string.lower(nameext),"[.]tar[.]lzma") or string.match(string.lower(nameext),"[.]tar[.]z$")
+    all_arcs     = all_arcs     and is_arc
+    all_sfxes    = all_sfxes    and is_sfx
+    all_archives = all_archives and (is_arc or is_sfx)
+    all_zips     = all_zips     and is_zip
+    if not (all_archives or all_zips) then break end
+  end
 
-    -- rar/7z/zip/tar.gz/tar.bz2 archive
-    elseif convert_enabled and (ext=="rar" or ext=="7z" or ext=="zip" or string.match(string.lower(nameext),"[.]tar[.]bz2$") or string.match(string.lower(nameext),"[.]tar[.]gz$") or string.match(string.lower(nameext),"[.]tar[.]lzma") or string.match(string.lower(nameext),"[.]tar[.]z$")) then
-      menu = {
-        {text = "Convert to .arc",      command = all2arc.."      -- "..filename,  help = "Convert selected archive(s) to FreeArc format"},
-        {text = "Convert to .arc SFX",  command = all2arc.." -sfx -- "..filename,  help = "Convert selected archive(s) to FreeArc SFX"}
-      }
-    end
+  -- If FreeArc archive(s) selected - provide appropriate menu
+  if all_archives then
+    menu = {
+      {text = "Open with &FreeArc",   command = freearc.." "..filename,                      help = "Open the selected archive(s) with FreeArc"},
+      {text = "Extract to "..subdir,  command = freearc.." x -ad --noarcext -- "..filename,  help = "Extract the selected archive(s) to new folder"},
+      {text = "Extract here",         command = freearc.." x --noarcext -- "..filename,      help = "Extract the selected archive(s) to the same folder"},
+      {text = "Test",                 command = freearc.." t --noarcext -- "..filename,      help = "Test the selected archive(s)"},
+      all_sfxes and from_sfx_item or to_sfx_item
+    }
+
+  -- If rar/7z/zip/tar.gz/tar.bz2 archive(s) selected - provide appropriate menu
+  elseif convert_enabled and all_zips then
+    menu = {
+      {text = "Convert to .arc",      command = all2arc.."      -- "..filename,  help = "Convert selected archive(s) to FreeArc format"},
+      {text = "Convert to .arc SFX",  command = all2arc.." -sfx -- "..filename,  help = "Convert selected archive(s) to FreeArc SFX"}
+    }
   end
 
   if cascaded then
