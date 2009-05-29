@@ -342,14 +342,37 @@ settingsDialog fm' = do
 
     empty <- label ""
     notes <- label =<< i18n"0999 Enable individual commands:"
-    convertButton  <- fmCheckButtonWithHistory fm' "Settings.ContextMenu.ConvertCommand"   True "0999 Convert archives to .arc"
 
     pack (widget associateButton)
     pack (widget contextMenuButton)
     pack (widget cascadedButton)
     pack (widget empty)
     pack (widget notes)
-    pack (widget convertButton)
+
+    let makeButton ("",_)         = do pack.widget =<< label ""; return []
+        makeButton (cmdname,emsg) = do
+          imsg <- i18n emsg
+          button <- fmCheckButtonWithHistory fm' ("Settings.ContextMenu.Command."++cmdname) True imsg
+          pack (widget button)
+          return [(button, (cmdname, imsg))]
+
+    commands <- concatMapM makeButton$ filter (not.null.fst)$
+                  [ ("add2arc"    , "0999 Compress the selected files using FreeArc"                          )
+                  , ("add2sfx"    , "0999 Compress the selected files into SFX using FreeArc"                 )
+                  , (""           , ""                                                                        )
+                  , ("open"       , "0999 Open the selected archive(s) with FreeArc"                          )
+                  , ("extractTo"  , "0999 Extract the selected archive(s) to new folder"                      )
+                  , ("extractHere", "0999 Extract the selected archive(s) to the same folder"                 )
+                  , ("test"       , "0999 Test the selected archive(s)"                                       )
+                  , (""           , ""                                                                        )
+                  , ("arc2sfx"    , "0999 Convert the selected archive(s) to SFX"                             )
+                  , ("sfx2arc"    , "0999 Convert the selected SFX(es) to normal archive(s)"                  )
+                  , (""           , ""                                                                        )
+                  , ("join"       , "0999 Join the selected archives"                                         )
+                  , (""           , ""                                                                        )
+                  , ("zip2arc"    , "0999 Convert selected archive(s) to FreeArc format"                      )
+                  , ("zip2sfx"    , "0999 Convert selected archive(s) to FreeArc SFX"                         )
+                  ]
 #endif
 
 ------ Закладка сжатия ------------------------------------------------------------------------
@@ -381,12 +404,12 @@ settingsDialog fm' = do
       saveCompressionHistories
       saveEncryptionHistories ""
 #if defined(FREEARC_WIN)
-      saveHistory `mapM_` [associateButton, contextMenuButton, cascadedButton, convertButton]
+      saveHistory `mapM_` ([associateButton, contextMenuButton, cascadedButton] ++ map fst commands)
       associate   <- val associateButton
       contextMenu <- val contextMenuButton
       cascaded    <- val cascadedButton
-      convert     <- val convertButton
-      registerShellExtensions associate contextMenu cascaded convert
+      bValues     <- val `mapM` (map fst commands)
+      registerShellExtensions associate contextMenu cascaded (zip bValues (map snd commands))
 #endif
 
 
@@ -395,7 +418,7 @@ settingsDialog fm' = do
 ----------------------------------------------------------------------------------------------------
 
 #if defined(FREEARC_WIN)
-registerShellExtensions associate contextMenu cascaded convert = do
+registerShellExtensions associate contextMenu cascaded commands = do
       exe <- getExeName                                -- Name of FreeArc.exe file
       let ico   =  exe `replaceExtension` ".ico"       -- Name of FreeArc.ico file
           dir   =  exe.$takeDirectory                  -- FreeArc.exe directory
@@ -426,12 +449,14 @@ registerShellExtensions associate contextMenu cascaded convert = do
       -- This part is performed only when Context Menu enabled
       when contextMenu $ do
         -- Generate ArcShellExt config script
-        let script = unlines [ "-- 1 for cascaded menus, nil for flat"
+        let script = unlines$[ "-- 1 for cascaded menus, nil for flat"
                              , "cascaded = "++(iif cascaded "1" "nil")
                              , ""
-                             , "-- 1 to enable command, nil to disable"
-                             , "convert_enabled = "++(iif convert "1" "nil")
-                             , ""
+                             , "-- Commands"
+                             ] ++ map (\(enabled,(cmdname,msg)) ->
+                                         (not enabled &&& "-- ")++"command."++cmdname++" = {help = \""++msg++"\"}")
+                                  commands ++
+                             [ ""
                              , "-- Path to FreeArc"
                              , "freearc = \"\\\""++(exe.$replaceAll "\\" "\\\\")++"\\\"\""
                              , ""

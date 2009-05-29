@@ -22,7 +22,7 @@ function build_menu (...)
       if item and item[1] then
         make_menu (item)    -- recursive call to handle menu items array
 
-      elseif item and item.text then -- skip empty menu items
+      elseif item and item.text and item.help then -- skip empty menu items
         if item.submenu  then menu_down=1  else menu_down=0 end
         i = add_menu_item (item.text, menu_down, menu_up)
         items[i] = item
@@ -46,6 +46,12 @@ end
 function get_command(i)
   return items[i].command
 end
+
+-- Enabled commands information
+command = {}
+setmetatable(command, {__index = function(table, key)
+                                   return {}
+                                 end})
 
 
 
