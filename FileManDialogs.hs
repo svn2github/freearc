@@ -453,6 +453,7 @@ registerShellExtensions associate contextMenu cascaded commands = do
                              , "cascaded = "++(iif cascaded "1" "nil")
                              , ""
                              , "-- Commands"
+                             , "command = {}"
                              ] ++ map (\(enabled,(cmdname,msg)) ->
                                          (not enabled &&& "-- ")++"command."++cmdname++" = {help = \""++msg++"\"}")
                                   commands ++

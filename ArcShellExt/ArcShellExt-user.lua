@@ -41,13 +41,10 @@ register_menu_handler (function (filenames)
   end
   arcname = quote(arcbase..arcext)
   sfxname = quote(arcbase..exeext)
-  compress_item     = {text = "Add to "    ..arcname,  command = freearc.." a --noarcext "     ..add_options.." -- "..arcname.." "..filename,  help = command.add2arc.help}
-  compress_sfx_item = {text = "Add to SFX "..sfxname,  command = freearc.." a -sfx --noarcext "..add_options.." -- "..sfxname.." "..filename,  help = command.add2sfx.help}
-  menu = {compress_item, compress_sfx_item}
-
-  -- SFX-related commands
-  to_sfx_item   = {text = "Convert to SFX",    command = multi_command (freearc, " s --noarcext -- ",  filenames),  help = command.arc2sfx.help}
-  from_sfx_item = {text = "Convert from SFX",  command = multi_command (freearc, " s- --noarcext -- ", filenames),  help = command.sfx2arc.help}
+  menu = {
+    append (command.add2arc,  {text = "Add to "    ..arcname,  command = freearc.." a --noarcext "     ..add_options.." -- "..arcname.." "..filename}),
+    append (command.add2sfx,  {text = "Add to SFX "..sfxname,  command = freearc.." a -sfx --noarcext "..add_options.." -- "..sfxname.." "..filename}),
+  }
 
   -- Check that all files selected are archives, SFX-es or non-FreeArc archives
   all_arcs     = 1
@@ -70,20 +67,20 @@ register_menu_handler (function (filenames)
   -- If only FreeArc archives are selected - provide appropriate menu
   if all_archives then
     menu = {
-      {text = #filenames==1 and "Open with &FreeArc",   command = freearc.." "..filename,                     help = command.open.help},
-      {text = "Extract to "..subdir,  command = multi_command (freearc, " x -ad --noarcext -- ", filenames),  help = command.extractTo.help},
-      {text = "Extract here",         command = multi_command (freearc, " x --noarcext -- ", filenames),      help = command.extractHere.help},
-      {text = "Test",                 command = multi_command (freearc, " t --noarcext -- ", filenames),      help = command.test.help},
-      all_arcs  and to_sfx_item,     -- Provide "Convert to SFX" command if non-SFXes are selected
-      all_sfxes and from_sfx_item,   -- Provide "Convert from SFX" command if SFXes are selected
-      {text = #filenames>1 and "Join to "..arcbase..arcext,  command = freearc.." j --noarcext -- "..arcbase..arcext.." "..filename,  help = command.join.help},
+      #filenames==1 and append (command.open,         {text = "Open with &FreeArc",   command = freearc.." "..filename}),
+                        append (command.extractTo,    {text = "Extract to "..subdir,  command = multi_command (freearc, " x -ad --noarcext -- ", filenames)}),
+                        append (command.extractHere,  {text = "Extract here",         command = multi_command (freearc, " x --noarcext -- ", filenames)}),
+                        append (command.test,         {text = "Test",                 command = multi_command (freearc, " t --noarcext -- ", filenames)}),
+      all_arcs      and append (command.arc2sfx,      {text = "Convert to SFX",       command = multi_command (freearc, " s --noarcext -- ",  filenames)}),
+      all_sfxes     and append (command.sfx2arc,      {text = "Convert from SFX",     command = multi_command (freearc, " s- --noarcext -- ", filenames)}),
+      #filenames>1  and append (command.help,         {text = "Join to "..arcbase..arcext,  command = freearc.." j --noarcext -- "..arcbase..arcext.." "..filename}),
     }
 
   -- If only rar/7z/zip/tar.gz/tar.bz2 archives are selected - provide appropriate menu
-  elseif convert_enabled and all_zips then
+  elseif all_zips then
     menu = {
-      {text = "Convert to .arc",      command = all2arc.."      -- "..filename,  help = command.zip2arc.help},
-      {text = "Convert to .arc SFX",  command = all2arc.." -sfx -- "..filename,  help = command.zip2sfx.help}
+      append (command.zip2arc,  {text = "Convert to .arc",      command = all2arc.."      -- "..filename}),
+      append (command.zip2sfx,  {text = "Convert to .arc SFX",  command = all2arc.." -sfx -- "..filename}),
     }
   end
 
