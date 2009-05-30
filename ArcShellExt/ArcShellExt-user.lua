@@ -27,23 +27,23 @@ register_menu_handler (function (filenames)
   -- Menu items for Compresion operations - the only menu items for non-archive files
   if #filenames==1 then
     arcbase     = nameext
-    subdir      = quote(basename..DIR_SEPARATOR)
+    subdir      = basename..DIR_SEPARATOR
     add_options = ""   -- "-ep1": disabled due to bug in FreeArc
     filename    = quote(nameext)
   else
     arcbase     = drop_dir(path) or "default"
-    subdir      = quote("*"..DIR_SEPARATOR)
+    subdir      = "*"..DIR_SEPARATOR
     add_options = ""
     filename    = ""
     for _,f in ipairs(filenames) do
       filename = filename.." "..quote(drop_dir(f))
     end
   end
-  arcname = quote(arcbase..arcext)
-  sfxname = quote(arcbase..exeext)
+  arcname = arcbase..arcext
+  sfxname = arcbase..exeext
   menu = {
-    append (command.add2arc,  {text = "Add to "    ..arcname,  command = freearc.." a --noarcext "     ..add_options.." -- "..arcname.." "..filename}),
-    append (command.add2sfx,  {text = "Add to SFX "..sfxname,  command = freearc.." a -sfx --noarcext "..add_options.." -- "..sfxname.." "..filename}),
+    append (command.add2arc,  {param = arcname,  command = freearc.." a --noarcext "     ..add_options.." -- \"%s\" "..filename}),
+    append (command.add2sfx,  {param = sfxname,  command = freearc.." a -sfx --noarcext "..add_options.." -- \"%s\" "..filename}),
   }
 
   -- Check that all files selected are archives, SFX-es or non-FreeArc archives
@@ -67,20 +67,20 @@ register_menu_handler (function (filenames)
   -- If only FreeArc archives are selected - provide appropriate menu
   if all_archives then
     menu = {
-      #filenames==1 and append (command.open,         {text = "Open with &FreeArc",   command = freearc.." "..filename}),
-                        append (command.extractTo,    {text = "Extract to "..subdir,  command = multi_command (freearc, " x -ad --noarcext -- ", filenames)}),
-                        append (command.extractHere,  {text = "Extract here",         command = multi_command (freearc, " x --noarcext -- ", filenames)}),
-                        append (command.test,         {text = "Test",                 command = multi_command (freearc, " t --noarcext -- ", filenames)}),
-      all_arcs      and append (command.arc2sfx,      {text = "Convert to SFX",       command = multi_command (freearc, " s --noarcext -- ",  filenames)}),
-      all_sfxes     and append (command.sfx2arc,      {text = "Convert from SFX",     command = multi_command (freearc, " s- --noarcext -- ", filenames)}),
-      #filenames>1  and append (command.help,         {text = "Join to "..arcbase..arcext,  command = freearc.." j --noarcext -- "..arcbase..arcext.." "..filename}),
+      #filenames==1 and append (command.open,         {                  command = freearc.." "..filename}),
+                        append (command.extractTo,    {param = subdir,   command = multi_command (freearc, " x -ad --noarcext -- ", filenames)}),
+                        append (command.extractHere,  {                  command = multi_command (freearc, " x --noarcext -- ", filenames)}),
+                        append (command.test,         {                  command = multi_command (freearc, " t --noarcext -- ", filenames)}),
+      all_arcs      and append (command.arc2sfx,      {                  command = multi_command (freearc, " s --noarcext -- ",  filenames)}),
+      all_sfxes     and append (command.sfx2arc,      {                  command = multi_command (freearc, " s- --noarcext -- ", filenames)}),
+      #filenames>1  and append (command.help,         {param = arcname,  command = freearc.." j --noarcext -- \"%s\" "..filename}),
     }
 
   -- If only rar/7z/zip/tar.gz/tar.bz2 archives are selected - provide appropriate menu
   elseif all_zips then
     menu = {
-      append (command.zip2arc,  {text = "Convert to .arc",      command = all2arc.."      -- "..filename}),
-      append (command.zip2sfx,  {text = "Convert to .arc SFX",  command = all2arc.." -sfx -- "..filename}),
+      append (command.zip2arc,  {command = all2arc.."      -- "..filename}),
+      append (command.zip2sfx,  {command = all2arc.." -sfx -- "..filename}),
     }
   end
 

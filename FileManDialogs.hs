@@ -349,29 +349,29 @@ settingsDialog fm' = do
     pack (widget empty)
     pack (widget notes)
 
-    let makeButton ("",_)         = do pack.widget =<< label ""; return []
-        makeButton (cmdname,emsg) = do
-          imsg <- i18n emsg
+    let makeButton ("",_,_)             = do pack.widget =<< label ""; return []
+        makeButton (cmdname,etext,emsg) = do
+          [itext,imsg] <- i18ns [etext,emsg]
           button <- fmCheckButtonWithHistory fm' ("Settings.ContextMenu.Command."++cmdname) True imsg
           pack (widget button)
-          return [(button, (cmdname, imsg))]
+          return [(button, (cmdname, itext, imsg))]
 
-    commands <- concatMapM makeButton$ filter (not.null.fst)$
-                  [ ("add2arc"    , "0999 Compress the selected files using FreeArc"                          )
-                  , ("add2sfx"    , "0999 Compress the selected files into SFX using FreeArc"                 )
-                  , (""           , ""                                                                        )
-                  , ("open"       , "0999 Open the selected archive(s) with FreeArc"                          )
-                  , ("extractTo"  , "0999 Extract the selected archive(s) to new folder"                      )
-                  , ("extractHere", "0999 Extract the selected archive(s) to the same folder"                 )
-                  , ("test"       , "0999 Test the selected archive(s)"                                       )
-                  , (""           , ""                                                                        )
-                  , ("arc2sfx"    , "0999 Convert the selected archive(s) to SFX"                             )
-                  , ("sfx2arc"    , "0999 Convert the selected SFX(es) to normal archive(s)"                  )
-                  , (""           , ""                                                                        )
-                  , ("join"       , "0999 Join the selected archives"                                         )
-                  , (""           , ""                                                                        )
-                  , ("zip2arc"    , "0999 Convert selected archive(s) to FreeArc format"                      )
-                  , ("zip2sfx"    , "0999 Convert selected archive(s) to FreeArc SFX"                         )
+    commands <- concatMapM makeButton$
+                  [ ("add2arc"    ,  "0999 Add to \"%s\""      ,  "0999 Compress the selected files using FreeArc"                          )
+                  , ("add2sfx"    ,  "0999 Add to SFX \"%s\""  ,  "0999 Compress the selected files into SFX using FreeArc"                 )
+                  , (""           ,  ""                        ,  ""                                                         )
+                  , ("open"       ,  "0999 Open with FreeArc"  ,  "0999 Open the selected archive(s) with FreeArc"                          )
+                  , ("extractTo"  ,  "0999 Extract to \"%s\""  ,  "0999 Extract the selected archive(s) to new folder"                      )
+                  , ("extractHere",  "0999 Extract here"       ,  "0999 Extract the selected archive(s) to the same folder"                 )
+                  , ("test"       ,  "0999 Test"               ,  "0999 Test the selected archive(s)"                                       )
+                  , (""           ,  ""                        ,  ""                                                         )
+                  , ("arc2sfx"    ,  "0999 Convert to SFX"     ,  "0999 Convert the selected archive(s) to SFX"                             )
+                  , ("sfx2arc"    ,  "0999 Convert from SFX"   ,  "0999 Convert the selected SFX(es) to normal archive(s)"                  )
+                  , (""           ,  ""                        ,  ""                                                         )
+                  , ("join"       ,  "0999 Join to \"%s\""     ,  "0999 Join the selected archives"                                         )
+                  , (""           ,  ""                        ,  ""                                                         )
+                  , ("zip2arc"    ,  "0999 Convert to .arc"    ,  "0999 Convert selected archive(s) to FreeArc format"                      )
+                  , ("zip2sfx"    ,  "0999 Convert to .arc SFX",  "0999 Convert selected archive(s) to FreeArc SFX"                         )
                   ]
 #endif
 
@@ -449,13 +449,14 @@ registerShellExtensions associate contextMenu cascaded commands = do
       -- This part is performed only when Context Menu enabled
       when contextMenu $ do
         -- Generate ArcShellExt config script
+        let q str = "\"" ++ str.$replaceAll "\"" "\\\"" ++ "\""
         let script = unlines$[ "-- 1 for cascaded menus, nil for flat"
                              , "cascaded = "++(iif cascaded "1" "nil")
                              , ""
                              , "-- Commands"
                              , "command = {}"
-                             ] ++ map (\(enabled,(cmdname,msg)) ->
-                                         (not enabled &&& "-- ")++"command."++cmdname++" = {help = \""++msg++"\"}")
+                             ] ++ map (\(enabled,(cmdname,text,help)) ->
+                                         (not enabled &&& "-- ")++"command."++cmdname++" = {text = "++q text++", help = "++q help++"}")
                                   commands ++
                              [ ""
                              , "-- Path to FreeArc"
