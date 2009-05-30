@@ -521,6 +521,20 @@ fmCheckButtonWithHistory fm' tag deflt title = do
            , gwRereadHistory = rereadHistory
            }
 
+{-# NOINLINE fmExpanderWithHistory #-}
+-- |Создать экспандер с историей под тегом tag
+fmExpanderWithHistory fm' tag deflt title = do
+  control <- expander title
+  let rereadHistory = do
+        control =:: fmGetHistoryBool fm' tag deflt
+  let saveHistory = do
+        fmReplaceHistoryBool fm' tag =<< val control
+  rereadHistory
+  return$ control
+           { gwSaveHistory   = saveHistory
+           , gwRereadHistory = rereadHistory
+           }
+
 {-# NOINLINE fmDialog #-}
 -- |Диалог со стандартными кнопками OK/Cancel
 fmDialog fm' title action = do

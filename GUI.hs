@@ -474,13 +474,13 @@ i18t title create = do
   tooltip control t  `on`  t/=""
   return control
 
--- |This instance allows to get/set checkbox state using standard =:/val interface
+-- |This instance allows to get/set radio button state using standard =:/val interface
 instance Variable RadioButton Bool where
   new  = undefined
   val  = toggleButtonGetActive
   (=:) = toggleButtonSetActive
 
--- |This instance allows to get/set checkbox state using standard =:/val interface
+-- |This instance allows to get/set toggle button state using standard =:/val interface
 instance Variable ToggleButton Bool where
   new  = undefined
   val  = toggleButtonGetActive
@@ -684,6 +684,19 @@ checkBox title = do
                    , gwGetValue    = val control
                    , gwSetValue    = (control=:)
                    , gwSetOnUpdate = \action -> onToggled control action >> return ()
+                   }
+
+
+{-# NOINLINE expander #-}
+-- |Ёкспандер
+expander title = do
+  (hbox, control) <- boxed expanderNewWithMnemonic title
+  inner_hbox <- hBoxNew False 0    -- We should return it too in order to allow inserting controls inside Expander!!!
+  containerAdd control inner_hbox
+  return gtkWidget { gwWidget      = hbox
+                   , gwGetValue    = val control
+                   , gwSetValue    = (control=:)
+--                   , gwSetOnUpdate = \action -> onToggled control action >> return ()
                    }
 
 

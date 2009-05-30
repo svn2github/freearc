@@ -334,22 +334,36 @@ settingsDialog fm' = do
 
 ------ Закладка интеграции с Explorer ---------------------------------------------------------
 #if defined(FREEARC_WIN)
-    vbox <- newPage "0999 Integration";  let pack x = boxPackStart vbox x PackNatural 1
+    vbox <- newPage "0999 Explorer integration";  let pack x = boxPackStart vbox x PackNatural 1
 
-    associateButton   <- fmCheckButtonWithHistory fm' "Settings.Associate"                 True "0172 Associate FreeArc with .arc files"
-    contextMenuButton <- fmCheckButtonWithHistory fm' "Settings.ContextMenu"               True "0999 Enable context menu in Explorer"
-    cascadedButton    <- fmCheckButtonWithHistory fm' "Settings.ContextMenu.Cascaded"      True "0999 Cascaded context menu"
+    associateButton   <- fmCheckButtonWithHistory fm' "Settings.Associate"            True "0172 Associate FreeArc with .arc files"
+    contextMenuButton <- fmCheckButtonWithHistory fm' "Settings.ContextMenu"          True "0999 Enable context menu in Explorer"
+    cascadedButton    <- fmCheckButtonWithHistory fm' "Settings.ContextMenu.Cascaded" True "0999 Make it cascaded"
+    empty             <- label ""
+
+    pack (widget associateButton)
+    pack (widget empty)
+
+    frame <- frameNew;  frameSetLabelWidget frame (widget contextMenuButton)
+    pack frame
+
+    hbox <- hBoxNew False 0;  containerAdd frame hbox
+
+    vbox <- vBoxNew False 0;  boxPackStart hbox vbox PackNatural 10
+    let pack x = boxPackStart vbox x PackNatural 1
 
     empty <- label ""
     notes <- label =<< i18n"0999 Enable individual commands:"
 
-    pack (widget associateButton)
-    pack (widget contextMenuButton)
     pack (widget cascadedButton)
     pack (widget empty)
     pack (widget notes)
 
-    let makeButton ("",_,_)             = do pack.widget =<< label ""; return []
+    let show_or_hide = widgetSetSensitivity hbox =<< val contextMenuButton
+    show_or_hide
+    show_or_hide .$ setOnUpdate contextMenuButton
+
+    let makeButton ("",_,_)             = do pack =<< hSeparatorNew; return []
         makeButton (cmdname,etext,emsg) = do
           [itext,imsg] <- i18ns [etext,emsg]
           button <- fmCheckButtonWithHistory fm' ("Settings.ContextMenu.Command."++cmdname) True imsg
@@ -357,21 +371,21 @@ settingsDialog fm' = do
           return [(button, (cmdname, itext, imsg))]
 
     commands <- concatMapM makeButton$
-                  [ ("add2arc"    ,  "0999 Add to \"%s\""      ,  "0999 Compress the selected files using FreeArc"                          )
-                  , ("add2sfx"    ,  "0999 Add to SFX \"%s\""  ,  "0999 Compress the selected files into SFX using FreeArc"                 )
+                  [ ("add2arc"    ,  "0999 Add to \"%s\""      ,  "0999 Compress the selected files using FreeArc"           )
+                  , ("add2sfx"    ,  "0999 Add to SFX \"%s\""  ,  "0999 Compress the selected files into SFX using FreeArc"  )
                   , (""           ,  ""                        ,  ""                                                         )
-                  , ("open"       ,  "0999 Open with FreeArc"  ,  "0999 Open the selected archive(s) with FreeArc"                          )
-                  , ("extractTo"  ,  "0999 Extract to \"%s\""  ,  "0999 Extract the selected archive(s) to new folder"                      )
-                  , ("extractHere",  "0999 Extract here"       ,  "0999 Extract the selected archive(s) to the same folder"                 )
-                  , ("test"       ,  "0999 Test"               ,  "0999 Test the selected archive(s)"                                       )
+                  , ("open"       ,  "0999 Open with FreeArc"  ,  "0999 Open the selected archive(s) with FreeArc"           )
+                  , ("extractTo"  ,  "0999 Extract to \"%s\""  ,  "0999 Extract the selected archive(s) to new folder"       )
+                  , ("extractHere",  "0999 Extract here"       ,  "0999 Extract the selected archive(s) to the same folder"  )
+                  , ("test"       ,  "0999 Test"               ,  "0999 Test the selected archive(s)"                        )
                   , (""           ,  ""                        ,  ""                                                         )
-                  , ("arc2sfx"    ,  "0999 Convert to SFX"     ,  "0999 Convert the selected archive(s) to SFX"                             )
-                  , ("sfx2arc"    ,  "0999 Convert from SFX"   ,  "0999 Convert the selected SFX(es) to normal archive(s)"                  )
+                  , ("arc2sfx"    ,  "0999 Convert to SFX"     ,  "0999 Convert the selected archive(s) to SFX"              )
+                  , ("sfx2arc"    ,  "0999 Convert from SFX"   ,  "0999 Convert the selected SFX(es) to normal archive(s)"   )
                   , (""           ,  ""                        ,  ""                                                         )
-                  , ("join"       ,  "0999 Join to \"%s\""     ,  "0999 Join the selected archives"                                         )
+                  , ("join"       ,  "0999 Join to \"%s\""     ,  "0999 Join the selected archives"                          )
                   , (""           ,  ""                        ,  ""                                                         )
-                  , ("zip2arc"    ,  "0999 Convert to .arc"    ,  "0999 Convert selected archive(s) to FreeArc format"                      )
-                  , ("zip2sfx"    ,  "0999 Convert to .arc SFX",  "0999 Convert selected archive(s) to FreeArc SFX"                         )
+                  , ("zip2arc"    ,  "0999 Convert to .arc"    ,  "0999 Convert selected archive(s) to FreeArc format"       )
+                  , ("zip2sfx"    ,  "0999 Convert to .arc SFX",  "0999 Convert selected archive(s) to FreeArc SFX"          )
                   ]
 #endif
 
