@@ -1,3 +1,4 @@
+-- This file uses UTF8 encoding without BOM
 
 user_menu_builder = nil
 items = nil
@@ -40,12 +41,12 @@ end
 
 -- function called from C to get help on menu item i
 function get_help(i)
-  return items[i].help
+  return string.format (items[i].help, items[i].param)
 end
 
 -- function called from C to get command for menu item i
 function get_command(i)
-  return items[i].command
+  return string.format (items[i].command, items[i].param)
 end
 
 

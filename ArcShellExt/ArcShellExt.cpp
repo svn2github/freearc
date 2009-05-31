@@ -319,7 +319,7 @@ CShellExt::CShellExt() {
   m_cRef = 0L;
   m_pDataObj = NULL;
   _cRef++;
-  m_hSciteBmp = LoadBitmap(_hModule, MAKEINTRESOURCE(IDB_SCITE));
+  m_hFreeArcBmp = LoadBitmap(_hModule, MAKEINTRESOURCE(IDB_SCITE));
   HRESULT hr;
   hr = SHGetMalloc(&m_pAlloc);
   if (FAILED(hr))
@@ -410,13 +410,14 @@ int CShellExt::add_menu_item() {
   if (!text)
     return 0;  ////lua_pushstring (L, errormsg); luaL_error / lua_error
 
+  wchar_t textW[MAX_PATH];
+  MultiByteToWideChar (CP_UTF8, 0, text, -1, textW, MAX_PATH);
+
   // Submenu flag
   int menu_down = luaL_checknumber(L, 2);
 
-  // Return from submenu (menu_level -= menu_up)
+  // Return from submenu
   int menu_up = luaL_checknumber(L, 3);
-
-
   if (menu_up)
   {
     menu_level -= menu_up;
@@ -428,15 +429,15 @@ int CShellExt::add_menu_item() {
   if (menu_down)
   {
      hSubMenu = ::CreateMenu();   ////if (!HMENU)  error
-     InsertMenu(hMenu, nIndex, MF_POPUP|MF_BYPOSITION, (UINT)hSubMenu, text);
+     InsertMenuW(hMenu, nIndex, MF_POPUP|MF_BYPOSITION, (UINT)hSubMenu, textW);
   }
   else
   {
-     InsertMenu(hMenu, nIndex, MF_STRING|MF_BYPOSITION, idCmd, text);
+     InsertMenuW(hMenu, nIndex, MF_STRING|MF_BYPOSITION, idCmd, textW);
   }
 
-  if (m_hSciteBmp) {
-    SetMenuItemBitmaps (hMenu, nIndex, MF_BYPOSITION, m_hSciteBmp, m_hSciteBmp);
+  if (m_hFreeArcBmp) {
+    SetMenuItemBitmaps (hMenu, nIndex, MF_BYPOSITION, m_hFreeArcBmp, m_hFreeArcBmp);
   }
 
   nIndex++;
@@ -462,34 +463,33 @@ STDMETHODIMP CShellExt::QueryContextMenu(HMENU _hMenu, UINT _nIndex, UINT _idCmd
   if ( uFlags & CMF_DEFAULTONLY )
     return MAKE_HRESULT (SEVERITY_SUCCESS, FACILITY_NULL, 0);
 
-
-
+  // Init class variables
   hMenu  = _hMenu;
   nIndex = _nIndex;
   idCmd  = idCmdFirst = _idCmdFirst;
   menu_level = 0;
-
-
-
 
   FORMATETC fmte = {CF_HDROP, (DVTARGETDEVICE FAR *)NULL, DVASPECT_CONTENT, -1, TYMED_HGLOBAL};
   HRESULT hres = m_pDataObj->GetData(&fmte, &m_stgMedium);
 
   if (SUCCEEDED(hres) && m_stgMedium.hGlobal)
   {
+    // Number of files selected
     m_cbFiles = DragQueryFile((HDROP)m_stgMedium.hGlobal, (UINT)-1, 0, 0);
 
     if (m_cbFiles)
     {
-      // вызываем build_menu, передав ему список имён файлов
+      // Call build_menu, passing list of files selected
       lua_getglobal (L, "build_menu");
 
       if (!lua_checkstack (L, m_cbFiles))
         ;//error
 
-      // push filenames of files selected
+      // Push UTF8 names of files selected
       for (UINT i = 0; i < m_cbFiles; i++) {
-        DragQueryFile((HDROP)m_stgMedium.hGlobal, i, SelectedFilename, MAX_PATH);
+      	wchar_t WSelectedFilename[MAX_PATH];
+        DragQueryFileW ((HDROP)m_stgMedium.hGlobal, i, WSelectedFilename, MAX_PATH);
+        WideCharToMultiByte (CP_UTF8, 0, WSelectedFilename, -1, SelectedFilename, MAX_PATH, NULL, NULL);
         lua_pushstring (L, SelectedFilename);
       }
 
@@ -547,28 +547,32 @@ STDMETHODIMP CShellExt::InvokeCommand(LPCMINVOKECOMMANDINFO lpcmi) {
       ;//error(L, "function `f' must return a string");
     const char *z = lua_tostring(L, -1);
 
-    hr = InvokeSciTE(lpcmi->hwnd, lpcmi->lpDirectory, z, lpcmi->lpParameters, lpcmi->nShow);
+    hr = RunProgram (lpcmi->hwnd, lpcmi->lpDirectory, z, lpcmi->lpParameters, lpcmi->nShow);
 
     lua_pop(L, 1);  /* pop returned value after use */
   }
   return hr;
 }
 
-STDMETHODIMP CShellExt::InvokeSciTE(HWND hParent, LPCSTR pszWorkingDir, LPCSTR cmd, LPCSTR pszParam, int iShowCmd) {
+STDMETHODIMP CShellExt::RunProgram (HWND hParent, LPCSTR pszWorkingDir, LPCSTR cmd, LPCSTR pszParam, int iShowCmd) {
 
+  // Find current directory - it's name of any file selected minus last part
   TCHAR* pDest = strrchr(SelectedFilename, '\\');
   if (pDest==SelectedFilename || pDest[-1]==':')  pDest++;
   pDest[0] = 0;
-  TCHAR* CurrentDir = SelectedFilename;
+  wchar_t CurrentDirW[MAX_PATH];
+  MultiByteToWideChar (CP_UTF8, 0, SelectedFilename, -1, CurrentDirW, MAX_PATH);
 
+  wchar_t cmdW[MAX_PATH];
+  MultiByteToWideChar (CP_UTF8, 0, cmd, -1, cmdW, MAX_PATH);
 
-  STARTUPINFO si;
+  STARTUPINFOW si;
   PROCESS_INFORMATION pi;
   ZeroMemory(&si, sizeof(si));
   si.cb = sizeof(si);
   si.dwFlags = STARTF_USESHOWWINDOW;
   si.wShowWindow = SW_RESTORE;
-  if (!CreateProcess (NULL, (LPSTR)cmd, NULL, NULL, FALSE, 0, NULL, CurrentDir, &si, &pi)) {
+  if (!CreateProcessW (NULL, cmdW, NULL, NULL, FALSE, 0, NULL, CurrentDirW, &si, &pi)) {
     TCHAR message[MAX_PATH];
     wsprintf(message, "Cannot run program: %s", cmd);
     MessageBox(hParent,
@@ -582,14 +586,20 @@ STDMETHODIMP CShellExt::InvokeSciTE(HWND hParent, LPCSTR pszWorkingDir, LPCSTR c
 
 //to do
 // unicode
-// arbitrary actions
+//   +Отображение имён в меню, например "Add to archive ?.arc"
+//   +directory: Add to archive
+//   SFX check
+//   GCS_HELPTEXTA
+//   errmsgs
+//   all2arc?
 
+// arbitrary actions
 // icons
 // multiple user.lua files
 // persistent Lua_state auto-reloaded on *user.lua changes
 // GCS_VERB
 // memory management - use SHMalloc
 
-// WideCharToMultiByte
 // MultiByteToWideChar
+// WideCharToMultiByte (CP_UTF8, 0, SelectedFilename, -1, (LPWSTR)pszName, cchMax, NULL, NULL);
 

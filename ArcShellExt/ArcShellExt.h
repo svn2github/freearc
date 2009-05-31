@@ -29,7 +29,7 @@ public:
 };
 typedef CShellExtClassFactory *LPCSHELLEXTCLASSFACTORY;
 
-  HBITMAP m_hSciteBmp;
+  HBITMAP m_hFreeArcBmp;
 class CShellExt : public IContextMenu, IShellExtInit {
 public:
 protected:
@@ -50,11 +50,11 @@ protected:
   int   menu_level;
   TCHAR SelectedFilename[MAX_PATH];
 
-  STDMETHODIMP InvokeSciTE(HWND hParent,
-    LPCSTR pszWorkingDir,
-    LPCSTR pszCmd,
-    LPCSTR pszParam,
-    int iShowCmd);
+  STDMETHODIMP RunProgram (HWND hParent,
+                           LPCSTR pszWorkingDir,
+                           LPCSTR pszCmd,
+                           LPCSTR pszParam,
+                           int iShowCmd);
 
 public:
   CShellExt();

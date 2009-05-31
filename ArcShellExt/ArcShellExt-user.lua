@@ -1,3 +1,5 @@
+-- This file uses UTF8 encoding without BOM
+
 -- Suffix for FreeArc archives
 arcext = ".arc"
 
