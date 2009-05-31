@@ -9,6 +9,8 @@
 // Defines the entry point for the DLL application.
 //---------------------------------------------------------------------------
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #ifndef STRICT
 #define STRICT
 #endif
@@ -18,6 +20,8 @@
 #include <windows.h>
 #include <windowsx.h>
 #include <shlobj.h>
+#include <io.h>
+#include <fcntl.h>
 
 #include "Lua\lua.hpp"
 
@@ -221,30 +225,39 @@ BOOL UnregisterServer(CLSID clsid, LPTSTR lpszTitle) {
 // MsgBoxDebug
 //---------------------------------------------------------------------------
 void MsgBoxDebug(LPTSTR lpszMsg) {
-  MessageBox(NULL,
-             lpszMsg,
-             "DEBUG",
-             MB_OK);
+  wchar_t msgW[MAX_PATH];
+  MultiByteToWideChar (CP_UTF8, 0, lpszMsg, -1, msgW, MAX_PATH);
+
+  MessageBoxW (NULL,
+               msgW,
+               L"DEBUG: FreeArc Shell Extension",
+               MB_OK);
 }
 
 //---------------------------------------------------------------------------
 // MsgBox
 //---------------------------------------------------------------------------
-void MsgBox(LPTSTR lpszMsg) {
-  MessageBox(NULL,
-             lpszMsg,
-             "FreeArc Extension",
-             MB_OK);
+void MsgBox(HWND hParent, LPTSTR lpszMsg) {
+  wchar_t msgW[MAX_PATH];
+  MultiByteToWideChar (CP_UTF8, 0, lpszMsg, -1, msgW, MAX_PATH);
+
+  MessageBoxW (hParent,
+               msgW,
+               L"FreeArc Shell Extension",
+               MB_OK);
 }
 
 //---------------------------------------------------------------------------
 // MsgBoxError
 //---------------------------------------------------------------------------
-void MsgBoxError(LPTSTR lpszMsg) {
-  MessageBox(NULL,
-             lpszMsg,
-             "FreeArc Extension",
-             MB_OK | MB_ICONSTOP);
+void MsgBoxError(HWND hParent, LPTSTR lpszMsg) {
+  wchar_t msgW[MAX_PATH];
+  MultiByteToWideChar (CP_UTF8, 0, lpszMsg, -1, msgW, MAX_PATH);
+
+  MessageBoxW (hParent,
+               msgW,
+               L"FreeArc Shell Extension",
+               MB_OK | MB_ICONSTOP);
 }
 
 //---------------------------------------------------------------------------
@@ -315,6 +328,45 @@ static int add_menu_item (lua_State *L) {
   return obj->add_menu_item();
 }
 
+// Lua function that reads chunk of data from file with UTF8-encoded filename
+// Call: read_from_file (filename, origin, offset, bufsize)
+static int read_from_file (lua_State *L) {
+  const char *filename = luaL_checkstring(L, 1);
+  if (!filename)
+    return 0;  ////lua_pushstring (L, errormsg); luaL_error / lua_error
+
+  // Convert filename into UTF-16
+  wchar_t filenameW[MAX_PATH];
+  MultiByteToWideChar (CP_UTF8, 0, filename, -1, filenameW, MAX_PATH);
+
+  // Where and how many bytes to read
+  int origin = luaL_checkinteger(L, 2);
+  int offset = luaL_checkinteger(L, 3);
+  int size   = luaL_checkinteger(L, 4);
+
+  // Open file
+  int f = _wopen (filenameW, _O_BINARY | _O_RDONLY);
+  if (f<0)
+    return 0;  ////lua_pushstring (L, errormsg); luaL_error / lua_error
+
+  // Alloc buffer
+  void *buf = malloc(size);
+  if (!buf)
+    return 0;  ////lua_pushstring (L, errormsg); luaL_error / lua_error
+
+  // Seek to and read data requested
+  _lseek (f, offset, origin);
+  int len = _read (f, buf, size);
+  close(f);
+  if (len<0)
+    return 0;  ////lua_pushstring (L, errormsg); luaL_error / lua_error
+
+  // Return the data read
+  lua_pushlstring(L, (const char*)buf, len);
+  free(buf);
+  return 1;
+}
+
 CShellExt::CShellExt() {
   m_cRef = 0L;
   m_pDataObj = NULL;
@@ -325,11 +377,10 @@ CShellExt::CShellExt() {
   if (FAILED(hr))
     m_pAlloc = NULL;
 
-  // 0. создаём интерпретатор Lua
+  // Create Lua interpreter, register C functions and run Lua scripts to define Lua functions
   L = lua_newstate (l_alloc, this);  luaL_openlibs(L);
-  // 1. регистрируем функцию, которая добавляет пункт в меню
-  lua_register (L, "add_menu_item", ::add_menu_item);
-  // 2. втягиваем Lua scripts
+  lua_register (L, "add_menu_item",  ::add_menu_item);
+  lua_register (L, "read_from_file", ::read_from_file);
   load_user_funcs();
 }
 
@@ -414,10 +465,10 @@ int CShellExt::add_menu_item() {
   MultiByteToWideChar (CP_UTF8, 0, text, -1, textW, MAX_PATH);
 
   // Submenu flag
-  int menu_down = luaL_checknumber(L, 2);
+  int menu_down = luaL_checkinteger(L, 2);
 
   // Return from submenu
-  int menu_up = luaL_checknumber(L, 3);
+  int menu_up = luaL_checkinteger(L, 3);
   if (menu_up)
   {
     menu_level -= menu_up;
@@ -483,7 +534,7 @@ STDMETHODIMP CShellExt::QueryContextMenu(HMENU _hMenu, UINT _nIndex, UINT _idCmd
       lua_getglobal (L, "build_menu");
 
       if (!lua_checkstack (L, m_cbFiles))
-        ;//error
+        return 0;////error
 
       // Push UTF8 names of files selected
       for (UINT i = 0; i < m_cbFiles; i++) {
@@ -494,6 +545,7 @@ STDMETHODIMP CShellExt::QueryContextMenu(HMENU _hMenu, UINT _nIndex, UINT _idCmd
       }
 
       if (lua_pcall(L, m_cbFiles, 0, 0) != 0)
+        return 0;////error
         ;//error(L, "error running function `f': %s",
          //        lua_tostring(L, -1));
     }
@@ -511,11 +563,10 @@ STDMETHODIMP CShellExt::GetCommandString(UINT_PTR idCmd, UINT uFlags, UINT FAR *
     lua_pushnumber (L, idCmdFirst+idCmd);
 
     if (lua_pcall(L, 1, 1, 0) != 0)
-      ;//error(L, "error running function `f': %s",
-       //        lua_tostring(L, -1));
+      return NOERROR;////error
 
     if (!lua_isstring(L, -1))
-      ;//error(L, "function `f' must return a string");
+      return NOERROR;//error(L, "function `f' must return a string");
     const char *z = lua_tostring(L, -1);
 
     if (uFlags == GCS_HELPTEXTA)
@@ -540,11 +591,11 @@ STDMETHODIMP CShellExt::InvokeCommand(LPCMINVOKECOMMANDINFO lpcmi) {
     lua_pushnumber (L, idCmdFirst+idCmd);
 
     if (lua_pcall(L, 1, 1, 0) != 0)
-      ;//error(L, "error running function `f': %s",
-       //        lua_tostring(L, -1));
+      return hr;//error(L, "error running function `f': %s",
+                //        lua_tostring(L, -1));
 
     if (!lua_isstring(L, -1))
-      ;//error(L, "function `f' must return a string");
+      return hr;//error(L, "function `f' must return a string");
     const char *z = lua_tostring(L, -1);
 
     hr = RunProgram (lpcmi->hwnd, lpcmi->lpDirectory, z, lpcmi->lpParameters, lpcmi->nShow);
@@ -572,13 +623,13 @@ STDMETHODIMP CShellExt::RunProgram (HWND hParent, LPCSTR pszWorkingDir, LPCSTR c
   si.cb = sizeof(si);
   si.dwFlags = STARTF_USESHOWWINDOW;
   si.wShowWindow = SW_RESTORE;
-  if (!CreateProcessW (NULL, cmdW, NULL, NULL, FALSE, 0, NULL, CurrentDirW, &si, &pi)) {
+  if (CreateProcessW (NULL, cmdW, NULL, NULL, FALSE, 0, NULL, CurrentDirW, &si, &pi)) {
+    CloseHandle (pi.hProcess);
+    CloseHandle (pi.hThread);
+  } else {
     TCHAR message[MAX_PATH];
     wsprintf(message, "Cannot run program: %s", cmd);
-    MessageBox(hParent,
-               message,
-               "FreeArc Shell Extension",
-               MB_OK);
+    MsgBoxError (hParent, message);
   }
 
   return NOERROR;
@@ -586,11 +637,9 @@ STDMETHODIMP CShellExt::RunProgram (HWND hParent, LPCSTR pszWorkingDir, LPCSTR c
 
 //to do
 // unicode
-//   +Отображение имён в меню, например "Add to archive ?.arc"
-//   +directory: Add to archive
-//   SFX check
+//   +SFX check
 //   GCS_HELPTEXTA
-//   errmsgs
+//   +errmsgs
 //   all2arc?
 
 // arbitrary actions

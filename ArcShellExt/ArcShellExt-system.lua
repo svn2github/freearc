@@ -99,11 +99,9 @@ end
 
 -- Check for SFX
 function check_for_sfx(filename)
-  f = io.open(filename, "rb")
-  f:seek("end", -256)
-  data = f:read(256)
-  f:close()
-  return (string.find (data, "ArC\1", 1, true))
+  -- Check that last 256 bytes of file contains sign of FreeArc footer block
+  data = read_from_file (filename, 2, -256, 256)
+  return (string.find (data, "ArC\1\8", 1, true))
 end
 
 -- Build multi-action FreeArc command
@@ -114,4 +112,3 @@ function multi_command(command, options, filenames)
   end
   return command
 end
-
