@@ -204,6 +204,26 @@ void RunProgram (const CFILENAME filename, const CFILENAME curdir, int wait_fini
 
   if (process_created && wait_finish)
       WaitForSingleObject (pi.hProcess, INFINITE);
+
+  CloseHandle (pi.hProcess);
+  CloseHandle (pi.hThread);
+}
+
+// Execute `command` in the directory `curdir` optionally waiting until it finished
+void RunCommand (const CFILENAME command, const CFILENAME curdir, int wait_finish)
+{
+  STARTUPINFO si;
+  PROCESS_INFORMATION pi;
+  ZeroMemory (&si, sizeof(si));
+  si.cb = sizeof(si);
+  ZeroMemory (&pi, sizeof(pi));
+  BOOL process_created = CreateProcessW (NULL, command, NULL, NULL, FALSE, 0, NULL, curdir, &si, &pi);
+
+  if (process_created && wait_finish)
+      WaitForSingleObject (pi.hProcess, INFINITE);
+
+  CloseHandle (pi.hProcess);
+  CloseHandle (pi.hThread);
 }
 
 // Execute file `filename` in the directory `curdir` optionally waiting until it finished
@@ -217,9 +237,11 @@ void RunFile (const CFILENAME filename, const CFILENAME curdir, int wait_finish)
   sei.lpFile = filename;
   sei.lpDirectory = curdir;
   sei.nShow = SW_SHOW;
+
   DWORD rc = ShellExecuteEx(&sei);
   if (rc && wait_finish)
-    WaitForSingleObject(sei.hProcess, INFINITE);
+    WaitForSingleObject(sei.hProcess, INFINITE),
+    CloseHandle (sei.hProcess);
 }
 
 

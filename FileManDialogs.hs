@@ -362,6 +362,7 @@ settingsDialog fm' = do
     let show_or_hide = widgetSetSensitivity hbox =<< val contextMenuButton
     show_or_hide
     show_or_hide .$ setOnUpdate contextMenuButton
+    oldContextMenu <- val contextMenuButton
 
     let makeButton ("",_,_)             = do pack =<< hSeparatorNew; return []
         makeButton (cmdname,etext,emsg) = do
@@ -423,7 +424,7 @@ settingsDialog fm' = do
       contextMenu <- val contextMenuButton
       cascaded    <- val cascadedButton
       bValues     <- val `mapM` (map fst commands)
-      registerShellExtensions associate contextMenu cascaded (zip bValues (map snd commands))
+      registerShellExtensions associate oldContextMenu contextMenu cascaded (zip bValues (map snd commands))
 #endif
 
 
@@ -432,7 +433,7 @@ settingsDialog fm' = do
 ----------------------------------------------------------------------------------------------------
 
 #if defined(FREEARC_WIN)
-registerShellExtensions associate contextMenu cascaded commands = do
+registerShellExtensions associate oldContextMenu contextMenu cascaded commands = do
       exe <- getExeName                                -- Name of FreeArc.exe file
       let ico   =  exe `replaceExtension` ".ico"       -- Name of FreeArc.ico file
           dir   =  exe.$takeDirectory                  -- FreeArc.exe directory
@@ -440,9 +441,11 @@ registerShellExtensions associate contextMenu cascaded commands = do
           empty =  dir </> "empty.arc"                 -- Name of empty archive file
           register = registrySetStr hKEY_CLASSES_ROOT
 
-      -- (Un)registering ArcShellExt dlls
-      let dll_register mode = do system$ "regsvr32 "++mode++" /s /c \""++(shext </> "ArcShellExt.dll\"")
-                                 system$ "regsvr32 "++mode++" /s /c \""++(shext </> "ArcShellExt-64.dll\"")
+      -- (Un)registering ArcShellExt dlls - performed only if setting was changed
+      let dll_register mode = when (oldContextMenu /= contextMenu) $ do
+                                runProgram$ "regsvr32 "++mode++" /s /c \""++(shext </> "ArcShellExt.dll\"")
+                                runProgram$ "regsvr32 "++mode++" /s /c \""++(shext </> "ArcShellExt-64.dll\"")
+                                return ()
 
       -- First, unregister any old version
       dll_register "/u"

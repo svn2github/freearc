@@ -12,6 +12,7 @@ extern "C" {
 // Environment.cpp
 void SetFileDateTime (const CFILENAME Filename, time_t t); // Установить время/дату модификации файла
 void RunProgram (const CFILENAME filename, const CFILENAME curdir, int wait_finish);  // Execute program `filename` in the directory `curdir` optionally waiting until it finished
+void RunCommand (const CFILENAME command,  const CFILENAME curdir, int wait_finish);  // Execute `command` in the directory `curdir` optionally waiting until it finished
 void RunFile    (const CFILENAME filename, const CFILENAME curdir, int wait_finish);  // Execute file `filename` in the directory `curdir` optionally waiting until it finished
 int long_path_size (void);                                 // Максимальная длина имени файла
 void FormatDateTime (char *buf, int bufsize, time_t t);    // Отформатировать время/дату для команды листинга
