@@ -17,7 +17,7 @@
 #endif
 
 #define HEADER1        "FreeArc 0.52 "
-#define HEADER2        "  http://freearc.org  2009-05-04\n"
+#define HEADER2        "  http://freearc.org  2009-05-31\n"
 
 // Доступ к структуре архива
 #include "ArcStructure.h"

@@ -29,6 +29,7 @@
 #define MAX_FILES 10
 #define MAX_CMDSTR (MAX_PATH * MAX_FILES)
 #define ResultFromShort(i) ResultFromScode(MAKE_SCODE(SEVERITY_SUCCESS, 0, (USHORT)(i)))
+#define MYARRAYSIZE(arr) (sizeof(arr)/sizeof(*(arr)))
 
 #pragma data_seg(".text")
 #define INITGUID
@@ -122,7 +123,7 @@ BOOL RegisterServer(CLSID clsid, LPTSTR lpszTitle) {
 #ifdef UNICODE
     lstrcpy(szCLSID, pwsz);
 #else
-    WideCharToMultiByte(CP_ACP, 0, pwsz, -1, szCLSID, ARRAYSIZE(szCLSID), NULL, NULL);
+    WideCharToMultiByte(CP_ACP, 0, pwsz, -1, szCLSID, MYARRAYSIZE(szCLSID), NULL, NULL);
 #endif
     //free the string
     LPMALLOC pMalloc;
@@ -187,7 +188,7 @@ BOOL UnregisterServer(CLSID clsid, LPTSTR lpszTitle) {
 #ifdef UNICODE
     lstrcpy(szCLSID, pwsz);
 #else
-    WideCharToMultiByte(CP_ACP, 0, pwsz, -1, szCLSID, ARRAYSIZE(szCLSID), NULL, NULL);
+    WideCharToMultiByte(CP_ACP, 0, pwsz, -1, szCLSID, MYARRAYSIZE(szCLSID), NULL, NULL);
 #endif
     //free the string
     LPMALLOC pMalloc;
@@ -444,15 +445,15 @@ void CShellExt::load_user_funcs() {
   pDest++;
 
   pDest[0] = 0;
-  strcat_s (szModuleFullName, MAX_PATH, "ArcShellExt-system.lua");
+  strcat (szModuleFullName, "ArcShellExt-system.lua");
   luaL_dofile (L, szModuleFullName);
 
   pDest[0] = 0;
-  strcat_s (szModuleFullName, MAX_PATH, "ArcShellExt-config.lua");
+  strcat (szModuleFullName, "ArcShellExt-config.lua");
   luaL_dofile (L, szModuleFullName);
 
   pDest[0] = 0;
-  strcat_s (szModuleFullName, MAX_PATH, "ArcShellExt-user.lua");
+  strcat (szModuleFullName, "ArcShellExt-user.lua");
   luaL_dofile (L, szModuleFullName);
 }
 

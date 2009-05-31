@@ -463,7 +463,7 @@ registerShellExtensions associate oldContextMenu contextMenu cascaded commands =
         register ".arc" "" "FreeArc.arc"
         register ".arc\\ShellNew" "FileName" empty
 
-      -- This part is performed only when Context Menu enabled
+      -- This part is performed only when Context Menu is enabled
       when contextMenu $ do
         -- Generate ArcShellExt config script
         let q str = "\"" ++ str.$replaceAll "\"" "\\\"" ++ "\""
