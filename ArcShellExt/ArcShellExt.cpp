@@ -618,8 +618,8 @@ STDMETHODIMP CShellExt::RunProgram (HWND hParent, LPCSTR pszWorkingDir, LPCSTR c
   wchar_t CurrentDirW[MAX_PATH];
   MultiByteToWideChar (CP_UTF8, 0, SelectedFilename, -1, CurrentDirW, MAX_PATH);
 
-  wchar_t cmdW[MAX_PATH];
-  MultiByteToWideChar (CP_UTF8, 0, cmd, -1, cmdW, MAX_PATH);
+  wchar_t *cmdW = (wchar_t*) malloc ((strlen(cmd)+1) * sizeof(*cmdW));
+  MultiByteToWideChar (CP_UTF8, 0, cmd, -1, cmdW, strlen(cmd)+1);
 
   STARTUPINFOW si;
   PROCESS_INFORMATION pi;
@@ -635,6 +635,7 @@ STDMETHODIMP CShellExt::RunProgram (HWND hParent, LPCSTR pszWorkingDir, LPCSTR c
     wsprintf(message, "Cannot run program: %s", cmd);
     MsgBoxError (hParent, message);
   }
+  free(cmdW);
 
   return NOERROR;
 }
@@ -646,10 +647,7 @@ STDMETHODIMP CShellExt::RunProgram (HWND hParent, LPCSTR pszWorkingDir, LPCSTR c
 // arbitrary actions
 // icons
 // multiple user.lua files
-// persistent Lua_state auto-reloaded on *user.lua changes
+// persistent Lua_state auto-reloaded on ArcShell*.lua changes
 // GCS_VERB
 // memory management - use SHMalloc
-
-// MultiByteToWideChar
-// WideCharToMultiByte (CP_UTF8, 0, SelectedFilename, -1, (LPWSTR)pszName, cchMax, NULL, NULL);
 
