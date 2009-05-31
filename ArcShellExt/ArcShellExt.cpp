@@ -357,7 +357,7 @@ static int read_from_file (lua_State *L) {
   // Seek to and read data requested
   _lseek (f, offset, origin);
   int len = _read (f, buf, size);
-  close(f);
+  _close(f);
   if (len<0)
     return 0;  ////lua_pushstring (L, errormsg); luaL_error / lua_error
 
@@ -569,8 +569,11 @@ STDMETHODIMP CShellExt::GetCommandString(UINT_PTR idCmd, UINT uFlags, UINT FAR *
       return NOERROR;//error(L, "function `f' must return a string");
     const char *z = lua_tostring(L, -1);
 
-    if (uFlags == GCS_HELPTEXTA)
-      strcpy_s(pszName, cchMax, z);
+    if (uFlags == GCS_HELPTEXTA) {
+      wchar_t buf[MAX_PATH];
+      MultiByteToWideChar (CP_UTF8, 0, z,   -1, buf, MAX_PATH);
+      WideCharToMultiByte (CP_ACP,  0, buf, -1, pszName, cchMax, NULL, NULL);
+    }
 
     if (uFlags == GCS_HELPTEXTW)
       MultiByteToWideChar (CP_UTF8, 0, z, -1, (LPWSTR)pszName, cchMax);
@@ -637,9 +640,6 @@ STDMETHODIMP CShellExt::RunProgram (HWND hParent, LPCSTR pszWorkingDir, LPCSTR c
 
 //to do
 // unicode
-//   +SFX check
-//   GCS_HELPTEXTA
-//   +errmsgs
 //   all2arc?
 
 // arbitrary actions

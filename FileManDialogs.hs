@@ -464,22 +464,24 @@ registerShellExtensions associate contextMenu cascaded commands = do
       when contextMenu $ do
         -- Generate ArcShellExt config script
         let q str = "\"" ++ str.$replaceAll "\"" "\\\"" ++ "\""
-        let script = unlines$[ "-- 1 for cascaded menus, nil for flat"
-                             , "cascaded = "++(iif cascaded "1" "nil")
-                             , ""
-                             , "-- Commands"
-                             , "command = {}"
-                             ] ++ map (\(enabled,(cmdname,text,help)) ->
-                                         (not enabled &&& "-- ")++"command."++cmdname++" = {text = "++q text++", help = "++q help++"}")
-                                  commands ++
-                             [ ""
-                             , "-- Path to FreeArc"
-                             , "freearc = \"\\\""++(exe.$replaceAll "\\" "\\\\")++"\\\"\""
-                             , ""
-                             , "-- Path to All2Arc"
-                             , "all2arc = \"\\\""++((windosifyPath(dir </> "all2arc.exe")).$replaceAll "\\" "\\\\")++"\\\"\""
-                             ]
-        filePutBinary (shext </> "ArcShellExt-config.lua") script
+        let script = [ "-- This file uses UTF8 encoding without BOM"
+                     , ""
+                     , "-- 1 for cascaded menus, nil for flat"
+                     , "cascaded = "++(iif cascaded "1" "nil")
+                     , ""
+                     , "-- Commands"
+                     , "command = {}"
+                     ] ++ map (\(enabled,(cmdname,text,help)) ->
+                                 (not enabled &&& "-- ")++"command."++cmdname++" = {text = "++q text++", help = "++q help++"}")
+                          commands ++
+                     [ ""
+                     , "-- Path to FreeArc"
+                     , "freearc = \"\\\""++(exe.$replaceAll "\\" "\\\\")++"\\\"\""
+                     , ""
+                     , "-- Path to All2Arc"
+                     , "all2arc = \"\\\""++((windosifyPath(dir </> "all2arc.exe")).$replaceAll "\\" "\\\\")++"\\\"\""
+                     ]
+        saveConfigFile (shext </> "ArcShellExt-config.lua") script
         -- Register DLL
         dll_register ""
         return ()
