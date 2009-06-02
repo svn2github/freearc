@@ -154,7 +154,15 @@ linesCRLF = recursive oneline  -- oneline "abc\n..." = ("abc","...")
 -- Будем считать, что все GUI конфиг-файлы хранятся в UTF-8
 readConfigFile          = parseFile   '8'
 saveConfigFile   file   = unParseFile '8' file . joinWith "\n"
-modifyConfigFile file f = handle (\e->return []) (readConfigFile file) >>== f >>= saveConfigFile file
+modifyConfigFile file f = readConfigFileManyTries file >>== f >>= saveConfigFile file
+
+-- Прочитать конфиг-файл, повторяя попытки если он пуст/недоступен
+readConfigFileManyTries file = go 1 where
+  go attempt = do xs <- readConfigFile file `catch` (\e->return [])
+                  if xs==[] && attempt<100
+                   then do sleepSeconds 0.01
+                           go (attempt+1)
+                   else return xs
 
 
 ---------------------------------------------------------------------------------------------------

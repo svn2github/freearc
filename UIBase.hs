@@ -112,7 +112,7 @@ indicatorThread secs output =
 backgroundThread secs action =
   forkIO $ do
     foreverM $ do
-      threadDelay (round$ secs*1000000)
+      sleepSeconds secs
       syncUI $ do
         action
 

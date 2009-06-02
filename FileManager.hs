@@ -770,7 +770,7 @@ myGUI run args = do
       foreverM $ do
         whenM daily $ do
           checkNews False
-        threadDelay (30*60*1000000::Int)  -- 60 minutes is too much for Int!
+        sleepSeconds (30*60)
 
 
   -- Помощь по использованию GUI
