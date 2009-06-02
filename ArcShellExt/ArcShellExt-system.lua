@@ -10,10 +10,8 @@ end
 
 -- system function that is called from C side to build the menu when user Right-Clicks file(s) in Explorer
 function build_menu (...)
-  filenames = arg  -- filenames selected in Explorer are passed as argument list
-
-  -- Call user function to get list of menu items
-  menu = user_menu_builder (filenames)
+  -- Call user function to get list of menu items, filenames selected in Explorer are passed as argument list
+  menu = user_menu_builder (arg)
 
   -- Iterate menu items passing them to C function that really adds them to the menu
   items = {}

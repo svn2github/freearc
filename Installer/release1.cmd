@@ -1,6 +1,8 @@
 cd ..\Unarc
 make
-upx -9 --lzma arc*.linux.sfx
+::upx -d *.sfx
+::upx --ultra-brute *.sfx
+upx --lzma -9 *.sfx
 cd ..
 call compile-O2.cmd
 call compile-GUI-O2.cmd

@@ -70,7 +70,22 @@ ShowUnInstDetails show
 
 Section "Install FreeArc" SEC01
   !include "FreeArc-delete-old.nsh"   ; Delete old-style winarc*.* files
-  SetOverwrite try
+
+  ;Backup config files
+  SetOverwrite off
+  CreateDirectory "$INSTDIR\bin\backup"
+  Delete "$INSTDIR\bin\backup\freearc.ini"
+  Delete "$INSTDIR\bin\backup\freearc.history"
+  Delete "$INSTDIR\bin\backup\arc.groups"
+  Delete "$INSTDIR\bin\backup\arc.ini"
+  CopyFiles "$INSTDIR\bin\freearc.ini"      "$INSTDIR\bin\backup\freearc.ini"
+  CopyFiles "$INSTDIR\bin\freearc.history"  "$INSTDIR\bin\backup\freearc.history"
+  CopyFiles "$INSTDIR\bin\arc.groups"       "$INSTDIR\bin\backup\arc.groups"
+  CopyFiles "$INSTDIR\bin\arc.ini"          "$INSTDIR\bin\backup\arc.ini"
+  SetOutPath "$INSTDIR\bin"
+  File /r "ini\*.*"
+  SetOverwrite on
+
   SetOutPath "$INSTDIR"
   File    "FreeArc.url"
   SetOutPath "$INSTDIR\Addons"

@@ -641,12 +641,9 @@ STDMETHODIMP CShellExt::RunProgram (HWND hParent, LPCSTR pszWorkingDir, LPCSTR c
 }
 
 //to do
-// unicode
-//   all2arc?
-
 // arbitrary actions
 // icons
-// multiple user.lua files
+// multiple *-user.lua files
 // persistent Lua_state auto-reloaded on ArcShell*.lua changes
 // GCS_VERB
 // memory management - use SHMalloc

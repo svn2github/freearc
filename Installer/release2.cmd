@@ -10,9 +10,11 @@ mkdir !Release\bin\arc.languages
 mkdir !Release\Documentation
 mkdir !Release\GTK
 mkdir !Release\gtk2-themes
+mkdir !Release\ini
 
 xcopy Addons        !Release\Addons        /e
 xcopy bin           !Release\bin           /e
+xcopy ini           !Release\ini           /e
 xcopy Documentation !Release\Documentation /e
 xcopy GTK           !Release\GTK           /e
 xcopy gtk2-themes   !Release\gtk2-themes   /e
