@@ -433,6 +433,9 @@ settingsDialog fm' = do
 ----------------------------------------------------------------------------------------------------
 
 #if defined(FREEARC_WIN)
+-- Удаление регистрации
+unregisterShellExtensions = registerShellExtensions False True False undefined undefined
+
 registerShellExtensions associate oldContextMenu contextMenu cascaded commands = do
       exe <- getExeName                                -- Name of FreeArc.exe file
       let ico   =  exe `replaceExtension` ".ico"       -- Name of FreeArc.ico file
@@ -488,6 +491,8 @@ registerShellExtensions associate oldContextMenu contextMenu cascaded commands =
         -- Register DLL
         dll_register ""
         return ()
+#else
+unregisterShellExtensions = doNothing
 #endif
 
 

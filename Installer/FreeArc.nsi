@@ -168,17 +168,23 @@ FunctionEnd
 
 Section Uninstall
   SetShellVarContext "all"
+    ExecWait '"$INSTDIR\bin\FreeArc.exe" --unregister'
     RMDir /r "$SMPROGRAMS\FreeArc"
     Delete   "$DESKTOP\FreeArc.lnk"
     Delete   "$QUICKLAUNCH\FreeArc.lnk"
     Push "$INSTDIR\bin"
     Call un.RemoveFromPath
+    Push "$INSTDIR"
+    Call un.RemoveFromPath
 
   SetShellVarContext "current"
+    ExecWait '"$INSTDIR\bin\FreeArc.exe" --unregister'
     RMDir /r "$SMPROGRAMS\FreeArc"
     Delete   "$DESKTOP\FreeArc.lnk"
     Delete   "$QUICKLAUNCH\FreeArc.lnk"
     Push "$INSTDIR\bin"
+    Call un.RemoveFromPath
+    Push "$INSTDIR"
     Call un.RemoveFromPath
 
   !include "FreeArc-delete-old.nsh"   ; Delete winarc*.*
