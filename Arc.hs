@@ -49,7 +49,6 @@ import ArcExtract
 import ArcRecover
 #ifdef FREEARC_GUI
 import FileManager
-import FileManDialogs
 #endif
 
 
@@ -68,12 +67,7 @@ doMain args  = do
   ensureCtrlBreak "resetConsoleTitle" (resetConsoleTitle) $ do
   luaLevel "Program" [("command", args)] $ do
 #ifdef FREEARC_GUI
-  if args == ["--unregister"]       -- Удаление регистрации в Explorer
-    then unregisterShellExtensions
-    else do
-  if length args < 2                -- При вызове программы без аргументов или с одним аргументом (именем каталога/архива)
-    then myGUI run args             --   запускаем полноценный Archive Manager
-    else do                         --   а иначе - просто отрабатываем команды (де)архивации
+  parseGUIcommands run args $ do    -- Обработка GUI-специфичных вариаций командной строки
 #endif
   uiStartProgram                    -- Открыть UI
   commands <- parseCmdline args     -- Превратить командную строку в список команд на выполнение

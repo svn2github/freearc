@@ -43,6 +43,30 @@ import FileManDialogs
 import FileManDialogAdd
 
 ----------------------------------------------------------------------------------------------------
+---- Обработка GUI-специфичных вариаций командной строки -------------------------------------------
+----------------------------------------------------------------------------------------------------
+
+parseGUIcommands run args non_gui = do
+  if args == ["--settings-dialog"]  -- Диалог настроек
+    then openSettingsDialog
+    else do
+  if args == ["--unregister"]       -- Удаление регистрации в Explorer
+    then unregisterShellExtensions
+    else do
+  if length args < 2                -- При вызове программы без аргументов или с одним аргументом (именем каталога/архива)
+    then myGUI run args             --   запускаем полноценный Archive Manager
+    else non_gui                    --   а иначе - просто отрабатываем команды (де)архивации
+
+-- Диалог настроек
+openSettingsDialog = do
+  startGUI $ do
+  fm' <- newEmptyFM
+  postGUIAsync$ do
+    settingsDialog fm'
+    mainQuit
+
+
+----------------------------------------------------------------------------------------------------
 ---- Главное меню программы и тулбар под ним -------------------------------------------------------
 ----------------------------------------------------------------------------------------------------
 --      File: New Archive, Open Archive, New SFX, Change Drive, Select All, Select Group, Deselect Group, Invert Selection
@@ -258,6 +282,7 @@ myGUI run args = do
   boxPackStart vBox lowBox    PackNatural 0
 
   containerAdd window vBox
+  widgetShowAll window
 
 
   -- Список действий, выполняемых при закрытии окна файл-менеджера
@@ -826,6 +851,4 @@ myGUI run args = do
   terminateOnError $
     chdir fm' (head (args++["."]))
   fmStatusBarTotals fm'
-
-  return window
 

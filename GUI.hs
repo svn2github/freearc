@@ -64,14 +64,16 @@ aANYFILE_FILTER = []
 startGUI action = runInBoundThread $ do
   unsafeInitGUIForThreadedRTS
   guiThread =:: getOsThreadId
-  action >>= widgetShowAll
+  action
   mainGUI
 
 -- |Переменная, хранящая номер GUI-треда
 guiThread  =  unsafePerformIO$ newIORef$ error "undefined GUI::guiThread"
 
 -- |Инициализация GUI-части программы
-guiStartProgram = forkIO$ startGUI (fmap fst runIndicators)
+guiStartProgram = forkIO$ startGUI $ do
+  (windowProgress, clearStats) <- runIndicators
+  widgetShowAll windowProgress
 
 {-# NOINLINE runIndicators #-}
 -- |Создаёт окно индикатора прогресса и запускает тред для его периодического обновления.

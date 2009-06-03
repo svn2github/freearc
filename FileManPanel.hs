@@ -39,6 +39,25 @@ decryptionPassword  =  unsafePerformIO$ newIORef$ ""
 ---- Операции файл-менеджера -----------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------
 
+-- Создать фиктивную панель файл-менеджера (для прямого вызова диалогов из ком. строки)
+newEmptyFM = do
+  historyFile <- findOrCreateFile configFilePlaces aHISTORY_FILE >>= mvar
+  window <- windowNew
+  curdir <- getCurrentDirectory
+  fm' <- mvar FM_State { fm_window       = window
+                       , fm_view         = error "undefined FM_State::fm_filelist"
+                       , fm_model        = error "undefined FM_State::fm_filelist"
+                       , fm_selection    = error "undefined FM_State::fm_filelist"
+                       , fm_statusLabel  = error "undefined FM_State::fm_filelist"
+                       , fm_messageCombo = error "undefined FM_State::fm_filelist"
+                       , fm_filelist     = error "undefined FM_State::fm_filelist"
+                       , fm_history_file = historyFile
+                       , fm_history      = Nothing
+                       , fm_onChdir      = []
+                       , fm_sort_order   = ""
+                       , subfm           = FM_Directory {subfm_dir=curdir}}
+  return fm'
+
 -- |Создать переменную для хранения состояния файл-менеджера
 newFM window view model selection statusLabel messageCombo = do
   historyFile <- findOrCreateFile configFilePlaces aHISTORY_FILE >>= mvar
