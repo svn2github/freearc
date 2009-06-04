@@ -42,9 +42,8 @@ decryptionPassword  =  unsafePerformIO$ newIORef$ ""
 -- Создать фиктивную панель файл-менеджера (для прямого вызова диалогов из ком. строки)
 newEmptyFM = do
   historyFile <- findOrCreateFile configFilePlaces aHISTORY_FILE >>= mvar
-  window <- windowNew
   curdir <- getCurrentDirectory
-  fm' <- mvar FM_State { fm_window       = window
+  fm' <- mvar FM_State { fm_window_      = Nothing
                        , fm_view         = error "undefined FM_State::fm_filelist"
                        , fm_model        = error "undefined FM_State::fm_filelist"
                        , fm_selection    = error "undefined FM_State::fm_filelist"
@@ -63,7 +62,7 @@ newFM window view model selection statusLabel messageCombo = do
   historyFile <- findOrCreateFile configFilePlaces aHISTORY_FILE >>= mvar
   curdir <- io$ getCurrentDirectory
   counterCombo <- ref 0  -- number of last message + 1 in combobox
-  fm' <- mvar FM_State { fm_window       = window
+  fm' <- mvar FM_State { fm_window_      = Just window
                        , fm_view         = view
                        , fm_model        = model
                        , fm_selection    = selection
@@ -561,8 +560,9 @@ fmDialog fm' title action = do
   title <- i18n title
   bracketCtrlBreak "fmDialog" dialogNew widgetDestroy $ \dialog -> do
     set dialog [windowTitle          := title,
-                windowTransientFor   := fm_window fm,
                 containerBorderWidth := 0]
+    when (isJust$ fm_window_ fm) $ do
+      set dialog [windowTransientFor := fm_window fm]
     addStdButton dialog ResponseOk      >>= \okButton -> do
     addStdButton dialog ResponseCancel
     dialogSetDefaultResponse dialog ResponseOk
@@ -572,9 +572,13 @@ fmDialog fm' title action = do
 {-# NOINLINE fmDialogRun #-}
 -- |Отработать диалог с сохранением его положения и размера в истории
 fmDialogRun fm' dialog name = do
-    inside (restoreSizePos fm' dialog name "")
-           (saveSizePos    fm' dialog name)
-      (dialogRun dialog)
+  restoreSizePos fm' dialog name ""
+  res <- dialogRun dialog
+  saveSizePos    fm' dialog name
+  fm <- val fm'
+  when (isJust$ fm_window_ fm) $ do
+    windowPresent (fm_window fm)
+  return res
 
 
 ----------------------------------------------------------------------------------------------------

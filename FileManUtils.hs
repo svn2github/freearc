@@ -30,7 +30,7 @@ import ArcExtract
 ----------------------------------------------------------------------------------------------------
 
 -- |Текущее состояние файл-менеджера: список выбранных файлов, общий список файлов и прочая информация
-data FM_State = FM_State { fm_window       :: Window
+data FM_State = FM_State { fm_window_      :: Maybe Window
                          , fm_view         :: TreeView
                          , fm_model        :: New.ListStore FileData
                          , fm_selection    :: TreeSelection
@@ -61,6 +61,9 @@ fm_archive = subfm_archive.subfm
 fm_arcname = subfm_arcname.subfm
 fm_arcdir  = subfm_arcdir .subfm
 fm_dir     = subfm_dir    .subfm
+
+-- |Окно файл-менеджера
+fm_window FM_State{fm_window_ = Just window} = window
 
 -- |Текущий архив+каталог в нём или каталог на диске
 fm_current fm | isFM_Archive fm = fm_arcname fm </> fm_arcdir fm

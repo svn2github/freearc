@@ -96,7 +96,6 @@ extractDialog fm' exec cmd arcnames arcdir files = do
 
     widgetShowAll upbox
     choice <- fmDialogRun fm' dialog (if cmd/="t" then "ExtractDialog" else "TestDialog")
-    windowPresent (fm_window fm)
     when (choice==ResponseOk) $ do
       overwriteOption    <- val overwrite
       dir'               <- val dir;         saveHistory dir
@@ -206,7 +205,6 @@ arcinfoDialog fm' exec mode arcnames arcdir files = do
     widgetShowAll dialog
     notebookSetCurrentPage nb 1    `on` mode==CommentMode
     choice <- fmDialogRun fm' dialog "ArcInfoDialog"
-    windowPresent (fm_window fm)
     when (choice==ResponseOk) $ do
       newComment <- val comment
       when (newComment /= ftComment footer) $ do
@@ -407,7 +405,6 @@ settingsDialog fm' = do
 -----------------------------------------------------------------------------------------------
     widgetShowAll dialog
     choice <- fmDialogRun fm' dialog "SettingsDialog"
-    windowPresent (fm_window fm)
     when (choice==ResponseOk) $ do
       -- Сохраняем настройки в INI-файл, пароли - в глоб. переменных, keyfile - в истории
       langFile <- getCurrentLangFile

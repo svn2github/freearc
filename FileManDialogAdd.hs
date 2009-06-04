@@ -159,7 +159,6 @@ addDialog fm' exec cmd mode = do
     widgetShowAll dialog
     --current_time  <- getClockTime;  debugMsg (show$ diffTimes current_time start_time)
     choice <- fmDialogRun fm' dialog "AddDialog"
-    windowPresent (fm_window fm)
     when (choice==ResponseOk) $ do
       -- Main settings
       arcname' <- val arcname;  saveHistory arcname   `on`  cmd/="ch"

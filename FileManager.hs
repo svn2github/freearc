@@ -46,14 +46,14 @@ import FileManDialogAdd
 ---- Обработка GUI-специфичных вариаций командной строки -------------------------------------------
 ----------------------------------------------------------------------------------------------------
 
-parseGUIcommands run args execCmds = do
+parseGUIcommands run args exec = do
   case args of
     ["--settings-dialog"] -> openSettingsDialog          -- Диалог настроек
-    "--extract-dialog":xs -> openExtractDialog xs        -- Диалог
+    "--extract-dialog":xs -> openExtractDialog xs exec   -- Диалог
     ["--unregister"]      -> unregisterShellExtensions   -- Удаление регистрации в Explorer
     []                    -> myGUI run args              -- При вызове программы без аргументов или с одним аргументом (именем каталога/архива)
     [_]                   -> myGUI run args              --   запускаем полноценный Archive Manager
-    _                     -> startGUI >> execCmds        --   а иначе - просто отрабатываем команды (де)архивации
+    _                     -> startGUI >> exec args       --   а иначе - просто отрабатываем команды (де)архивации
 
 -- Диалог настроек
 openSettingsDialog = do
@@ -64,14 +64,16 @@ openSettingsDialog = do
     mainQuit
 
 -- Диалог (рас)паковки
-openExtractDialog arcnames = do
+openExtractDialog (cmd:arcnames) exec = do
   startGUI
---  bracket newEmptyMVar takeMVar
+  cmdChan <- newChan
   gui $ do
+    let exec = writeChan cmdChan
     fm' <- newEmptyFM
-    let exec = undefined
-    extractDialog fm' exec "x" arcnames "" []
-    mainQuit
+    extractDialog fm' exec cmd arcnames "" []
+  --
+  cmds <- readChan cmdChan
+  exec$ joinWith [";"]$ map thd3 cmds
 
 
 ----------------------------------------------------------------------------------------------------

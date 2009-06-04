@@ -67,7 +67,7 @@ doMain args  = do
   ensureCtrlBreak "resetConsoleTitle" (resetConsoleTitle) $ do
   luaLevel "Program" [("command", args)] $ do
 #ifdef FREEARC_GUI
-  parseGUIcommands run args $ do    -- Обработка GUI-специфичных вариаций командной строки
+  parseGUIcommands run args $ \args -> do  -- Обработка GUI-специфичных вариаций командной строки
 #endif
   uiStartProgram                    -- Открыть UI
   commands <- parseCmdline args     -- Превратить командную строку в список команд на выполнение
