@@ -46,23 +46,31 @@ import FileManDialogAdd
 ---- Обработка GUI-специфичных вариаций командной строки -------------------------------------------
 ----------------------------------------------------------------------------------------------------
 
-parseGUIcommands run args non_gui = do
-  if args == ["--settings-dialog"]  -- Диалог настроек
-    then openSettingsDialog
-    else do
-  if args == ["--unregister"]       -- Удаление регистрации в Explorer
-    then unregisterShellExtensions
-    else do
-  if length args < 2                -- При вызове программы без аргументов или с одним аргументом (именем каталога/архива)
-    then myGUI run args             --   запускаем полноценный Archive Manager
-    else non_gui                    --   а иначе - просто отрабатываем команды (де)архивации
+parseGUIcommands run args execCmds = do
+  case args of
+    ["--settings-dialog"] -> openSettingsDialog          -- Диалог настроек
+    "--extract-dialog":xs -> openExtractDialog xs        -- Диалог
+    ["--unregister"]      -> unregisterShellExtensions   -- Удаление регистрации в Explorer
+    []                    -> myGUI run args              -- При вызове программы без аргументов или с одним аргументом (именем каталога/архива)
+    [_]                   -> myGUI run args              --   запускаем полноценный Archive Manager
+    _                     -> startGUI >> execCmds        --   а иначе - просто отрабатываем команды (де)архивации
 
 -- Диалог настроек
 openSettingsDialog = do
-  startGUI $ do
-  fm' <- newEmptyFM
-  postGUIAsync$ do
+  startGUI
+  gui $ do
+    fm' <- newEmptyFM
     settingsDialog fm'
+    mainQuit
+
+-- Диалог (рас)паковки
+openExtractDialog arcnames = do
+  startGUI
+--  bracket newEmptyMVar takeMVar
+  gui $ do
+    fm' <- newEmptyFM
+    let exec = undefined
+    extractDialog fm' exec "x" arcnames "" []
     mainQuit
 
 
@@ -155,7 +163,7 @@ uiDef =
 
 myGUI run args = do
   fileManagerMode =: True
-  startGUI $ do
+  runGUI $ do
   io$ parseCmdline ["l", "a"]   -- инициализация: display, логфайл
   -- Список ассоциаций клавиша->действие
   onKeyActions <- newList
@@ -282,7 +290,6 @@ myGUI run args = do
   boxPackStart vBox lowBox    PackNatural 0
 
   containerAdd window vBox
-  widgetShowAll window
 
 
   -- Список действий, выполняемых при закрытии окна файл-менеджера
@@ -851,4 +858,6 @@ myGUI run args = do
   terminateOnError $
     chdir fm' (head (args++["."]))
   fmStatusBarTotals fm'
+
+  widgetShowAll window
 

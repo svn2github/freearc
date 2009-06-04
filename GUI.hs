@@ -60,18 +60,25 @@ aANYFILE_FILTER = []
 ---- Отображение индикатора прогресса --------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------
 
--- |Инициализирует Gtk и создаёт начальное окно программы
-startGUI action = runInBoundThread $ do
+-- |Переменная, хранящая номер GUI-треда
+guiThread  =  unsafePerformIO$ newIORef$ error "undefined GUI::guiThread"
+
+-- |Инициализация Gtk для интерактивной работы (режим FileManager)
+runGUI action = do
   unsafeInitGUIForThreadedRTS
   guiThread =:: getOsThreadId
   action
   mainGUI
 
--- |Переменная, хранящая номер GUI-треда
-guiThread  =  unsafePerformIO$ newIORef$ error "undefined GUI::guiThread"
+-- |Инициализация Gtk для выполнения cmdline
+startGUI = do
+  x <- newEmptyMVar
+  forkIO$ runInBoundThread $ do
+    runGUI$ putMVar x ()
+  takeMVar x
 
--- |Инициализация GUI-части программы
-guiStartProgram = forkIO$ startGUI $ do
+-- |Инициализация GUI-части программы (индикатора прогресса) для выполнения cmdline
+guiStartProgram = gui $ do
   (windowProgress, clearStats) <- runIndicators
   widgetShowAll windowProgress
 
