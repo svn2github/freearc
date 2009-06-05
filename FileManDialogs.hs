@@ -372,10 +372,12 @@ settingsDialog fm' = do
     commands <- concatMapM makeButton$
                   [ ("add2arc"    ,  "0999 Add to \"%s\""      ,  "0999 Compress the selected files using FreeArc"           )
                   , ("add2sfx"    ,  "0999 Add to SFX \"%s\""  ,  "0999 Compress the selected files into SFX using FreeArc"  )
+                  , ("add"        ,  "0999 Add to ..."         ,  "0999 Compress the selected files using FreeArc via dialog")
                   , (""           ,  ""                        ,  ""                                                         )
                   , ("open"       ,  "0999 Open with FreeArc"  ,  "0999 Open the selected archive(s) with FreeArc"           )
                   , ("extractTo"  ,  "0999 Extract to \"%s\""  ,  "0999 Extract the selected archive(s) to new folder"       )
                   , ("extractHere",  "0999 Extract here"       ,  "0999 Extract the selected archive(s) to the same folder"  )
+                  , ("extract"    ,  "0999 Extract to ..."     ,  "0999 Extract the selected archive(s) via dialog"          )
                   , ("test"       ,  "0999 Test"               ,  "0999 Test the selected archive(s)"                        )
                   , (""           ,  ""                        ,  ""                                                         )
                   , ("arc2sfx"    ,  "0999 Convert to SFX"     ,  "0999 Convert the selected archive(s) to SFX"              )
@@ -383,8 +385,8 @@ settingsDialog fm' = do
                   , (""           ,  ""                        ,  ""                                                         )
                   , ("join"       ,  "0999 Join to \"%s\""     ,  "0999 Join the selected archives"                          )
                   , (""           ,  ""                        ,  ""                                                         )
-                  , ("zip2arc"    ,  "0999 Convert to .arc"    ,  "0999 Convert selected archive(s) to FreeArc format"       )
-                  , ("zip2sfx"    ,  "0999 Convert to .arc SFX",  "0999 Convert selected archive(s) to FreeArc SFX"          )
+                  , ("zip2arc"    ,  "0999 Convert to .arc"    ,  "0999 Convert the selected archive(s) to FreeArc format"   )
+                  , ("zip2sfx"    ,  "0999 Convert to .arc SFX",  "0999 Convert the selected archive(s) to FreeArc SFX"      )
                   ]
 #endif
 
@@ -739,6 +741,13 @@ decryptionBox fm' dialog = do
 ----------------------------------------------------------------------------------------------------
 ---- Вспомогательные определения -------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------
+
+-- |Выполнить операцию над текущим архивом/всеми отмеченными файлами на диске
+compressionOperation fm' action exec cmd mode = do
+  fm <- val fm'
+  files <- if isFM_Archive fm then return [fm_arcname fm]
+                              else getSelection fm' addCmdFiles  -- todo: j/ch когда Selection включает каталоги
+  action fm' exec cmd files mode
 
 -- |Выполнить операцию над выбранными файлами в архиве/всеми файлами в выбранных архивах
 archiveOperation fm' action = do

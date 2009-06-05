@@ -47,9 +47,12 @@ import FileManDialogAdd
 ----------------------------------------------------------------------------------------------------
 
 parseGUIcommands run args exec = do
+  let extract fm' exec cmd arcnames = extractDialog fm' exec cmd arcnames "" []
+      add     fm' exec cmd files    = addDialog     fm' exec cmd files NoMode
   case args of
     ["--settings-dialog"] -> openSettingsDialog          -- Диалог настроек
-    "--extract-dialog":xs -> openExtractDialog xs exec   -- Диалог
+    "--add-dialog":xs     -> openDialog xs exec add      -- Диалог упаковки
+    "--extract-dialog":xs -> openDialog xs exec extract  -- Диалог распаковки
     ["--unregister"]      -> unregisterShellExtensions   -- Удаление регистрации в Explorer
     []                    -> myGUI run args              -- При вызове программы без аргументов или с одним аргументом (именем каталога/архива)
     [_]                   -> myGUI run args              --   запускаем полноценный Archive Manager
@@ -63,14 +66,14 @@ openSettingsDialog = do
     settingsDialog fm'
     mainQuit
 
--- Диалог (рас)паковки
-openExtractDialog (cmd:arcnames) exec = do
+-- Открыть диалог (рас)паковки и затем выполнить запрошенную команду
+openDialog (cmd:"--":params) exec dialog = do
   startGUI
   cmdChan <- newChan
   gui $ do
     let exec = writeChan cmdChan
     fm' <- newEmptyFM
-    extractDialog fm' exec cmd arcnames "" []
+    dialog fm' exec cmd params
   --
   cmds <- readChan cmdChan
   exec$ joinWith [";"]$ map thd3 cmds
@@ -565,7 +568,7 @@ myGUI run args = do
 
   -- Упаковка данных
   addAct `onActionActivate` do
-    addDialog fm' exec "a" NoMode
+    compressionOperation fm' addDialog exec "a" NoMode
 
   -- Распаковка архив(ов)
   extractAct `onActionActivate` do
@@ -633,19 +636,19 @@ myGUI run args = do
 
   -- Преобразовать архив в SFX
   recompressAct `onActionActivate` do
-    addDialog fm' exec "ch" RecompressMode
+    compressionOperation fm' addDialog exec "ch" RecompressMode
 
   -- Преобразовать архив в SFX
   toSfxAct `onActionActivate` do
-    addDialog fm' exec "ch" MakeSFXMode
+    compressionOperation fm' addDialog exec "ch" MakeSFXMode
 
   -- Зашифровать архив
   encryptAct `onActionActivate` do
-    addDialog fm' exec "ch" EncryptionMode
+    compressionOperation fm' addDialog exec "ch" EncryptionMode
 
   -- Добавить RR в архив
   addRrAct `onActionActivate` do
-    addDialog fm' exec "ch" ProtectionMode
+    compressionOperation fm' addDialog exec "ch" ProtectionMode
 
   -- Восстановить повреждённый архив
   repairAct `onActionActivate` do
@@ -662,11 +665,11 @@ myGUI run args = do
 
   -- Модификация архивов
   modifyAct `onActionActivate` do
-    addDialog fm' exec "ch" NoMode
+    compressionOperation fm' addDialog exec "ch" NoMode
 
   -- Объединение архивов
   joinAct `onActionActivate` do
-    addDialog fm' exec "j" NoMode
+    compressionOperation fm' addDialog exec "j" NoMode
 
 
 ----------------------------------------------------------------------------------------------------

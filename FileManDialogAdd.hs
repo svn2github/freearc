@@ -43,13 +43,11 @@ import FileManDialogs
 ---- Диалог упаковки файлов и модификации/слияния архивов ------------------------------------------
 ----------------------------------------------------------------------------------------------------
 
-addDialog fm' exec cmd mode = do
+addDialog fm' exec cmd files mode = do
   --start_time  <- getClockTime
   fm <- val fm'
   if isFM_Archive fm && cmd=="a"  then fmErrorMsg fm' "0133 You can't compress files directly from archive!" else do
   if isFM_Archive fm && cmd=="j"  then fmErrorMsg fm' "0145 You can't join archives directly from archive!" else do
-  files <- if isFM_Archive fm then return [fm_arcname fm]
-                              else getSelection fm' addCmdFiles  -- todo: j/ch когда Selection включает каталоги
   title <- i18n$ case (cmd,files) of
                    ("a" , []    ) -> "0136 Add all files to archive"
                    ("a" , [file]) -> "0134 Add %1 to archive"

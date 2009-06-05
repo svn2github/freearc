@@ -44,11 +44,11 @@ newEmptyFM = do
   historyFile <- findOrCreateFile configFilePlaces aHISTORY_FILE >>= mvar
   curdir <- getCurrentDirectory
   fm' <- mvar FM_State { fm_window_      = Nothing
-                       , fm_view         = error "undefined FM_State::fm_filelist"
-                       , fm_model        = error "undefined FM_State::fm_filelist"
-                       , fm_selection    = error "undefined FM_State::fm_filelist"
-                       , fm_statusLabel  = error "undefined FM_State::fm_filelist"
-                       , fm_messageCombo = error "undefined FM_State::fm_filelist"
+                       , fm_view         = error "undefined FM_State::fm_view"
+                       , fm_model        = error "undefined FM_State::fm_model"
+                       , fm_selection    = error "undefined FM_State::fm_selection"
+                       , fm_statusLabel  = error "undefined FM_State::fm_statusLabel"
+                       , fm_messageCombo = error "undefined FM_State::fm_messageCombo"
                        , fm_filelist     = error "undefined FM_State::fm_filelist"
                        , fm_history_file = historyFile
                        , fm_history      = Nothing

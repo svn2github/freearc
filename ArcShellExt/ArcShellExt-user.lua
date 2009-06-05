@@ -46,6 +46,7 @@ register_menu_handler (function (filenames)
   menu = {
     append (command.add2arc,  {param = arcname,  command = freearc.." a --noarcext "     ..add_options.." -- \"%s\" "..filename}),
     append (command.add2sfx,  {param = sfxname,  command = freearc.." a -sfx --noarcext "..add_options.." -- \"%s\" "..filename}),
+    append (command.add,      {                  command = freearc.." --add-dialog a "   ..add_options.." -- "..filename}),
   }
 
   -- Check that all files selected are archives, SFX-es or non-FreeArc archives
@@ -72,6 +73,7 @@ register_menu_handler (function (filenames)
       #filenames==1 and append (command.open,         {                  command = freearc.." "..filename}),
                         append (command.extractTo,    {param = subdir,   command = multi_command (freearc, " x -ad --noarcext -- ", filenames)}),
                         append (command.extractHere,  {                  command = multi_command (freearc, " x --noarcext -- ", filenames)}),
+                        append (command.extract,      {                  command = freearc.." --extract-dialog x -- "..filename}),
                         append (command.test,         {                  command = multi_command (freearc, " t --noarcext -- ", filenames)}),
       all_arcs      and append (command.arc2sfx,      {                  command = multi_command (freearc, " s --noarcext -- ",  filenames)}),
       all_sfxes     and append (command.sfx2arc,      {                  command = multi_command (freearc, " s- --noarcext -- ", filenames)}),
