@@ -70,15 +70,15 @@ register_menu_handler (function (filenames)
   -- If only FreeArc archives are selected - provide appropriate menu
   if all_archives then
     menu = {
-      #filenames==1 and append (command.open,         {                  command = freearc.." "..filename}),
-                        append (command.extractTo,    {param = subdir,   command = multi_command (freearc, " x -ad --noarcext -- ", filenames)}),
-                        append (command.extractHere,  {                  command = multi_command (freearc, " x --noarcext -- ", filenames)}),
-                        append (command.extract,      {                  command = freearc.." --extract-dialog x -- "..filename}),
-                        append (command.test,         {                  command = multi_command (freearc, " t --noarcext -- ", filenames)}),
-      all_arcs      and append (command.arc2sfx,      {                  command = multi_command (freearc, " s --noarcext -- ",  filenames)}),
-      all_sfxes     and append (command.sfx2arc,      {                  command = multi_command (freearc, " s- --noarcext -- ", filenames)}),
-                        append (command.modify,       {                  command = freearc.." --add-dialog ch -- "..filename}),
-      #filenames>1  and append (command.join,         {param = arcname,  command = freearc.." --add-dialog j -- "..filename}),
+      #filenames==1 and append (command.open,         {command = freearc.." "..filename}),
+                        append (command.extractTo,    {command = multi_command (freearc, " x -ad --noarcext -- ", filenames),  param = subdir}),
+                        append (command.extractHere,  {command = multi_command (freearc, " x --noarcext -- ", filenames)}),
+                        append (command.extract,      {command = freearc.." --extract-dialog x -- "..filename}),
+                        append (command.test,         {command = multi_command (freearc, " t --noarcext -- ", filenames)}),
+      all_arcs      and append (command.arc2sfx,      {command = multi_command (freearc, " s --noarcext -- ",  filenames)}),
+      all_sfxes     and append (command.sfx2arc,      {command = multi_command (freearc, " s- --noarcext -- ", filenames)}),
+                        append (command.modify,       {command = freearc.." --add-dialog ch -- "..filename}),
+      #filenames>1  and append (command.join,         {command = freearc.." --add-dialog j -- "..filename}),
     }
 
   -- If only rar/7z/zip/tar.gz/tar.bz2 archives are selected - provide appropriate menu
