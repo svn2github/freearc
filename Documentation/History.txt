@@ -349,13 +349,10 @@
   aARC_VERSION = "0.51", aARCHIVE_VERSION = make4byte 0 0 5 1
 === To-do list ====================================================================================
 
-  англ. future plans
   icons
 	SHFILEINFO shFileInfo;
 	SHGetFileInfo(filename, 0, &shFileInfo, sizeof(shFileInfo), SHGFI_ICON);
 	http://msdn.microsoft.com/en-us/library/dd183402(VS.85).aspx
-
-  HCAR
 
   загружать иконки для всех команд из png/ico файлов
 
@@ -385,7 +382,6 @@
   bugs
     *Last в истории - локализуется после первого же использования
     update GUI docs
-    sfx - поддержка и автоматическое использование метода tempfile
     dict bug: arc a aa cls.zip -mprecomp+6pt -t
       bcj+dict creates corrupted archives
     что будет, если упаковать на CD, т.е. файл лежит на диске на которой нельзя писать, или в папке, где запрешена запись
@@ -400,7 +396,7 @@
     обновление архива, содержащего xxx: если не удалось открыть xxx с диска, то файл из архива исчезнет вообще
     tta: float32 badly compressed (vs wavpack), int32 isn't compressed at all
     +RTS -S - processed by arc.exe itself too :)
-    запрещать все операци, приводящие к созданию невалидного sfx
+    запрещать все операции, приводящие к созданию невалидного sfx
     после "нет такого файла или каталога" (выбор из истории) - неправильное имя в поле path
     descript.ion for all files in package would be nice to see
   GUI
@@ -414,9 +410,6 @@
       вторая строка
       (пустая строка в конце)
     перевод сообщений об ошибках (errormsg) и интернализация cmdline версии
-  GRZip multithreading!
-    ?fixing SyncQueue
-    limiting memory
   -ilog a-la RAR (выключить поддержку Lua)
   arc.ini: нужна возможность указать non-solid mode для внешнего упаковщика
 
@@ -521,7 +514,6 @@
     диалог Settings
       "Restore standard profiles" button
       Date format selection
-      Windows: [x] Associate FreeArc with .arc files
       [x] don't keep history
       Import 7-zip lang. file
     Recover, including "Original:"
@@ -599,7 +591,6 @@
     знать какой минимум памяти для распаковки нужен полезно, если памяти нужно больше 192мб или
       больше 3/4 физ. озу
     wopen: win95-совместимость?
-    tempfile между слишком толстыми алгоритмами?
   Фичи
     -ver (rar-compatible)
     use fiGroup for sort
@@ -675,9 +666,6 @@
   -m2: 5% запись на диск, 3% ускорение CRC, 10% kadach MF, 7% huffman (-0.3% compression), 10% use repdist for MM detection
 
 0.41a:
-  External:
-    создавать свои файлы в уникальных подкаталогах каталога TEMP
-    проверка кода возврата of external compressors?
   Encryption:
     -p- - дешифровать (-p-- - оставить как есть) ?
     -p? -hp? - два отд. пароля?
@@ -761,7 +749,6 @@
     автоперебор параметров сжатия (в частности, ppmd order)
     Значительно можно улучшить степень сжатия, если в архиватор заложить механизм распознавания типов файлов.
       Бинарник - значит жмём так-то, веб-страница - значит так, лог - меняем параметры и т.д.
-  использовать ICC для компиляции CompressionLib в DLL (http://www.haskell.org/haskellwiki/FFI_cook_book)
   ускорить dict, lzp, добавить свои MF в lzma; dict для бинарных файлов?
   one-file preprocessors: exe, precomp, mm, jpg
   async -m1 mode
