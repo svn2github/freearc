@@ -343,11 +343,16 @@ settingsDialog fm' = do
     pack (widget empty)
 
     frame <- frameNew;  frameSetLabelWidget frame (widget contextMenuButton)
-    pack frame
+    boxPackStart vbox frame PackGrow 1
 
     hbox <- hBoxNew False 0;  containerAdd frame hbox
 
-    vbox <- vBoxNew False 0;  boxPackStart hbox vbox PackNatural 10
+    let show_or_hide = widgetSetSensitivity hbox =<< val contextMenuButton
+    show_or_hide
+    show_or_hide .$ setOnUpdate contextMenuButton
+    oldContextMenu <- val contextMenuButton
+
+    vbox <- vBoxNew False 0;  boxPackStart hbox vbox PackGrow 10
     let pack x = boxPackStart vbox x PackNatural 1
 
     empty <- label ""
@@ -357,10 +362,15 @@ settingsDialog fm' = do
     pack (widget empty)
     pack (widget notes)
 
-    let show_or_hide = widgetSetSensitivity hbox =<< val contextMenuButton
-    show_or_hide
-    show_or_hide .$ setOnUpdate contextMenuButton
-    oldContextMenu <- val contextMenuButton
+    -- Put all subsequent checkboxes to scrolled window
+    scrolledWindow <- scrolledWindowNew Nothing Nothing
+    boxPackStart vbox scrolledWindow PackGrow 1
+    vbox <- vBoxNew False 0
+    scrolledWindowAddWithViewport scrolledWindow vbox
+    scrolledWindowSetPolicy scrolledWindow PolicyAutomatic PolicyAutomatic
+    Just viewport <- binGetChild scrolledWindow
+    viewportSetShadowType (castToViewport viewport) ShadowNone
+    let pack x = boxPackStart vbox x PackNatural 1
 
     let makeButton ("",_,_)             = do pack =<< hSeparatorNew; return []
         makeButton (cmdname,etext,emsg) = do
