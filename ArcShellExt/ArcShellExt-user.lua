@@ -77,7 +77,8 @@ register_menu_handler (function (filenames)
                         append (command.test,         {                  command = multi_command (freearc, " t --noarcext -- ", filenames)}),
       all_arcs      and append (command.arc2sfx,      {                  command = multi_command (freearc, " s --noarcext -- ",  filenames)}),
       all_sfxes     and append (command.sfx2arc,      {                  command = multi_command (freearc, " s- --noarcext -- ", filenames)}),
-      #filenames>1  and append (command.help,         {param = arcname,  command = freearc.." j --noarcext -- \"%s\" "..filename}),
+                        append (command.modify,       {                  command = freearc.." --add-dialog ch -- "..filename}),
+      #filenames>1  and append (command.join,         {param = arcname,  command = freearc.." --add-dialog j -- "..filename}),
     }
 
   -- If only rar/7z/zip/tar.gz/tar.bz2 archives are selected - provide appropriate menu
