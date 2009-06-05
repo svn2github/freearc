@@ -50,10 +50,10 @@ register_menu_handler (function (filenames)
   }
 
   -- Check that all files selected are archives, SFX-es or non-FreeArc archives
-  all_arcs     = 1
-  all_sfxes    = 1
-  all_archives = 1
-  all_zips     = 1
+  all_arcs     = true
+  all_sfxes    = true
+  all_archives = true
+  all_zips     = true
   for _,f in ipairs(filenames) do
     nameext  = drop_dir(f)
     ext      = string.lower(get_ext(nameext))
