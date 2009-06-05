@@ -63,8 +63,18 @@ aANYFILE_FILTER = []
 -- |Переменная, хранящая номер GUI-треда
 guiThread  =  unsafePerformIO$ newIORef$ error "undefined GUI::guiThread"
 
+-- |Прочитать настройки программы из ini-файла
+readIniFile = do
+  inifile  <- findFile configFilePlaces aINI_FILE
+  inifile  &&&  readConfigFile inifile >>== map (split2 '=')
+
 -- |Инициализация Gtk для интерактивной работы (режим FileManager)
 runGUI action = do
+  -- Локализация
+  langDir  <- findDir libraryFilePlaces aLANG_DIR
+  settings <- readIniFile
+  setLocale$ langDir </> (settings.$lookup aINITAG_LANGUAGE `defaultVal` aLANG_FILE)
+  -- Инициализация Gtk
   unsafeInitGUIForThreadedRTS
   guiThread =:: getOsThreadId
   action
@@ -85,12 +95,7 @@ guiStartProgram = gui $ do
 {-# NOINLINE runIndicators #-}
 -- |Создаёт окно индикатора прогресса и запускает тред для его периодического обновления.
 runIndicators = do
-  -- INI-файл
-  inifile  <- findFile configFilePlaces aINI_FILE
-  settings <- inifile  &&&  readConfigFile inifile >>== map (split2 '=')
-  -- Локализация.
-  langDir  <- findDir libraryFilePlaces aLANG_DIR
-  setLocale$ langDir </> (settings.$lookup aINITAG_LANGUAGE `defaultVal` aLANG_FILE)
+  settings <- readIniFile
 
   -- Собственно окно индикатора прогресса
   window <- windowNew
