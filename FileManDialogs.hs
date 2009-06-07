@@ -84,6 +84,9 @@ extractDialog fm' exec cmd arcnames arcdir files = do
     (decryption, decryptionOnOK) <- decryptionBox fm' dialog   -- Настройки расшифровки
     ; boxPackStart upbox decryption           PackNatural 5
 
+    keepBrokenButton <- fmCheckButtonWithHistory fm' "KeepBroken" False "0999 Keep broken extracted files"
+    ; boxPackStart upbox (widget keepBrokenButton) PackNatural 5  `on` cmd/="t"
+
     (hbox, options, optionsStr)  <- fmCheckedEntryWithHistory fm' "xoptions" "0072 Additional options:"
     ; boxPackStart upbox hbox                 PackNatural 5
 
@@ -102,6 +105,7 @@ extractDialog fm' exec cmd arcnames arcdir files = do
       isAddDir           <- val addDirButton
       decryptionOptions  <- decryptionOnOK
       logfile'           <- fmGetHistory1 fm' "logfile" ""
+      keepBroken         <- val keepBrokenButton
       optionsEnabled     <- val options
       ; optionsStr'        <- val optionsStr;  saveHistory optionsStr  `on`  optionsEnabled
       let msgs = case cmd of
@@ -118,6 +122,7 @@ extractDialog fm' exec cmd arcnames arcdir files = do
                ["-dp"++clear dir']++
                (isAddDir &&& ["-ad"])++
                (arcdir &&& files &&& ["-ap"++clear arcdir])++
+               (keepBroken &&& ["-kb"])++
                (overwriteOption  `select`  ",-o+,-u -o+,-o-")))++
              decryptionOptions++
              (logfile'         &&&  ["--logfile="++clear logfile'])++
@@ -382,12 +387,12 @@ settingsDialog fm' = do
     commands <- concatMapM makeButton$
                   [ ("add2arc"    ,  "0999 Add to \"%s\""      ,  "0999 Compress the selected files using FreeArc"           )
                   , ("add2sfx"    ,  "0999 Add to SFX \"%s\""  ,  "0999 Compress the selected files into SFX using FreeArc"  )
-                  , ("add"        ,  "0999 Add to ..."         ,  "0999 Compress the selected files using FreeArc via dialog")
+                  , ("add"        ,  "0999 Add to archive..."  ,  "0999 Compress the selected files using FreeArc via dialog")
                   , (""           ,  ""                        ,  ""                                                         )
                   , ("open"       ,  "0999 Open with FreeArc"  ,  "0999 Open the selected archive(s) with FreeArc"           )
                   , ("extractTo"  ,  "0999 Extract to \"%s\""  ,  "0999 Extract the selected archive(s) to new folder"       )
                   , ("extractHere",  "0999 Extract here"       ,  "0999 Extract the selected archive(s) to the same folder"  )
-                  , ("extract"    ,  "0999 Extract to ..."     ,  "0999 Extract the selected archive(s) via dialog"          )
+                  , ("extract"    ,  "0999 Extract..."         ,  "0999 Extract the selected archive(s) via dialog"          )
                   , ("test"       ,  "0999 Test"               ,  "0999 Test the selected archive(s)"                        )
                   , (""           ,  ""                        ,  ""                                                         )
                   , ("arc2sfx"    ,  "0999 Convert to SFX"     ,  "0999 Convert the selected archive(s) to SFX"              )
@@ -398,6 +403,7 @@ settingsDialog fm' = do
                   , (""           ,  ""                        ,  ""                                                         )
                   , ("zip2arc"    ,  "0999 Convert to .arc"    ,  "0999 Convert the selected archive(s) to FreeArc format"   )
                   , ("zip2sfx"    ,  "0999 Convert to .arc SFX",  "0999 Convert the selected archive(s) to FreeArc SFX"      )
+                  , ("zip2a"      ,  "0999 Convert to .arc... ",  "0999 Convert the selected archive(s) to FreeArc format via dialog")
                   ]
 #endif
 
