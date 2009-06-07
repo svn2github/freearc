@@ -58,6 +58,8 @@ addDialog fm' exec cmd files mode = do
                    ("j" , []    ) -> "0149 Join all archives"
                    ("j" , [file]) -> "0150 Join %1 with another archive"
                    ("j" , _     ) -> "0151 Join %2 archives"
+                   ("cvt",[file]) -> "0999 Convert %1 to FreeArc format"
+                   ("cvt",_     ) -> "0999 Convert %2 archives to FreeArc format"
   let wintitle  =  formatn title [head files, show3$ length files]
   -- Создадим диалог со стандартными кнопками OK/Cancel
   fmDialog fm' wintitle $ \(dialog,okButton) -> do
@@ -234,9 +236,7 @@ addDialog fm' exec cmd files mode = do
                   _   -> ["0243 Adding to %1",
                           "0244 FILES SUCCESFULLY ADDED TO %1",
                           "0245 %2 WARNINGS WHILE ADDING TO %1"]
-      let command archive filelist =
-           (msgs, [takeFileName archive],
-            [if create' then "create" else cmd]++
+      let options =
             -- Main page settings
             (compressionEnabled &&&  cvt "-m"   compressionMethod')++
             (encryptionEnabled  &&&  cvt "-ae=" encryptionMethod')++encryptionOptions++
@@ -263,13 +263,19 @@ addDialog fm' exec cmd files mode = do
             (largerEnabled    &&&  ["-sm"++clear largerSize'])++
             (smallerEnabled   &&&  ["-sl"++clear smallerSize'])++
             -- Other
-            ["-dp"++fm_curdir fm]++
+            (cmd/="cvt"       &&&  ["-dp"++fm_curdir fm])++
             (logfile'         &&&  ["--logfile="++clear logfile'])++
             (cmd=="ch"        &&&  ["--noarcext"])++
-            (optionsEnabled   &&&  words (clear optionsStr'))++
-            ["--", clear archive]++filelist)
+            (optionsEnabled   &&&  words (clear optionsStr'))
       --
-      exec$ if cmd=="ch" then map (\archive -> command (fm_curdir fm </> archive) []) (files ||| ["*"])
+      let command archive filelist =
+           (msgs, [takeFileName archive],
+            [if create' then "create" else cmd] ++ options ++ ["--", clear archive] ++ filelist)
+      --
+      if cmd=="cvt" then
+        do Files.runCommand (joinWith " "$ ["all2arc"] ++ options ++ ["--"] ++ files) (fm_curdir fm) False
+        else do
+      exec$ if cmd=="ch" then (files ||| ["*"]) .$map (\archive -> command (fm_curdir fm </> archive) [])
        else if separate' then files.$map (\file -> command (fm_curdir fm </> dropTrailingPathSeparator file++aDEFAULT_ARC_EXTENSION) [file])
                          else [command arcname' files]
 

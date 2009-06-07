@@ -71,12 +71,14 @@ openDialog (cmd:"--":params) exec dialog = do
   startGUI
   cmdChan <- newChan
   gui $ do
-    let exec = writeChan cmdChan
+    let exec = writeChan cmdChan . map thd3
     fm' <- newEmptyFM
     dialog fm' exec cmd params
   --
   cmds <- readChan cmdChan
-  exec$ joinWith [";"]$ map thd3 cmds
+  case cmd of
+    "cvt" -> Files.runCommand (joinWith " "$ ["all2arc"]++init(head cmds)++["--"]++map last cmds) "." False
+    _     -> exec$ joinWith [";"] cmds
 
 
 ----------------------------------------------------------------------------------------------------

@@ -345,6 +345,10 @@
     Removed hack that reversed column sort indicators due to bug in old GTK versions
     Linux: fixed warnings printed by Archive Open dialog
 
+0.51 (April 28 2009)
+
+    Options --unregister --settings-dialog --add-dialog --extract-dialog
+
 
   aARC_VERSION = "0.51", aARCHIVE_VERSION = make4byte 0 0 5 1
 === To-do list ====================================================================================
