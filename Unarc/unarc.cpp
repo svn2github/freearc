@@ -663,12 +663,13 @@ void ProcessArchive (COMMAND &command)
 
 #ifdef FREEARC_LIBRARY
 extern "C" {
-int __cdecl FreeArcExtract (cbtype *callback, ...)
+int __cdecl FreeArcExtract (HANDLE hWnd, HANDLE hpb, HANDLE hst, ...)
 {
-  UI.callback = callback;
+  //UI.callback = callback;
+  UI.hWnd=hWnd, UI.hpb=hpb, UI.hst=hst;
 
   va_list argptr;
-  va_start(argptr, callback);
+  va_start(argptr, hst);
 
   int argc=0;
   char *argv[100] = {"c:\\x.dll"};
