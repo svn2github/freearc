@@ -31,7 +31,7 @@ extern "C" {
 #ifdef FREEARC_GUI
 #include "gui\gui.h"
 #include "gui\gui.cpp"
-#elseif defined(FREEARC_LIBRARY)
+#elif defined(FREEARC_LIBRARY)
 #include "LibUI.h"
 #else
 #include "CUI.h"
@@ -663,11 +663,12 @@ void ProcessArchive (COMMAND &command)
 
 #ifdef FREEARC_LIBRARY
 extern "C" {
-typedef int callback ();
-__cdecl int FreeArcExtract (int xx, ...) //, callback *cb)
+int __cdecl FreeArcExtract (cbtype *callback, ...)
 {
+  UI.callback = callback;
+
   va_list argptr;
-  va_start(argptr, xx);
+  va_start(argptr, callback);
 
   int argc=0;
   char *argv[100] = {"c:\\x.dll"};

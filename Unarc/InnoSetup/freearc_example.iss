@@ -26,7 +26,9 @@ ProgressBar : TNewProgressBar;
 ExtractFile:TNewStaticText;
 Button1:TButton;
 
-function FreeArcExtract (xx:integer; cmd1,cmd2,cmd3,cmd4,cmd5,cmd6,cmd7,cmd8,cmd9,cmd10: PChar): integer; external 'FreeArcExtract@files:unarc.dll cdecl';
+type FreeArcCallback = function (what: PChar; int1, int2: Integer; str: PChar): Integer;
+
+function FreeArcExtract (cb:FreeArcCallback; cmd1,cmd2,cmd3,cmd4,cmd5,cmd6,cmd7,cmd8,cmd9,cmd10: PChar): integer; external 'FreeArcExtract@files:unarc.dll cdecl';
 
 procedure InitializeWizard();
 begin
@@ -54,6 +56,13 @@ begin
 // CancelExtract;
 end;
 
+function ExtractCallback (what: PChar; int1, int2: Integer; str: PChar): integer;
+begin
+   if string(what)='filename' then ExtractFile.caption:=str
+   else if string(what)='progress' then ProgressBar.Position := int1*100/int2;
+   Result := 0;
+end;
+
 procedure CurStepChanged(CurStep: TSetupStep);
 begin
   If CurStep=ssPostInstall then
@@ -66,7 +75,7 @@ begin
     Button1.top:=WizardForm.cancelbutton.top;
     Button1.OnClick:=@Button1OnClick;
     try
-     FreeArcExtract (0, 'x', '-dp'+ExpandConstant('{app}'), ExpandConstant('{tmp}') + '\1.arc', '', '', '', '', '', '', '');
+     FreeArcExtract (@ExtractCallback, 'x', '-dp'+ExpandConstant('{app}'), ExpandConstant('{tmp}') + '\1.arc', '', '', '', '', '', '', '');
      Button1.visible:=false;
     except
      MsgBox('Неверный пароль!', mbInformation, MB_OK);
