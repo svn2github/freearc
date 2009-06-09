@@ -30,6 +30,10 @@ CFLAGS1= $(CODE_FLAGS) $(OPT_FLAGS) -O1 $(DEBUG_FLAGS) $(DEFINES) $(Extractor_DE
 unarc.exe: $(OBJDIR)/unarc.o $(LINKOBJ)
 	$(GCC) $< $(LINKOBJ) $(LINK_FLAGS) -o unarc.exe
 
+unarc.dll: unarc.cpp ArcStructure.h LibUI.h $(HEADERS) $(LINKOBJ)
+	$(GCC) -c $(CFLAGS) -DFREEARC_LIBRARY -o $(OBJDIR)/unarclib.o $<
+	$(DLLWRAP) --driver-name g++ $(OBJDIR)/unarclib.o $(LINKOBJ) -lstdc++ -def unarc.def -s -o unarc.dll
+
 arc.sfx: $(OBJDIR)/ArcSFX.o $(OBJDIR)/ArcTinySFX.o $(LINKOBJ)
 	$(GCC) $< $(LINKOBJ)      $(LINK_FLAGS) -o arc.sfx
 	$(GCC) $< $(LINKOBJ_MINI) $(LINK_FLAGS) -o arc-mini.sfx

@@ -31,6 +31,8 @@ extern "C" {
 #ifdef FREEARC_GUI
 #include "gui\gui.h"
 #include "gui\gui.cpp"
+#elseif defined(FREEARC_LIBRARY)
+#include "LibUI.h"
 #else
 #include "CUI.h"
 #endif
@@ -128,7 +130,7 @@ public:
   // Разбор командной строки
   COMMAND (int argc, char *argv[])
   {
-#ifdef FREEARC_WIN
+#if defined(FREEARC_WIN) && !defined(FREEARC_LIBRARY)
     // Instead of those ANSI-codepage encoded argv[] strings provide true UTF-8 data!
     WCHAR **argv_w = CommandLineToArgvW (GetCommandLineW(), &argc);
     argv_w[0] = (WCHAR*) malloc (MY_FILENAME_MAX * 4);
@@ -659,6 +661,35 @@ void ProcessArchive (COMMAND &command)
 #endif
 }
 
+#ifdef FREEARC_LIBRARY
+extern "C" {
+typedef int callback ();
+__cdecl int FreeArcExtract (int xx, ...) //, callback *cb)
+{
+  va_list argptr;
+  va_start(argptr, xx);
+
+  int argc=0;
+  char *argv[100] = {"c:\\x.dll"};
+
+  for (int i=1; i<100; i++)
+  {
+    argc = i;
+    argv[i] = va_arg(argptr, char*);
+    if (argv[i]==NULL || argv[i][0]==0)
+      {argv[i]=NULL; break;}
+  }
+  va_end(argptr);
+
+
+  SetCompressionThreads (GetProcessorsCount());
+  COMMAND command (argc, argv);    // Распарсить команду
+  if (command.ok)                  // Если парсинг был удачен и можно выполнить команду
+    ProcessArchive (command);      //   Выполнить разобранную команду
+  return command.ok? FREEARC_OK : FREEARC_ERRCODE_GENERAL;
+}
+}
+#else // non-library mode
 int main (int argc, char *argv[])
 {
   SetCompressionThreads (GetProcessorsCount());
@@ -669,4 +700,5 @@ int main (int argc, char *argv[])
   printf ("\n");
   return command.ok? EXIT_SUCCESS : FREEARC_EXIT_ERROR;
 }
+#endif
 

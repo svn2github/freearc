@@ -347,11 +347,22 @@
 
 0.51 (April 28 2009)
 
-    Options --unregister --settings-dialog --add-dialog --extract-dialog
-
 
   aARC_VERSION = "0.51", aARCHIVE_VERSION = make4byte 0 0 5 1
 === To-do list ====================================================================================
+
+cvt
+  путь к all2arc
+  команда в меню FM
+  \\ - ошибка в all2arc
+  ввод нового имени дл€ одного архива
+  просмотреть все вхождени€ cmd в addDialog (noarcext? recompress)
+  "" вокруг имЄн файлов и опций
+other
+  progress indicator: Alt-F4/X - не всегда выходит
+  CleanStats при non-FM mode
+  Alt-F4 из окна FM
+
 
   icons
 	SHFILEINFO shFileInfo;
@@ -439,6 +450,7 @@
     2. ты начинаешь работать над gui и параллельно € работаю над добавлением поддержки 7z.dll
 
   обновление доки
+    Options --unregister --settings-dialog --add-dialog --extract-dialog
     Filetype detection
         сосредоточено на вы€влении $text и $compressed (дл€ -m2..-m4) файлов
         отключаетс€ в -m1 и при использовании €вного метода сжати€ (в общем случае - при отсутствии
