@@ -14,8 +14,8 @@ Compression=zip
 Name: rus; MessagesFile: compiler:Languages\Russian.isl
 
 [Files]
-Source: C:\!\FreeArchiver\!\IS\1\*; DestDir: {tmp}; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: unarc.dll; DestDir: {tmp}; Flags: dontcopy
+Source: 1.arc; DestDir: {tmp}; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: ..\unarc.dll; DestDir: {tmp}; Flags: dontcopy
 
 [Icons]
 Name: {group}\Удалить; IconFilename: {app}\unins000.exe; Filename: {app}\unins000.exe
@@ -25,7 +25,6 @@ var
 ProgressBar : TNewProgressBar;
 ExtractFile:TNewStaticText;
 Button1:TButton;
-cmd:array[0..3] of pchar;
 
 function FreeArcExtract (xx:integer; cmd1,cmd2,cmd3,cmd4,cmd5,cmd6,cmd7,cmd8,cmd9,cmd10: PChar): integer; external 'FreeArcExtract@files:unarc.dll cdecl';
 
@@ -67,10 +66,6 @@ begin
     Button1.top:=WizardForm.cancelbutton.top;
     Button1.OnClick:=@Button1OnClick;
     try
-	 //cmd[0] := 'x';
-	 //cmd[1] := '-dp'+ExpandConstant('{app}');
-	 //cmd[2] := ExpandConstant('{tmp}') + '\1.arc';
-	 //cmd[3] := NULL;
      FreeArcExtract (0, 'x', '-dp'+ExpandConstant('{app}'), ExpandConstant('{tmp}') + '\1.arc', '', '', '', '', '', '', '');
      Button1.visible:=false;
     except
