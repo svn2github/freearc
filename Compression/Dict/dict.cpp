@@ -648,12 +648,12 @@ int phase2 (unsigned bufsize, int MinLargeCnt, int MinMediumCnt, int MinSmallCnt
             debug (verbose>2 && printf( "BadWord '%.*s' %d (%d)\n", len, ptr, cnt, cnt0));
         }
     }
-    FreeAndNil (scan_hash);  // Скрипач больше не нужен :)
+    BigFreeAndNil (scan_hash);  // Скрипач больше не нужен :)
 
     // Перенесём выжившие слова в начало массива FirstWord и уменьшим его, чтобы оставить только их
     int good_words = LastWord-q;
     memmove (FirstWord, q, good_words*sizeof(Word));  LastWord = FirstWord + good_words;
-    FirstWord = (Word*) realloc (FirstWord, good_words*sizeof(Word));
+    //FirstWord = (Word*) realloc (FirstWord, good_words*sizeof(Word));  -- impossible due to use of BigAlloc
     debug (verbose>0 && printf( " Good words: %d                ", good_words) );
 
     return good_words>0? 0 : -1;  // All right if there is at least one good word
@@ -1112,7 +1112,7 @@ int phase7 (byte *buf, unsigned bufsize, byte *outbuf, unsigned *outsize)
     for (int n=13; n>=0; --n)   debug (verbose>1 && printf( " %d", used_hash2[n]) );
 #endif
 
-    FreeAndNil (FirstWord);
+    BigFreeAndNil (FirstWord);
     FreeAndNil (hashbits);
     FreeAndNil (codewords_hash);
     FreeAndNil (words_text);
@@ -1156,7 +1156,7 @@ int DictEncode (byte *buf, unsigned bufsize, byte **outbuf, unsigned *outsize, i
     check (phase7 (buf, bufsize, *outbuf+dictlen, &datalen));
     // Возвратить размер и адрес выходного буфера
     *outsize = dictlen + datalen;
-    *outbuf  = (byte*) realloc (*outbuf, *outsize);
+    //*outbuf  = (byte*) realloc (*outbuf, *outsize);  -- impossible due to use of BigAlloc
     return 0;  // All right
 }
 
