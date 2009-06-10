@@ -59,14 +59,14 @@ DWORD _STDCALL GetUsedMemory()
 }
 void _STDCALL StopSubAllocator() {
     if ( SubAllocatorSize ) {
-        SubAllocatorSize=0;                 delete[] HeapStart;
+        SubAllocatorSize=0;                 BigFree(HeapStart);
     }
 }
 BOOL _STDCALL StartSubAllocator(UINT t)
 {
     if (SubAllocatorSize == t)              return TRUE;
     StopSubAllocator();
-    HeapStart = (BYTE*) malloc(t);
+    HeapStart = (BYTE*) BigAlloc(t);
     if (HeapStart == NULL)                  return FALSE;
     SubAllocatorSize=t;                     return TRUE;
 }
