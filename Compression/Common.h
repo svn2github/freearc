@@ -378,7 +378,8 @@ static inline void setvalue64 (void *p, uint64 x)
 
 // Free memory block and set pointer to NULL
 #ifndef FreeAndNil
-#define FreeAndNil(p)            ((p) && (free(p), (p)=NULL))
+#define FreeAndNil(p)            ((p) && (free(p),    (p)=NULL))
+#define BigFreeAndNil(p)         ((p) && (BigFree(p), (p)=NULL))
 #endif
 
 // Exit code used to indicate serious problems in FreeArc utilities

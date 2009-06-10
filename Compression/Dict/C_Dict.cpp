@@ -11,31 +11,31 @@ int dict_compress (MemSize BlockSize, int MinCompression, int MinWeakChars, int 
     BYTE* In = NULL;  // указатель на входные данные
     BYTE* Out= NULL;  // указатель на выходные данные
     int x;            // код произошедшей ошибки
-    while ( (x = callback ("read", (In = (BYTE*) malloc(BlockSize)), BlockSize, auxdata)) > 0 )
+    while ( (x = callback ("read", (In = (BYTE*) BigAlloc(BlockSize)), BlockSize, auxdata)) > 0 )
     {
         unsigned InSize, OutSize;     // количество байт во входном и выходном буфере, соответственно
-        In = (BYTE*) realloc(In,InSize=x);
+        InSize=x;                     // impossible: In = (BYTE*) realloc(In,InSize=x);
         x = DictEncode(In,InSize,&Out,&OutSize,MinWeakChars,MinLargeCnt,MinMediumCnt,MinSmallCnt,MinRatio);
         if (x || OutSize/MinCompression>=InSize/100) {
             // упаковать данные [достаточно хорошо] не удалось, запишем вместо них исходные данные
             int WrSize=-InSize;
-            FreeAndNil(Out);
+            BigFreeAndNil(Out);
             // Записать исходный блок и выйти, если при записи произошла ошибка/больше данных не нужно
             checked_write (&WrSize, sizeof(WrSize));
             checked_write (In, InSize);
-            FreeAndNil(In);
+            BigFreeAndNil(In);
         } else {
             // данные успешно упакованы, можно освободить входной буфер прежде чем записывать их
             // (чтобы освободить больше памяти для следующего алгоритма в цепочке алгоритмов сжатия)
-            FreeAndNil(In);
+            BigFreeAndNil(In);
             // Записать сжатый блок и выйти, если при записи произошла ошибка/больше данных не нужно
             checked_write (&OutSize, sizeof(OutSize));
             checked_write (Out, OutSize);
-            FreeAndNil(Out);
+            BigFreeAndNil(Out);
         }
     }
 finished:
-    FreeAndNil(In); FreeAndNil(Out); return x;  // 0, если всё в порядке, и код ошибки иначе
+    BigFreeAndNil(In); BigFreeAndNil(Out); return x;  // 0, если всё в порядке, и код ошибки иначе
 }
 #endif  // !defined (FREEARC_DECOMPRESS_ONLY)
 
@@ -50,26 +50,26 @@ int dict_decompress (MemSize BlockSize, int MinCompression, int MinWeakChars, in
     checked_read (&InSize, sizeof(InSize));
     if (InSize<0) {
         // скопируем неупакованные данные
-        In = (BYTE*) malloc(-InSize);
+        In = (BYTE*) BigAlloc(-InSize);
         checked_read  (In, -InSize);
         checked_write (In, -InSize);
-        FreeAndNil(In);
+        BigFreeAndNil(In);
     } else {
         // Произвести декодирование и получить размер выходных данных
-        In  = (BYTE*) malloc(InSize);
-        Out = (BYTE*) malloc(BlockSize);
+        In  = (BYTE*) BigAlloc(InSize);
+        Out = (BYTE*) BigAlloc(BlockSize);
         checked_read  (In, InSize);
         x = DictDecode (In, InSize, Out, &OutSize);
         //x = DictDecode (InSize, callback, auxdata);   // для работы в фиксированном объёме памяти
         if (x) break;
-        FreeAndNil(In);
-        Out = (BYTE*) realloc (Out, OutSize);
+        BigFreeAndNil(In);
+        //Out = (BYTE*) realloc (Out, OutSize);  -- impossible since we used BigAlloc
         checked_write (Out, OutSize);
-        FreeAndNil(Out);
+        BigFreeAndNil(Out);
     }
   }
 finished:
-  FreeAndNil(In); FreeAndNil(Out);
+  BigFreeAndNil(In); BigFreeAndNil(Out);
   return x<=0? x : FREEARC_ERRCODE_IO;  // 0, если всё в порядке, и код ошибки иначе
 }
 

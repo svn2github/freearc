@@ -453,13 +453,14 @@ int phase1 (byte *buf, unsigned bufsize)
 {
     // Максимально допустимое количество слов - 1/32 от объёма входных данных
     unsigned max_words = roundup_to_power_of (mymax(bufsize/32,32768), 2);
-    FirstWord = (Word*) malloc (max_words * sizeof (Word));
+    FirstWord = (Word*) BigAlloc (max_words * sizeof (Word));
     LastWord = FirstWord+max_words;
     NextWord = FirstWord;
 
     // Для уменьшения числа коллизий объём хеша - вдвое больше максимального количества слов
     unsigned scanhash_size = max_words*2, mask = scanhash_size-1;
-    scan_hash = (stats*) calloc (scanhash_size, sizeof (stats));
+    scan_hash = (stats*) BigAlloc (scanhash_size * sizeof (stats));
+    memset (scan_hash, 0, scanhash_size * sizeof (stats));
     // Не дадим словам использовать нулевой элемент хеша, поскольку это сделает невозможным поиск их детей
     // То же самое применимо к элементам хеша, чей индекс кратен 2^16 (при 16 битах, используемых для хранения значения хеш-функции в scan_hash)
     for (int i=0; i<scanhash_size; i+= 1<<(sizeof(hash0_t)*8)) {
@@ -825,7 +826,7 @@ found:
     {
     // Выделить под упакованные данные размер входного файла
     // плюс 200 кб - должно хватить при любом раскладе :)
-    *outbuf = (byte*) malloc (bufsize+200000);
+    *outbuf = (byte*) BigAlloc (bufsize+200000);
     byte *outptr = *outbuf;        // текущий указатель в выходном буфере
 
     // Вывести словарь в выходной поток в 5 приёмов:
@@ -955,7 +956,7 @@ int phase6 ()
     unsigned unique_bytes = 0, words_len = 0;
     for (Word *p = FirstWord; p<LastWord; p++) {
         unique_bytes +=  p->len - (p==FirstWord? 0 : common_prefix_length (p, p-1));
-        if (p->len>DIRECT_CHARS)  words_len += p->len;
+        if (p->len > DIRECT_CHARS)  words_len += p->len;
     }
     hashsize = roundup_to_power_of (unique_bytes*4, 2);
     hashmask = hashsize-1;
@@ -1125,12 +1126,12 @@ int phase7 (byte *buf, unsigned bufsize, byte *outbuf, unsigned *outsize)
 // Вызвать заданную функцию и, если она возвратила код ошибки, - выйти из DictEncode(), освободив всю память
 #define check(call)  { int code = call;                   \
                        if (code) {                        \
-                           FreeAndNil (scan_hash);        \
-                           FreeAndNil (FirstWord);        \
+                           BigFreeAndNil (FirstWord);     \
+                           BigFreeAndNil (scan_hash);     \
                            FreeAndNil (hashbits);         \
                            FreeAndNil (codewords_hash);   \
                            FreeAndNil (words_text);       \
-                           FreeAndNil (*outbuf);          \
+                           BigFreeAndNil (*outbuf);       \
                            return code;                   \
                        }                                  \
                      }                                    \
