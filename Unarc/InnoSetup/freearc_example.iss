@@ -16,17 +16,24 @@ Name: rus; MessagesFile: compiler:Languages\Russian.isl
 [Files]
 Source: 1.arc; DestDir: {tmp}; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: ..\unarc.dll; DestDir: {tmp}; Flags: dontcopy
+Source: InnoCallback.dll; DestDir: {tmp}; Flags: dontcopy
 
 [Icons]
 Name: {group}\Удалить; IconFilename: {app}\unins000.exe; Filename: {app}\unins000.exe
 
 [Code]
 var
-ProgressBar : TNewProgressBar;
-ExtractFile:TNewStaticText;
-Button1:TButton;
+ ProgressBar: TNewProgressBar;
+ ExtractFile: TNewStaticText;
+ Button1:     TButton;
 
-function FreeArcExtract (hWnd, hpb, hst: THandle; cmd1,cmd2,cmd3,cmd4,cmd5,cmd6,cmd7,cmd8,cmd9,cmd10: PChar): integer; external 'FreeArcExtract@files:unarc.dll cdecl';
+type
+ FreeArcCallback = function (what: PChar; int1, int2: Integer; str: PChar): Integer;
+
+function WrapFreeArcCallback (callback:FreeArcCallback; paramcount:integer):longword;
+  external 'wrapcallback@files:innocallback.dll stdcall';
+
+function FreeArcExtract (callback: longword; cmd1,cmd2,cmd3,cmd4,cmd5,cmd6,cmd7,cmd8,cmd9,cmd10: PChar): integer; external 'FreeArcExtract@files:unarc.dll cdecl';
 
 procedure InitializeWizard();
 begin
@@ -65,8 +72,9 @@ begin
     Button1.left:=260;
     Button1.top:=WizardForm.cancelbutton.top;
     Button1.OnClick:=@Button1OnClick;
+    callback:=WrapCallback(@WrapFreeArcCallback,4); //Our proc has 4 arguments
     try
-     FreeArcExtract (wizardform.handle, progressbar.handle, ExtractFile.handle, 'x', '-dp'+ExpandConstant('{app}'), ExpandConstant('{tmp}') + '\1.arc', '', '', '', '', '', '', '');
+     FreeArcExtract (callback, 'x', '-dp'+ExpandConstant('{app}'), ExpandConstant('{tmp}') + '\1.arc', '', '', '', '', '', '', '');
      Button1.visible:=false;
     except
      MsgBox('Неверный пароль!', mbInformation, MB_OK);

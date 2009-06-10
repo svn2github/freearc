@@ -43,13 +43,24 @@ void UI::BeginProgress (uint64 totalBytes)
   this->totalBytes = totalBytes;
 }
 
+void ProcessMessages() {
+}
+
 bool UI::ProgressRead (uint64 readBytes)
 {
 //  callback ("progress", readBytes>>10, totalBytes>>10, "");
   // Show progress indicator
   int MAX_PROGRESS_VALUE=100;
   int normalizedReadBytes = (totalBytes == 0)? 0 : int((double(readBytes) * MAX_PROGRESS_VALUE)/totalBytes);
-  //SendNotifyMessage ((HWND)hpb, PBM_SETPOS, normalizedReadBytes, 0);
+  PostMessage ((HWND)hpb, PBM_SETPOS, 50, 0);
+
+	MSG message;
+	while(PeekMessage(&message, NULL, 0, 0, PM_REMOVE) != 0)
+	{
+			TranslateMessage(&message);
+			DispatchMessage(&message);
+	}
+
   return TRUE;
 }
 
@@ -62,6 +73,16 @@ bool UI::ProgressFile (bool isdir, const char *operation, FILENAME filename, uin
 {
 //  SetWindowTextA((HWND)hWnd, filename);
 //  SetWindowTextA((HWND)hst, filename);
+  PostMessageA ((HWND)hst, WM_SETTEXT, 0, (LPARAM)filename);
+
+	MSG message;
+	while(PeekMessage(&message, NULL, 0, 0, PM_REMOVE) != 0)
+	{
+			TranslateMessage(&message);
+			DispatchMessage(&message);
+	}
+
+
 //  callback ("filename", 0, 0, filename);
 //  printf (isdir?  "%s %s" STR_PATH_DELIMITER "\n"  :  "%s %s (%llu bytes)\n",
 //          operation, filename, filesize);
