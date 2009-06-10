@@ -80,6 +80,15 @@ typedef int CALLBACK_FUNC (const char *what, void *data, int size, void *auxdata
     }                                                                      \
 }
 
+#define BIGALLOC(type, ptr, size)                                          \
+{                                                                          \
+    (ptr) = (type*) BigAlloc ((size) * sizeof(type));                      \
+    if ((ptr) == NULL) {                                                   \
+        errcode = FREEARC_ERRCODE_NOT_ENOUGH_MEMORY;                       \
+        goto finished;                                                     \
+    }                                                                      \
+}
+
 #define READ(buf, size)                                                    \
 {                                                                          \
     void *localBuf = (buf);                                                \
