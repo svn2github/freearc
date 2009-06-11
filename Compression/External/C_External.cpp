@@ -7,7 +7,7 @@ extern "C" {
 
 int external_program (bool IsCompressing, CALLBACK_FUNC *callback, void *auxdata, char *infile, char *outfile, char *cmd, char *name, int MinCompression, double *addtime)
 {
-    BYTE* Buf = (BYTE*) BigAlloc(LARGE_BUFFER_SIZE);  // буфер, используемый для чтения/записи данных
+    BYTE* Buf = (BYTE*) malloc(LARGE_BUFFER_SIZE);  // буфер, используемый для чтения/записи данных
     if (!Buf)  {return FREEARC_ERRCODE_NOT_ENOUGH_MEMORY;}
     int x;                                            // код, возвращённый последней операцией чтения/записи
     int ExitCode = 0;                                 // код возврата внешней программы
@@ -33,7 +33,7 @@ int external_program (bool IsCompressing, CALLBACK_FUNC *callback, void *auxdata
         bytes += x;
         if (file_write(f,Buf,x) != x)           {x=FREEARC_ERRCODE_IO; break;}
     }
-    BigFree(Buf);  Buf = NULL;
+    free(Buf);  Buf = NULL;
     unregisterTemporaryFile (infile);
     fclose (f);    f = NULL;
     if (x)  {remove (infile); return x;}   // Если при чтении/записи произошла ошибка - выходим
@@ -78,7 +78,7 @@ int external_program (bool IsCompressing, CALLBACK_FUNC *callback, void *auxdata
 
     // Прочитаем выходные данные из файла
     QUASIWRITE (get_flen(f));
-    Buf = (BYTE*) BigAlloc(LARGE_BUFFER_SIZE);
+    Buf = (BYTE*) malloc(LARGE_BUFFER_SIZE);
     while ((x = file_read (f, Buf, LARGE_BUFFER_SIZE)) > 0)
     {
         checked_write (Buf, x);
@@ -87,7 +87,7 @@ finished:
     unregisterTemporaryFile (outfile);
     fclose (f);
     remove (outfile);
-    BigFree(Buf);
+    free(Buf);
     return x;         // 0, если всё в порядке, и код ошибки иначе
 }
 
