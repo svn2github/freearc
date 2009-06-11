@@ -91,7 +91,7 @@ compress_AND_write_to_archive_PROCESS archive command backdoor pipe = do
                                                          else return (id,id)
 
         -- Процесс упаковки одним алгоритмом
-        let compressP = de_compress_PROCESS freearcCompress times
+        let compressP = de_compress_PROCESS freearcCompress times command
         -- Последовательность процессов упаковки, соответствующая последовательности алгоритмов `real_compressor`
         let real_crypted_compressor = add_real_encryption real_compressor
             processes = zipWith compressP real_crypted_compressor [1..]

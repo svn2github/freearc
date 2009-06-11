@@ -85,8 +85,8 @@ decompress_block command cfile state count_cbytes pipe = mdo
     registerError$ BAD_PASSWORD (cmd_arcname command) (cfile'.$cfFileInfo.$storedName)
 
   -- Превратим список методов сжатия/шифрования в конвейер процессов распаковки
-  let decompress1 = de_compress_PROCESS1 freearcDecompress reader times  -- первый процесс в конвейере
-      decompressN = de_compress_PROCESS  freearcDecompress times         -- последующие процессы в конвейере
+  let decompress1 = de_compress_PROCESS1 freearcDecompress reader times command  -- первый процесс в конвейере
+      decompressN = de_compress_PROCESS  freearcDecompress        times command  -- последующие процессы в конвейере
       decompressa [p]     = decompress1 p         0
       decompressa [p1,p2] = decompress1 p2        0 |> decompressN p1 0
       decompressa (p1:ps) = decompress1 (last ps) 0 |> foldl1 (|>) (map (\x->decompressN x 0) (reverse$ init ps)) |> decompressN p1 0
@@ -103,7 +103,7 @@ decompress_block command cfile state count_cbytes pipe = mdo
 -- во входные буфера процедуры упаковки/распаковки
 --   comprMethod - строка метода сжатия с параметрами, типа "ppmd:o10:m48m"
 --   num - номер процесса в цепочке процессов упаковки
-de_compress_PROCESS de_compress times comprMethod num pipe = do
+de_compress_PROCESS de_compress times command comprMethod num pipe = do
   -- Информация об остатке данных, полученных из предыдущего процесса, но ещё не отправленных на упаковку/распаковку
   remains <- ref$ Just (error "undefined remains:buf0", error "undefined remains:srcbuf", 0)
   let
@@ -141,17 +141,23 @@ de_compress_PROCESS de_compress times comprMethod num pipe = do
   -- Процедура чтения входных данных процесса упаковки/распаковки (вызывается лишь однажды, в отличие от рекурсивной read_data)
   let reader  =  read_data 0
 
-  de_compress_PROCESS1 de_compress reader times comprMethod num pipe
+  de_compress_PROCESS1 de_compress reader times command comprMethod num pipe
 
 
 {-# NOINLINE de_compress_PROCESS1 #-}
 -- |de_compress_PROCESS с параметризуемой функцией чтения (может читать данные напрямую
 -- из архива для первого процесса в цепочке распаковки)
-de_compress_PROCESS1 de_compress reader times comprMethod num pipe = do
+de_compress_PROCESS1 de_compress reader times command comprMethod num pipe = do
   total' <- ref ( 0 :: FileSize)
   time'  <- ref (-1 :: Double)
+  testmem <- init_once
   let -- Процедура чтения входных данных процесса упаковки/распаковки
-      callback "read" buf size = reader buf size
+      callback "read" buf size = do res <- reader buf size
+                                    when (opt_testMalloc command) $ do
+                                      once testmem $ do
+                                        printLine$ "\nBefore "++show num++": "++comprMethod++"\n"
+                                        testMalloc  -- напечатать карту памяти
+                                    return res
       -- Процедура записи выходных данных
       callback "write" buf size = do total' += i size
                                      uiWriteData num (i size)
