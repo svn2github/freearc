@@ -173,7 +173,7 @@ fmname = fdBasename
 
 -- |Возвращает искусственный каталог с базовым именем name
 fdArtificialDir name = FileData { fdPackedDirectory = myPackStr ""
-                                , fdPackedBasename  = myPackStr name
+                                , fdPackedBasename  = name
                                 , fdSize            = 0
                                 , fdTime            = aMINIMAL_POSSIBLE_DATETIME
                                 , fdIsDir           = True }
@@ -182,10 +182,10 @@ fdArtificialDir name = FileData { fdPackedDirectory = myPackStr ""
 
 -- |Дерево файлов. Включает список файлов на этом уровне плюс поименованные поддеревья
 --                        files   dirname subtree
-data FileTree a = FileTree [a]  [(String, FileTree a)]
+data FileTree a = FileTree [a]  [(MyPackedString, FileTree a)]
 
 -- |Возвращает количество каталогов в дереве
-ftDirs  (FileTree files subdirs) = length (removeDups (subdirs.$map fst  ++  files.$filter fdIsDir .$map fdBasename))
+ftDirs  (FileTree files subdirs) = length (removeDups (subdirs.$map fst  ++  files.$filter fdIsDir .$map fdPackedBasename))
                                  + sum (map (ftDirs.snd) subdirs)
 
 -- |Возвращает количество файлов в дереве
@@ -193,22 +193,22 @@ ftFiles (FileTree files subdirs) = length (filter (not.fdIsDir) files)  +  sum (
 
 -- |Возврашает список файлов в заданном каталоге,
 -- используя отображение artificial для генерации псевдо-файлов из имён вложенных каталогов
-ftFilesIn dir artificial = f (splitDirectories dir)
+ftFilesIn dir artificial = f (map myPackStr$ splitDirectories dir)
  where
   f (path0:path_rest) (FileTree _     subdirs) = lookup path0 subdirs.$ maybe [] (f path_rest)
   f []                (FileTree files subdirs) = (files++map (artificial.fst) subdirs)
-                                                  .$ keepOnlyFirstOn (filenameLower.fmname)
+                                                  .$ keepOnlyFirstOn fdPackedBasename
 
 -- |Превращает список файлов в дерево
 buildTree x = x
   .$splitt 0                                  -- Разбиваем на группы по каталогам, начиная с 0-го уровня
 splitt n x = x
-  .$sort_and_groupOn (dirPart n)              -- Сортируем/группируем по имени каталога очередного уровня
-  .$partition ((=="").dirPart n.head)         -- Отделяем группу с файлами, находящимися непосредственно в этом каталоге
+  .$sort_and_groupOn (dirPart n)    -- Сортируем/группируем по имени каталога очередного уровня
+  .$partition ((==myPackStr"").dirPart n.head)         -- Отделяем группу с файлами, находящимися непосредственно в этом каталоге
   .$(\(root,other) -> FileTree (concat root)  -- Остальные группы обрабатываем рекурсивно на (n+1)-м уровне
                                (map2s (dirPart n.head, splitt (n+1)) other))
 
 -- Имя n-й части каталога
-dirPart n = (!!n).(++[""]).splitDirectories.fdDirectory
+dirPart n = myPackStr.(!!n).(++[""]).splitDirectories.fdDirectory
 
 io=id
