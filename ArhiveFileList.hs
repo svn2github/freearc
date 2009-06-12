@@ -416,7 +416,7 @@ isWholeSolidBlock files @ (CompressedFile {cfArcBlock=solidBlock, cfPos=pos}:_) 
   pos == 0                            &&    -- Если первый файл в списке является началом солид-блока (pos = номеру первого принадлежащего этому файлу байта в солид-блоке)
   blFiles solidBlock == length files  &&    --   список имеет ту же длину, что и солид-блок, к которому принадлежит первый файл в списке,
   all        isCompressedFile  files  &&    --   состоит только из сжатых файлов,
-  isEqOn     cfArcBlock        files  &&    --   принадлежащих одному блоку
+  isEqOn     cfArcBlock        files  &&    --   принадлежащих одному блоку   -- not exact! block with only directories and empty files may have size 0!!!
   isSortedOn cfPos             files        --   и отсортированных по позиции в солид-блоке
 
 isWholeSolidBlock _ = False

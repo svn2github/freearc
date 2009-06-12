@@ -234,7 +234,7 @@ myMapM f = go 0 True undefined
   go total first lastSolidBlock [] = return total
   go total first lastSolidBlock (file:rest) = do
     let solidBlock = cfArcBlock file
-    let compsize = if first  ||  blPos solidBlock /= blPos lastSolidBlock
+    let compsize = if first  ||  solidBlock /= lastSolidBlock
                      then (blCompSize solidBlock)
                      else 0
     f file compsize

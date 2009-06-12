@@ -354,6 +354,9 @@
 unarc.dll
   quit - longjmp
 
+  !todo\resources.arc
+  -- not exact! block with only directories and empty files may have size 0!!!
+
 cvt
   путь к all2arc
   команда в меню FM

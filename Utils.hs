@@ -773,6 +773,7 @@ mapFst    f (a,b)  =  (f a,   b)
 mapSnd    f (a,b)  =  (  a, f b)
 mapFstSnd f (a,b)  =  (f a, f b)
 map2      (f,g) a  =  (f a, g a)
+map5      (f1,f2,f3,f4,f5) a  =  (f1 a,f2 a,f3 a,f4 a,f5 a)
 mapFsts = map . mapFst
 mapSnds = map . mapSnd
 map2s   = map . map2

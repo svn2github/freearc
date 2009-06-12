@@ -285,7 +285,7 @@ data ArchiveBlock = ArchiveBlock
        }
 
 instance Eq ArchiveBlock where
-  (==)  =  map2eq$ map2 (blPos, archiveName.blArchive)
+  (==)  =  map2eq$ map5 (blPos, blOrigSize, blCompSize, archiveName.blArchive, blCompressor)    -- not exact! block with only directories and empty files may have size 0!!!
 
 -- |Вспомогательная функция для вычисления поля blIsEncrypted по blCompressor
 enc = any isEncryption
