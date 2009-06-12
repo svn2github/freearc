@@ -351,6 +351,9 @@
   aARC_VERSION = "0.51", aARCHIVE_VERSION = make4byte 0 0 5 1
 === To-do list ====================================================================================
 
+unarc.dll
+  quit - longjmp
+
 cvt
   путь к all2arc
   команда в меню FM

@@ -663,18 +663,28 @@ void ProcessArchive (COMMAND &command)
 
 #ifdef FREEARC_LIBRARY
 extern "C" {
-int __cdecl FreeArcExtract (HANDLE hWnd, HANDLE hpb, HANDLE hst, ...)
-{
-  //UI.callback = callback;
-  UI.hWnd=hWnd, UI.hpb=hpb, UI.hst=hst;
 
+typedef int __stdcall cbtype (char *what, int int1, int int2, char *str);
+cbtype *callback;
+
+static DWORD WINAPI decompress_thread (void *paramPtr)
+{
+  COMMAND *command = (COMMAND*) paramPtr;
+  ProcessArchive (*command);      //   ¬ыполнить разобранную команду
+  UI.event = "quit";
+  DoEvent.Signal();
+  return 0;
+}
+
+int __cdecl FreeArcExtract (cbtype *callback, ...)
+{
   va_list argptr;
-  va_start(argptr, hst);
+  va_start(argptr, callback);
 
   int argc=0;
-  char *argv[100] = {"c:\\x.dll"};
+  char *argv[1000] = {"c:\\x.dll"};  ////
 
-  for (int i=1; i<100; i++)
+  for (int i=1; i<1000; i++)
   {
     argc = i;
     argv[i] = va_arg(argptr, char*);
@@ -684,10 +694,26 @@ int __cdecl FreeArcExtract (HANDLE hWnd, HANDLE hpb, HANDLE hst, ...)
   va_end(argptr);
 
 
+
+  CThread thread;
+
   SetCompressionThreads (GetProcessorsCount());
   COMMAND command (argc, argv);    // –аспарсить команду
-  if (command.ok)                  // ≈сли парсинг был удачен и можно выполнить команду
-    ProcessArchive (command);      //   ¬ыполнить разобранную команду
+  if (command.ok) {                // ≈сли парсинг был удачен и можно выполнить команду
+    thread.Create (decompress_thread, &command);   //   ¬ыполнить разобранную команду
+
+    for(;;)
+    {
+      DoEvent.Lock();
+      if (strequ(UI.event, "quit"))
+        break;
+      int result = callback (UI.event, UI.int1, UI.int2, UI.str);
+      if (result < 0)
+        return result;
+      EventDone.Signal();
+    }
+    thread.Wait();
+  }
   return command.ok? FREEARC_OK : FREEARC_ERRCODE_GENERAL;
 }
 }

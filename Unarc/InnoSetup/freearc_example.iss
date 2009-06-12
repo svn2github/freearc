@@ -1,8 +1,4 @@
-;Пример распаковки 7zip архива, с отображением прогресс бара в окне Inno Setup при помощи is7z.dll v1.01
-;Автор примера и is7z.dll Павлов Дмитрий (aka ExpeditoR)
-;пишите если что dimon-na-domu@mail.ru
-;Если вам понравилась данная библиотека, то загляните на мой сайт http://mp3runner.narod.ru/
-;и посмотрите другой мой проект mp3runner.
+;Пример распаковки FreeArc архива, с отображением прогресс бара в окне Inno Setup при помощи unarc.dll
 [Setup]
 AppName=My Program
 AppVerName=My Program version 1.5
@@ -22,18 +18,50 @@ Source: InnoCallback.dll; DestDir: {tmp}; Flags: dontcopy
 Name: {group}\Удалить; IconFilename: {app}\unins000.exe; Filename: {app}\unins000.exe
 
 [Code]
+type
+  TMsg = record
+    hwnd: HWND;
+    message: UINT;
+    wParam: Longint;
+    lParam: Longint;
+    time: DWORD;
+    pt: TPoint;
+  end;
+
+const
+  PM_REMOVE      = 1;
+
+function PeekMessage(var lpMsg: TMsg; hWnd: HWND; wMsgFilterMin, wMsgFilterMax, wRemoveMsg: UINT): BOOL; external 'PeekMessageA@user32.dll stdcall';
+function TranslateMessage(const lpMsg: TMsg): BOOL; external 'TranslateMessage@user32.dll stdcall';
+function DispatchMessage(const lpMsg: TMsg): Longint; external 'DispatchMessageA@user32.dll stdcall';
+
+procedure AppProcessMessage;
+var
+  Msg: TMsg;
+begin
+  while PeekMessage(Msg, WizardForm.Handle, 0, 0, PM_REMOVE) do begin
+    TranslateMessage(Msg);
+    DispatchMessage(Msg);
+  end;
+end;
+
+
+
+type
+  TFreeArcCallback = function (what: PChar; int1, int2: Integer; str: PChar): Integer;
+
+function WrapFreeArcCallback (callback: TFreeArcCallback; paramcount: integer):longword;
+  external 'wrapcallback@files:innocallback.dll stdcall';
+
+function FreeArcExtract (callback: longword; cmd1,cmd2,cmd3,cmd4,cmd5,cmd6,cmd7,cmd8,cmd9,cmd10: PChar): integer; external 'FreeArcExtract@files:unarc.dll cdecl';
+
+
+
 var
  ProgressBar: TNewProgressBar;
  ExtractFile: TNewStaticText;
  Button1:     TButton;
-
-type
- FreeArcCallback = function (what: PChar; int1, int2: Integer; str: PChar): Integer;
-
-function WrapFreeArcCallback (callback:FreeArcCallback; paramcount:integer):longword;
-  external 'wrapcallback@files:innocallback.dll stdcall';
-
-function FreeArcExtract (callback: longword; cmd1,cmd2,cmd3,cmd4,cmd5,cmd6,cmd7,cmd8,cmd9,cmd10: PChar): integer; external 'FreeArcExtract@files:unarc.dll cdecl';
+ Cancel:      Integer;
 
 procedure InitializeWizard();
 begin
@@ -46,22 +74,37 @@ begin
       ProgressBar.Width := Width;
       ProgressBar.Height := Height;
       ProgressBar.Parent := WizardForm.InstallingPage;
-      ProgressBar.max := 100;
+      ProgressBar.max := 1000;
       ProgressBar.Position := 0;
       ExtractFile.parent:=WizardForm.InstallingPage;
       ExtractFile.autosize:=false;
       ExtractFile.Width := Width;
       ExtractFile.top:=Top + ScaleX(35);
-      ExtractFile.caption:='Распаковка архива 7zip';
+      ExtractFile.caption:='Распаковка архива FreeArc';
     end;
 end;
 
 procedure Button1OnClick(Sender: TObject);
 begin
-// CancelExtract;
+  Cancel := -1;
+end;
+
+function FreeArcCallback (what: PChar; int1, int2: Integer; str: PChar): Integer;
+var percents: Integer;
+begin
+  if string(what)='filename' then
+      //ExtractFile.Caption:=str
+  else if (string(what)='progress') and (int2>0) then begin
+      percents := (int1*1000) div int2;
+      ProgressBar.Position := percents;
+      ExtractFile.Caption:='Распаковано '+IntToStr(int1)+' из '+IntToStr(int2)+' мб ('+FloatToStr(percents/10)+'%)';
+  end;
+  AppProcessMessage;
+  Result := Cancel;
 end;
 
 procedure CurStepChanged(CurStep: TSetupStep);
+var callback: longword;
 begin
   If CurStep=ssPostInstall then
    begin
@@ -72,10 +115,14 @@ begin
     Button1.left:=260;
     Button1.top:=WizardForm.cancelbutton.top;
     Button1.OnClick:=@Button1OnClick;
-    callback:=WrapCallback(@WrapFreeArcCallback,4); //Our proc has 4 arguments
+    callback:=WrapFreeArcCallback(@FreeArcCallback,4);   //FreeArcCallback has 4 arguments
+    Cancel := 0;
     try
-     FreeArcExtract (callback, 'x', '-dp'+ExpandConstant('{app}'), ExpandConstant('{tmp}') + '\1.arc', '', '', '', '', '', '', '');
+     AppProcessMessage;
+     FreeArcExtract (callback, 'x', '-o+', '-dp'+ExpandConstant('{app}'), ExpandConstant('{tmp}') + '\1.arc', '', '', '', '', '', '');
      Button1.visible:=false;
+     if cancel<0 then
+       MsgBox('Установка прервана!', mbInformation, MB_OK);
     except
      MsgBox('Неверный пароль!', mbInformation, MB_OK);
      Button1.visible:=false;
