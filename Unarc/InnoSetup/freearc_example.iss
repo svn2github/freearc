@@ -1,4 +1,7 @@
 ;Пример распаковки FreeArc архива, с отображением прогресс бара в окне Inno Setup при помощи unarc.dll
+;
+;For future: The Unicode compiler sees type 'String' as a Unicode string, and 'Char' as a Unicode character.
+;Its 'AnsiString' type hasn't changed and still is an ANSI string. Its 'PChar' type has been renamed to 'PAnsiChar'.
 [Setup]
 AppName=My Program
 AppVerName=My Program version 1.5
@@ -28,32 +31,14 @@ type
     pt: TPoint;
   end;
 
-const
-  PM_REMOVE      = 1;
-
-function PeekMessage(var lpMsg: TMsg; hWnd: HWND; wMsgFilterMin, wMsgFilterMax, wRemoveMsg: UINT): BOOL; external 'PeekMessageA@user32.dll stdcall';
-function TranslateMessage(const lpMsg: TMsg): BOOL; external 'TranslateMessage@user32.dll stdcall';
-function DispatchMessage(const lpMsg: TMsg): Longint; external 'DispatchMessageA@user32.dll stdcall';
-
-procedure AppProcessMessage;
-var
-  Msg: TMsg;
-begin
-  while PeekMessage(Msg, WizardForm.Handle, 0, 0, PM_REMOVE) do begin
-    TranslateMessage(Msg);
-    DispatchMessage(Msg);
-  end;
-end;
-
-
-
 type
-  TFreeArcCallback = function (what: PChar; int1, int2: Integer; str: PChar): Integer;
+  PAnsiChar=PChar;
+  TFreeArcCallback = function (what: PAnsiChar; int1, int2: Integer; str: PAnsiChar): Integer;
 
 function WrapFreeArcCallback (callback: TFreeArcCallback; paramcount: integer):longword;
   external 'wrapcallback@files:innocallback.dll stdcall';
 
-function FreeArcExtract (callback: longword; cmd1,cmd2,cmd3,cmd4,cmd5,cmd6,cmd7,cmd8,cmd9,cmd10: PChar): integer; external 'FreeArcExtract@files:unarc.dll cdecl';
+function FreeArcExtract (callback: longword; cmd1,cmd2,cmd3,cmd4,cmd5,cmd6,cmd7,cmd8,cmd9,cmd10: PAnsiChar): integer; external 'FreeArcExtract@files:unarc.dll cdecl';
 
 
 
@@ -89,7 +74,7 @@ begin
   Cancel := -1;
 end;
 
-function FreeArcCallback (what: PChar; int1, int2: Integer; str: PChar): Integer;
+function FreeArcCallback (what: PAnsiChar; int1, int2: Integer; str: PAnsiChar): Integer;
 var percents: Integer;
 begin
   if string(what)='filename' then
@@ -99,7 +84,6 @@ begin
       ProgressBar.Position := percents;
       ExtractFile.Caption:='Распаковано '+IntToStr(int1)+' из '+IntToStr(int2)+' мб ('+FloatToStr(percents/10)+'%)';
   end;
-  AppProcessMessage;
   Result := Cancel;
 end;
 
@@ -118,7 +102,6 @@ begin
     callback:=WrapFreeArcCallback(@FreeArcCallback,4);   //FreeArcCallback has 4 arguments
     Cancel := 0;
     try
-     AppProcessMessage;
      FreeArcExtract (callback, 'x', '-o+', '-dp'+ExpandConstant('{app}'), ExpandConstant('{tmp}') + '\1.arc', '', '', '', '', '', '');
      Button1.visible:=false;
      if cancel<0 then
