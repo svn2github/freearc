@@ -416,7 +416,7 @@ isWholeSolidBlock files @ (CompressedFile {cfArcBlock=solidBlock, cfPos=pos}:_) 
   pos == 0                            &&    -- Если первый файл в списке является началом солид-блока (pos = номеру первого принадлежащего этому файлу байта в солид-блоке)
   blFiles solidBlock == length files  &&    --   список имеет ту же длину, что и солид-блок, к которому принадлежит первый файл в списке,
   all        isCompressedFile  files  &&    --   состоит только из сжатых файлов,
-  isEqOn     cfArcBlock        files  &&    --   принадлежащих одному блоку   -- not exact! block with only directories and empty files may have size 0!!!
+  isEqOn     cfArcBlock        files  &&    --   принадлежащих одному блоку
   isSortedOn cfPos             files        --   и отсортированных по позиции в солид-блоке
 
 isWholeSolidBlock _ = False
@@ -507,6 +507,8 @@ splitFileTypes command  -- Определить типы файлов по arc.groups
 
   -- Определить тип одного (скорей всего, достаточно большого) файла
   groupType [file] = do
+    msg <- i18n"0248 Analyzed %1 files"
+    uiScanning msg []   -- чтобы показать "Analyzed 0 files" в начале
     let defaultType = getDefaultType file             -- тип файла по arc.groups
         filesize = fiSize$ cfFileInfo file            -- размер файла
         chunks = filesize `div` aCHUNK_SIZE + 1       -- на сколько блоков *можно* разделить файл
@@ -518,7 +520,6 @@ splitFileTypes command  -- Определить типы файлов по arc.groups
     let typ = chooseType dataTypes defaultType
     --debugLog0$ show$ (fpBasename.fiDiskName.cfFileInfo) file
     debugLog0$ "  "++(fst$ opt_data_compressor command!!typ)++" "++(fpBasename.fiDiskName.cfFileInfo) file++"("++show n++") "++show dataTypes; myFlushStdout
-    msg <- i18n"0248 Analyzed %1 files"
     uiScanning msg [file]
     return (typ,[file])
 

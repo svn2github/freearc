@@ -354,9 +354,8 @@
 unarc.dll
   quit - longjmp
 
-  !todo\resources.arc
-  -- not exact! block with only directories and empty files may have size 0!!!
-
+fashell
+  обработка 8000 выделенных файлов? ;)
 cvt
   путь к all2arc
   команда в меню FM

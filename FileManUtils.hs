@@ -201,11 +201,11 @@ ftFilesIn dir artificial = f (map myPackStr$ splitDirectories dir)
 
 -- |Превращает список файлов в дерево
 buildTree x = x
-  .$splitt 0                                  -- Разбиваем на группы по каталогам, начиная с 0-го уровня
+  .$splitt 0                                     -- Разбиваем на группы по каталогам, начиная с 0-го уровня
 splitt n x = x
-  .$sort_and_groupOn (dirPart n)    -- Сортируем/группируем по имени каталога очередного уровня
-  .$partition ((==myPackStr"").dirPart n.head)         -- Отделяем группу с файлами, находящимися непосредственно в этом каталоге
-  .$(\(root,other) -> FileTree (concat root)  -- Остальные группы обрабатываем рекурсивно на (n+1)-м уровне
+  .$sort_and_groupOn (dirPart n)                 -- Сортируем/группируем по имени каталога очередного уровня
+  .$partition ((==myPackStr"").dirPart n.head)   -- Отделяем группу с файлами, находящимися непосредственно в этом каталоге
+  .$(\(root,other) -> FileTree (concat root)     -- Остальные группы обрабатываем рекурсивно на (n+1)-м уровне
                                (map2s (dirPart n.head, splitt (n+1)) other))
 
 -- Имя n-й части каталога
