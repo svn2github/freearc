@@ -617,7 +617,7 @@ void ExtractFiles (DIRECTORY_BLOCK *dirblock, int block_num, COMMAND &command)
 // ListFiles для каждого блока каталога или ExtractFiles для каждого солид-блока
 void ProcessArchive (COMMAND &command)
 {
-  static ARCHIVE arcinfo (command.arcname);
+  ARCHIVE arcinfo (command.arcname);
   arcinfo.read_structure();                                           // Прочитаем структуру архива
   // Выведем заголовок операции на экран и запросим у пользователя разрешение на распаковку SFX
   if (!UI.AllowProcessing (command.cmd, command.silent, MYFILE(command.arcname).displayname(), &arcinfo.arcComment[0], arcinfo.arcComment.size, command.outpath)) {

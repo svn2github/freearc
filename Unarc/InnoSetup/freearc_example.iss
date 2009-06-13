@@ -1,7 +1,8 @@
-;Пример распаковки FreeArc архива, с отображением прогресс бара в окне Inno Setup при помощи unarc.dll
+;[English]
+;Example of using unarc.dll for decompression of FreeArc archives with displaying of progress indicator in Inno Setup window
 ;
-;For future: The Unicode compiler sees type 'String' as a Unicode string, and 'Char' as a Unicode character.
-;Its 'AnsiString' type hasn't changed and still is an ANSI string. Its 'PChar' type has been renamed to 'PAnsiChar'.
+;[Russian]
+;Пример распаковки FreeArc архива, с отображением прогресс бара в окне Inno Setup при помощи unarc.dll
 [Setup]
 AppName=My Program
 AppVerName=My Program version 1.5
@@ -10,15 +11,15 @@ DefaultGroupName=My Program
 Compression=zip
 
 [Languages]
-Name: rus; MessagesFile: compiler:Languages\Russian.isl
+;Name: rus; MessagesFile: compiler:Languages\Russian.isl
 
 [Files]
-Source: 1.arc; DestDir: {tmp}; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: *.arc; DestDir: {app}; Flags: ignoreversion
 Source: ..\unarc.dll; DestDir: {tmp}; Flags: dontcopy
 Source: InnoCallback.dll; DestDir: {tmp}; Flags: dontcopy
 
 [Icons]
-Name: {group}\Удалить; IconFilename: {app}\unins000.exe; Filename: {app}\unins000.exe
+Name: {group}\Uninstall; IconFilename: {app}\unins000.exe; Filename: {app}\unins000.exe
 
 [Code]
 type
@@ -31,8 +32,27 @@ type
     pt: TPoint;
   end;
 
+const
+  PM_REMOVE      = 1;
+
+function PeekMessage(var lpMsg: TMsg; hWnd: HWND; wMsgFilterMin, wMsgFilterMax, wRemoveMsg: UINT): BOOL; external 'PeekMessageA@user32.dll stdcall';
+function TranslateMessage(const lpMsg: TMsg): BOOL; external 'TranslateMessage@user32.dll stdcall';
+function DispatchMessage(const lpMsg: TMsg): Longint; external 'DispatchMessageA@user32.dll stdcall';
+
+procedure AppProcessMessage;
+var
+  Msg: TMsg;
+begin
+  while PeekMessage(Msg, WizardForm.Handle, 0, 0, PM_REMOVE) do begin
+    TranslateMessage(Msg);
+    DispatchMessage(Msg);
+  end;
+end;
+
+
+
 type
-  PAnsiChar=PChar;
+  PAnsiChar=PChar;     // Remove this line if you run InnoSetup 5.3.0+
   TFreeArcCallback = function (what: PAnsiChar; int1, int2: Integer; str: PAnsiChar): Integer;
 
 function WrapFreeArcCallback (callback: TFreeArcCallback; paramcount: integer):longword;
@@ -84,31 +104,46 @@ begin
       ProgressBar.Position := percents;
       ExtractFile.Caption:='Распаковано '+IntToStr(int1)+' из '+IntToStr(int2)+' мб ('+FloatToStr(percents/10)+'%)';
   end;
+  AppProcessMessage;
   Result := Cancel;
 end;
 
-procedure CurStepChanged(CurStep: TSetupStep);
+procedure ExtractFreeArcArchive(arcname: String; destpath: String);
 var callback: longword;
+    res: Integer;
+begin
+  AppProcessMessage;
+  callback:=WrapFreeArcCallback(@FreeArcCallback,4);   //FreeArcCallback has 4 arguments
+  Cancel := 0;
+  try
+   res := FreeArcExtract (callback, 'x', '-o+', '-dp'+destpath, '--', arcname, '', '', '', '', '');
+   if cancel<0 then
+     MsgBox('Installation cancelled', mbInformation, MB_OK);
+   if res<0 then
+     MsgBox('Decompression failed with error code '+IntToStr(res)+'!', mbError, MB_OK);
+   Button1.visible:=false;
+  except
+   MsgBox('Decompression failed!', mbError, MB_OK);
+   Button1.visible:=false;
+  end;
+  DeleteFile(arcname);
+end;
+
+procedure CurStepChanged(CurStep: TSetupStep);
+var app: String;
 begin
   If CurStep=ssPostInstall then
    begin
     Button1:=TButton.create(WizardForm);
     Button1.parent:=WizardForm;
     Button1.width:=135;
-    Button1.caption:='Отменить распаковку';
+    Button1.caption:='Cancel installation';
     Button1.left:=260;
     Button1.top:=WizardForm.cancelbutton.top;
     Button1.OnClick:=@Button1OnClick;
-    callback:=WrapFreeArcCallback(@FreeArcCallback,4);   //FreeArcCallback has 4 arguments
-    Cancel := 0;
-    try
-     FreeArcExtract (callback, 'x', '-o+', '-dp'+ExpandConstant('{app}'), ExpandConstant('{tmp}') + '\1.arc', '', '', '', '', '', '');
-     Button1.visible:=false;
-     if cancel<0 then
-       MsgBox('Установка прервана!', mbInformation, MB_OK);
-    except
-     MsgBox('Неверный пароль!', mbInformation, MB_OK);
-     Button1.visible:=false;
-    end;
+    
+    app := ExpandConstant('{app}');
+    ExtractFreeArcArchive(app+'\1.arc', app);
+    ExtractFreeArcArchive(app+'\2.arc', app);
    end;
 end;

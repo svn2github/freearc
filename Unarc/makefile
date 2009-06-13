@@ -1,6 +1,6 @@
 include ../common.mak
 
-windows: unarc.exe arc.sfx freearc.sfx freearc-installer.sfx FreeArc.fmt
+windows: unarc.exe unarc.dll arc.sfx freearc.sfx freearc-installer.sfx FreeArc.fmt
 linux: unarc arc.linux.sfx
 
 Extractor_DEFINES = -DFREEARC_DECOMPRESS_ONLY -D_NO_EXCEPTIONS -DUNARC
