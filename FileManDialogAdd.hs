@@ -96,7 +96,7 @@ addDialog fm' exec cmd files mode = do
                                 , "0206 Latest file time" ];  pack (widget archiveTimeMode)
 
     create <- checkBox "0207 Delete previous archive contents";  pack (widget create)  `on`  cmd/="ch"
-    (hbox, sort, sortOrder)  <- fmCheckedEntryWithHistory fm' "sort" "0208 Order of files in archive:";  pack hbox  `on`  cmd=="a"
+    (hbox, sort, sortOrder)  <- fmCheckedEntryWithHistory fm' "sort" "0208 Order of files in archive:";  pack hbox  `on`  (cmd `elem` words "a cvt")
     recompressMode <- comboBox "0209 Recompression mode:"
                                [ "0210 Quickly append new files"
                                , "0211 Smart recompression of solid blocks (default)"
@@ -108,7 +108,7 @@ addDialog fm' exec cmd files mode = do
                                [ "0217 No (default)"
                                , "0218 Full: clear \"Archive\" attribute of files succesfully archived"
                                , "0219 Differential: select only files with \"Archive\" attribute set"
-                               , "0220 Incremental: select by \"Archive\" attribute & clear it after compression" ];  pack (widget backupMode)  `on`  cmd/="ch"
+                               , "0220 Incremental: select by \"Archive\" attribute & clear it after compression" ];  pack (widget backupMode)  `on`  (cmd `notElem` words "ch cvt")
 
 
 ------ Закладка отбора файлов ----------------------------------------------------------------------
@@ -133,7 +133,7 @@ addDialog fm' exec cmd files mode = do
 
 
 ------ Инициализация полей --------------------------------------------------------------------------
-    compression     =: mode==RecompressMode || cmd=="a"
+    compression     =: mode==RecompressMode || (cmd `elem` words "a cvt")
     encryption      =: mode==EncryptionMode
     protection      =: mode==ProtectionMode
     comment         =: mode==CommentMode
@@ -161,7 +161,7 @@ addDialog fm' exec cmd files mode = do
     choice <- fmDialogRun fm' dialog "AddDialog"
     when (choice==ResponseOk) $ do
       -- Main settings
-      arcname' <- val arcname;  saveHistory arcname   `on`  cmd/="ch"
+      arcname' <- val arcname;  saveHistory arcname   `on`  (cmd `notElem` words "ch cvt")
       arcpath' <- val arcpath;  saveHistory arcpath   `on`  cmd=="a"
       -- Если "имя архива" на самом деле указывает каталог внутри архива, то не ударим в грязь лицом :)
       x <- splitArcPath fm' arcname'
@@ -256,7 +256,7 @@ addDialog fm' exec cmd files mode = do
             (archiveTimeMode' `select`  ",-tk,-tl")++
             (backupMode'      `select`  ",-ac,-ao,-ac -ao")++
             (recompressMode'  `select`  "--append,,--recompress,--nodata,--crconly,--nodir")++
-            (cmd/="a" &&& (compressionEnabled || encryptionEnabled)  &&&  ["--recompress"])++
+            ((cmd `notElem` words "a cvt") &&& (compressionEnabled || encryptionEnabled)  &&&  ["--recompress"])++
             -- File selection settings
             (includeEnabled   &&&  cvt1 "-n" includeMasks')++
             (excludeEnabled   &&&  cvt1 "-x" excludeMasks')++

@@ -365,12 +365,9 @@ fashell
   обработка 8000 выделенных файлов? ;)
 cvt
   ввод нового имени для одного архива
-  просмотреть все вхождения cmd в addDialog (noarcext? recompress)
   "" вокруг имён файлов и опций
 other
-  progress indicator: Alt-F4/X - не всегда выходит
   CleanStats при non-FM mode
-  Alt-F4 из окна FM
   перед запуском сжатия (в checkingCtrlBreak после read 0 - только при сжатии!) делать обрезание метода
 
   icons
