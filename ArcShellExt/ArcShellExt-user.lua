@@ -86,6 +86,7 @@ register_menu_handler (function (filenames)
     menu = {
       append (command.zip2arc,  {command = all2arc.."      -- "..filename}),
       append (command.zip2sfx,  {command = all2arc.." -sfx -- "..filename}),
+      append (command.zip2a,    {command = freearc.." --add-dialog cvt -- "..filename}),
     }
   end
 
