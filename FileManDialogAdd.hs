@@ -69,7 +69,7 @@ addDialog fm' exec cmd files mode = do
 ------ Главная закладка ----------------------------------------------------------------------
     vbox <- newPage "0182 Main";  let pack x = boxPackStart vbox x PackNatural 1
     ------ Архив и каталог в нём ----------------------------------------------------------------------
-    (hbox, _, arcname) <- fmOutputArchiveFileBox fm' dialog;  pack hbox  `on`  cmd/="ch"
+    (hbox, _, arcname) <- fmOutputArchiveFileBox fm' dialog;  pack hbox  `on`  (cmd `notElem` words "ch cvt")
     (hbox,    arcpath) <- fmLabeledEntryWithHistory fm' "arcpath" "0141 Base directory inside archive:";  pack hbox  `on`  cmd=="a"
     ep                 <- fmExcludePaths;  pack (widget ep)          `on`  cmd=="a"
     updateMode         <- fmUpdateMode;    pack (widget updateMode)  `on`  cmd=="a"

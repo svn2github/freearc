@@ -76,9 +76,7 @@ openDialog (cmd:"--":params) exec dialog = do
     dialog fm' exec cmd params
   --
   cmds <- readChan cmdChan
-  case cmd of
-    "cvt" -> Files.runCommand (joinWith " "$ ["all2arc"]++init(head cmds)++["--"]++map last cmds) "." False
-    _     -> exec$ joinWith [";"] cmds
+  exec$ joinWith [";"] cmds
 
 
 ----------------------------------------------------------------------------------------------------
@@ -117,6 +115,7 @@ uiDef =
   "      <menuitem name=\"Comment\"            action=\"CommentAction\" />"++
   "      <menuitem name=\"Recompress\"         action=\"RecompressAction\" />"++
   "      <menuitem name=\"Convert to SFX\"     action=\"ConvertToSFXAction\" />"++
+  "      <menuitem name=\"Convert to FreeArc\" action=\"ConvertToFreeArcAction\" />"++
   "      <separator/>"++
   "      <menuitem name=\"Encrypt\"            action=\"EncryptAction\" />"++
   "      <menuitem name=\"Protect\"            action=\"ProtectAction\" />"++
@@ -193,41 +192,42 @@ myGUI run args = do
         accel `onKey` actionActivate action
         return action
   --
-  openAct     <- anew "0262 Open archive"     "0265 Open archive"                       (Just stockOpen)            "<Alt>O"
-  selectAllAct<- anew "0263 Select all"       "0290 Select all files"                   (Just stockSelectAll)       "<Ctrl>A"
-  selectAct   <- anew "0037 Select"           "0047 Select files"                       (Just stockAdd)             "KP_Add"
-  unselectAct <- anew "0038 Unselect"         "0048 Unselect files"                     (Just stockRemove)          "KP_Subtract"
-  invertSelAct<- anew "0264 Invert selection" "0291 Invert selection"                   (Nothing)                   "KP_Multiply"
-  refreshAct  <- anew "0039 Refresh"          "0049 Reread archive/directory"           (Just stockRefresh)         "F5"
-  exitAct     <- anew "0036 Exit"             "0046 Quit application"                   (Just stockQuit)            "<Alt>Q"
+  openAct     <- anew "0262 Open archive"        "0265 Open archive"                              (Just stockOpen)            "<Alt>O"
+  selectAllAct<- anew "0263 Select all"          "0290 Select all files"                          (Just stockSelectAll)       "<Ctrl>A"
+  selectAct   <- anew "0037 Select"              "0047 Select files"                              (Just stockAdd)             "KP_Add"
+  unselectAct <- anew "0038 Unselect"            "0048 Unselect files"                            (Just stockRemove)          "KP_Subtract"
+  invertSelAct<- anew "0264 Invert selection"    "0291 Invert selection"                          (Nothing)                   "KP_Multiply"
+  refreshAct  <- anew "0039 Refresh"             "0049 Reread archive/directory"                  (Just stockRefresh)         "F5"
+  exitAct     <- anew "0036 Exit"                "0046 Quit application"                          (Just stockQuit)            "<Alt>Q"
 
-  addAct      <- anew "0030 Add"              "0040 Add files to archive(s)"            (Just stockMediaRecord)     "<Alt>A"
-  extractAct  <- anew "0035 Extract"          "0045 Extract files from archive(s)"      (Just stockMediaPlay)       "<Alt>E"
-  testAct     <- anew "0034 Test"             "0044 Test files in archive(s)"           (Just stockSpellCheck)      "<Alt>T"
-  arcinfoAct  <- anew "0086 ArcInfo"          "0087 Information about archive"          (Just stockInfo)            "<Alt>I"
-  deleteAct   <- anew "0033 Delete"           "0043 Delete files (from archive)"        (Just stockDelete)          "Delete"
+  addAct      <- anew "0030 Add"                 "0040 Add files to archive(s)"                   (Just stockMediaRecord)     "<Alt>A"
+  extractAct  <- anew "0035 Extract"             "0045 Extract files from archive(s)"             (Just stockMediaPlay)       "<Alt>E"
+  testAct     <- anew "0034 Test"                "0044 Test files in archive(s)"                  (Just stockSpellCheck)      "<Alt>T"
+  arcinfoAct  <- anew "0086 ArcInfo"             "0087 Information about archive"                 (Just stockInfo)            "<Alt>I"
+  deleteAct   <- anew "0033 Delete"              "0043 Delete files (from archive)"               (Just stockDelete)          "Delete"
 
-  lockAct     <- anew "0266 Lock"             "0267 Lock archive from further changes"  (Just stockDialogAuthentication) "<Alt>L"
-  commentAct  <- anew "0268 Comment"          "0269 Edit archive comment"               (Just stockEdit)            "<Alt>C"
-  recompressAct<-anew "0293 Recompress"       "0294 Recompress files in archive"        (Just stockGotoBottom)      "<Alt>R"
-  toSfxAct    <- anew "0270 Convert to SFX"   "0271 Convert archive to SFX"             (Just stockConvert)         "<Alt>S"
-  encryptAct  <- anew "0272 Encrypt"          "0273 Encrypt archive contents"           (Nothing)                   ""
-  addRrAct    <- anew "0274 Protect"          "0275 Add Recovery record to archive"     (Nothing)                   "<Alt>P"
-  repairAct   <- anew "0379 Repair"           "0380 Repair damaged archive"             (Nothing)                   ""
-  modifyAct   <- anew "0031 Modify"           "0041 Modify archive(s)"                  (Just stockEdit)            "<Alt>M"
-  joinAct     <- anew "0032 Join archives"    "0042 Join archives together"             (Just stockCopy)            "<Alt>J"
+  lockAct     <- anew "0266 Lock"                "0267 Lock archive from further changes"         (Just stockDialogAuthentication) "<Alt>L"
+  commentAct  <- anew "0268 Comment"             "0269 Edit archive comment"                      (Just stockEdit)            "<Alt>C"
+  recompressAct<-anew "0293 Recompress"          "0294 Recompress files in archive"               (Just stockGotoBottom)      "<Alt>R"
+  toSfxAct    <- anew "0270 Convert to SFX"      "0271 Convert archive to SFX"                    (Just stockConvert)         "<Alt>S"
+  toFaAct     <- anew "0999 Convert to FreeArc"  "0999 Convert foreign archive to FreeArc format" (Nothing)                   ""
+  encryptAct  <- anew "0272 Encrypt"             "0273 Encrypt archive contents"                  (Nothing)                   ""
+  addRrAct    <- anew "0274 Protect"             "0275 Add Recovery record to archive"            (Nothing)                   "<Alt>P"
+  repairAct   <- anew "0379 Repair"              "0380 Repair damaged archive"                    (Nothing)                   ""
+  modifyAct   <- anew "0031 Modify"              "0041 Modify archive(s)"                         (Just stockEdit)            "<Alt>M"
+  joinAct     <- anew "0032 Join archives"       "0042 Join archives together"                    (Just stockCopy)            "<Alt>J"
 
-  settingsAct <- anew "0064 Settings"         "0065 Edit program settings"              (Just stockPreferences)     ""
-  viewLogAct  <- anew "0276 View log"         "0277 View logfile"                       (Nothing)                   ""
-  clearLogAct <- anew "0278 Clear log"        "0279 Clear logfile"                      (Nothing)                   ""
+  settingsAct <- anew "0064 Settings"            "0065 Edit program settings"                     (Just stockPreferences)     ""
+  viewLogAct  <- anew "0276 View log"            "0277 View logfile"                              (Nothing)                   ""
+  clearLogAct <- anew "0278 Clear log"           "0279 Clear logfile"                             (Nothing)                   ""
 
-  helpAct     <- anew "0280 Main help"        "0281 Help on using FreeArc"              (Just stockHelp)            "F1"
-  helpCmdAct  <- anew "0282 Cmdline help"     "0283 Help on FreeArc command line"       (Just stockHelp)            ""
-  homepageAct <- anew "0284 Open Homepage"    "0285 Open program site"                  (Just stockHome)            ""
-  openForumAct<- anew "0373 Open forum"       "0374 Open program forum"                 (Nothing)                   ""
-  openWikiAct <- anew "0375 Open wiki"        "0376 Open program wiki"                  (Nothing)                   ""
-  whatsnewAct <- anew "0286 Check for update" "0287 Check for new program version"      (Just stockDialogInfo)      ""
-  aboutAct    <- anew "0288 About"            "0289 About"                              (Just stockAbout)           ""
+  helpAct     <- anew "0280 Main help"           "0281 Help on using FreeArc"                     (Just stockHelp)            "F1"
+  helpCmdAct  <- anew "0282 Cmdline help"        "0283 Help on FreeArc command line"              (Just stockHelp)            ""
+  homepageAct <- anew "0284 Open Homepage"       "0285 Open program site"                         (Just stockHome)            ""
+  openForumAct<- anew "0373 Open forum"          "0374 Open program forum"                        (Nothing)                   ""
+  openWikiAct <- anew "0375 Open wiki"           "0376 Open program wiki"                         (Nothing)                   ""
+  whatsnewAct <- anew "0286 Check for update"    "0287 Check for new program version"             (Just stockDialogInfo)      ""
+  aboutAct    <- anew "0288 About"               "0289 About"                                     (Just stockAbout)           ""
 
   menufile <- findFile configFilePlaces aMENU_FILE
   uiData   <- if menufile>""  then fileGetBinary menufile  else return uiDef
@@ -638,6 +638,10 @@ myGUI run args = do
   -- Преобразовать архив в SFX
   toSfxAct `onActionActivate` do
     compressionOperation fm' addDialog exec "ch" MakeSFXMode
+
+  -- Преобразовать чужой архив в формат FreeArc
+  toFaAct `onActionActivate` do
+    compressionOperation fm' addDialog exec "cvt" NoMode
 
   -- Зашифровать архив
   encryptAct `onActionActivate` do

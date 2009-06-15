@@ -355,7 +355,7 @@ unarc.dll
   quit - закрывать архив
   нехватка места - callback
   quit - longjmp
-  1.iss
+  2.iss
   цикл обработки событий
   если начинается распаковка битого (недокачанного) архива, то инсталлятор закрывается.
 
@@ -364,7 +364,6 @@ unarc.dll
 fashell
   обработка 8000 выделенных файлов? ;)
 cvt
-  команда в меню FM
   ввод нового имени для одного архива
   просмотреть все вхождения cmd в addDialog (noarcext? recompress)
   "" вокруг имён файлов и опций
@@ -372,7 +371,7 @@ other
   progress indicator: Alt-F4/X - не всегда выходит
   CleanStats при non-FM mode
   Alt-F4 из окна FM
-  перед запуском сжатия (в checkingCtrlBreak после read 0) делать обрезание методов. иначе мы имеем до -32 мег из-за directory reading (?)
+  перед запуском сжатия (в checkingCtrlBreak после read 0 - только при сжатии!) делать обрезание метода
 
   icons
 	SHFILEINFO shFileInfo;
