@@ -197,6 +197,9 @@ foreign import ccall safe "Environment.h RunFile"
 foreign import ccall safe "Environment.h RunCommand"
   c_RunCommand :: CFilePath -> CFilePath -> CInt -> IO ()
 
+-- |Составить строку команды из списка строк аргументов
+unparseCommand  =  joinWith " " . map quote
+
 
 #if defined(FREEARC_WIN)
 -- |Открыть HKEY и прочитать из Registry значение типа REG_SZ
