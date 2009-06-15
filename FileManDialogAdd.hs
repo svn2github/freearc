@@ -273,7 +273,8 @@ addDialog fm' exec cmd files mode = do
             [if create' then "create" else cmd] ++ options ++ ["--", clear archive] ++ filelist)
       --
       if cmd=="cvt" then
-        do Files.runCommand (joinWith " "$ ["all2arc"] ++ options ++ ["--"] ++ files) (fm_curdir fm) False
+        do all2arc <- all2arc_path
+           Files.runCommand (joinWith " "$ [all2arc] ++ options ++ ["--"] ++ files) (fm_curdir fm) False
         else do
       exec$ if cmd=="ch" then (files ||| ["*"]) .$map (\archive -> command (fm_curdir fm </> archive) [])
        else if separate' then files.$map (\file -> command (fm_curdir fm </> dropTrailingPathSeparator file++aDEFAULT_ARC_EXTENSION) [file])

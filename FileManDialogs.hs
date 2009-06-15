@@ -485,6 +485,7 @@ registerShellExtensions associate oldContextMenu contextMenu cascaded commands =
       -- This part is performed only when Context Menu is enabled
       when contextMenu $ do
         -- Generate ArcShellExt config script
+        all2arc <- all2arc_path
         let q str = "\"" ++ str.$replaceAll "\"" "\\\"" ++ "\""
         let script = [ "-- This file uses UTF8 encoding without BOM"
                      , ""
@@ -501,7 +502,7 @@ registerShellExtensions associate oldContextMenu contextMenu cascaded commands =
                      , "freearc = \"\\\""++(exe.$replaceAll "\\" "\\\\")++"\\\"\""
                      , ""
                      , "-- Path to All2Arc"
-                     , "all2arc = \"\\\""++((windosifyPath(dir </> "all2arc.exe")).$replaceAll "\\" "\\\\")++"\\\"\""
+                     , "all2arc = \"\\\""++(all2arc.$replaceAll "\\" "\\\\")++"\\\"\""
                      ]
         saveConfigFile (shext </> "ArcShellExt-config.lua") script
         -- Register DLL

@@ -55,6 +55,12 @@ aARCFILE_FILTER = ["0307 FreeArc archives (*.arc)", "0308 Archives and SFXes (*.
 -- |Фильтр для выбора любого файла
 aANYFILE_FILTER = []
 
+-- |Путь к all2arc
+all2arc_path = do
+  exe <- getExeName                                -- Name of FreeArc.exe file
+  let dir   =  exe.$takeDirectory                  -- FreeArc.exe directory
+  return$ windosifyPath(dir </> "all2arc.exe")
+
 
 ----------------------------------------------------------------------------------------------------
 ---- Отображение индикатора прогресса --------------------------------------------------------------
