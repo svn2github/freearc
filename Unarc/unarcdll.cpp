@@ -1,3 +1,8 @@
+// Обработка сбоев при распаковке архива
+#undef  ON_CHECK_FAIL
+#define ON_CHECK_FAIL()   UnarcQuit()
+void UnarcQuit();
+
 // Доступ к структуре архива
 #include "ArcStructure.h"
 
@@ -7,6 +12,12 @@
 // Доступ к парсингу командной строки и выполнению операций над архивом
 #include "ArcCommand.h"
 #include "ArcProcess.h"
+
+// Экстренный выход из программы в случае ошибки
+void UnarcQuit()
+{
+  CurrentProcess->quit();
+}
 
 
 /******************************************************************************

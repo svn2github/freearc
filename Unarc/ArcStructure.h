@@ -364,6 +364,7 @@ public:
   ARRAY <char>             arcComment; // Комментарий к архиву. Может содержать нулевые символы
   FILESIZE                 SFXSize;    // Размер SFX-модуля перед архивом
 
+  ARCHIVE () {}
   ARCHIVE (FILENAME arcname) : arcfile (arcname, READ_MODE) {}   // Открывает файл архива
   void read_structure();               // Считывает описания служебных блоков
 };

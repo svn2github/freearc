@@ -40,11 +40,7 @@ public:
 
   // Процедура экстренного выхода
   void quit();
-
-// Действие при ошибке в CHECK()
-#undef  ON_CHECK_FAIL
-#define ON_CHECK_FAIL()   quit()
-};
+} *CurrentProcess;
 
 
 /*************************************************************************************************
@@ -247,9 +243,11 @@ void PROCESS::ExtractFiles (DIRECTORY_BLOCK *dirblock, int block_num)
 
 // Читает структуру архива и вызывает в зависимости от выполняемой команды
 // ListFiles для каждого блока каталога или ExtractFiles для каждого солид-блока
-PROCESS::PROCESS (COMMAND &_cmd, BASEUI &_UI) : cmd(&_cmd), UI(&_UI), arcinfo (_cmd.arcname)
+PROCESS::PROCESS (COMMAND &_cmd, BASEUI &_UI) : cmd(&_cmd), UI(&_UI)
 {
+  CurrentProcess = this;
   SetCompressionThreads (GetProcessorsCount());
+  arcinfo.arcfile.open (cmd->arcname, READ_MODE);                     // Откроем файл архива
   arcinfo.read_structure();                                           // Прочитаем структуру архива
   // Выведем заголовок операции на экран и запросим у пользователя разрешение на распаковку SFX
   if (!UI->AllowProcessing (cmd->cmd, cmd->silent, MYFILE(cmd->arcname).displayname(), &arcinfo.arcComment[0], arcinfo.arcComment.size, cmd->outpath)) {
