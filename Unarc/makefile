@@ -13,9 +13,11 @@ LINKOBJ = $(LINKOBJ_MINI) $(OBJDIR)/C_MM.o $(OBJDIR)/C_TTA.o \
           $(OBJDIR)/C_Tornado.o $(OBJDIR)/C_GRZip.o
 
 FAR_PLUGIN = FarPlugin.cpp ArcStructure.h
-UNARC = unarc.cpp ArcStructure.h ArcCommand.h ArcProcess.h
+UNARC = ArcStructure.h ArcCommand.h ArcProcess.h
+CUI = CUI.h
 GUI = gui\gui.h gui\gui.cpp
 HEADERS =  ../Compression/Compression.h ../Compression/Common.h
+
 LINK_FLAGS = -L$(LIBDIR) -Xlinker --large-address-aware -lstdc++ -s
 UNIX_LINK_FLAGS = -L$(LIBDIR) -lstdc++ -lrt -lpthread -s
 
@@ -73,22 +75,22 @@ arc.linux.sfx: $(OBJDIR)/ArcSFX.o $(LINKOBJ)
 $(OBJDIR)/FarPlugin.o: $(FAR_PLUGIN) $(HEADERS)
 	$(GCC) -c $(CFLAGS) -IHeaders.c -o $*.o $<
 
-$(OBJDIR)/unarc.o: $(UNARC) $(HEADERS)
+$(OBJDIR)/unarc.o: unarc.cpp $(UNARC) $(CUI) $(HEADERS)
 	$(GCC) -c $(CFLAGS) -o $*.o $<
 
-$(OBJDIR)/ArcSFX.o: $(UNARC) $(HEADERS)
+$(OBJDIR)/ArcSFX.o: unarc.cpp $(UNARC) $(CUI) $(HEADERS)
 	$(GCC) -c $(CFLAGS1) -DFREEARC_SFX -o $*.o $<
 
-$(OBJDIR)/ArcTinySFX.o: $(UNARC) $(HEADERS)
+$(OBJDIR)/ArcTinySFX.o: unarc.cpp $(UNARC) $(CUI) $(HEADERS)
 	$(GCC) -c $(CFLAGS1) -DFREEARC_SFX -DFREEARC_TINY -o $*.o $<
 
-$(OBJDIR)/FreeArcSFX.o: $(UNARC) $(GUI) $(HEADERS)
+$(OBJDIR)/FreeArcSFX.o: unarc.cpp $(UNARC) $(GUI) $(HEADERS)
 	$(GCC) -c $(CFLAGS1) -DFREEARC_SFX -DFREEARC_GUI -Igui -o $*.o $<
 
-$(OBJDIR)/FreeArcTinySFX.o: $(UNARC) $(GUI) $(HEADERS)
+$(OBJDIR)/FreeArcTinySFX.o: unarc.cpp $(UNARC) $(GUI) $(HEADERS)
 	$(GCC) -c $(CFLAGS1) -DFREEARC_SFX -DFREEARC_TINY -DFREEARC_GUI -Igui -o $*.o $<
 
-$(OBJDIR)/FreeArcInstaller.o: $(UNARC) $(GUI) $(HEADERS)
+$(OBJDIR)/FreeArcInstaller.o: unarc.cpp $(UNARC) $(GUI) $(HEADERS)
 	$(GCC) -c $(CFLAGS1) -DFREEARC_SFX -DFREEARC_INSTALLER -DFREEARC_GUI -Igui -o $*.o $<
 
 
