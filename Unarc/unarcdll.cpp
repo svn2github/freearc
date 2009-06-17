@@ -1,5 +1,4 @@
 #include "../Compression/MultiThreading.h"
-//#include "LZMA/Windows/Synchronization.cpp"
 
 Event DoEvent, EventDone;
 
@@ -89,5 +88,60 @@ bool UI::AllowProcessing (char cmd, int silent, FILENAME arcname, char* comment,
 char UI::AskOverwrite (FILENAME filename, uint64 size, time_t modified)
 {
   return 'n';
+}
+
+
+
+
+#include "unarcdll.h"
+
+static DWORD WINAPI decompress_thread (void *paramPtr)
+{
+  COMMAND *command = (COMMAND*) paramPtr;
+  ProcessArchive (*command);      //   Выполнить разобранную команду
+  UI.event = "quit";
+  DoEvent.Signal();
+  return 0;
+}
+
+int __cdecl FreeArcExtract (cbtype *callback, ...)
+{
+  va_list argptr;
+  va_start(argptr, callback);
+
+  int argc=0;
+  char *argv[1000] = {"c:\\x.dll"};  ////
+
+  for (int i=1; i<1000; i++)
+  {
+    argc = i;
+    argv[i] = va_arg(argptr, char*);
+    if (argv[i]==NULL || argv[i][0]==0)
+      {argv[i]=NULL; break;}
+  }
+  va_end(argptr);
+
+
+
+  CThread thread;
+
+  SetCompressionThreads (GetProcessorsCount());
+  COMMAND command (argc, argv);    // Распарсить команду
+  if (command.ok) {                // Если парсинг был удачен и можно выполнить команду
+    thread.Create (decompress_thread, &command);   //   Выполнить разобранную команду
+
+    for(;;)
+    {
+      DoEvent.Lock();
+      if (strequ(UI.event, "quit"))
+        break;
+      int result = callback (UI.event, UI.int1, UI.int2, UI.str);
+      if (result < 0)
+        return result;
+      EventDone.Signal();
+    }
+    thread.Wait();
+  }
+  return command.ok? FREEARC_OK : FREEARC_ERRCODE_GENERAL;
 }
 

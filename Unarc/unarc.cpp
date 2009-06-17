@@ -9,6 +9,11 @@
 #include <string.h>
 #include <wchar.h>
 
+// External compressors support
+extern "C" {
+#include "../Compression/External/C_External.h"
+}
+
 // SFX module is just unarc.cpp compiled with FREEARC_SFX defined
 #ifdef FREEARC_SFX
 #define NAME           "SFX"
@@ -21,22 +26,102 @@
 
 // Доступ к структуре архива
 #include "ArcStructure.h"
+#include "ArcCommand.h"
+#include "ArcProcess.h"
 
-// External compressors support
-extern "C" {
-#include "../Compression/External/C_External.h"
-}
 
 // Весь диалог с пользователем описан в сменных модулях, включаемых здесь
 #ifdef FREEARC_GUI
 #include "gui\gui.h"
 #include "gui\gui.cpp"
-#elif defined(FREEARC_LIBRARY)
-#include "LibUI.h"
 #else
-#include "CUI.h"
+
+class CUI : public BASEUI
+{
+private:
+  char outdir[MY_FILENAME_MAX*4];  //unicode: utf-8 encoding
+public:
+  void DisplayHeader (char* header);
+  bool ProgressFile  (bool isdir, const char *operation, FILENAME filename, uint64 filesize);
+  void EndProgress   ();
+  bool AllowProcessing (char cmd, int silent, FILENAME arcname, char* comment, int cmtsize, FILENAME outdir);
+  FILENAME GetOutDir();
+  char AskOverwrite (FILENAME filename, uint64 size, time_t modified);
+};
+
+void CUI::DisplayHeader (char* header)
+{
+  printf ("%s", header);
+}
+
+bool CUI::ProgressFile (bool isdir, const char *operation, FILENAME filename, uint64 filesize)
+{
+  printf (isdir?  "%s %s" STR_PATH_DELIMITER "\n"  :  "%s %s (%llu bytes)\n",
+          operation, filename, filesize);
+  return TRUE;
+}
+
+void CUI::EndProgress()
+{
+  printf ("All OK");
+}
+
+FILENAME CUI::GetOutDir()
+{
+  return outdir;
+}
+
+bool CUI::AllowProcessing (char cmd, int silent, FILENAME arcname, char* comment, int cmtsize, FILENAME _outdir)
+{
+  strcpy (outdir, _outdir);
+  printf (". %s archive: %s\n",                       // Выведем имя обрабатываемого архива
+    cmd=='l'||cmd=='v'? "Listing" : cmd=='t' ? "Testing" : "Extracting", drop_dirname(arcname));
+  if (cmtsize>0)                                      // Выведем архивный комментарий
+#ifdef FREEARC_WIN
+{
+    // Convert comment from UTF-8 to OEM encoding before printing
+    char *oemname = (char*) malloc(cmtsize+1);
+    strncpy (oemname, comment, cmtsize);
+    oemname[cmtsize] = 0;
+    utf8_to_oem (oemname, oemname);
+    printf ("%s\n", oemname);
+    free (oemname);
+}
+#else
+    printf("%*.*s\n", cmtsize, cmtsize, comment);
 #endif
-UI UI;
+
+#ifdef FREEARC_SFX
+  // В SFX необходимо запросить согласие пользователя перед началом распаковки
+  if (!silent)
+  {
+    char answer[256];
+    printf ("Continue extraction (y/n)? ");
+    gets (answer);
+    if (! (strequ(answer,"y") || strequ(answer,"Y")))
+    {
+      printf ("Extraction aborted!\n");
+      return FALSE;
+    }
+    printf("\n");
+  }
+#endif
+  return TRUE;
+}
+
+char CUI::AskOverwrite (FILENAME filename, uint64 size, time_t modified)
+{
+  char help[] = "Valid answers: Y - yes, N - no, A - overwrite all, S - skip all, Q - quit\n";
+  again: printf ("Overwrite %s (y/n/a/s/q) ? ", filename);
+  char answer[256];  gets (answer);  *answer = tolower(*answer);
+  if (strlen(answer)!=1 || !strchr("ynasq", *answer))  {printf (help);  goto again;}
+  if (*answer=='q') {printf ("Extraction aborted\n");  exit(1);}
+  return *answer;
+}
+
+CUI UI;
+
+#endif
 
 
 #ifdef FREEARC_INSTALLER
@@ -48,9 +133,9 @@ void wipedir(TCHAR *dir)
     CFILENAME fullname = (TCHAR*) malloc (MY_FILENAME_MAX * sizeof(TCHAR));
     _stprintf (dirstar, _T("%s%s*"), dir, _T(STR_PATH_DELIMITER));
     WIN32_FIND_DATA FindData[1];
-    HANDLE h = FindFirstFileW (dirstar, FindData);
+    HANDLE h = FindFirstFile (dirstar, FindData);
     if (h) do {
-        // For every entry except for "." and ".., remove entire subdir (if it's a directory) or remove just file itself
+        // For every entry except for "." and "..", remove entire subdir (if it's a directory) or remove just file itself
         if (_tcscmp(FindData->cFileName,_T("."))  &&  _tcscmp(FindData->cFileName,_T("..")))
         {
             _stprintf (fullname, _T("%s%s%s"), dir, _T(STR_PATH_DELIMITER), FindData->cFileName);
@@ -65,252 +150,6 @@ void wipedir(TCHAR *dir)
     free(fullname); free(dirstar);
 }
 #endif
-
-// Register external compressors declared in arc.ini
-void RegisterExternalCompressors (char *progname)
-{
-#ifndef FREEARC_TINY
-  // Open config file arc.ini found in the same dir as sfx/unarc
-  char *cfgfile = "arc.ini";
-  char *name = (char*) malloc (strlen(progname) + strlen(cfgfile));
-                                                 if (!name)  return;
-  strcpy(name, progname);
-  strcpy(drop_dirname(name), cfgfile);
-  MYFILE f(name);
-  if (!f.tryOpen(READ_MODE))                     return;
-
-  // Read config file into memory
-  FILESIZE size = f.size();                      if (!size)  return;
-  char *contents = (char*) malloc(size+2);       if (!contents)  return;
-  *contents = '\n';
-  size = f.tryRead(contents+1, size);            if (size<0)  return;
-  contents[size] = '\0';
-
-  // Register each external compressor found in config file
-  char *ANY_HEADING = "\n[", *EXT_HEADING = "[External compressor:";
-  ClearExternalCompressorsTable();
-  for (char *p, *section = strstr(contents, ANY_HEADING);  section != NULL;  section = p)
-  {
-    section++;
-    p = strstr(section, ANY_HEADING);
-    if (p)  *p = '\0';
-    if (start_with(section,EXT_HEADING)  &&  AddExternalCompressor(section) != 1)
-    {
-      //printf("Error in config file %s section:\n%s\n", cfgfile, section);
-    }
-  }
-
-  free(contents);
-  f.close();
-#endif
-}
-
-/******************************************************************************
-** Информация о выполняемой деархиватором команде *****************************
-******************************************************************************/
-class COMMAND
-{
-public:
-  char cmd;             // Выполняемая команда
-  FILENAME arcname;     // Имя обрабатываемого командой архива
-  FILENAME *filenames;  // Имена обрабатываемых командой файлов из архива
-  FILENAME outpath;     // Опция -dp
-  FILENAME runme;       // Файл, запускаемый после распаковки
-  BOOL wipeoutdir;      // Удалить файлы из outpath после завершения работы runme?
-  BOOL tempdir;         // Мы извлекали файлы во временный каталог?
-  BOOL ok;              // Команда выполняется успешно?
-  int  silent;          // Опция -s
-  BOOL yes;             // Опция -o+
-  BOOL no;              // Опция -o-
-  BOOL noarcext;        // Опция --noarcext
-  BOOL nooptions;       // Опция --
-
-  bool list_cmd()  {return cmd=='l' || cmd=='v';}   // True, если это команда получения листинга архива
-
-  // Разбор командной строки
-  COMMAND (int argc, char *argv[])
-  {
-#if defined(FREEARC_WIN) && !defined(FREEARC_LIBRARY)
-    // Instead of those ANSI-codepage encoded argv[] strings provide true UTF-8 data!
-    WCHAR **argv_w = CommandLineToArgvW (GetCommandLineW(), &argc);
-    argv_w[0] = (WCHAR*) malloc (MY_FILENAME_MAX * 4);
-    GetExeName (argv_w[0], MY_FILENAME_MAX * 2);
-
-    argv = (char**) malloc ((argc+1) * sizeof(*argv));
-    for (int i=0; i<argc; i++)
-    {
-      argv[i] = (char*) malloc (_tcslen (argv_w[i]) * 4 + 1);
-      utf16_to_utf8 (argv_w[i], argv[i]);
-      argv[i] = (char*) realloc (argv[i], strlen(argv[i]) + 1);
-    }
-    argv[argc] = NULL;
-    free (argv_w[0]);
-#endif
-    // Register external compressors using arc.ini in the same dir as argv[0]
-    RegisterExternalCompressors(argv[0]);
-
-    // Default options
-    noarcext  = FALSE;
-    nooptions = FALSE;
-    outpath = "";
-    runme = NULL;
-    wipeoutdir = FALSE;
-    tempdir = FALSE;
-    yes = FALSE;
-    no  = FALSE;
-    silent = 0;
-#ifdef FREEARC_SFX
-    arcname = argv[0];
-    cmd     = 'x';
-
-#ifdef FREEARC_INSTALLER
-    // Installer by default extracts itself into some temp directory, runs setup.exe and then remove directory's contents
-    if (argv[1] == NULL)
-    {
-        silent = 2;
-
-        // Get TEMP path and convert it into UTF-8
-        CFILENAME TempPathW = (TCHAR*)   malloc (MY_FILENAME_MAX * 4);
-         FILENAME TempPath  = (FILENAME) malloc (MY_FILENAME_MAX * 4);
-        GetTempPathW(MY_FILENAME_MAX, TempPathW);
-        utf16_to_utf8 (TempPathW, TempPath);
-
-        // Create unique tempdir
-        tempdir = TRUE;
-        outpath = (FILENAME) malloc (MY_FILENAME_MAX * 4);
-        for (unsigned i = (unsigned) GetTickCount(), cnt=0; ; cnt++)
-        {
-            i = i*54322457 + 137;
-            sprintf (outpath, "%s%s%u", TempPath, "installer", i);
-            utf8_to_utf16 (outpath, TempPathW);
-            if (_wmkdir(TempPathW) == 0)   break;  // Break on success
-
-            if (cnt>1000) {
-#ifdef FREEARC_GUI
-              MessageBoxW (NULL, _T("Error creating temporary directory"), _T("Extraction impossible"), MB_OK | MB_ICONERROR);
-#else
-              printf("Error creating temporary directory");
-#endif
-              ok = false;
-              return;
-            }
-        }
-        free(TempPathW);
-
-        // Run setup.exe from this dir
-        runme   = (FILENAME) malloc (MY_FILENAME_MAX * 4);
-        sprintf (runme, "%s%s%s", outpath, STR_PATH_DELIMITER, "setup.exe");
-
-        // Delete extracted files afterwards
-        wipeoutdir = TRUE;
-    }
-#endif
-
-    // Parse options
-    for (ok=TRUE; ok && *++argv; )
-    {
-      if (argv[0][0]=='-' || strequ(argv[0],"/?") || strequ(argv[0],"/help"))
-      {
-             if (strequ(argv[0],"-l"))       cmd = 'l', silent = silent || 2;
-        else if (strequ(argv[0],"-v"))       cmd = 'v', silent = silent || 2;
-        else if (strequ(argv[0],"-e"))       cmd = 'e', silent = silent || 2;
-        else if (strequ(argv[0],"-x"))       cmd = 'x', silent = silent || 2;
-        else if (strequ(argv[0],"-t"))       cmd = 't', silent = silent || 2;
-        else if (strequ(argv[0],"-y"))       yes = TRUE;
-        else if (strequ(argv[0],"-n"))       no  = TRUE;
-        else if (start_with(argv[0],"-d"))   outpath = argv[0]+2;
-        else if (strequ(argv[0],"-s"))       silent = 1;
-        else if (strequ(argv[0],"-s0"))      silent = 0;
-        else if (strequ(argv[0],"-s1"))      silent = 1;
-        else if (strequ(argv[0],"-s2"))      silent = 2;
-        else if (strequ(argv[0],"--"))       nooptions=TRUE;
-        else ok=FALSE;
-      }
-      else break;
-    }
-
-    filenames = argv;            // the rest of arguments are filenames
-    if (ok)  return;
-
-    // Display help
-    char *helpMsg = (char*) malloc(1000+strlen(arcname));
-    sprintf (helpMsg,
-#ifdef FREEARC_GUI
-           HEADER1 NAME HEADER2
-#else
-           HEADER2
-#endif
-           "Usage: %s [options] [filenames...]\n"
-           "Available options:\n"
-#ifndef FREEARC_GUI
-           "  -l       - display archive listing\n"
-           "  -v       - display verbose archive listing\n"
-#endif
-           "  -x       - extract files\n"
-           "  -e       - extract files without pathnames\n"
-           "  -t       - test archive integrity\n"
-           "  -d{Path} - set destination path\n"
-           "  -y       - answer Yes on all overwrite queries\n"
-           "  -n       - answer No  on all overwrite queries\n"
-           "  -s[1,2]  - silent mode\n"
-           "  --       - no more options\n"
-           , drop_dirname(arcname));
-#ifdef FREEARC_GUI
-    MessageBoxW (NULL, MYFILE(helpMsg).displayname(), _T("Command-line help"), MB_OK | MB_ICONERROR);
-#else
-    printf("%s", MYFILE(helpMsg).displayname());
-#endif
-
-#else
-    cmd     = ' ';
-    arcname = NULL;
-    for (ok=TRUE; ok && *++argv; )
-    {
-      if (argv[0][0]=='-')
-      {
-        if (strequ(argv[0],"--noarcext"))    noarcext =TRUE;
-        else if (strequ(argv[0],"-o+"))      yes      =TRUE;
-        else if (strequ(argv[0],"-o-"))      no       =TRUE;
-        else if (start_with(argv[0],"-dp"))  outpath = argv[0]+3;
-        else if (strequ(argv[0],"--"))       nooptions=TRUE;
-        else ok=FALSE;
-      }
-      else if (cmd==' ')   cmd = argv[0][0], ok = ok && strlen(argv[0])==1;
-      else if (!arcname)   arcname = argv[0];
-      else break;
-    }
-
-    filenames = argv;            // the rest of arguments are filenames
-    ok = ok && strchr("lvtex",cmd) && arcname;
-    if (ok)  return;
-    printf(HEADER2
-           "Usage: unarc command [options] archive[.arc] [filenames...]\n"
-           "Available commands:\n"
-           "  l - display archive listing\n"
-           "  v - display verbose archive listing\n"
-           "  e - extract files into current directory\n"
-           "  x - extract files with pathnames\n"
-           "  t - test archive integrity\n"
-           "Available options:\n"
-           "  -dp{Path}   - set destination path\n"
-           "  -o+         - overwrite existing files\n"
-           "  -o-         - don't overwrite existing files\n"
-           "  --noarcext  - don't add default extension to archive name\n"
-           "  --          - no more options\n");
-#endif
-  }
-
-  // TRUE, если i-й файл каталога dirblock следует включить в обработку
-  BOOL accept_file (DIRECTORY_BLOCK *dirblock, int i)
-  {
-    if (!*filenames)  return TRUE;            // В командной строке не указано ни одного имени файла - значит, нужно обрабатывать любой файл
-    for (FILENAME *f=filenames; *f; f++) {
-      if (strequ (dirblock->name[i], *f))
-        return TRUE;                          // О! Совпало!
-    }
-    return FALSE;                             // Совпадающего имени не найдено
-  }
-};
 
 
 /******************************************************************************
@@ -387,263 +226,15 @@ void ListFiles (DIRECTORY_BLOCK *dirblock, COMMAND &command)
 }
 #endif
 
-/******************************************************************************
-** Реализация команд распаковки и тестирования архивов ************************
-******************************************************************************/
-
-// Переменные, отражающие состояние процесса чтения входных данных
-MYFILE *infile;          // Файл архива, из которого идёт чтение
-FILESIZE bytes_left;     // Кол-во байт, которое осталось прочитать до исчерпания упакованных данных этого солид-блока
-
-// Переменные, отражающие состояние процесса записи распакованных данных
-COMMAND *cmd;             // Выполняемая команда
-DIRECTORY_BLOCK *dir;     // Каталог, которому принадлежат распаковываемые файлы
-int curfile;              //   Номер в каталоге текущего распаковываемого файла
-BOOL included;            //   Текущий файл включён в обработку или мы просто пропускаем его?
-int extractUntil;         //   Номер последнего файла, который нужно извлечь из этого солид-блока
-MYFILE outfile;           // Файл, извлекаемый из архива
-char fullname[MY_FILENAME_MAX*4]; // Полное имя распаковываемого сейчас файла
-FILESIZE bytes_to_write;  // Сколько байт в текущем файле осталось записать
-FILESIZE writtenBytes;    // Сколько байт всего было распаковано в текущем архиве
-FILESIZE archive_pos;     // Текущая позиция в архиве
-CRC crc;                  // CRC данных, записанных в файл
-enum PASS {FIRST_PASS, SECOND_PASS};  // Первый/второй проход по солид-блоку (первый - распаковка каталогов и пустых файлов, второй - всех остальных)
-
-// Процедура экстренного выхода
-void quit(void)   {if (outfile.isopen())  outfile.close(), delete_file(outfile.filename);
-#ifdef FREEARC_INSTALLER
-                   // Wipe temporary outdir on unsuccesful extraction
-                   if (cmd->tempdir)
-                   {
-                       CFILENAME tmp  =  (TCHAR*) malloc (MY_FILENAME_MAX * 4);
-                       wipedir (utf8_to_utf16 (cmd->outpath, tmp));
-                       free(tmp);
-                   }
-#endif
-                   exit (FREEARC_EXIT_ERROR);}
-
-// Действие при ошибке в CHECK()
-#undef  ON_CHECK_FAIL
-#define ON_CHECK_FAIL()   quit()
-
-// * Нижеследующие процедуры предоставляют абстрактные средства работы с текущим выходным файлом,
-// * скрывая такие детали, как различия команд e/x/t, различие между каталогами и файлами,
-// * и то, что часть файлов может быть исключена из обработки
-
-// Открыть очередной выходной файл и напечатать сообщение о его распаковке
-void outfile_open (PASS pass)
-{
-  crc = INIT_CRC;
-  bytes_to_write = dir->size[curfile];
-  if (pass==SECOND_PASS && bytes_to_write==0)
-    return;  // Directories and empty files were extracted in first pass
-  included = cmd->accept_file (dir, curfile);
-  char *xname = cmd->cmd=='e'? dir->name[curfile]
-                             : dir->fullname (curfile, fullname);
-  outfile.setname (xname);
-
-  if (included && cmd->cmd!='t')
-    if (dir->isdir[curfile])
-      {if (cmd->cmd!='e')  BuildPathTo (outfile.filename), create_dir (outfile.filename);}
-    else
-      {if (outfile.exists())
-       {
-         if (cmd->no)  included = FALSE;
-         else if (!cmd->yes)
-         {
-           char answer = UI.AskOverwrite (outfile.displayname(), dir->size[curfile], dir->time[curfile]);
-           switch (answer)
-           {
-             case 'y': break;
-             case 'n': included = FALSE;  break;
-             case 'a': cmd->yes = TRUE;   break;
-             case 's': cmd->no  = TRUE;   included = FALSE;  break;
-             case 'q': quit();
-           }
-         }
-       }
-       if (included)  outfile.open (WRITE_MODE);}
-
-  if (pass==FIRST_PASS || dir->size[curfile]>0)   // Не писать повторно о распаковке каталогов/пустых файлов
-    if (!(dir->isdir[curfile] && cmd->cmd!='x'))  // Не сообщать о тестировании каталогов ;)
-      if (!UI.ProgressFile (dir->isdir[curfile], included? (cmd->cmd=='t'? "Testing":"Extracting"):"Skipping", MYFILE(xname).displayname(), bytes_to_write))
-        quit();
-}
-
-// Записать данные в выходной файл
-void outfile_write (void *buf, int size)
-{
-  crc = UpdateCRC (buf, size, crc);
-  if (included && cmd->cmd!='t' && size)
-    outfile.write(buf,size);
-  if (!UI.ProgressWrite (writtenBytes += size))  quit();
-}
-
-// Закрыть выходной файл
-void outfile_close()
-{
-  if (included)
-  {
-    CHECK ((crc^INIT_CRC) == dir->crc[curfile], (s,"ERROR: file %s failed CRC check", outfile.utf8name));
-    if (cmd->cmd!='t' && !dir->isdir[curfile])
-      outfile.close();
-      outfile.SetFileDateTime (dir->time[curfile]);
-  }
-  included = FALSE;
-}
-
-// Callback-функция чтения/записи для распаковщика
-int callback_func (const char *what, void *buf, int size, void *auxdata)
-{
-  if (strequ (what, "read")) {
-    int read_bytes = mymin (bytes_left, size);
-    if (read_bytes==0)  return 0;
-    if (!UI.ProgressRead (archive_pos))  quit();
-    int len = infile->tryRead (buf, read_bytes);
-    if (len>0)  bytes_left -= len,  archive_pos += len;
-    return len;
-
-  } else if (strequ (what, "write")) {
-    int origsize = size;
-    if (curfile > extractUntil)  return FREEARC_ERRCODE_NO_MORE_DATA_REQUIRED;   // Нам попался тупой распаковщик, не способный завершить распаковку по требованию :(
-    while (size>0) {
-      int n = mymin (bytes_to_write, size);   // Записываем сколько осталось до конца файла или
-      outfile_write (buf,n);                  // сколько осталось данных в буфере - смотря что меньше
-      bytes_to_write -= n;
-      if (bytes_to_write==0) {                // Если файл записан до конца - перейдём к следующему
-        outfile_close();
-        if (++curfile > extractUntil)  return FREEARC_ERRCODE_NO_MORE_DATA_REQUIRED;   // Если все файлы, которые мы должны распаковать из этого блока, уже извлечены, то попросить распаковщик завершить распаковку
-        outfile_open(SECOND_PASS);
-      }
-      buf=(uint8*)buf+n; size-=n;
-    }
-    return origsize;     // Сигнализировать успешную запись и попросить продолжить распаковку
-
-  } else return FREEARC_ERRCODE_NOT_IMPLEMENTED;
-}
-
-// Add "tempfile" to compressors chain if required
-char *AddTempfile (char *compressor)
-{
-  char *buffering = "tempfile";
-  char PLUS[] = {COMPRESSION_METHODS_DELIMITER, '\0'};
-
-  char *c = (char*) malloc (strlen(compressor)+1);
-  if (!c)  return NULL;
-  strcpy(c, compressor);
-  compressor = c;
-
-  // Разобьём компрессор на отдельные алгоритмы и посчитаем расход памяти
-  CMETHOD  cm[MAX_METHODS_IN_COMPRESSOR];
-  uint64 memi[MAX_METHODS_IN_COMPRESSOR];
-  int N = split (compressor, COMPRESSION_METHODS_DELIMITER, cm, MAX_METHODS_IN_COMPRESSOR);
-  uint64 mem = 0;
-  for (int i=0; i<N; i++)
-    mem += memi[i] = GetDecompressionMem(cm[i]);
-
-  // Maximum memory allowed to use
-  uint64 maxmem = mymin (GetPhysicalMemory()/4*3, GetMaxMemToAlloc());
-
-  // If memreqs are too large - add "tempfile" between methods
-  if (mem > maxmem)
-  {
-    char *c2 = (char*) malloc (strlen(compressor)+strlen(buffering)+2);
-    if (!c2)  return NULL;
-    compressor = c2;
-
-    strcpy(compressor, cm[0]);
-    mem=memi[0];
-
-    for (int i=1; i<N; i++)
-    {
-      // If total memreqs of methods after last tempfile >maxmem - add one more tempfile occurence
-      if (mem>0 && mem+memi[i]>maxmem)
-      {
-        strcat (compressor, PLUS);
-        strcat (compressor, buffering);
-        mem = 0;
-      }
-      strcat (compressor, PLUS);
-      strcat (compressor, cm[i]);
-      mem += memi[i];
-    }
-    free(c);  // we can't free c earlier since its space used by cm[i]
-    return compressor;
-  }
-
-  free(c);
-  return NULL;
-}
-
-// Распаковать или протестировать файлы из солид-блока с номером block_num каталога dirblock
-void ExtractFiles (DIRECTORY_BLOCK *dirblock, int block_num, COMMAND &command)
-{
-  cmd = &command;
-  dir = dirblock;
-  BLOCK& data_block (dirblock->data_block [block_num]);
-  extractUntil = -1;                        // В эту переменную будет записан номер последнего файла в солид-блоке, который нужно обработать
-  // Переберём все файлы в этом блоке
-  for (curfile = dirblock->block_start(block_num); curfile < dirblock->block_end(block_num); curfile++) {
-    if (command.accept_file (dirblock, curfile))           // Если этот файл требуется обработать
-    {
-      if (dir->size[curfile]==0) {   // то если это каталог или пустой файл - сделаем это сразу
-        outfile_open (FIRST_PASS);
-        outfile_close(); }
-      else
-        extractUntil = curfile;      // а иначе - запомним, что нужно распаковать блок как минимум до этого файла
-    }
-  }
-  if (extractUntil >= 0) {                       // Если в этом блоке нашлось что распаковывать - значит, распакуем! :)
-    infile = &dirblock->arcfile;                 //   Архивный файл
-    infile->seek (archive_pos = data_block.pos); //   Начало данных солид-блока в архиве
-    bytes_left = data_block.compsize;            //   Размер упакованных данных в солид-блоке
-    curfile = dirblock->block_start (block_num); // Номер первого файла в этом солид-блоке
-    outfile_open (SECOND_PASS);                  // Откроем первый выходной файл
-    char *compressor = AddTempfile (data_block.compressor);  // Добавим "tempfile" между компрессорами если не хватает памяти для распаковки
-    int result = MultiDecompress (compressor? compressor : data_block.compressor, callback_func, NULL);
-    CHECK (result!=FREEARC_ERRCODE_INVALID_COMPRESSOR, (s,"ERROR: unsupported compression method %s", data_block.compressor));
-    CHECK (result>=0 || result==FREEARC_ERRCODE_NO_MORE_DATA_REQUIRED, (s,"ERROR: archive data corrupted (decompression fails)"));
-    free (compressor);
-    outfile_close();                             // Закроем последний выходной файл
-  }
-}
-
 
 /******************************************************************************
 ** Основная программа *********************************************************
 ******************************************************************************/
 
-// Читает структуру архива и вызывает в зависимости от выполняемой команды
-// ListFiles для каждого блока каталога или ExtractFiles для каждого солид-блока
-void ProcessArchive (COMMAND &command)
+// Run setup.exe after unpacking
+void RunSetup (COMMAND &command)
 {
-  ARCHIVE arcinfo (command.arcname);
-  arcinfo.read_structure();                                           // Прочитаем структуру архива
-  // Выведем заголовок операции на экран и запросим у пользователя разрешение на распаковку SFX
-  if (!UI.AllowProcessing (command.cmd, command.silent, MYFILE(command.arcname).displayname(), &arcinfo.arcComment[0], arcinfo.arcComment.size, command.outpath)) {
-    command.ok = FALSE;  return;
-  }
-  if (command.cmd!='t')  outfile.SetBaseDir (UI.GetOutDir());
-
-  writtenBytes = 0;
-  if (command.list_cmd())  ListHeader (command);
-  else                     UI.BeginProgress (arcinfo.arcfile.size());
-  iterate_array (i, arcinfo.control_blocks_descriptors) {             // Переберём все служебные блоки в архиве...
-    BLOCK& block_descriptor = arcinfo.control_blocks_descriptors[i];
-    if (block_descriptor.type == DIR_BLOCK) {                         // ... и отберём из них блоки каталога
-      DIRECTORY_BLOCK dirblock (arcinfo, block_descriptor);           // Прочитаем блок каталога
-      if (command.list_cmd())                                         // Если это команда получения листинга
-        ListFiles (&dirblock, command);                               //   то выполним её
-      else
-        iterate_array (i, dirblock.data_block)                        //   иначе - переберём все солид-блоки в каталоге
-          ExtractFiles (&dirblock, i, command);                       //     и для каждого из них выполним процедуру тестирования/распаковки
-    }
-  }
-  if (command.list_cmd())  ListFooter (command);
-  else                     UI.EndProgress();
-
 #ifdef FREEARC_INSTALLER
-  // Run setup.exe after unpacking
   if (command.runme)
   {
       CFILENAME tmp  = (TCHAR*) malloc (MY_FILENAME_MAX * 4);
@@ -661,72 +252,15 @@ void ProcessArchive (COMMAND &command)
 #endif
 }
 
-#ifdef FREEARC_LIBRARY
-extern "C" {
-
-typedef int __stdcall cbtype (char *what, int int1, int int2, char *str);
-cbtype *callback;
-
-static DWORD WINAPI decompress_thread (void *paramPtr)
-{
-  COMMAND *command = (COMMAND*) paramPtr;
-  ProcessArchive (*command);      //   Выполнить разобранную команду
-  UI.event = "quit";
-  DoEvent.Signal();
-  return 0;
-}
-
-int __cdecl FreeArcExtract (cbtype *callback, ...)
-{
-  va_list argptr;
-  va_start(argptr, callback);
-
-  int argc=0;
-  char *argv[1000] = {"c:\\x.dll"};  ////
-
-  for (int i=1; i<1000; i++)
-  {
-    argc = i;
-    argv[i] = va_arg(argptr, char*);
-    if (argv[i]==NULL || argv[i][0]==0)
-      {argv[i]=NULL; break;}
-  }
-  va_end(argptr);
-
-
-
-  CThread thread;
-
-  SetCompressionThreads (GetProcessorsCount());
-  COMMAND command (argc, argv);    // Распарсить команду
-  if (command.ok) {                // Если парсинг был удачен и можно выполнить команду
-    thread.Create (decompress_thread, &command);   //   Выполнить разобранную команду
-
-    for(;;)
-    {
-      DoEvent.Lock();
-      if (strequ(UI.event, "quit"))
-        break;
-      int result = callback (UI.event, UI.int1, UI.int2, UI.str);
-      if (result < 0)
-        return result;
-      EventDone.Signal();
-    }
-    thread.Wait();
-  }
-  return command.ok? FREEARC_OK : FREEARC_ERRCODE_GENERAL;
-}
-}
-#else // non-library mode
 int main (int argc, char *argv[])
 {
   SetCompressionThreads (GetProcessorsCount());
   UI.DisplayHeader (HEADER1 NAME);
   COMMAND command (argc, argv);    // Распарсить команду
   if (command.ok)                  // Если парсинг был удачен и можно выполнить команду
-    ProcessArchive (command);      //   Выполнить разобранную команду
+    PROCESS (command, UI),         //   Выполнить разобранную команду
+    RunSetup (command);            //   Выполнить setup.exe для инсталятора
   printf ("\n");
   return command.ok? EXIT_SUCCESS : FREEARC_EXIT_ERROR;
 }
-#endif
 

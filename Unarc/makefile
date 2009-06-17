@@ -11,8 +11,11 @@ LINKOBJ_TINY = $(LINKOBJ_FAR_PLUGIN) $(OBJDIR)/C_BCJ.o $(OBJDIR)/C_Dict.o $(OBJD
 LINKOBJ_MINI = $(LINKOBJ_TINY) $(OBJDIR)/C_REP.o $(OBJDIR)/C_LZP.o $(OBJDIR)/C_PPMD.o $(OBJDIR)/C_External.o
 LINKOBJ = $(LINKOBJ_MINI) $(OBJDIR)/C_MM.o $(OBJDIR)/C_TTA.o \
           $(OBJDIR)/C_Tornado.o $(OBJDIR)/C_GRZip.o
+
+FAR_PLUGIN = FarPlugin.cpp ArcStructure.h
+UNARC = unarc.cpp ArcStructure.h ArcCommand.h ArcProcess.h
+GUI = gui\gui.h gui\gui.cpp
 HEADERS =  ../Compression/Compression.h ../Compression/Common.h
-#makefile
 LINK_FLAGS = -L$(LIBDIR) -Xlinker --large-address-aware -lstdc++ -s
 UNIX_LINK_FLAGS = -L$(LIBDIR) -lstdc++ -lrt -lpthread -s
 
@@ -30,7 +33,7 @@ CFLAGS1= $(CODE_FLAGS) $(OPT_FLAGS) -O1 $(DEBUG_FLAGS) $(DEFINES) $(Extractor_DE
 unarc.exe: $(OBJDIR)/unarc.o $(LINKOBJ)
 	$(GCC) $< $(LINKOBJ) $(LINK_FLAGS) -o unarc.exe
 
-unarc.dll: unarc.cpp ArcStructure.h LibUI.h $(HEADERS) $(LINKOBJ)
+unarc.dll: unarcdll.cpp unarcdll.h $(UNARC) $(HEADERS) $(LINKOBJ)
 	$(GCC) -c $(CFLAGS) -DFREEARC_LIBRARY -o $(OBJDIR)/unarclib.o $<
 	$(DLLWRAP) --driver-name g++ $(OBJDIR)/unarclib.o $(LINKOBJ) -lstdc++ -def unarc.def -s -o unarc.dll
 
@@ -67,25 +70,25 @@ arc.linux.sfx: $(OBJDIR)/ArcSFX.o $(LINKOBJ)
 #	upx -9 --lzma arc*.linux.sfx
 
 
-$(OBJDIR)/FarPlugin.o: FarPlugin.cpp ArcStructure.h $(HEADERS)
+$(OBJDIR)/FarPlugin.o: $(FAR_PLUGIN) $(HEADERS)
 	$(GCC) -c $(CFLAGS) -IHeaders.c -o $*.o $<
 
-$(OBJDIR)/unarc.o: unarc.cpp ArcStructure.h CUI.h $(HEADERS)
+$(OBJDIR)/unarc.o: $(UNARC) $(HEADERS)
 	$(GCC) -c $(CFLAGS) -o $*.o $<
 
-$(OBJDIR)/ArcSFX.o: unarc.cpp ArcStructure.h CUI.h $(HEADERS)
+$(OBJDIR)/ArcSFX.o: $(UNARC) $(HEADERS)
 	$(GCC) -c $(CFLAGS1) -DFREEARC_SFX -o $*.o $<
 
-$(OBJDIR)/ArcTinySFX.o: unarc.cpp ArcStructure.h CUI.h $(HEADERS)
+$(OBJDIR)/ArcTinySFX.o: $(UNARC) $(HEADERS)
 	$(GCC) -c $(CFLAGS1) -DFREEARC_SFX -DFREEARC_TINY -o $*.o $<
 
-$(OBJDIR)/FreeArcSFX.o: unarc.cpp ArcStructure.h gui\gui.h gui\gui.cpp $(HEADERS)
+$(OBJDIR)/FreeArcSFX.o: $(UNARC) $(GUI) $(HEADERS)
 	$(GCC) -c $(CFLAGS1) -DFREEARC_SFX -DFREEARC_GUI -Igui -o $*.o $<
 
-$(OBJDIR)/FreeArcTinySFX.o: unarc.cpp ArcStructure.h gui\gui.h gui\gui.cpp $(HEADERS)
+$(OBJDIR)/FreeArcTinySFX.o: $(UNARC) $(GUI) $(HEADERS)
 	$(GCC) -c $(CFLAGS1) -DFREEARC_SFX -DFREEARC_TINY -DFREEARC_GUI -Igui -o $*.o $<
 
-$(OBJDIR)/FreeArcInstaller.o: unarc.cpp ArcStructure.h gui\gui.h gui\gui.cpp $(HEADERS)
+$(OBJDIR)/FreeArcInstaller.o: $(UNARC) $(GUI) $(HEADERS)
 	$(GCC) -c $(CFLAGS1) -DFREEARC_SFX -DFREEARC_INSTALLER -DFREEARC_GUI -Igui -o $*.o $<
 
 
