@@ -6,6 +6,7 @@ class PROCESS
 public:
   COMMAND *cmd;            // Выполняемая команда
   BASEUI  *UI;
+  ARCHIVE arcinfo;
 
   // Переменные, отражающие состояние процесса чтения входных данных
   MYFILE *infile;          // Файл архива, из которого идёт чтение
@@ -246,10 +247,9 @@ void PROCESS::ExtractFiles (DIRECTORY_BLOCK *dirblock, int block_num)
 
 // Читает структуру архива и вызывает в зависимости от выполняемой команды
 // ListFiles для каждого блока каталога или ExtractFiles для каждого солид-блока
-PROCESS::PROCESS (COMMAND &_cmd, BASEUI &_UI) : cmd(&_cmd), UI(&_UI)
+PROCESS::PROCESS (COMMAND &_cmd, BASEUI &_UI) : cmd(&_cmd), UI(&_UI), arcinfo (_cmd.arcname)
 {
   SetCompressionThreads (GetProcessorsCount());
-  ARCHIVE arcinfo (cmd->arcname);
   arcinfo.read_structure();                                           // Прочитаем структуру архива
   // Выведем заголовок операции на экран и запросим у пользователя разрешение на распаковку SFX
   if (!UI->AllowProcessing (cmd->cmd, cmd->silent, MYFILE(cmd->arcname).displayname(), &arcinfo.arcComment[0], arcinfo.arcComment.size, cmd->outpath)) {
@@ -272,7 +272,7 @@ PROCESS::PROCESS (COMMAND &_cmd, BASEUI &_UI) : cmd(&_cmd), UI(&_UI)
     }
   }
   if (cmd->list_cmd())  UI->ListFooter (*cmd);
-  else                  UI->EndProgress();
+  else                  UI->EndProgress (cmd);
 }
 
 
@@ -280,15 +280,7 @@ PROCESS::PROCESS (COMMAND &_cmd, BASEUI &_UI) : cmd(&_cmd), UI(&_UI)
 void PROCESS::quit()
 {
   if (outfile.isopen())  outfile.close(), delete_file(outfile.filename);
-#ifdef FREEARC_INSTALLER
-  // Wipe temporary outdir on unsuccesful extraction
-  if (cmd->tempdir)
-  {
-      CFILENAME tmp  =  (TCHAR*) malloc (MY_FILENAME_MAX * 4);
-      wipedir (utf8_to_utf16 (cmd->outpath, tmp));
-      free(tmp);
-  }
-#endif
-  exit (FREEARC_EXIT_ERROR);
+  arcinfo.arcfile.tryClose();
+  UI->Abort (cmd);
 }
 

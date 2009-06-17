@@ -23,12 +23,12 @@ public:
   void event (char *_what, int _int1, int _int2, char *_str);
 
   bool AllowProcessing (char cmd, int silent, FILENAME arcname, char* comment, int cmtsize, FILENAME outdir);
-  FILENAME GetOutDir();
+  FILENAME GetOutDir ();
   void BeginProgress (uint64 totalBytes);
   bool ProgressRead  (uint64 readBytes);
   bool ProgressFile  (bool isdir, const char *operation, FILENAME filename, uint64 filesize);
-  void EndProgress();
-  char AskOverwrite (FILENAME filename, uint64 size, time_t modified);
+  char AskOverwrite  (FILENAME filename, uint64 size, time_t modified);
+  void Abort         (COMMAND *cmd);
 } UI;
 
 
@@ -63,11 +63,6 @@ bool DLLUI::ProgressFile (bool isdir, const char *operation, FILENAME filename, 
   return TRUE;
 }
 
-void DLLUI::EndProgress()
-{
-  printf ("All OK");
-}
-
 FILENAME DLLUI::GetOutDir()
 {
   return outdir;
@@ -82,6 +77,11 @@ bool DLLUI::AllowProcessing (char cmd, int silent, FILENAME arcname, char* comme
 char DLLUI::AskOverwrite (FILENAME filename, uint64 size, time_t modified)
 {
   return 'n';
+}
+
+void DLLUI::Abort (COMMAND *cmd)
+{
+  event ("quit", 0, 0, "");
 }
 
 

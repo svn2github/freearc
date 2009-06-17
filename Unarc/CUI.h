@@ -14,7 +14,7 @@ public:
   void ListHeader (COMMAND &);
   void ListFooter (COMMAND &);
   void ListFiles (DIRECTORY_BLOCK *, COMMAND &);
-} UI;
+};
 
 void CUI::DisplayHeader (char* header)
 {

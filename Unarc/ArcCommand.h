@@ -20,7 +20,6 @@ typedef CFILENAME MYFILENAME;
 typedef  FILENAME MYFILENAME;
 #endif
 
-
 class BASEUI
 {
 public:
@@ -32,11 +31,12 @@ public:
   virtual bool ProgressRead  (uint64 readBytes)     {return TRUE;}
   virtual bool ProgressWrite (uint64 writtenBytes)  {return TRUE;}
   virtual bool ProgressFile  (bool isdir, const char *operation, MYFILENAME filename, uint64 filesize)  {return TRUE;}
-  virtual void EndProgress() {}
+  virtual void EndProgress(COMMAND*) {}
   virtual char AskOverwrite (MYFILENAME filename, uint64 size, time_t modified) {return 'n';}
   virtual void ListHeader (COMMAND &) {}
   virtual void ListFooter (COMMAND &) {}
   virtual void ListFiles (DIRECTORY_BLOCK *, COMMAND &) {}
+  virtual void Abort (COMMAND*)  {exit (FREEARC_EXIT_ERROR);}
 };
 
 

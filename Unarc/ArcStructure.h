@@ -85,7 +85,7 @@ public:
   MYFILE ()                               {init();}
   MYFILE (FILENAME filename)              {init(); setname (filename);}
   MYFILE (FILENAME filename, MODE mode)   {init(); open (filename, mode);}
-  ~MYFILE()                               {if (isopen()) close();
+  ~MYFILE()                               {tryClose();
                                            if ((char*)filename!=utf8name)  free(filename);
                                            free(oemname); free(utf8name);}
   bool exists (void)                      {return file_exists(filename);}
@@ -120,7 +120,8 @@ public:
     CHECK (::close(handle)==0, (s,"ERROR: can't close file %s", utf8name));
     handle = -1;
   }
-  bool isopen()  {return handle>=0;}
+  bool isopen()    {return handle>=0;}
+  void tryClose()  {if (isopen()) close();}
 
 #ifdef FREEARC_WIN
   FILESIZE size    ()                {return _filelengthi64 (handle);}            // Возвращает размер файла

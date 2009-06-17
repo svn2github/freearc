@@ -49,7 +49,7 @@ public:
 	bool ProgressWrite(uint64 writtenBytes);
 	bool ProgressFile (bool isdir, const char *operation, TCHAR *filename, uint64 filesize);
 	bool ShowProgress();
-	void EndProgress();
+	void EndProgress(COMMAND*);
 	char AskOverwrite(TCHAR *filename, uint64 size, time_t modified);
 };
 

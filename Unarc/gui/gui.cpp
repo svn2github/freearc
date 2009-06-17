@@ -363,7 +363,7 @@ static void ConvertSecondsToHMS(int seconds, int *h, int *m, int *s)
 	*h = seconds/3600;
 }
 
-void GUI::EndProgress()
+void GUI::EndProgress(COMMAND*)
 {
 	if(thread != 0)
 	{
