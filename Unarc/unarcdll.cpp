@@ -29,7 +29,9 @@ private:
   char outdir[MY_FILENAME_MAX*4];  //unicode: utf-8 encoding
   uint64 totalBytes;
 public:
+  Mutex mutex;
   Event DoEvent, EventDone;
+
   char *what; int int1, int2; char *str;
   void event (char *_what, int _int1, int _int2, char *_str);
 
@@ -48,6 +50,7 @@ public:
 ******************************************************************************/
 void DLLUI::event (char *_what, int _int1, int _int2, char *_str)
 {
+  Lock _(mutex);
   what = _what;
   int1 = _int1;
   int2 = _int2;
@@ -137,7 +140,7 @@ int __cdecl FreeArcExtract (cbtype *callback, ...)
     {
       UI.DoEvent.Lock();
       if (strequ (UI.what, "quit"))
-        break;
+        {return command.ok? FREEARC_OK : FREEARC_ERRCODE_GENERAL;}
       int result = callback (UI.what, UI.int1, UI.int2, UI.str);
       if (result < 0)
         return result;

@@ -277,6 +277,7 @@ PROCESS::PROCESS (COMMAND &_cmd, BASEUI &_UI) : cmd(&_cmd), UI(&_UI)
 // Процедура экстренного выхода
 void PROCESS::quit()
 {
+  cmd->ok = FALSE;
   if (outfile.isopen())  outfile.close(), delete_file(outfile.filename);
   arcinfo.arcfile.tryClose();
   UI->Abort (cmd);
