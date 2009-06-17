@@ -358,9 +358,6 @@ unarc.dll
   2.iss
   цикл обработки событий
   если начинается распаковка битого (недокачанного) архива, то инсталлятор закрывается.
-
-грузить facompress.dll с абс. путём чтобы не брались левые из PATH?
-
 fashell
   обработка 8000 выделенных файлов? ;)
 cvt
@@ -368,12 +365,12 @@ cvt
 other
   CleanStats при non-FM mode
   перед запуском сжатия (в checkingCtrlBreak после read 0 - только при сжатии!) делать обрезание метода
-
+  installer.exe -p"/q" will then launch setup.exe /q
+  грузить facompress.dll с абс. путём чтобы не брались левые из PATH?
   icons
-	SHFILEINFO shFileInfo;
-	SHGetFileInfo(filename, 0, &shFileInfo, sizeof(shFileInfo), SHGFI_ICON);
-	http://msdn.microsoft.com/en-us/library/dd183402(VS.85).aspx
-
+    SHFILEINFO shFileInfo;
+    SHGetFileInfo(filename, 0, &shFileInfo, sizeof(shFileInfo), SHGFI_ICON);
+    http://msdn.microsoft.com/en-us/library/dd183402(VS.85).aspx
   загружать иконки для всех команд из png/ico файлов
 
 

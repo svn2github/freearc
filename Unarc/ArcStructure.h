@@ -1,7 +1,5 @@
 // Обработка архивов, созданных FreeArc:
 //   чтение и декодирование Footer блока и блоков оглавления
-
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <fcntl.h>

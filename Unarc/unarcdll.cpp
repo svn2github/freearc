@@ -1,8 +1,18 @@
+// Доступ к структуре архива
+#include "ArcStructure.h"
+
 #include "../Compression/MultiThreading.h"
+#include "unarcdll.h"
 
-Event DoEvent, EventDone;
+// Доступ к парсингу командной строки и выполнению операций над архивом
+#include "ArcCommand.h"
+#include "ArcProcess.h"
 
-class UI
+
+/******************************************************************************
+** Описание интерфейса с программой, использующей DLL *************************
+******************************************************************************/
+class DLLUI : public BASEUI
 {
 private:
   char outdir[MY_FILENAME_MAX*4];  //unicode: utf-8 encoding
@@ -10,37 +20,27 @@ private:
 public:
   char *event; int int1,int2; char *str;
 
-  UI();
-  ~UI();
-  void DisplayHeader (char* header);
   bool AllowProcessing (char cmd, int silent, FILENAME arcname, char* comment, int cmtsize, FILENAME outdir);
   FILENAME GetOutDir();
   void BeginProgress (uint64 totalBytes);
   bool ProgressRead  (uint64 readBytes);
-  bool ProgressWrite (uint64 writtenBytes);
   bool ProgressFile  (bool isdir, const char *operation, FILENAME filename, uint64 filesize);
   void EndProgress();
   char AskOverwrite (FILENAME filename, uint64 size, time_t modified);
-};
+} UI;
 
-UI::UI()
-{
-}
 
-UI::~UI()
-{
-}
+/******************************************************************************
+** Реализация интерфейса с программой, использующей DLL ***********************
+******************************************************************************/
+Event DoEvent, EventDone;
 
-void UI::DisplayHeader (char* header)
-{
-}
-
-void UI::BeginProgress (uint64 totalBytes)
+void DLLUI::BeginProgress (uint64 totalBytes)
 {
   this->totalBytes = totalBytes;
 }
 
-bool UI::ProgressRead (uint64 readBytes)
+bool DLLUI::ProgressRead (uint64 readBytes)
 {
   event = "progress";
   int1 = readBytes>>20;
@@ -51,12 +51,7 @@ bool UI::ProgressRead (uint64 readBytes)
   return TRUE;
 }
 
-bool UI::ProgressWrite (uint64 writtenBytes)
-{
-  return TRUE;
-}
-
-bool UI::ProgressFile (bool isdir, const char *operation, FILENAME filename, uint64 filesize)
+bool DLLUI::ProgressFile (bool isdir, const char *operation, FILENAME filename, uint64 filesize)
 {
 //  printf (isdir?  "%s %s" STR_PATH_DELIMITER "\n"  :  "%s %s (%llu bytes)\n",
 //          operation, filename, filesize);
@@ -69,36 +64,35 @@ bool UI::ProgressFile (bool isdir, const char *operation, FILENAME filename, uin
   return TRUE;
 }
 
-void UI::EndProgress()
+void DLLUI::EndProgress()
 {
   printf ("All OK");
 }
 
-FILENAME UI::GetOutDir()
+FILENAME DLLUI::GetOutDir()
 {
   return outdir;
 }
 
-bool UI::AllowProcessing (char cmd, int silent, FILENAME arcname, char* comment, int cmtsize, FILENAME _outdir)
+bool DLLUI::AllowProcessing (char cmd, int silent, FILENAME arcname, char* comment, int cmtsize, FILENAME _outdir)
 {
   strcpy (outdir, _outdir);
   return TRUE;
 }
 
-char UI::AskOverwrite (FILENAME filename, uint64 size, time_t modified)
+char DLLUI::AskOverwrite (FILENAME filename, uint64 size, time_t modified)
 {
   return 'n';
 }
 
 
-
-
-#include "unarcdll.h"
-
+/******************************************************************************
+** Реализация функционала DLL *************************************************
+******************************************************************************/
 static DWORD WINAPI decompress_thread (void *paramPtr)
 {
   COMMAND *command = (COMMAND*) paramPtr;
-  ProcessArchive (*command);      //   Выполнить разобранную команду
+  PROCESS (*command, UI);      //   Выполнить разобранную команду
   UI.event = "quit";
   DoEvent.Signal();
   return 0;
@@ -110,7 +104,7 @@ int __cdecl FreeArcExtract (cbtype *callback, ...)
   va_start(argptr, callback);
 
   int argc=0;
-  char *argv[1000] = {"c:\\x.dll"};  ////
+  char *argv[1000] = {"c:\\unarc.dll"};  //// Здесь будет искаться arc.ini!
 
   for (int i=1; i<1000; i++)
   {
@@ -125,7 +119,6 @@ int __cdecl FreeArcExtract (cbtype *callback, ...)
 
   CThread thread;
 
-  SetCompressionThreads (GetProcessorsCount());
   COMMAND command (argc, argv);    // Распарсить команду
   if (command.ok) {                // Если парсинг был удачен и можно выполнить команду
     thread.Create (decompress_thread, &command);   //   Выполнить разобранную команду

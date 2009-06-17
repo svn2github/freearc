@@ -1,3 +1,14 @@
+// SFX module is just unarc.cpp compiled with FREEARC_SFX defined
+#ifdef FREEARC_SFX
+#define NAME           "SFX"
+#else
+#define NAME           "unpacker"
+#endif
+
+#define HEADER1        "FreeArc 0.52 "
+#define HEADER2        "  http://freearc.org  2009-06-17\n"
+
+
 /******************************************************************************
 ** Callbacks дл€ выполн€емой команды ******************************************
 ******************************************************************************/
@@ -49,8 +60,12 @@ public:
 
 
 /******************************************************************************
-** –азбор командной строки ****************************************************
+** External compressors support ***********************************************
 ******************************************************************************/
+extern "C" {
+#include "../Compression/External/C_External.h"
+}
+
 // Register external compressors declared in arc.ini
 void RegisterExternalCompressors (char *progname)
 {
@@ -91,6 +106,9 @@ void RegisterExternalCompressors (char *progname)
 }
 
 
+/******************************************************************************
+** –азбор командной строки ****************************************************
+******************************************************************************/
 COMMAND::COMMAND (int argc, char *argv[])
 {
 #if defined(FREEARC_WIN) && !defined(FREEARC_LIBRARY)

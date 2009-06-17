@@ -1,30 +1,8 @@
 // to do: отбор файлов по именам ("name" или "dir/name"),
 //        дешифрование данных/заголовка
 //        добавление ".arc", listfiles/-ap/-kb
-#include <stdlib.h>
-#include <stdio.h>
-#include <fcntl.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <string.h>
-#include <wchar.h>
 
-// External compressors support
-extern "C" {
-#include "../Compression/External/C_External.h"
-}
-
-// SFX module is just unarc.cpp compiled with FREEARC_SFX defined
-#ifdef FREEARC_SFX
-#define NAME           "SFX"
-#else
-#define NAME           "unpacker"
-#endif
-
-#define HEADER1        "FreeArc 0.52 "
-#define HEADER2        "  http://freearc.org  2009-06-17\n"
-
-// Доступ к структуре архива
+// Доступ к структуре архива, парсингу командной строки и выполнению операций над архивом
 #include "ArcStructure.h"
 #include "ArcCommand.h"
 #include "ArcProcess.h"
@@ -92,7 +70,6 @@ void RunSetup (COMMAND &command)
 
 int main (int argc, char *argv[])
 {
-  SetCompressionThreads (GetProcessorsCount());
   UI.DisplayHeader (HEADER1 NAME);
   COMMAND command (argc, argv);    // Распарсить команду
   if (command.ok)                  // Если парсинг был удачен и можно выполнить команду
