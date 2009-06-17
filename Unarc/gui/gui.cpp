@@ -21,7 +21,7 @@ static const UINT WM_SETOBJECT = WM_USER + 1;
 static const UINT WM_CONFIRM_REPLACE = WM_USER + 2;
 static const WORD MAX_PROGRESS_VALUE = 65535U;
 static const size_t MAX_MESSAGE_LENGTH = MY_FILENAME_MAX+256;
-bool UI::isInitialized = false;
+bool GUI::isInitialized = false;
 static TCHAR archiveFileName[MY_FILENAME_MAX];
 static TCHAR cancelConfirmCaption[MAX_MESSAGE_LENGTH];
 static TCHAR cancelConfirmText[MAX_MESSAGE_LENGTH];
@@ -34,7 +34,7 @@ static TCHAR formatProgressCaption[MAX_MESSAGE_LENGTH];
 static TCHAR formatMainCaption[MAX_MESSAGE_LENGTH];
 static HCURSOR hCursorHand;
 static WNDPROC defaultStaticProc = 0;
-static UI *globalGUI = 0;
+static GUI *globalGUI = 0;
 
 static BOOL CALLBACK DialogProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 static BOOL CALLBACK ProgressProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -83,7 +83,7 @@ void utf16_to_utf8 (WCHAR *utf16, char *utf8)
 }
 #endif
 
-UI::UI()
+GUI::GUI()
 {
 	if(!isInitialized)
 	{
@@ -125,7 +125,7 @@ UI::UI()
 	msg = 0;
 }
 
-UI::~UI()
+GUI::~GUI()
 {
 	if(hIcon != 0)
 	{
@@ -140,7 +140,7 @@ UI::~UI()
 	}
 }
 
-void UI::DisplayHeader(char* header)
+void GUI::DisplayHeader(char* header)
 {
 }
 
@@ -235,7 +235,7 @@ static void SetComment(HWND hWnd, char *comment, int commentSize)
 	}
 }
 
-bool UI::AllowProcessing(char cmd, int _silent, TCHAR *arcname, char* utf8comment, int cmtsize, char* utf8outdir)
+bool GUI::AllowProcessing(char cmd, int _silent, TCHAR *arcname, char* utf8comment, int cmtsize, char* utf8outdir)
 {
 	SplitFilename(arcname, NULL, archiveFileName);
 	msg = (TCHAR *) malloc((_tcslen(archiveFileName)+1000) * sizeof(*msg));
@@ -276,13 +276,13 @@ bool UI::AllowProcessing(char cmd, int _silent, TCHAR *arcname, char* utf8commen
 	return (button == IDOK);
 }
 
-char* UI::GetOutDir()
+char* GUI::GetOutDir()
 {
 	utf16_to_utf8(destinationDirectory, destinationDirectory_utf8);
 	return destinationDirectory_utf8;
 }
 
-void UI::BeginProgress(uint64 totalBytes)
+void GUI::BeginProgress(uint64 totalBytes)
 {
 	this->totalBytes = totalBytes;
 	hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
@@ -292,13 +292,13 @@ void UI::BeginProgress(uint64 totalBytes)
 	tickCountOfBegin = GetTickCount();
 }
 
-bool UI::ProgressFile(bool isdir, const char *operation, TCHAR *_filename, uint64 filesize)
+bool GUI::ProgressFile(bool isdir, const char *operation, TCHAR *_filename, uint64 filesize)
 {
 	_tcscpy(filename, _filename);
 	return progressResult;
 }
 
-bool UI::ProgressWrite(uint64 _writtenBytes)
+bool GUI::ProgressWrite(uint64 _writtenBytes)
 {
 	writtenBytes = _writtenBytes;
 	if (writtenBytes - lastWrittenBytes >= 65536)
@@ -306,14 +306,14 @@ bool UI::ProgressWrite(uint64 _writtenBytes)
 	return progressResult;
 }
 
-bool UI::ProgressRead(uint64 _readBytes)
+bool GUI::ProgressRead(uint64 _readBytes)
 {
 	readBytes = _readBytes;
 	ShowProgress();
 	return progressResult;
 }
 
-bool UI::ShowProgress()
+bool GUI::ShowProgress()
 {
 	if (silent==1)  return progressResult;
 	WaitForSingleObject(hEvent, INFINITE);
@@ -363,7 +363,7 @@ static void ConvertSecondsToHMS(int seconds, int *h, int *m, int *s)
 	*h = seconds/3600;
 }
 
-void UI::EndProgress()
+void GUI::EndProgress()
 {
 	if(thread != 0)
 	{
@@ -377,7 +377,7 @@ void UI::EndProgress()
 
 }
 
-char UI::AskOverwrite(TCHAR *filename, uint64 size, time_t modified)
+char GUI::AskOverwrite(TCHAR *filename, uint64 size, time_t modified)
 {
 	_tcscpy (replacedFileName, filename);
 	replacedFileSize = size;
@@ -476,7 +476,7 @@ static void UnitializeHyperLink(HWND hWnd)
 
 static BOOL CALLBACK DialogProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	UI *gui = (UI*)GetWindowLong(hWnd, GWL_USERDATA);
+	GUI *gui = (GUI*)GetWindowLong(hWnd, GWL_USERDATA);
 
 	switch(uMsg)
 	{
@@ -526,7 +526,7 @@ static BOOL CALLBACK DialogProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 
 static BOOL CALLBACK ProgressProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	UI *gui = (UI*)GetWindowLong(hWnd, GWL_USERDATA);
+	GUI *gui = (GUI*)GetWindowLong(hWnd, GWL_USERDATA);
 
 	switch(uMsg)
 	{
@@ -563,15 +563,15 @@ static BOOL CALLBACK ProgressProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lP
 
 static BOOL CALLBACK ConfirmReplaceProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	//Silent mode: Replaced UI *gui = (UI*)GetWindowLong(hWnd, GWL_USERDATA);
-	UI *gui = globalGUI;
+	//Silent mode: Replaced GUI *gui = (GUI*)GetWindowLong(hWnd, GWL_USERDATA);
+	GUI *gui = globalGUI;
 
 	switch(uMsg)
 	{
 	case WM_INITDIALOG:
 		CenterWindow(hWnd);
 		//Silent mode: Removed SetWindowLong(hWnd, GWL_USERDATA, GetWindowLong(GetParent(hWnd), GWL_USERDATA));
-		//Silent mode: Removed gui = (UI*)GetWindowLong(hWnd, GWL_USERDATA);
+		//Silent mode: Removed gui = (GUI*)GetWindowLong(hWnd, GWL_USERDATA);
 		InitConfirmReplaceDialog(hWnd, gui->replacedFileName, gui->replacedFileSize, gui->replacedFileModified, &(gui->hFileIcon));
 		return TRUE;
 	case WM_COMMAND:
@@ -661,7 +661,7 @@ static int CALLBACK BrowseCallbackProc(HWND hwnd, UINT uMsg, LPARAM lParam, LPAR
 
 static DWORD ProgressThread(LPVOID parameter)
 {
-	UI *gui = (UI*)parameter;
+	GUI *gui = (GUI*)parameter;
 
 	gui->hWndProgress = CreateDialog(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_DIALOG_PROGRESS), 0, ProgressProc);
 	SetClassLong(gui->hWndProgress, GCL_HICON, (LONG)gui->hIcon);

@@ -14,19 +14,26 @@
 ******************************************************************************/
 class COMMAND;
 
+#if defined(FREEARC_WIN) && defined(FREEARC_GUI)
+typedef CFILENAME MYFILENAME;
+#else
+typedef  FILENAME MYFILENAME;
+#endif
+
+
 class BASEUI
 {
 public:
   virtual ~BASEUI() {}
   virtual void DisplayHeader (char* header) {}
-  virtual bool AllowProcessing (char cmd, int silent, FILENAME arcname, char* comment, int cmtsize, FILENAME outdir)  {return TRUE;}
+  virtual bool AllowProcessing (char cmd, int silent, MYFILENAME arcname, char* comment, int cmtsize, FILENAME outdir)  {return TRUE;}
   virtual FILENAME GetOutDir() {return "";}
   virtual void BeginProgress (uint64 totalBytes)    {}
   virtual bool ProgressRead  (uint64 readBytes)     {return TRUE;}
   virtual bool ProgressWrite (uint64 writtenBytes)  {return TRUE;}
-  virtual bool ProgressFile  (bool isdir, const char *operation, FILENAME filename, uint64 filesize)  {return TRUE;}
+  virtual bool ProgressFile  (bool isdir, const char *operation, MYFILENAME filename, uint64 filesize)  {return TRUE;}
   virtual void EndProgress() {}
-  virtual char AskOverwrite (FILENAME filename, uint64 size, time_t modified) {return 'n';}
+  virtual char AskOverwrite (MYFILENAME filename, uint64 size, time_t modified) {return 'n';}
   virtual void ListHeader (COMMAND &) {}
   virtual void ListFooter (COMMAND &) {}
   virtual void ListFiles (DIRECTORY_BLOCK *, COMMAND &) {}

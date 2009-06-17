@@ -12,7 +12,7 @@ typedef unsigned long long uint64;
 #endif
 
 
-class UI
+class GUI : public BASEUI
 {
 public:
 	static bool isInitialized;
@@ -39,8 +39,8 @@ public:
 	time_t replacedFileModified;
 	DWORD tickCountOfBegin;
 
-	UI();
-	~UI();
+	GUI();
+	~GUI();
 	void DisplayHeader(char* header);
 	bool AllowProcessing(char cmd, int silent, TCHAR *arcname, char* utf8comment, int cmtsize, char* utf8outdir);
 	char*GetOutDir();

@@ -3,7 +3,7 @@
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-	UI *gui = new UI();
+	GUI *gui = new GUI();
 
 	char comment[20000];
 	FILE *fcmt=fopen("comments.rtf","rb");

@@ -11,6 +11,7 @@
 #ifdef FREEARC_GUI
 #include "gui\gui.h"
 #include "gui\gui.cpp"
+GUI UI;
 #else
 #include "CUI.h"
 #endif

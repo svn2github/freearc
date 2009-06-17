@@ -18,7 +18,9 @@ private:
   char outdir[MY_FILENAME_MAX*4];  //unicode: utf-8 encoding
   uint64 totalBytes;
 public:
-  char *event; int int1,int2; char *str;
+  Event DoEvent, EventDone;
+  char *what; int int1, int2; char *str;
+  void event (char *_what, int _int1, int _int2, char *_str);
 
   bool AllowProcessing (char cmd, int silent, FILENAME arcname, char* comment, int cmtsize, FILENAME outdir);
   FILENAME GetOutDir();
@@ -33,7 +35,16 @@ public:
 /******************************************************************************
 ** Реализация интерфейса с программой, использующей DLL ***********************
 ******************************************************************************/
-Event DoEvent, EventDone;
+void DLLUI::event (char *_what, int _int1, int _int2, char *_str)
+{
+  what = _what;
+  int1 = _int1;
+  int2 = _int2;
+  str  = _str;
+
+  DoEvent.Signal();
+  EventDone.Lock();
+}
 
 void DLLUI::BeginProgress (uint64 totalBytes)
 {
@@ -42,25 +53,13 @@ void DLLUI::BeginProgress (uint64 totalBytes)
 
 bool DLLUI::ProgressRead (uint64 readBytes)
 {
-  event = "progress";
-  int1 = readBytes>>20;
-  int2 = totalBytes>>20;
-
-  DoEvent.Signal();
-  EventDone.Lock();
+  event ("progress", readBytes>>20, totalBytes>>20, "");
   return TRUE;
 }
 
 bool DLLUI::ProgressFile (bool isdir, const char *operation, FILENAME filename, uint64 filesize)
 {
-//  printf (isdir?  "%s %s" STR_PATH_DELIMITER "\n"  :  "%s %s (%llu bytes)\n",
-//          operation, filename, filesize);
-
-  event = "filename";
-  str = filename;
-
-  DoEvent.Signal();
-  EventDone.Lock();
+  event ("filename", 0, 0, filename);
   return TRUE;
 }
 
@@ -93,8 +92,8 @@ static DWORD WINAPI decompress_thread (void *paramPtr)
 {
   COMMAND *command = (COMMAND*) paramPtr;
   PROCESS (*command, UI);      //   Выполнить разобранную команду
-  UI.event = "quit";
-  DoEvent.Signal();
+  UI.what = "quit";
+  UI.DoEvent.Signal();
   return 0;
 }
 
@@ -117,21 +116,21 @@ int __cdecl FreeArcExtract (cbtype *callback, ...)
 
 
 
-  CThread thread;
 
   COMMAND command (argc, argv);    // Распарсить команду
   if (command.ok) {                // Если парсинг был удачен и можно выполнить команду
+    CThread thread;
     thread.Create (decompress_thread, &command);   //   Выполнить разобранную команду
 
     for(;;)
     {
-      DoEvent.Lock();
-      if (strequ(UI.event, "quit"))
+      UI.DoEvent.Lock();
+      if (strequ (UI.what, "quit"))
         break;
-      int result = callback (UI.event, UI.int1, UI.int2, UI.str);
+      int result = callback (UI.what, UI.int1, UI.int2, UI.str);
       if (result < 0)
         return result;
-      EventDone.Signal();
+      UI.EventDone.Signal();
     }
     thread.Wait();
   }
