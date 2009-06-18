@@ -747,6 +747,19 @@ deleteElems = go 0
                                | n==i =   go (n+1) xs is   -- дошли - удаляем!
 
 
+-- |Превращает возрастающий список чисел в список диапазонов:
+-- 1,2,3,10,21,22 -> (1,3),(10,10),(21,22)
+makeRanges (x:y:zs) | x+1==y    =  makeRanges1 x (y:zs)
+                    | otherwise =  (x,x) : makeRanges (y:zs)
+makeRanges [x]                  =  [(x,x)]
+makeRanges []                   =  []
+
+-- Вспомогательное определение для makeRanges
+makeRanges1 start (x:y:zs) | x+1==y    =  makeRanges1 start (y:zs)
+                           | otherwise =  (start,x) : makeRanges (y:zs)
+makeRanges1 start [x]                  = [(start,x)]
+
+
 {-# NOINLINE partitionList #-}
 {-# NOINLINE splitList #-}
 

@@ -209,14 +209,14 @@ fmInfoMsg fm' msg = do
 ----------------------------------------------------------------------------------------------------
 
 -- |ќтметить/разотметить файлы, удовлетвор€ющие заданному предикату
-fmSelectFilenames   = fmSelUnselFilenames New.treeSelectionSelectPath
-fmUnselectFilenames = fmSelUnselFilenames New.treeSelectionUnselectPath
+fmSelectFilenames   = fmSelUnselFilenames New.treeSelectionSelectRange
+fmUnselectFilenames = fmSelUnselFilenames New.treeSelectionUnselectRange
 fmSelUnselFilenames selectOrUnselect fm' filter_p = do
   fm <- val fm'
   let fullList  = fm_filelist  fm
   let selection = fm_selection fm
-  for (findIndices filter_p fullList)
-      (selectOrUnselect selection.(:[]))
+  for (makeRanges$ findIndices filter_p fullList)
+      (\(x,y) -> selectOrUnselect selection [x] [y])
 
 -- |ќтметить/разотметить все файлы
 fmSelectAll   fm' = New.treeSelectionSelectAll   . fm_selection =<< val fm'
