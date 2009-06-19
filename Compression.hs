@@ -257,25 +257,12 @@ decompress method callback      - распаковать данные
 -- |Процедуры упаковки для различных алгоритмов сжатия.
 freearcCompress   num method | aSTORING ==  method =  copy_data
 freearcCompress   num method | isFakeMethod method =  eat_data
-freearcCompress   num method                       =  checkingCtrlBreak num (CompressionLib.compress method)
+freearcCompress   num method                       =  CompressionLib.compress method
 
 -- |Процедуры распаковки для различных алгоритмов сжатия.
 freearcDecompress num method | aSTORING ==  method =  copy_data
 freearcDecompress num method | isFakeMethod method =  impossible_to_decompress   -- эти типы сжатых данных не подлежат распаковке
-freearcDecompress num method                       =  checkingCtrlBreak num (CompressionLib.decompress method)
-
--- |Поскольку Haskell'овский код, вызываемый из Си, не может получать
--- исключений, добавим к процедурам чтения/записи явные проверки
-checkingCtrlBreak num action callback = do
-  let checked_callback what buf size auxdata = do
-        operationTerminated' <- val operationTerminated
-        if operationTerminated'
-          then return CompressionLib.aFREEARC_ERRCODE_OPERATION_TERMINATED   -- foreverM doNothing0
-          else callback what buf size
-  --
-  res <- checked_callback "read" nullPtr 0 undefined   -- этот вызов позволяет отложить запуск следующего в цепочке алгоритма упаковки/распаковки до момента, когда предыдущий возвратит хоть какие-нибудь данные (а если это поблочный алгоритм - до момента, когда он обработает весь блок)
-  if res<0  then return res
-            else action (checked_callback)
+freearcDecompress num method                       =  CompressionLib.decompress method
 
 -- |Копирование данных без сжатия (-m0)
 copy_data callback = do
@@ -309,7 +296,6 @@ eat_data callback = do
 impossible_to_decompress callback = do
   return CompressionLib.aFREEARC_ERRCODE_GENERAL   -- сразу возвратить ошибку, поскольку этот алгоритм (FAKE/CRC_ONLY) не подлежит распаковке
 
-{-# NOINLINE checkingCtrlBreak               #-}
 {-# NOINLINE copy_data                       #-}
 {-# NOINLINE eat_data                        #-}
 

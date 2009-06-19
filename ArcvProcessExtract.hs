@@ -174,6 +174,12 @@ de_compress_PROCESS1 de_compress reader times command comprMethod num pipe = do
       -- Прочие (неподдерживаемые) callbacks
       callback _ _ _ = return aFREEARC_ERRCODE_NOT_IMPLEMENTED
 
+  -- Поскольку Haskell'овский код, вызываемый из Си, не может получать исключений, добавим к процедурам чтения/записи явные проверки
+  let checked_callback what buf size = do
+        operationTerminated' <- val operationTerminated
+        if operationTerminated'
+          then return CompressionLib.aFREEARC_ERRCODE_OPERATION_TERMINATED   -- foreverM doNothing0
+          else callback what buf size
 {-
       -- Debugging wrapper
       debug f what buf size = inside (print (comprMethod,what,size))
@@ -184,8 +190,10 @@ de_compress_PROCESS1 de_compress reader times command comprMethod num pipe = do
       debug f what buf size = f what buf size
 
   -- СОБСТВЕННО УПАКОВКА ИЛИ РАСПАКОВКА
-  result <- de_compress num comprMethod (debug callback)
-  debug callback "finished" nullPtr result
+  res <- debug checked_callback "read" nullPtr 0  -- этот вызов позволяет отложить запуск следующего в цепочке алгоритма упаковки/распаковки до момента, когда предыдущий возвратит хоть какие-нибудь данные (а если это поблочный алгоритм - до момента, когда он обработает весь блок)
+  result <- if res<0  then return res
+                      else de_compress num comprMethod (debug checked_callback)
+  debug checked_callback "finished" nullPtr result
   -- Статистика
   total <- val total'
   time  <- val time'

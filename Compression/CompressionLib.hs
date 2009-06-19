@@ -124,10 +124,11 @@ runWithMethod action method callback = do
 
 -- |Execute C (de)compression routine `action` using read/write callbacks `read_f` & `write_f`
 run action callback = do
+  -- Ignore auxdata since we can do better with closures
   let callback2 cwhat buf size auxdata = do what <- peekCString cwhat
-                                            callback what buf (ii size) auxdata >>=return.ii
+                                            callback what buf (ii size) >>=return.ii
   bracket (mkCALL_BACK callback2) (freeHaskellFunPtr)$ \c_callback -> do   -- convert Haskell routine to C-callable routine
-    action c_callback c_callback
+    action c_callback nullPtr
 
 withMethod action method inp insize outp outsize = do
   withCString method $ \c_method -> do
@@ -189,19 +190,19 @@ compressionErrorMessage x
 
 -- |Compress using callbacks
 foreign import ccall threadsafe  "Compression.h Compress"
-   c_compress             :: CMethod -> FunPtr CALLBACK_FUNC -> FunPtr CALLBACK_FUNC -> IO Int
+   c_compress             :: CMethod -> FunPtr CALLBACK_FUNC -> VoidPtr -> IO Int
 
 -- |Decompress using callbacks
 foreign import ccall threadsafe  "Compression.h Decompress"
-   c_decompress           :: CMethod -> FunPtr CALLBACK_FUNC -> FunPtr CALLBACK_FUNC -> IO Int
+   c_decompress           :: CMethod -> FunPtr CALLBACK_FUNC -> VoidPtr -> IO Int
 
 -- |Compress using callbacks and save method name in compressed output
 foreign import ccall threadsafe  "Compression.h CompressWithHeader"
-   c_CompressWithHeader   :: CMethod -> FunPtr CALLBACK_FUNC -> FunPtr CALLBACK_FUNC -> IO Int
+   c_CompressWithHeader   :: CMethod -> FunPtr CALLBACK_FUNC -> VoidPtr -> IO Int
 
 -- |Decompress data compressed with c_CompressWithHeader (method name is read from compressed stream)
 foreign import ccall threadsafe  "Compression.h DecompressWithHeader"
-   c_DecompressWithHeader ::            FunPtr CALLBACK_FUNC -> FunPtr CALLBACK_FUNC -> IO Int
+   c_DecompressWithHeader ::            FunPtr CALLBACK_FUNC -> VoidPtr -> IO Int
 
 
 ----------------------------------------------------------------------------------------------------
