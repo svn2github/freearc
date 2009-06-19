@@ -150,13 +150,11 @@ de_compress_PROCESS de_compress times command comprMethod num pipe = do
 de_compress_PROCESS1 de_compress reader times command comprMethod num pipe = do
   total' <- ref ( 0 :: FileSize)
   time'  <- ref (-1 :: Double)
-  testmem <- init_once
+  let -- Напечатать карту памяти
+      showMemoryMap = do printLine$ "\nBefore "++show num++": "++comprMethod++"\n"
+                         testMalloc
   let -- Процедура чтения входных данных процесса упаковки/распаковки
       callback "read" buf size = do res <- reader buf size
-                                    when (opt_testMalloc command) $ do
-                                      once testmem $ do
-                                        printLine$ "\nBefore "++show num++": "++comprMethod++"\n"
-                                        testMalloc  -- напечатать карту памяти
                                     return res
       -- Процедура записи выходных данных
       callback "write" buf size = do total' += i size
@@ -174,8 +172,8 @@ de_compress_PROCESS1 de_compress reader times command comprMethod num pipe = do
       -- Прочие (неподдерживаемые) callbacks
       callback _ _ _ = return aFREEARC_ERRCODE_NOT_IMPLEMENTED
 
-  -- Поскольку Haskell'овский код, вызываемый из Си, не может получать исключений, добавим к процедурам чтения/записи явные проверки
-  let checked_callback what buf size = do
+  let -- Поскольку Haskell'овский код, вызываемый из Си, не может получать исключений, добавим к процедурам чтения/записи явные проверки
+      checked_callback what buf size = do
         operationTerminated' <- val operationTerminated
         if operationTerminated'
           then return CompressionLib.aFREEARC_ERRCODE_OPERATION_TERMINATED   -- foreverM doNothing0
@@ -191,6 +189,7 @@ de_compress_PROCESS1 de_compress reader times command comprMethod num pipe = do
 
   -- СОБСТВЕННО УПАКОВКА ИЛИ РАСПАКОВКА
   res <- debug checked_callback "read" nullPtr 0  -- этот вызов позволяет отложить запуск следующего в цепочке алгоритма упаковки/распаковки до момента, когда предыдущий возвратит хоть какие-нибудь данные (а если это поблочный алгоритм - до момента, когда он обработает весь блок)
+  opt_testMalloc command  &&&  showMemoryMap
   result <- if res<0  then return res
                       else de_compress num comprMethod (debug checked_callback)
   debug checked_callback "finished" nullPtr result
