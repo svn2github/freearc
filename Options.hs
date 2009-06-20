@@ -140,6 +140,14 @@ limit_compressor command compressor = do
     else do maxMem <- getMaxMemToAlloc
             return$ limitCompressionMemoryUsage (memory_limit `min` maxMem) compressor
 
+-- |Ограничивает метод сжатия до реально доступного объёма памяти (вызывается непосредственно перед стартом алгоритма)
+limit_method command method = do
+  let memory_limit = opt_limit_compression_memory command
+  if memory_limit==CompressionLib.aUNLIMITED_MEMORY
+    then return method
+    else do maxMem <- getMaxMemToAlloc
+            return$ limitCompressionMem (memory_limit `min` maxMem) method
+
 
 -- |Список опций, поддерживаемых программой
 optionsList = sortOn (\(OPTION a b _) -> (a|||"zzz",b))

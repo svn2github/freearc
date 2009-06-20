@@ -79,14 +79,16 @@ decompress_block command cfile state count_cbytes pipe = mdo
   let writer (DataBuf buf len)  =  decompress_step cfile state pipe buf len
       writer  NoMoreData        =  return 0
 
+  let limit_memory num method   =  return method    -- ограничение памяти используется только при сжатии
+
   -- Добавить ключ в запись алгоритма дешифрования
   keyed_compressor <- generateDecryption compressor (opt_decryption_info command)
   when (any isNothing keyed_compressor) $ do
     registerError$ BAD_PASSWORD (cmd_arcname command) (cfile'.$cfFileInfo.$storedName)
 
   -- Превратим список методов сжатия/шифрования в конвейер процессов распаковки
-  let decompress1 = de_compress_PROCESS1 freearcDecompress reader times command  -- первый процесс в конвейере
-      decompressN = de_compress_PROCESS  freearcDecompress        times command  -- последующие процессы в конвейере
+  let decompress1 = de_compress_PROCESS1 freearcDecompress reader times command limit_memory  -- первый процесс в конвейере
+      decompressN = de_compress_PROCESS  freearcDecompress        times command limit_memory  -- последующие процессы в конвейере
       decompressa [p]     = decompress1 p         0
       decompressa [p1,p2] = decompress1 p2        0 |> decompressN p1 0
       decompressa (p1:ps) = decompress1 (last ps) 0 |> foldl1 (|>) (map (\x->decompressN x 0) (reverse$ init ps)) |> decompressN p1 0
@@ -103,7 +105,7 @@ decompress_block command cfile state count_cbytes pipe = mdo
 -- во входные буфера процедуры упаковки/распаковки
 --   comprMethod - строка метода сжатия с параметрами, типа "ppmd:o10:m48m"
 --   num - номер процесса в цепочке процессов упаковки
-de_compress_PROCESS de_compress times command comprMethod num pipe = do
+de_compress_PROCESS de_compress times command limit_memory comprMethod num pipe = do
   -- Информация об остатке данных, полученных из предыдущего процесса, но ещё не отправленных на упаковку/распаковку
   remains <- ref$ Just (error "undefined remains:buf0", error "undefined remains:srcbuf", 0)
   let
@@ -141,13 +143,13 @@ de_compress_PROCESS de_compress times command comprMethod num pipe = do
   -- Процедура чтения входных данных процесса упаковки/распаковки (вызывается лишь однажды, в отличие от рекурсивной read_data)
   let reader  =  read_data 0
 
-  de_compress_PROCESS1 de_compress reader times command comprMethod num pipe
+  de_compress_PROCESS1 de_compress reader times command limit_memory comprMethod num pipe
 
 
 {-# NOINLINE de_compress_PROCESS1 #-}
 -- |de_compress_PROCESS с параметризуемой функцией чтения (может читать данные напрямую
 -- из архива для первого процесса в цепочке распаковки)
-de_compress_PROCESS1 de_compress reader times command comprMethod num pipe = do
+de_compress_PROCESS1 de_compress reader times command limit_memory comprMethod num pipe = do
   total' <- ref ( 0 :: FileSize)
   time'  <- ref (-1 :: Double)
   let -- Напечатать карту памяти
@@ -189,18 +191,19 @@ de_compress_PROCESS1 de_compress reader times command comprMethod num pipe = do
 
   -- СОБСТВЕННО УПАКОВКА ИЛИ РАСПАКОВКА
   res <- debug checked_callback "read" nullPtr 0  -- этот вызов позволяет отложить запуск следующего в цепочке алгоритма упаковки/распаковки до момента, когда предыдущий возвратит хоть какие-нибудь данные (а если это поблочный алгоритм - до момента, когда он обработает весь блок)
-  opt_testMalloc command  &&&  showMemoryMap
+  opt_testMalloc command  &&&  showMemoryMap      -- напечатаем карту памяти непосредственно перед началом сжатия
+  real_method <- limit_memory num comprMethod     -- обрежем метод сжатия при нехватке памяти
   result <- if res<0  then return res
-                      else de_compress num comprMethod (debug checked_callback)
+                      else de_compress num real_method (debug checked_callback)
   debug checked_callback "finished" nullPtr result
   -- Статистика
   total <- val total'
   time  <- val time'
-  uiDeCompressionTime times (comprMethod,time,total)
+  uiDeCompressionTime times (real_method,time,total)
   -- Выйдем с сообщением, если произошла ошибка
   unlessM (val operationTerminated) $ do
     when (result `notElem` [aFREEARC_OK, aFREEARC_ERRCODE_NO_MORE_DATA_REQUIRED]) $ do
-      registerThreadError$ COMPRESSION_ERROR [compressionErrorMessage result, comprMethod]
+      registerThreadError$ COMPRESSION_ERROR [compressionErrorMessage result, real_method]
       operationTerminated =: True
   -- Сообщим предыдущему процессу, что данные больше не нужны, а следующему - что данных больше нет
   send_backP  pipe aFREEARC_ERRCODE_NO_MORE_DATA_REQUIRED
