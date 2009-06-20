@@ -1,12 +1,12 @@
 news_crc=48622d4d
 
-compressionLast=0110 Normal: -m4 -s64m
-compression=0771 Maximum: -mx -ld=192m
-compression=0772 Maximum with fast decompression: -m9x -ld=192m -s256m
-compression=0109 High: -m5 -s128m
-compression=0110 Normal: -m4 -s64m
-compression=0111 Fast: -m3 -s32m
-compression=0112 Very fast: -m2 -s16m
+compressionLast=0110 Normal: -m4 -s128m
+compression=0771 Maximum: -mx
+compression=0772 Maximum with fast decompression: -m9x -ld192m -s256m
+compression=0109 High: -m7 -md96m -ld192m
+compression=0110 Normal: -m4 -s128m
+compression=0111 Fast: -m3 -s96m
+compression=0112 Very fast: -m2 -s96m
 compression=0127 HDD-speed: -m1 -s8m
 compression=0752 No compression: -m0
 

@@ -351,7 +351,11 @@
   aARC_VERSION = "0.51", aARCHIVE_VERSION = make4byte 0 0 5 1
 === To-do list ====================================================================================
 
-инстал€тор: ArcShellExt, all2arc.exe и ini->bin
+инстал€тор
+  ArcShellExt, all2arc.exe и ini->bin
+  при отсутствии LastCheck в freearc.history программа иногда показывает "иероглифы"
+  update Compression method definitions in freearc.history
+-max -> bmf for bmp/tif
 iss
   если прервать распаковку, архив теперь "отпускаетс€", но последний распаковываемый файл - нет,
     в итоге - при неудачной попытке установки (прерывании установки) он один остаетс€ и его невозможно удалить
