@@ -22,16 +22,48 @@ char*     bypass_list = "<local>";
 int64 url_detect_size (URL *url);
 int   url_readp (URL *url, int64 offset, char *buf, int size);
 
+
+// DynaLoad function from wininet.dll
+static FARPROC wininet_load (char *funcname, int i)
+{
+  static bool loaded = FALSE;
+  static HMODULE dll = NULL;
+  static FARPROC f[10];
+
+  if (f[i])
+    return f[i];
+
+  if (!loaded)
+  {
+    loaded = TRUE;
+    dll = LoadLibraryA("wininet.dll");
+  }
+
+  f[i] = GetProcAddress (dll, funcname);
+  return f[i];
+}
+
+#define InternetCloseHandle  ((BOOL      WINAPI (*) (HINTERNET))                                                        wininet_load("InternetCloseHandle",0))
+#define InternetOpenA        ((HINTERNET WINAPI (*) (LPCSTR,DWORD,LPCSTR,LPCSTR,DWORD))                                 wininet_load("InternetOpenA",      1))
+#define InternetConnectA     ((HINTERNET WINAPI (*) (HINTERNET,LPCSTR,INTERNET_PORT,LPCSTR,LPCSTR,DWORD,DWORD,DWORD))   wininet_load("InternetConnectA",   2))
+#define InternetOpenUrlA     ((HINTERNET WINAPI (*) (HINTERNET,LPCSTR,LPCSTR,DWORD,DWORD,DWORD))                        wininet_load("InternetOpenUrlA",   3))
+#define HttpQueryInfoA       ((BOOL      WINAPI (*) (HINTERNET,DWORD,PVOID,PDWORD,PDWORD))                              wininet_load("HttpQueryInfoA",     4))
+#define InternetReadFile     ((BOOL      WINAPI (*) (HINTERNET,PVOID,DWORD,PDWORD))                                     wininet_load("InternetReadFile",   5))
+#define FtpOpenFileA         ((HINTERNET WINAPI (*) (HINTERNET,LPCSTR,DWORD,DWORD,DWORD))                               wininet_load("FtpOpenFileA",       6))
+#define FtpGetFileSize       ((DWORD     WINAPI (*) (HINTERNET,LPDWORD))                                                wininet_load("FtpGetFileSize",     7))
+#define FtpCommandA          ((BOOL      WINAPI (*) (HINTERNET,BOOL,DWORD,LPCSTR,DWORD_PTR,HINTERNET*))                 wininet_load("FtpCommandA",        8))
+
+
 void url_setup_proxy (char *_proxy)
 {
     proxy = strequ(_proxy,"--") ? NULL : strdup_msg (_proxy);
-    hInternet && ::InternetCloseHandle (hInternet),  hInternet=NULL;
+    hInternet && InternetCloseHandle (hInternet),  hInternet=NULL;
 }
 
 void url_setup_bypass_list (char *_bypass_list)
 {
     bypass_list = _bypass_list[0]? strdup_msg (_bypass_list) : (char*)"<local>";
-    hInternet && ::InternetCloseHandle (hInternet),  hInternet=NULL;
+    hInternet && InternetCloseHandle (hInternet),  hInternet=NULL;
 }
 
 // Open file with given url and return handle for operations on the file
@@ -46,8 +78,8 @@ URL *url_open (char *_url)
 
     // инициализируем WinInet
     hInternet = hInternet? hInternet :
-         ::InternetOpenA(
-             "FreeArc/0.40",
+           InternetOpenA(
+             "FreeArc/0.52",
              proxy? INTERNET_OPEN_TYPE_PROXY : INTERNET_OPEN_TYPE_PRECONFIG,
              proxy, bypass_list,
              0);
@@ -78,15 +110,14 @@ URL *url_open (char *_url)
         }
 
         // Создаём FTP сессию
-        url->hConnect =
-            ::InternetConnectA(
-                hInternet,
-                server,
-                portnum,
-                user, password,
-                INTERNET_SERVICE_FTP,
-                0,
-                0);
+        url->hConnect = InternetConnectA(
+                          hInternet,
+                          server,
+                          portnum,
+                          user, password,
+                          INTERNET_SERVICE_FTP,
+                          0,
+                          0);
         if (!url->hConnect)   {url_close(url); return NULL;}
     }
 
@@ -107,14 +138,14 @@ int64 url_detect_size (URL *url)
             // Fast method of getting filesize
             WIN32_FIND_DATA FindFileData;
             HINTERNET hURL = FtpFindFirstFile (url->hConnect, url->file, &FindFileData, 0, 0);
-            ::InternetCloseHandle (hURL);
+            InternetCloseHandle (hURL);
             if (hURL && FindFileData.nFileSizeLow!=(DWORD)-1)
                 return (int64(FindFileData.nFileSizeHigh)<<32)+FindFileData.nFileSizeLow;
 */
             // Slow method of getting filesize
             HINTERNET hURL = FtpOpenFileA (url->hConnect, url->file, GENERIC_READ, FTP_TRANSFER_TYPE_BINARY, 0);
             DWORD SizeHigh, SizeLow = FtpGetFileSize (hURL, &SizeHigh);
-            ::InternetCloseHandle (hURL);
+            InternetCloseHandle (hURL);
             //if (SizeLow==-1)  return 0;  - filesize may be exactly 4gb-1
 
             // DIRTY HACK!
@@ -144,7 +175,7 @@ int64 url_detect_size (URL *url)
         DWORD dwStatusCode = 0;
         DWORD dwLengthStatusCode = sizeof(dwStatusCode);
 
-        BOOL bQuery1 = ::HttpQueryInfoA(
+        BOOL bQuery1 = HttpQueryInfoA(
             hURL,
             HTTP_QUERY_STATUS_CODE | HTTP_QUERY_FLAG_NUMBER,
             &dwStatusCode,
@@ -154,14 +185,14 @@ int64 url_detect_size (URL *url)
         char DataSize[100];
         DWORD dwLengthDataSize = sizeof(DataSize)-1;
 
-        BOOL bQuery2 = ::HttpQueryInfoA(
+        BOOL bQuery2 = HttpQueryInfoA(
             hURL,
             HTTP_QUERY_CONTENT_LENGTH,
             &DataSize,
             &dwLengthDataSize,
             NULL);
 
-        ::InternetCloseHandle (hURL);
+        InternetCloseHandle (hURL);
 
         DataSize[dwLengthDataSize] = '\0';
         return bQuery1&&bQuery2&&dwStatusCode==HTTP_STATUS_OK? atoll(DataSize): -1;
@@ -184,7 +215,7 @@ int url_readp (URL *url, int64 offset, char *buf, int size)
     // Make connection to desired url. Continue previous read operation
     // if it finished exactly where we want to start, otherwise close its handle
     if (url->hURL && url->curpos!=offset)
-        ::InternetCloseHandle (url->hURL), url->hURL=NULL;
+        InternetCloseHandle (url->hURL), url->hURL=NULL;
 
     BOOL new_hURL = (url->hURL==NULL);
     if (new_hURL) {
@@ -210,7 +241,7 @@ int url_readp (URL *url, int64 offset, char *buf, int size)
     {
         DWORD dwBytesRead;
         // читаем данные
-        ::InternetReadFile (url->hURL,  buf, size-bytes,  &dwBytesRead);
+        InternetReadFile (url->hURL,  buf, size-bytes,  &dwBytesRead);
 
         // выход из цикла при ошибке или завершении
         if (dwBytesRead == 0)
@@ -222,12 +253,12 @@ int url_readp (URL *url, int64 offset, char *buf, int size)
     }
 
     // Close read handle if we've read all the data asked by calling procedure
-    if (url->curpos == endpos)  ::InternetCloseHandle (url->hURL), url->hURL=NULL;
+    if (url->curpos == endpos)  InternetCloseHandle (url->hURL), url->hURL=NULL;
 
     // If not all the data are read and we have chances to read something more - try it!
     if (bytes<size && !(new_hURL && bytes==0))
     {
-        ::InternetCloseHandle (url->hURL), url->hURL=NULL;
+        InternetCloseHandle (url->hURL), url->hURL=NULL;
         int ret = url_readp (url, offset+bytes, buf, size-bytes);
         return ret>=0? bytes+ret : ret;
     }
@@ -237,10 +268,10 @@ int url_readp (URL *url, int64 offset, char *buf, int size)
 void url_close (URL *url)
 {
     if (!url) return;
-    ::free (url->url);
-    ::InternetCloseHandle (url->hURL);
-    ::InternetCloseHandle (url->hConnect);
-    ::free (url);
+    free (url->url);
+    InternetCloseHandle (url->hURL);
+    InternetCloseHandle (url->hConnect);
+    free (url);
 }
 
 
@@ -339,8 +370,8 @@ void url_close (URL *url)
     /* cleanup curl stuff */
     curl_easy_cleanup (url->curl_handle);
 
-    ::free (url->url);
-    ::free (url);
+    free (url->url);
+    free (url);
 }
 
 
