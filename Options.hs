@@ -129,24 +129,22 @@ opt_debug cmd = cmd.$opt_display.$(`contains_one_of` "$#")
 -- |Включить тестирование памяти?
 opt_testMalloc cmd = cmd.$opt_display.$(`contains_one_of` "%")
 
--- |Реально используемый компрессор отличается от записываемого в заголовок блока
--- вызовами "tempfile", вставленными между слишком прожорливыми алгоритмами
--- (память ограничивается до значения -lc и размера наибольшего блока свободной памяти,
--- если не задано -lc-)
-limit_compressor command compressor = do
-  let memory_limit = opt_limit_compression_memory command
-  if memory_limit==CompressionLib.aUNLIMITED_MEMORY
-    then return compressor
-    else do maxMem <- getMaxMemToAlloc
-            return$ limitCompressionMemoryUsage (memory_limit `min` maxMem) compressor
-
 -- |Ограничивает метод сжатия до реально доступного объёма памяти (вызывается непосредственно перед стартом алгоритма)
-limit_method command method = do
-  let memory_limit = opt_limit_compression_memory command
+-- и добавляет вызовы "tempfile" между слишком прожорливыми алгоритмами
+-- (память ограничивается до значения -lc и размера наибольшего блока свободной памяти, если не задано -lc-)
+limit_compression   = limit_de_compression opt_limit_compression_memory   limitCompressionMemoryUsage
+
+-- |Добавляет вызовы "tempfile" между слишком прожорливыми алгоритмами при распаковке
+limit_decompression = limit_de_compression opt_limit_decompression_memory limitDecompressionMemoryUsage
+
+-- Generic definition
+limit_de_compression option limit_f command method = do
+  let memory_limit = command.$option
   if memory_limit==CompressionLib.aUNLIMITED_MEMORY
     then return method
     else do maxMem <- getMaxMemToAlloc
-            return$ limitCompressionMem (memory_limit `min` maxMem) method
+            return$ limit_f (memory_limit `min` maxMem) method
+
 
 
 -- |Список опций, поддерживаемых программой
@@ -324,7 +322,7 @@ aARC_VERSION_WITH_DATE = aARC_VERSION    -- aARC_VERSION ++ " ("++aARC_DATE++")"
 aARC_HEADER_WITH_DATE  = aARC_HEADER     -- aARC_HEADER  ++ " ("++aARC_DATE++")"
 aARC_HEADER  = aARC_NAME++" "++aARC_VERSION++" "
 aARC_VERSION = "0.52 alpha ("++aARC_DATE++")"                                  --  "0.51"
-aARC_DATE    = "June 15 2009"
+aARC_DATE    = "June 21 2009"
 aARC_NAME    = "FreeArc"
 aARC_AUTHOR  = "Bulat Ziganshin"
 aARC_EMAIL   = "Bulat.Ziganshin@gmail.com"

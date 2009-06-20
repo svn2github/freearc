@@ -58,12 +58,12 @@ decompress_PROCESS command count_cbytes pipe = do
 {-# NOINLINE decompress_block #-}
 -- |–аспаковать один солид-блок
 decompress_block command cfile state count_cbytes pipe = mdo
-  cfile' <- val cfile
+  ;   cfile'     <-  val cfile
   let size        =  fiSize      (cfFileInfo cfile')
       pos         =  cfPos        cfile'
       block       =  cfArcBlock   cfile'
-      compressor  =  blCompressor block .$ limitDecompressionMemoryUsage (opt_limit_decompression_memory command)
-      startPos  | compressor==aNO_COMPRESSION  =  pos  -- дл€ -m0 начинаем чтение напр€мую с нужной позиции в блоке
+  ;   compressor <-  block.$ blCompressor.$ limit_decompression command  -- вставим вызовы tempfile если нужно
+  let startPos  | compressor==aNO_COMPRESSION  =  pos  -- дл€ -m0 начинаем чтение напр€мую с нужной позиции в блоке
                 | otherwise                    =  0
   state =: (startPos, pos, size)
   archiveBlockSeek block startPos
@@ -79,7 +79,7 @@ decompress_block command cfile state count_cbytes pipe = mdo
   let writer (DataBuf buf len)  =  decompress_step cfile state pipe buf len
       writer  NoMoreData        =  return 0
 
-  let limit_memory num method   =  return method    -- ограничение пам€ти используетс€ только при сжатии
+  let limit_memory num method   =  return method    -- ограничение пам€ти дл€ метода используетс€ только при сжатии
 
   -- ƒобавить ключ в запись алгоритма дешифровани€
   keyed_compressor <- generateDecryption compressor (opt_decryption_info command)

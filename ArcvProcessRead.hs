@@ -123,7 +123,7 @@ createSolidBlock command processDir bufOps pipe decompress_pipe (orig_compressor
       -- True, если это целый солид-блок из входного архива, который можно скопировать без изменений
       copy_solid_block = not(opt_recompress command)  &&  isWholeSolidBlock files
   -- ќграничить компрессор объЄмом свободной пам€ти и значением -lc
-  real_compressor <- limit_compressor command compressor
+  real_compressor <- limit_compression command compressor
 
   -- —жать солид-блок данных и отослать в следующий процесс список помещЄнных в него файлов
   unless (null files) $ do

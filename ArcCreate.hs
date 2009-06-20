@@ -66,7 +66,7 @@ runArchiveCreate pretestArchive
   -- Команда "create" всегда создаёт архив с нуля
   when (cmd=="create")$  do ignoreErrors$ fileRemove arcname
   -- Сообщить пользователю о начале обработки архива и запросить пароль архивации, если необходимо
-  uiStartArchive command =<< limit_compressor command compressor   -- ограничить компрессор объёмом памяти и значением -lc
+  uiStartArchive command =<< limit_compression command compressor   -- ограничить компрессор объёмом памяти и значением -lc
   command <- (command.$ opt_cook_passwords) command ask_passwords  -- подготовить пароли в команде к использованию
   debugLog "Started"
 

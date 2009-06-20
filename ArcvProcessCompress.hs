@@ -18,7 +18,7 @@ import Process
 import FileInfo
 import Compression
 import Encryption
-import Options           (opt_data_password, opt_headers_password, opt_encryption_algorithm, limit_method)
+import Options           (opt_data_password, opt_headers_password, opt_encryption_algorithm, limit_compression)
 import UI
 import ArhiveStructure
 import ArhiveDirectory
@@ -96,7 +96,7 @@ compress_AND_write_to_archive_PROCESS archive command backdoor pipe = do
         final_compressor <- newListArray (1,length real_compressor) real_compressor :: IO (IOArray Int String)
         let limit_memory num method = do
               if num > length real_compressor  then return method  else do  -- пропускаем процедуру дл€ алгоритмов шифровани€, которые добавл€ютс€ ниже
-              newMethod <- method.$limit_method command
+              newMethod <- method.$limit_compression command
               writeArray final_compressor num newMethod
               return newMethod
 
