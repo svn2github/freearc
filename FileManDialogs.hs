@@ -141,7 +141,7 @@ arcinfoDialog fm' exec mode arcnames arcdir files = do
   fm <- val fm'
   let arcname = head arcnames
   fm_arc <- case () of _ | isFM_Archive fm -> return (subfm fm)
-                         | otherwise       -> with' (newFMArc fm' arcname "") (return) closeFMArc
+                         | otherwise       -> with' (newFMArc fm' arcname "") (return) (\_ -> closeFMArc fm')
   let archive = subfm_archive fm_arc
   title <- i18n"0085 All about %1"
   let wintitle  =  format title (takeFileName arcname)
@@ -791,6 +791,7 @@ refreshCommand fm' = do
   curfile <- fmGetCursor fm'
   selected <- getSelection fm' (:[])
   -- Обновим содержимое каталога/архива и восстановим текущий файл и список отмеченных
+  closeFMArc fm'
   chdir fm' (fm_current fm)
   when (selected>[]) $ do
     fmSetCursor fm' curfile

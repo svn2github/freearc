@@ -89,12 +89,12 @@ newFMArc fm' arcname arcdir = do
   io$ arcClose archive
   return$ FM_Archive archive arcname arcdir filetree
 
--- |Закрыть файл архива чтобы другие операции смогли модифицировать его
+-- |Закрыть файл архива чтобы 1) другие операции смогли модифицировать его,
+--    2) его содержимое было перечитано заново при следующем использовании
 closeFMArc fm' = do
-  return ()
   --fm <- val fm'
   --io$ arcClose (fm_archive fm)
-  --fm' .= \fm -> fm {subfm = (subfm fm) {subfm_archive = phantomArc}}
+  fm' .= \fm -> fm {subfm = (subfm fm) {subfm_archive = phantomArc}}
 
 -- Перейти в архив/каталог filename
 chdir fm' filename' = do
@@ -109,7 +109,7 @@ chdir fm' filename' = do
                        return (map fiToFileData filelist, FM_Directory dir)
     -- Список файлов в архиве
     ArcPath arcname arcdir -> do
-                       arc <- if isFM_Archive fm && arcname==fm_arcname fm
+                       arc <- if isFM_Archive fm && arcname==fm_arcname fm && not (arcPhantom (fm_archive fm))
                                 then return ((fm.$subfm) {subfm_arcdir=arcdir})
                                 else newFMArc fm' arcname arcdir
                        return (arc.$subfm_filetree.$ftFilesIn arcdir fdArtificialDir, arc)
