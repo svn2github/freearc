@@ -352,14 +352,20 @@
 === To-do list ====================================================================================
 
 инсталятор
-  ArcShellExt, all2arc.exe и ini->bin
+  добавить ArcShellExt и all2arc.exe
+  ini->bin
   при отсутствии LastCheck в freearc.history программа иногда показывает "иероглифы"
-  update Compression method definitions in freearc.history
 -max -> bmf for bmp/tif
 rep: научиться использовать более двух блоков памяти при распаковке
+пустые каталоги не удаляются из архива (в FM)
 iss
   если прервать распаковку, архив теперь "отпускается", но последний распаковываемый файл - нет,
     в итоге - при неудачной попытке установки (прерывании установки) он один остается и его невозможно удалить
+  надо передавать строки в FreeArcExtract в utf-8 кодировке
+  cancel button- need to add warning about exiting when someone hit that cancel installation button
+    now simply hit break install
+  possibly to add options to read first from ini specific output extract path for specific arc/exe to unpack?
+    sometimes need [or someone forgot] to compress file/s with specific subfolder
 fashell
   обработка 8000 выделенных файлов? ;)
   Add to... и прочее если имя файла содержит %

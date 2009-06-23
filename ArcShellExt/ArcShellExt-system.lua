@@ -17,15 +17,16 @@ function build_menu (...)
   items = {}
   menu_up = 0
   make_menu = function(menu)
-    for _,item in pairs(menu) do
+    for i = 1,#menu do
+      local item = menu[i]
       if item and item[1] then
         make_menu (item)    -- recursive call to handle menu items array
 
       elseif item and item.text then   -- skip empty menu items
         if item.submenu  then menu_down=1  else menu_down=0 end
         text = string.format (item.text, item.param)
-        i = add_menu_item (text, menu_down, menu_up)
-        items[i] = item
+        k = add_menu_item (text, menu_down, menu_up)
+        items[k] = item
         menu_up = 0
         if item.submenu then
           make_menu (item.submenu)    -- recursive call to handle submenu
