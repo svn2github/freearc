@@ -17,7 +17,7 @@ function build_menu (...)
   items = {}
   menu_up = 0
   make_menu = function(menu)
-    for i = 1,#menu do
+    for i = 1,table.maxn(menu) do
       local item = menu[i]
       if item and item[1] then
         make_menu (item)    -- recursive call to handle menu items array
