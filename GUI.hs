@@ -57,8 +57,8 @@ aANYFILE_FILTER = []
 
 -- |Путь к all2arc
 all2arc_path = do
-  exe <- getExeName                                -- Name of FreeArc.exe file
-  let dir   =  exe.$takeDirectory                  -- FreeArc.exe directory
+  exe <- getExeName                              -- Name of FreeArc.exe file
+  let dir  = exe.$takeDirectory                  -- FreeArc.exe directory
   return$ windosifyPath(dir </> "all2arc.exe")
 
 
@@ -122,10 +122,12 @@ runIndicators = do
   widgetSetSizeRequest curFileLabel 30 (-1)
   progressBar  <- progressBarNew
   buttonBox    <- hBoxNew True 10
+  messageBox   <- makeBoxForMessages
   boxPackStart vbox statsBox     PackNatural 0
   boxPackStart vbox curFileBox   PackNatural 0
   boxPackStart vbox progressBar  PackNatural 0
   boxPackEnd   vbox buttonBox    PackNatural 0
+  boxPackEnd   vbox messageBox   PackGrow    0
   miscSetAlignment curFileLabel 0 0    -- выровняем влево имя текущего файла
   progressBarSetText progressBar " "   -- нужен непустой текст чтобы установить правильную высоту progressBar
 
@@ -269,6 +271,18 @@ createStats = do
   let clearStats  =  val labels' >>= mapM_ (`labelSetMarkup` "     ")
   --
   return (textBox, updateStats, clearStats)
+
+
+-- |Создадим подокно для сообщений об ошибках
+makeBoxForMessages = do
+  comment <- scrollableTextView "" []
+  widgetSetSizeRequest (widget comment) 0 0
+  -- Выводить errors/warnings в этот TextView
+  let warn msg = do widgetSetSizeRequest (widget comment) (-1) (-1)
+                    postGUIAsync (comment ++= msg++"\n")
+  errorHandlers   ++= [warn]
+  warningHandlers ++= [warn]
+  return (widget comment)
 
 
 -- |Вызывается в начале обработки файла
