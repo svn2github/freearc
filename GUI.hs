@@ -279,8 +279,9 @@ makeBoxForMessages = do
   comment <- scrollableTextView "" []
   widgetSetSizeRequest (widget comment) 0 0
   -- Выводить errors/warnings в этот TextView
-  let warn msg = do widgetSetSizeRequest (widget comment) (-1) (-1)
-                    postGUIAsync (comment ++= msg++"\n")
+  let warn msg = unlessM (val fileManagerMode) $ do
+                   widgetSetSizeRequest (widget comment) (-1) (-1)
+                   postGUIAsync (comment ++= msg++"\n")
   errorHandlers   ++= [warn]
   warningHandlers ++= [warn]
   return (widget comment)

@@ -379,7 +379,7 @@ other
   icons
     SHFILEINFO shFileInfo;
     SHGetFileInfo(filename, 0, &shFileInfo, sizeof(shFileInfo), SHGFI_ICON);
-    ExtractIcon
+    ExtractIcon - file's individual icon
     http://msdn.microsoft.com/en-us/library/dd183402(VS.85).aspx
   загружать иконки для всех команд из png/ico файлов
 
