@@ -92,9 +92,10 @@ newFMArc fm' arcname arcdir = do
 -- |«акрыть файл архива чтобы 1) другие операции смогли модифицировать его,
 --    2) его содержимое было перечитано заново при следующем использовании
 closeFMArc fm' = do
-  --fm <- val fm'
+  fm <- val fm'
   --io$ arcClose (fm_archive fm)
-  fm' .= \fm -> fm {subfm = (subfm fm) {subfm_archive = phantomArc}}
+  when (isFM_Archive fm) $ do
+    fm' .= \fm -> fm {subfm = (subfm fm) {subfm_archive = phantomArc}}
 
 -- ѕерейти в архив/каталог filename
 chdir fm' filename' = do
