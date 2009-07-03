@@ -247,7 +247,7 @@ createStats = do
         secs <- return_real_secs
         sec0 <- val indicator_start_real_secs
 
-        -- Для команд добавления выводится строка с Compressed/Total compressed, для остальных она скрывается
+        -- Определение Total compressed (точное только при распаковке архивав целиком, иначе - оценка)
         cmd <- val ref_command >>== cmd_name
         let total_compressed
               | cmdType cmd == ADD_CMD              =  "~"++show3 (total_bytes*cbytes `div` b)
@@ -258,14 +258,15 @@ createStats = do
         labelSetMarkup filesLabel$           bold$ show3 files                                  `on` indType==INDICATOR_FULL
         labelSetMarkup bytesLabel$           bold$ show3 b
         labelSetMarkup compressedLabel$      bold$ show3 cbytes                                 `on` indType==INDICATOR_FULL
+        labelSetMarkup timesLabel$           bold$ showHMS secs
         labelSetMarkup totalFilesLabel$      bold$ show3 total_files                            `on` indType==INDICATOR_FULL
         labelSetMarkup totalBytesLabel$      bold$ show3 total_bytes
-        labelSetMarkup timesLabel$           bold$ showHMS secs
-        when (processed>0.001 && b>0 && secs-sec0>0.001) $ do
-        labelSetMarkup totalCompressedLabel$ bold$ total_compressed                             `on` indType==INDICATOR_FULL
+        when (b>0 && secs-sec0>0.001) $ do   -- Поля скорости/коэф. сжатия бессмысленно показывать пока не накоплена хоть какая-то статистика
         labelSetMarkup ratioLabel$           bold$ ratio2 cbytes b++"%"                         `on` indType==INDICATOR_FULL
-        labelSetMarkup totalTimesLabel$      bold$ "~"++showHMS (sec0 + (secs-sec0)/processed)
         labelSetMarkup speedLabel$           bold$ showSpeed b (secs-sec0)
+        when (processed>0.001) $ do          -- Поля оценки времени/результата сжатия показыватся только после сжатия 0.1% всей информации
+        labelSetMarkup totalCompressedLabel$ bold$ total_compressed                             `on` indType==INDICATOR_FULL
+        labelSetMarkup totalTimesLabel$      bold$ "~"++showHMS (sec0 + (secs-sec0)/processed)
 
   -- Процедура, очищающая текущую статистику
   let clearStats  =  val labels' >>= mapM_ (`labelSetMarkup` "     ")
