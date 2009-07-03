@@ -357,17 +357,17 @@
   при отсутствии LastCheck в freearc.history программа иногда показывает "иероглифы"
 -max -> bmf for bmp/tif
 rep: научитьс€ использовать более двух блоков пам€ти при распаковке
+"lzp+ppmd:1gb" - не может выделить 1gb, но падает на I/O error в lzp (регресс 11b->20 июн€)
 пустые каталоги не удал€ютс€ из архива (в FM)
 iss
   если прервать распаковку, архив теперь "отпускаетс€", но последний распаковываемый файл - нет,
     в итоге - при неудачной попытке установки (прерывании установки) он один остаетс€ и его невозможно удалить
-  надо передавать строки в FreeArcExtract в utf-8 кодировке
-  cancel button- need to add warning about exiting when someone hit that cancel installation button
-    now simply hit break install
+  write callback (use it to detect disk overflow)
+  archive stats function (files, dirs, original/compressed size)
   possibly to add options to read first from ini specific output extract path for specific arc/exe to unpack?
     sometimes need [or someone forgot] to compress file/s with specific subfolder
 fashell
-  обработка 8000 выделенных файлов? ;)
+  обработка 8000 выделенных файлов? ;)  или даже одного длинного имени файла
   Add to... и прочее если им€ файла содержит %
 cvt
   ввод нового имени дл€ одного архива
@@ -379,6 +379,7 @@ other
   icons
     SHFILEINFO shFileInfo;
     SHGetFileInfo(filename, 0, &shFileInfo, sizeof(shFileInfo), SHGFI_ICON);
+    ExtractIcon
     http://msdn.microsoft.com/en-us/library/dd183402(VS.85).aspx
   загружать иконки дл€ всех команд из png/ico файлов
 

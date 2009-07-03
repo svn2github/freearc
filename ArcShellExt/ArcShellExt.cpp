@@ -52,7 +52,11 @@ typedef struct{
   LPTSTR szData;
 } DOREGSTRUCT, *LPDOREGSTRUCT;
 
-char szShellExtensionTitle[] = "FreeArc";
+#ifdef ISS_JOINER
+#define szShellExtensionTitle "IssJoiner"
+#else
+#define szShellExtensionTitle "FreeArc"
+#endif
 
 BOOL RegisterServer(CLSID, LPTSTR);
 BOOL UnregisterServer(CLSID, LPTSTR);
@@ -145,8 +149,8 @@ BOOL RegisterServer(CLSID clsid, LPTSTR lpszTitle) {
     HKEY_CLASSES_ROOT,   TEXT("CLSID\\%s"),                                                                NULL,                   lpszTitle,
     HKEY_CLASSES_ROOT,   TEXT("CLSID\\%s\\InprocServer32"),                                                NULL,                   szModule,
     HKEY_CLASSES_ROOT,   TEXT("CLSID\\%s\\InprocServer32"),                                                TEXT("ThreadingModel"), TEXT("Apartment"),
-    HKEY_CLASSES_ROOT,   TEXT("*\\shellex\\ContextMenuHandlers\\FreeArc"),                                 NULL,                   szCLSID,
-    HKEY_CLASSES_ROOT,   TEXT("Folder\\shellex\\ContextMenuHandlers\\FreeArc"),                            NULL,                   szCLSID,
+    HKEY_CLASSES_ROOT,   TEXT("*\\shellex\\ContextMenuHandlers\\" szShellExtensionTitle),                  NULL,                   szCLSID,
+    HKEY_CLASSES_ROOT,   TEXT("Folder\\shellex\\ContextMenuHandlers\\" szShellExtensionTitle),             NULL,                   szCLSID,
     HKEY_LOCAL_MACHINE,  TEXT("Software\\Microsoft\\Windows\\CurrentVersion\\Shell Extensions\\Approved"), szCLSID,                lpszTitle,
     NULL,                NULL,                                                                             NULL,                   NULL
   };

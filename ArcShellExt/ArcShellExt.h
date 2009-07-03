@@ -8,10 +8,21 @@
 // ArcShellExt.h
 //---------------------------------------------------------------------------
 
+#ifdef ISS_JOINER
+
+// GUID
+// {E09FD0C1-BF7C-4a5d-93E0-DBD879694C96}
+DEFINE_GUID(CLSID_ShellExtension,
+            0xe09fd0c1, 0xbf7c, 0x4a5d, 0x93, 0xe0, 0xdb, 0xd8, 0x79, 0x69, 0x4c, 0x96);
+
+#else
+
 // GUID
 // {1539B32D-3A75-4a4d-9B38-5A6000EA7045}
 DEFINE_GUID(CLSID_ShellExtension,
             0x1539b32d, 0x3a75, 0x4a4d, 0x9b, 0x38, 0x5a, 0x60, 0x0, 0xea, 0x70, 0x45);
+#endif
+
 
 class CShellExtClassFactory : public IClassFactory {
 protected:
