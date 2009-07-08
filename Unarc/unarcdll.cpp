@@ -32,13 +32,14 @@ public:
   Mutex mutex;
   Event DoEvent, EventDone;
 
-  char *what; int int1, int2; char *str;
-  void event (char *_what, int _int1, int _int2, char *_str);
+  char *what; int int1, int2, result; char *str;
+  bool event (char *_what, int _int1, int _int2, char *_str);
 
   bool AllowProcessing (char cmd, int silent, FILENAME arcname, char* comment, int cmtsize, FILENAME outdir);
   FILENAME GetOutDir ();
   void BeginProgress (uint64 totalBytes);
   bool ProgressRead  (uint64 readBytes);
+  bool ProgressWrite (uint64 writtenBytes);
   bool ProgressFile  (bool isdir, const char *operation, FILENAME filename, uint64 filesize);
   char AskOverwrite  (FILENAME filename, uint64 size, time_t modified);
   void Abort         (COMMAND *cmd);
@@ -48,7 +49,7 @@ public:
 /******************************************************************************
 ** Реализация интерфейса с программой, использующей DLL ***********************
 ******************************************************************************/
-void DLLUI::event (char *_what, int _int1, int _int2, char *_str)
+bool DLLUI::event (char *_what, int _int1, int _int2, char *_str)
 {
   Lock _(mutex);
   what = _what;
@@ -58,6 +59,7 @@ void DLLUI::event (char *_what, int _int1, int _int2, char *_str)
 
   DoEvent.Signal();
   EventDone.Lock();
+  return result>=0;
 }
 
 void DLLUI::BeginProgress (uint64 totalBytes)
@@ -67,14 +69,17 @@ void DLLUI::BeginProgress (uint64 totalBytes)
 
 bool DLLUI::ProgressRead (uint64 readBytes)
 {
-  event ("progress", readBytes>>20, totalBytes>>20, "");
-  return TRUE;
+  return event ("progress", readBytes>>20, totalBytes>>20, "");
+}
+
+bool DLLUI::ProgressWrite (uint64 writtenBytes)
+{
+  return event ("written", writtenBytes>>20, 0, "");
 }
 
 bool DLLUI::ProgressFile (bool isdir, const char *operation, FILENAME filename, uint64 filesize)
 {
-  event ("filename", 0, 0, filename);
-  return TRUE;
+  return event ("filename", 0, 0, filename);
 }
 
 FILENAME DLLUI::GetOutDir()
@@ -102,6 +107,15 @@ void DLLUI::Abort (COMMAND *cmd)
 /******************************************************************************
 ** Реализация функционала DLL *************************************************
 ******************************************************************************/
+static DWORD WINAPI timer_thread (void *)
+{
+  for(;;)
+  {
+    Sleep(10);
+    UI.event ("timer", 0, 0, "");
+  }
+}
+
 static DWORD WINAPI decompress_thread (void *paramPtr)
 {
   COMMAND *command = (COMMAND*) paramPtr;
@@ -134,6 +148,7 @@ int __cdecl FreeArcExtract (cbtype *callback, ...)
   COMMAND command (argc, argv);    // Распарсить команду
   if (command.ok) {                // Если парсинг был удачен и можно выполнить команду
     CThread thread;
+    thread.Create (timer_thread,      &command);   //   Спец. тред, вызывающий callback 100 раз в секунду
     thread.Create (decompress_thread, &command);   //   Выполнить разобранную команду
 
     for(;;)
@@ -141,9 +156,7 @@ int __cdecl FreeArcExtract (cbtype *callback, ...)
       UI.DoEvent.Lock();
       if (strequ (UI.what, "quit"))
         {return command.ok? FREEARC_OK : FREEARC_ERRCODE_GENERAL;}
-      int result = callback (UI.what, UI.int1, UI.int2, UI.str);
-      if (result < 0)
-        return result;
+      UI.result = callback (UI.what, UI.int1, UI.int2, UI.str);
       UI.EventDone.Signal();
     }
     thread.Wait();
