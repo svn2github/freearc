@@ -8,14 +8,18 @@
 ;
 ;Один архив можно слить с инсталятором, если их общий размер не более 2Гб, через "copy /b setup.exe+xxx.arc newsetup.exe" и указать в коде Archives = '{srcexe}'
 ;
+; Изменения от Bulat Ziganshin, 10-07-2009
+;   - Кнопка 'Отмена установки' теперь по расположению, размеру и надписи точно дублирует стандартную кнопку Отмена
+;   - В unarc.dll исправлена ошибка, чреватая потенциальными проблемами при распаковке множества архивов
+;
 ; Изменения от Bulat Ziganshin, 08-07-2009
 ;   - Корректно отображает общий объём установки и сколько данных уже распаковано
 ;   - Индикатор прогресса теперь основан на объёме распакованных и записанных на диск данных
 ;   - Дополнительно отображается сколько осталось времени
 ;   - FreeArcCallback вызывается не менее 100 раз в секунду, что заменяет вызов по таймеру
 ;   - Добавлен placeholder для периодически выполняемого кода (в начале процедуры FreeArcCallback)
-;   - Исправлена проблема с удалением последнего распаковываемого файла при отмене инсталяции
-;   - Исправлена проблема с русскими именами/путями инсталлируемых файлов
+;   - Исправлена проблема с удалением последнего распакованного файла при отмене инсталяции
+;   - Исправлена проблема с русскими именами/путями распаковываемых архивов
 ;   - Кнопка 'Отменить распаковку' масштабируется в зависимости от размеров формы
 ;   - Исправлено вычисление оставшегося времени (теперь отсчёт начинается в момент начала распаковки)
 ;   - За пределами процесса распаковки все лишние надписи убираются с экрана
@@ -58,7 +62,6 @@ Name: eng; MessagesFile: compiler:Default.isl
 Name: rus; MessagesFile: compiler:Languages\Russian.isl
 
 [CustomMessages]
-eng.ArcCancel=Cancel installation
 eng.ArcBreak=Installation cancelled!
 eng.ExtractedInfo=Extracted %1 Mb of %2 Mb
 eng.ArcInfo=Archive: %1 of %2
@@ -76,7 +79,6 @@ eng.hour= hours
 eng.min= mins
 eng.sec= secs
 
-rus.ArcCancel=Отменить распаковку
 rus.ArcBreak=Установка прервана!
 rus.ExtractedInfo=Распаковано %1 Мб из %2 Мб
 rus.ArcInfo=Архив: %1 из %2
@@ -87,7 +89,7 @@ rus.AllProgress=Общий прогресс распаковки: %1%%
 rus.ArcBroken=Возможно, архив %1 повреждён%nили недостаточно места на диске назначения.
 rus.Extracting=Распаковывается: %1
 rus.taskbar=%1%%, жди %2
-rus.remains=Осталось %1
+rus.remains=Осталось ждать %1
 rus.LongTime=вечно
 rus.ending=завершение
 rus.hour= часов
@@ -118,7 +120,7 @@ type
     PAnsiChar = PChar;  // Required for Inno Setup 5.3.0 and higher. (требуется для Inno Setup версии 5.3.0 и ниже)
 #endif
 #if Ver < 84018176
-    AnsiString = String; // There is no need for this line in Inno Setup 5.2.4 and below (для Inno Setup версий 5.2.4 и выше эта строка не нужна)
+    AnsiString = String; // There is no need for this line in Inno Setup 5.2.4 and above (для Inno Setup версий 5.2.4 и выше эта строка не нужна)
 #endif
 
     TMyMsg = record
@@ -199,7 +201,8 @@ function FindArcs(dir: string): Extended;
 var
     FSR: TFindRec;
 Begin
-    if FindFirst(ExpandConstant(dir), FSR) then
+    Result:= 0;
+    if FindFirst(ExpandConstant(dir), FSR) then begin
         try
             repeat
                 // Skip everything but the folders
@@ -207,13 +210,14 @@ Begin
                 n:= GetArrayLength(Arcs);
                 // Expand the folder list
                 SetArrayLength(Arcs, n +1);
-                Arcs[n].Path:= ExtractFilePath(ExpandConstant(Archives)) + FSR.Name;
+                Arcs[n].Path:= ExtractFilePath(ExpandConstant(dir)) + FSR.Name;
                 Arcs[n].Size:= Size64(FSR.SizeHigh, FSR.SizeLow);
                 Result:= Result + Arcs[n].Size;
             until not FindNext(FSR);
         finally
             FindClose(FSR);
         end;
+    end;
 End;
 
 // Converts OEM encoded string into ANSI
@@ -254,11 +258,11 @@ End;
 // Конвертирует милисекунды в человеко-читаемое изображение времени
 Function TicksToTime(Ticks: DWord; h,m,s: String; detail: Boolean): String;
 Begin
-    if detail then                          {hh:mm:ss format}
+    if detail                               {hh:mm:ss format} then
         Result:= PADZ(IntToStr(Ticks/3600000), 2) +':'+ PADZ(IntToStr((Ticks/1000 - Ticks/1000/3600*3600)/60), 2) +':'+ PADZ(IntToStr(Ticks/1000 - Ticks/1000/60*60), 2)
-    else if Ticks/3600 >= 1000              {more than hour} then
+    else if Ticks/3600 >= 1000              {more than hour}  then
         Result:= IntToStr(Ticks/3600000) +h+' '+ PADZ(IntToStr((Ticks/1000 - Ticks/1000/3600*3600)/60), 2) +m
-    else if Ticks/60 >= 1000 then           {1..60 minutes}
+    else if Ticks/60 >= 1000                {1..60 minutes}   then
         Result:= IntToStr(Ticks/60000) +m+' '+ PADZ(IntToStr(Ticks/1000 - Ticks/1000/60*60), 2) +s
    else Result:= IntToStr(Ticks/1000) +s    {less than one minute}
 End;
@@ -321,6 +325,7 @@ begin
     ExtractFile.caption:= cm('ArcTitle');
     ExtractFile.Show;
     // Show the 'Cancel unpacking' button and set it as default button
+    btnCancelUnpacking.Caption:= WizardForm.CancelButton.Caption;
     btnCancelUnpacking.Show;
     WizardForm.ActiveControl:= btnCancelUnpacking;
     WizardForm.ProgressGauge.Position:= 0;
@@ -364,7 +369,7 @@ begin
         end;
     end;
     // Hide labels and button
-    FileNameLabel.Caption:= '';
+    WizardForm.FileNameLabel.Caption:= '';
     lblExtractFileName.Hide;
     ExtractFile.Hide;
     btnCancelUnpacking.Hide;
@@ -395,6 +400,7 @@ Procedure CurPageChanged(CurPageID: Integer);
 Begin
     if (CurPageID = wpFinished) and (UnPackError <> 0) then
     begin // Extraction was unsuccessful (распаковщик вернул ошибку)
+        // Show error message
         WizardForm.FinishedLabel.Font.Color:= $0000C0;    // red (красный)
         WizardForm.FinishedLabel.Height:= WizardForm.FinishedLabel.Height * 2;
         WizardForm.FinishedLabel.Caption:= SetupMessage(msgSetupAborted) + #13#10#13#10 + msgError;
@@ -427,8 +433,7 @@ begin
     // Create a 'Cancel unpacking' button and hide it for now.
     btnCancelUnpacking:=TButton.create(WizardForm);
     btnCancelUnpacking.Parent:= WizardForm;
-    btnCancelUnpacking.SetBounds(ScaleX(260), WizardForm.cancelbutton.top, ScaleX(140), WizardForm.cancelbutton.Height);
+    btnCancelUnpacking.SetBounds(WizardForm.CancelButton.Left, WizardForm.CancelButton.top, WizardForm.CancelButton.Width, WizardForm.CancelButton.Height);
     btnCancelUnpacking.OnClick:= @btnCancelUnpackingOnClick;
-    btnCancelUnpacking.Caption:= cm('ArcCancel');
     btnCancelUnpacking.Hide;
 end;
