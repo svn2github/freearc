@@ -29,12 +29,14 @@ private:
   char outdir[MY_FILENAME_MAX*4];  //unicode: utf-8 encoding
   uint64 totalBytes;
 public:
+  COMMAND *command;
   Mutex mutex;
   Event DoEvent, EventDone;
 
   char *what; int int1, int2, result; char *str;
   bool event (char *_what, int _int1, int _int2, char *_str);
 
+  DLLUI (COMMAND *_command) : command(_command) {}
   bool AllowProcessing (char cmd, int silent, FILENAME arcname, char* comment, int cmtsize, FILENAME outdir);
   FILENAME GetOutDir ();
   void BeginProgress (uint64 totalBytes);
@@ -43,7 +45,7 @@ public:
   bool ProgressFile  (bool isdir, const char *operation, FILENAME filename, uint64 filesize);
   char AskOverwrite  (FILENAME filename, uint64 size, time_t modified);
   void Abort         (COMMAND *cmd);
-} UI;
+};
 
 
 /******************************************************************************
@@ -107,21 +109,22 @@ void DLLUI::Abort (COMMAND *cmd)
 /******************************************************************************
 ** Реализация функционала DLL *************************************************
 ******************************************************************************/
-static DWORD WINAPI timer_thread (void *)
+static DWORD WINAPI timer_thread (void *paramPtr)
 {
+  DLLUI *ui = (DLLUI*) paramPtr;
   for(;;)
   {
     Sleep(10);
-    UI.event ("timer", 0, 0, "");
+    ui->event ("timer", 0, 0, "");
   }
 }
 
 static DWORD WINAPI decompress_thread (void *paramPtr)
 {
-  COMMAND *command = (COMMAND*) paramPtr;
-  PROCESS (*command, UI);      //   Выполнить разобранную команду
-  UI.what = "quit";
-  UI.DoEvent.Signal();
+  DLLUI *ui = (DLLUI*) paramPtr;
+  PROCESS (*ui->command, *ui);      //   Выполнить разобранную команду
+  ui->what = "quit";
+  ui->DoEvent.Signal();
   return 0;
 }
 
@@ -148,16 +151,17 @@ int __cdecl FreeArcExtract (cbtype *callback, ...)
   COMMAND command (argc, argv);    // Распарсить команду
   if (command.ok) {                // Если парсинг был удачен и можно выполнить команду
     CThread thread;
-    thread.Create (timer_thread,      &command);   //   Спец. тред, вызывающий callback 100 раз в секунду
-    thread.Create (decompress_thread, &command);   //   Выполнить разобранную команду
+    DLLUI *ui = new DLLUI(&command);
+    thread.Create (timer_thread,      ui);   //   Спец. тред, вызывающий callback 100 раз в секунду
+    thread.Create (decompress_thread, ui);   //   Выполнить разобранную команду
 
     for(;;)
     {
-      UI.DoEvent.Lock();
-      if (strequ (UI.what, "quit"))
+      ui->DoEvent.Lock();
+      if (strequ (ui->what, "quit"))
         {return command.ok? FREEARC_OK : FREEARC_ERRCODE_GENERAL;}
-      UI.result = callback (UI.what, UI.int1, UI.int2, UI.str);
-      UI.EventDone.Signal();
+      ui->result = callback (ui->what, ui->int1, ui->int2, ui->str);
+      ui->EventDone.Signal();
     }
     thread.Wait();
   }
