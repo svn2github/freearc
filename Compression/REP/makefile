@@ -10,5 +10,10 @@ OPT_FLAGS   = -O3 -march=i486 -mtune=pentiumpro \
 DEBUG_FLAGS = -g0
 CFLAGS = $(CODE_FLAGS) $(OPT_FLAGS) $(DEBUG_FLAGS) $(DEFINES)
 
+rep_tabi.o: rep_tabi.cpp rep.cpp makefile
+	$(GCC) -c $(CFLAGS) -fexceptions -o $*.o $<
+
 $(TEMPDIR)/C_REP.o: C_REP.cpp C_REP.h rep.cpp makefile
 	$(GCC) -c $(CFLAGS) -o $*.o $<
+
+

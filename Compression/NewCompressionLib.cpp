@@ -1,43 +1,29 @@
 #include <stdio.h>
 #include <tabi.h>
 
-struct COMPRESSION_METHOD
+virtual int COMPRESSION_METHOD::server()
 {
-  // Call parameters
-  TABI_MAP p;
+  char *service = p._str("service");
 
-  // Methods
-  COMPRESSION_METHOD (TABI_ELEMENT* params) : p(params) {};
+  // Global services
+  if (strequ (service, "register"))               return Register();
 
-  void parse_method()
-  {
-    char *paramstr = p._str("method");
-  }
-
-  int server (char *service)
-  {
-    // Global services
-    if (strequ (service, "register"))               return Register();
-
-    // Private services
-    if (strequ (service, "decompress"))             {parse_method(); return Decompress (p._callback("callback"));}  //auxdata?
+  // Invocation-specific services
+  if (strequ (service, "decompress"))             {parse_method(); return decompress (p._callback("callback"), p);}
 #ifndef FREEARC_DECOMPRESS_ONLY
-    if (strequ (service, "compress"))               {parse_method(); return Compress   (p._callback("callback"));}
-    if (strequ (service, "GetCompressionMem"))      {parse_method(); return GetCompressionMem();}
-    if (strequ (service, "GetDictionary"))          {parse_method(); return GetDictionary();}
-    if (strequ (service, "GetBlockSize"))           {parse_method(); return GetBlockSize();}
-    if (strequ (service, "SetCompressionMem"))      {parse_method(); SetCompressionMem  (p._int("mem"));  ShowCompressionMethod(p._str("result")); return FREEARC_OK;}
-    if (strequ (service, "SetDecompressionMem"))    {parse_method(); SetDecompressionMem(p._int("mem"));  ShowCompressionMethod(p._str("result")); return FREEARC_OK;}
-    if (strequ (service, "SetDictionary"))          {parse_method(); SetDictionary      (p._int("dict")); ShowCompressionMethod(p._str("result")); return FREEARC_OK;}
-    if (strequ (service, "SetBlockSize"))           {parse_method(); SetBlockSize       (p._int("dict")); ShowCompressionMethod(p._str("result")); return FREEARC_OK;}
+  if (strequ (service, "compress"))               {parse_method(); return compress   (p._callback("callback"), p);}
+  if (strequ (service, "SetCompressionMem"))      {parse_method(); SetCompressionMem  (p._int("mem")); char a[1000]; ShowCompressionMethod(a); return p._return(a);}
+  if (strequ (service, "SetDictionary"))          {parse_method(); SetDictionary      (p._int("mem")); char a[1000]; ShowCompressionMethod(a); return p._return(a);}
+  if (strequ (service, "SetBlockSize"))           {parse_method(); SetBlockSize       (p._int("mem")); char a[1000]; ShowCompressionMethod(a); return p._return(a);}
+  if (strequ (service, "SetDecompressionMem"))    {parse_method(); SetDecompressionMem(p._int("mem")); char a[1000]; ShowCompressionMethod(a); return p._return(a);}
+  if (strequ (service, "GetCompressionMem"))      {parse_method(); return p._return (GetCompressionMem());}
+  if (strequ (service, "GetDictionary"))          {parse_method(); return p._return (GetDictionary());}
+  if (strequ (service, "GetBlockSize"))           {parse_method(); return p._return (GetBlockSize());}
 #endif
-    if (strequ (service, "GetDecompressionMem"))    {parse_method(); return GetDecompressionMem();}
+  if (strequ (service, "GetDecompressionMem"))    {parse_method(); return p._return (GetDecompressionMem());}
 
-    return FREEARC_ERRCODE_NOT_IMPLEMENTED;
-  }
-
-};
-
+  return FREEARC_ERRCODE_NOT_IMPLEMENTED;
+}
 
 
 int RegisterCompressionMethod (TABI_SERVICE server)
@@ -47,16 +33,17 @@ int RegisterCompressionMethod (TABI_SERVICE server)
   return FREEARC_OK;
 }
 
-int cels_call (char *service, TABI_ELEMENT* params)
+int cels_call (TABI_ELEMENT* params)
 {
   for (p=table; p<ptr; p++)
   {
-    int x = (*p)(service,params);
+    int x = (*p)(params);
     // some auto-actions
     //SetDecompressionMem {if (mem>0)   ...;}
     //SetDictionary       {if (dict>0)  ...;}
     //GetBlockSize        {return 0;}
     //SetBlockSize        {}
+    //Limit               get & set
 
     if (x!=FREEARC_ERRCODE_NOT_IMPLEMENTED)
       return x;

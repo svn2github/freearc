@@ -1,12 +1,10 @@
-#include "../Compression.h"
-#include <tabi.h>
+#include "../NewCompression.h"
 
 #include "rep.cpp"
 
 // Реализация стандартного интерфейса методов сжатия COMPRESSION_METHOD
-class REP_METHOD : public COMPRESSION_METHOD
+struct REP_METHOD : COMPRESSION_METHOD
 {
-public:
   // Параметры этого метода сжатия
   MemSize BlockSize;        // Размер буфера. Совпадения ищутся только в пределах этой дистанции. Расход памяти - BlockSize+BlockSize/4
   int     MinCompression;   // Минимальный процент сжатия. Если выходные данные больше, то вместо них будут записаны оригинальные (несжатые) данные
