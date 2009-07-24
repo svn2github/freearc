@@ -26,6 +26,12 @@ instance Value Int where
   peekValue t ptr | t == #{const TABI_INTEGER}  =  peek (castPtr ptr :: Ptr Int64) >>= return.Just .fromIntegral
                   | otherwise                   =  return Nothing
 
+instance Value Integer where
+  typeOf _ = #{const TABI_INTEGER}
+  pokeValue ptr a  =  poke (castPtr ptr :: Ptr Int64) (fromIntegral a) >> return doNothing
+  peekValue t ptr | t == #{const TABI_INTEGER}  =  peek (castPtr ptr :: Ptr Int64) >>= return.Just .fromIntegral
+                  | otherwise                   =  return Nothing
+
 instance Value CUInt where
   typeOf _ = #{const TABI_INTEGER}
   pokeValue ptr a  =  poke (castPtr ptr :: Ptr Int64) (fromIntegral a) >> return doNothing
