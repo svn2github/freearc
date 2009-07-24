@@ -118,7 +118,7 @@ addExternalCompressor definition =
 ----------------------------------------------------------------------------------------------------
 
 -- |Run operation with callback
-runWithCallback service method callback  =  run service method ["callback" ==> (callback :: TABI.CALLBACK_FUNC)]
+runWithCallback service method callback  =  run service method ["callback" ==> (callback :: TABI.FUNCTION)]
 
 -- |Run operation
 run service method params  =  TABI.call server ("service" ==> service : "method" ==> method : params)
@@ -136,7 +136,7 @@ askMethod service params method  =  unsafePerformIO$ TABI.call server ("service"
 
 -- |Server function implemented in C++
 foreign import ccall safe "Compression.h"
-  server :: TABI.C_CALLBACK_FUNC
+  server :: TABI.C_FUNCTION
 
 -- |Get/set number of threads used for (de)compression
 foreign import ccall unsafe  "Compression.h  GetCompressionThreads"

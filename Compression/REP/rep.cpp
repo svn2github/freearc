@@ -379,7 +379,7 @@ int rep_compress (unsigned BlockSize, int MinCompression, int MinMatchLen, int B
     for (int FirstTime=1; ; FirstTime=0) {
 
         // времхе бундмшу дюммшу
-        int Size = callback ("read", buf+Base, mymin (BlockSize-Base, FirstTime? MAX_READ : mymin (BlockSize/8, MAX_READ)), auxdata);
+        int Size;  READ_LEN(Size, buf+Base, mymin (BlockSize-Base, FirstTime? MAX_READ : mymin (BlockSize/8, MAX_READ)));
         if (Size < 0)  {errcode=Size; goto finished;}   // Error: can't read input data
         if (FirstTime) {
             HashSize = CalcHashSize (HashBits, BlockSize, k);
