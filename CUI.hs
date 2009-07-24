@@ -70,10 +70,15 @@ uiResumeProgressIndicator = do
   myFlushStdout
   aProgressIndicatorEnabled =: True
 
+-- |Завершить выполнение программы
+guiDoneProgram = do
+  return ()
+
 {-# NOINLINE guiStartProgram #-}
 {-# NOINLINE guiStartFile #-}
 {-# NOINLINE uiSuspendProgressIndicator #-}
 {-# NOINLINE uiResumeProgressIndicator #-}
+{-# NOINLINE guiDoneProgram #-}
 
 
 ----------------------------------------------------------------------------------------------------

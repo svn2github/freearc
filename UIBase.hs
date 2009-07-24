@@ -90,6 +90,32 @@ indicator_start_real_secs  =  unsafePerformIO$ newIORef$ (0::Double)
 -- |Синхронизация доступа к UI
 syncUI = withMVar mvarSyncUI . const;  mvarSyncUI = unsafePerformIO$ newMVar "mvarSyncUI"
 
+-- |Переменные для разбуживания тредов индикации
+indicators  =  unsafePerformIO$ newMVar$ ([]::[MVar Action])
+type Action = IO()
+
+-- |Принудительно обновить все индикаторы
+updateAllIndicators = do
+  indicators' <- val indicators
+  for indicators' $ \indicator -> do
+    x <- newEmptyMVar
+    putMVar indicator (putMVar x ())
+    takeMVar x
+
+-- |Выполнять в бэкграунде action каждые secs секунд
+backgroundThread secs action = do
+  x <- newEmptyMVar
+  indicators ++= [x]  -- добавление в этот список позволяет также обновлять индикаторы "извне"
+  forkIO $ do
+    foreverM $ do
+      sleepSeconds secs
+      putMVar x doNothing0
+  forkIO $ do
+    foreverM $ do
+      a <- takeMVar x
+      syncUI $ do
+        action
+      a
 
 -- |Тред, следящий за indicator, и выводящий время от времени его обновлённые значения
 indicatorThread secs output =
@@ -108,16 +134,10 @@ indicatorThread secs output =
             p        = percents indicator bytes total
         output indicator indType winTitle b bytes total processed p
 
--- |Выполнять в бэкграунде action каждые secs секунд
-backgroundThread secs action =
-  forkIO $ do
-    foreverM $ do
-      sleepSeconds secs
-      syncUI $ do
-        action
-
-{-# NOINLINE indicatorThread #-}
+{-# NOINLINE updateAllIndicators #-}
 {-# NOINLINE backgroundThread #-}
+{-# NOINLINE indicatorThread  #-}
+
 
 ----------------------------------------------------------------------------------------------------
 ---- Индикатор прогресса ---------------------------------------------------------------------------

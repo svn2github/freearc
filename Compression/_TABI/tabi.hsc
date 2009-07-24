@@ -72,12 +72,12 @@ foreign import ccall "dynamic"
 
 instance Value FUNCTION where
   typeOf _ = #{const TABI_FUNCPTR}
-  -- Write to memory C wrapper around Haskell callback
+  -- Write to memory C wrapper around Haskell FUNCTION
   pokeValue ptr callback =  do let c_callback params  =  fromIntegral `fmap` callback params
                                funptr_c_callback <- mkFUNCTION_WRAPPER c_callback
                                poke (castPtr ptr) funptr_c_callback
                                return (freeHaskellFunPtr funptr_c_callback)
-  -- Read pointer to C callback and convert it to Haskell function
+  -- Read pointer to C_FUNCTION and convert it to Haskell FUNCTION
   peekValue t ptr | t == #{const TABI_FUNCPTR}  =
                                                    do c_callback <- mkFUNCTION_DYNAMIC `fmap` peek (castPtr ptr)
                                                       let callback params  =  fromIntegral `fmap` c_callback params

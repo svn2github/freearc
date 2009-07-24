@@ -18,7 +18,7 @@
 @if .%1 == .-DFREEARC_GUI  set exe=Tests\FreeArc.exe
 @if .%2 == .-DFREEARC_GUI  set exe=Tests\FreeArc.exe
 @if .%3 == .-DFREEARC_GUI  set exe=Tests\FreeArc.exe
-@set options=-iCompression -threaded -fglasgow-exts -fallow-undecidable-instances -fallow-overlapping-instances -fno-monomorphism-restriction -fbang-patterns
+@set options=-iCompression -iCompression/_TABI -threaded -fglasgow-exts -fallow-undecidable-instances -fallow-overlapping-instances -fno-monomorphism-restriction -fbang-patterns
 @set ghc_rts_options=+RTS -A4m -H50m -M300m
 @del %exe% >nul 2>nul
 t ghc.exe --make %1 %2 %3 Arc.hs %options% %defines% %c_modules% Unarc/gui/icon.o -odir %tempdir% -hidir %tempdir% -o %exe% %ghc_rts_options%

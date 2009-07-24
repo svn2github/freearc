@@ -351,6 +351,9 @@
   aARC_VERSION = "0.51", aARCHIVE_VERSION = make4byte 0 0 5 1
 === To-do list ====================================================================================
 
+fmUnselectFilenames fm' (const True)  - наверно можно ускорить для больших списков файлов
+err/warn box
+  не закрывать программу в конце если мы не в FM
 инсталятор
   добавить ArcShellExt и all2arc.exe
   ini->bin
@@ -360,15 +363,19 @@ rep: научиться использовать более двух блоков памяти при распаковке
 "lzp+ppmd:1gb" - не может выделить 1gb, но падает на I/O error в lzp (регресс 11b->20 июня)
 пустые каталоги не удаляются из архива (в FM)
 iss
-  если прервать распаковку, архив теперь "отпускается", но последний распаковываемый файл - нет,
-    в итоге - при неудачной попытке установки (прерывании установки) он один остается и его невозможно удалить
-  write callback (use it to detect disk overflow)
+  обновление имени файла - раз в 0.1 сек
+  сделать запись данных из lzma небольшими блоками
+  проверка на исчерпание свободного места в write callback...
+  unicode версия
+  чтоб установка и распаковка архива шло в один прогресс бар
+  если бы он еще брал инфу из архива о том скока весят файлы после распаковки
   archive stats function (files, dirs, original/compressed size)
   possibly to add options to read first from ini specific output extract path for specific arc/exe to unpack?
     sometimes need [or someone forgot] to compress file/s with specific subfolder
 fashell
   обработка 8000 выделенных файлов? ;)  или даже одного длинного имени файла
   Add to... и прочее если имя файла содержит %
+  "winrar beta 3 did not display archiving commands in context menu if user selected several archives"
 cvt
   ввод нового имени для одного архива
 other

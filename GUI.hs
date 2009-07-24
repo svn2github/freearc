@@ -98,6 +98,13 @@ guiStartProgram = gui $ do
   (windowProgress, clearStats) <- runIndicators
   widgetShowAll windowProgress
 
+-- |Завершить выполнение программы
+guiDoneProgram = do
+  unlessM (val fileManagerMode) $ do
+    foreverM $ sleepSeconds 1
+  return ()
+
+
 {-# NOINLINE runIndicators #-}
 -- |Создаёт окно индикатора прогресса и запускает тред для его периодического обновления.
 runIndicators = do
@@ -247,7 +254,7 @@ createStats = do
         secs <- return_real_secs
         sec0 <- val indicator_start_real_secs
 
-        -- Определение Total compressed (точное только при распаковке архивав целиком, иначе - оценка)
+        -- Определение Total compressed (точное только при распаковке архива целиком, иначе - оценка)
         cmd <- val ref_command >>== cmd_name
         let total_compressed
               | cmdType cmd == ADD_CMD              =  "~"++show3 (total_bytes*cbytes `div` b)
@@ -264,7 +271,7 @@ createStats = do
         when (b>0 && secs-sec0>0.001) $ do   -- Поля скорости/коэф. сжатия бессмысленно показывать пока не накоплена хоть какая-то статистика
         labelSetMarkup ratioLabel$           bold$ ratio2 cbytes b++"%"                         `on` indType==INDICATOR_FULL
         labelSetMarkup speedLabel$           bold$ showSpeed b (secs-sec0)
-        when (processed>0.001) $ do          -- Поля оценки времени/результата сжатия показыватся только после сжатия 0.1% всей информации
+        when (processed>0.001) $ do          -- Поля оценки времени/результата сжатия показываются только после сжатия 0.1% всей информации
         labelSetMarkup totalCompressedLabel$ bold$ total_compressed                             `on` indType==INDICATOR_FULL
         labelSetMarkup totalTimesLabel$      bold$ "~"++showHMS (sec0 + (secs-sec0)/processed)
 

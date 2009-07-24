@@ -275,6 +275,7 @@ uiDoneArchive = do
                       , fake_cbytes   = fake_cbytes }  <-  val ref_ui_state
   let cmd = cmd_name command
   uiMessage =: ""
+  updateAllIndicators
   uiDoneProgressIndicator
   when (opt_indicator command=="2" && files-fake_files>0) $ do
     myPutStrLn ""
@@ -327,6 +328,7 @@ uiDoneCommand Command{cmd_name=cmd} totals = do
 -- |Завершить выполнение программы
 uiDoneProgram = do
   condPrintLineNeedSeparator "" "\n"
+  guiDoneProgram
 
 
 {-# NOINLINE uiStartProgram #-}
