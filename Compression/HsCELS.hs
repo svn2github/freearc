@@ -84,17 +84,17 @@ canonizeCompressionMethod = mapMethod "canonize" []
 
 -- |Set memory used to compress/decompress, dictionary or block size of method given
 [setCompressionMem, setDecompressionMem, setDictionary, setBlockSize :: MemSize -> Method -> Method] =
-  (flip map) (words "setCompressionMem setDecompressionMem setDictionary setBlockSize")
+  (flip map) (words "SetCompressionMem SetDecompressionMem SetDictionary SetBlockSize")
              (\service mem -> mapMethod service ["mem" ==> mem])
 
 -- |Put upper limit to memory used to compress/decompress, dictionary or block size of method given
 [limitCompressionMem, limitDecompressionMem, limitDictionary, limitBlockSize :: MemSize -> Method -> Method] =
-  (flip map) (words "limitCompressionMem limitDecompressionMem limitDictionary limitBlockSize")
+  (flip map) (words "LimitCompressionMem LimitDecompressionMem LimitDictionary LimitBlockSize")
              (\service mem -> mapMethod service ["mem" ==> mem])
 
 -- |Returns memory used to compress/decompress, dictionary or block size of method given
 [getCompressionMem, getDecompressionMem, getDictionary, getBlockSize :: Method -> MemSize] =
-  (flip map) (words "getCompressionMem getDecompressionMem getDictionary getBlockSize")
+  (flip map) (words "GetCompressionMem GetDecompressionMem GetDictionary GetBlockSize")
              (\service -> mapMethod service [])
 
 -- |Check boolean property of compression method, returning FALSE if it's not implemented

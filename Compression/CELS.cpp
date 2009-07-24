@@ -8,6 +8,8 @@ int COMPRESSION_METHOD::server()
 {
   char *service = p._str("service");
 
+  if (strequ (service, "encryption?"))    return 1;               // to do: ---
+
   // Global services
   if (strequ (service, "register"))               return FREEARC_OK; //to do: Register();
 
@@ -15,6 +17,7 @@ int COMPRESSION_METHOD::server()
   if (strequ (service, "decompress"))             {parse_method(); return decompress (p._callback("callback"), p);}
 #ifndef FREEARC_DECOMPRESS_ONLY
   if (strequ (service, "compress"))               {parse_method(); return compress   (p._callback("callback"), p);}
+  if (strequ (service, "canonize"))               {parse_method();                                     char a[1000]; ShowCompressionMethod(a); return p._return(a);}
   if (strequ (service, "SetCompressionMem"))      {parse_method(); SetCompressionMem  (p._int("mem")); char a[1000]; ShowCompressionMethod(a); return p._return(a);}
   if (strequ (service, "SetDictionary"))          {parse_method(); SetDictionary      (p._int("mem")); char a[1000]; ShowCompressionMethod(a); return p._return(a);}
   if (strequ (service, "SetBlockSize"))           {parse_method(); SetBlockSize       (p._int("mem")); char a[1000]; ShowCompressionMethod(a); return p._return(a);}
@@ -42,7 +45,7 @@ TABI_FUNCTION* methodsTable[MAX_COMPRESSION_METHODS];
 int CELS_Register (TABI_FUNCTION *method)
 {
   CHECK (methodsCount < elements(methodsTable), (s,"INTERNAL ERROR: Overflow of compression methods table"));
-  int result = (*method)(TABI_DYNAMAP("register"));
+  int result = (*method)(TABI_DYNAMAP("service","register"));
   if (result==FREEARC_OK)
     methodsTable[methodsCount++] = method;
   return result;
@@ -51,6 +54,7 @@ int CELS_Register (TABI_FUNCTION *method)
 // Central CELS function that provides all CELS services
 int CELS_Call (TABI_ELEMENT* params)
 {
+  TABI_MAP p(params); p.dump();
   for (int i=0; i<methodsCount; i++)
   {
     int x = methodsTable[i](params);

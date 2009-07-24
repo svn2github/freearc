@@ -12,7 +12,7 @@ typedef union _TABI_VALUE
 {
 	char          placeholder[16];
 	long long     int_number;
-	double        fp_number;
+	double        float_number;
 	char*         str;
 	void*         ptr;
 	VOID_FUNC     funcptr;
@@ -60,7 +60,7 @@ class TABI_MAP
 		TABI_GETTER( unsigned,        unsigned,        _unsigned,   TABI_INTEGER,   int_number);
 		TABI_GETTER( long,            long,            _long,       TABI_INTEGER,   int_number);
 		TABI_GETTER( long long,       long long,       _longlong,   TABI_INTEGER,   int_number);
-		TABI_GETTER( double,          double,          _double,     TABI_FLOATING,  fp_number);
+		TABI_GETTER( double,          double,          _double,     TABI_FLOATING,  float_number);
 		TABI_GETTER( char*,           char*,           _str,        TABI_STRING,    str);
 		TABI_GETTER( const char*,     char*,           _cstr,       TABI_STRING,    str);
 		TABI_GETTER( void*,           void*,           _ptr,        TABI_PTR,       ptr);
@@ -70,15 +70,25 @@ class TABI_MAP
 		template<class T> TABI_RESULT_TYPE _return(T v) {return _callback("return") (TABI_DYNAMAP(v));}
 
                 // Dump first n elements (for debugging purposes)
-		void dump(int n)
+		void dump(int n=0)
 		{
-			for (int i=0; i<n; i++)
+			for (int i=0; i<n?n:999; i++)
 			{
-				printf("%10s ",p[i].name);
 				for (int j= 0; j< 4; j++)   printf("%02x ", *((unsigned char*)(p+i)+j)); printf("  ");
 				for (int j= 4; j< 8; j++)   printf("%02x ", *((unsigned char*)(p+i)+j)); printf("  ");
-				for (int j= 8; j<24; j++)   printf("%02x ", *((unsigned char*)(p+i)+j)); printf("\n");
+				for (int j= 8; j<24; j++)   printf("%02x ", *((unsigned char*)(p+i)+j)); printf("  ");
+				if (p[i].name == NULL)
+					break;
+				printf("%10s ", p[i].name);
+				switch (p[i].type)
+				{
+					case TABI_STRING:	if (p[i].value.str)   printf("%s", p[i].value.str); break;
+					case TABI_INTEGER:	printf("%lld", p[i].value.int_number); break;
+					case TABI_FLOATING:	printf("%g", p[i].value.float_number); break;
+				}
+				printf("\n");
 			}
+			printf("\n");
 		}
 
 	protected:
@@ -120,7 +130,7 @@ class TABI_DYNAMAP : public TABI_MAP
 		TABI_SETTER( unsigned,        unsigned,        _unsigned,   TABI_INTEGER,   int_number);
 		TABI_SETTER( long,            long,            _long,       TABI_INTEGER,   int_number);
 		TABI_SETTER( long long,       long long,       _longlong,   TABI_INTEGER,   int_number);
-		TABI_SETTER( double,          double,          _double,     TABI_FLOATING,  fp_number);
+		TABI_SETTER( double,          double,          _double,     TABI_FLOATING,  float_number);
 		TABI_SETTER( char*,           char*,           _str,        TABI_STRING,    str);
 		TABI_SETTER( const char*,     char*,           _cstr,       TABI_STRING,    str);
 		TABI_SETTER( void*,           void*,           _ptr,        TABI_PTR,       ptr);

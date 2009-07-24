@@ -115,7 +115,7 @@ pokeELEMENT array i (Pair n v) = do
 -- |Call that returns value of arbitrary type
 callret :: Value a => C_FUNCTION -> [ELEMENT] -> IO a
 callret server params = do
-  result <- newIORef$ error "undefined result"                        -- create variable to store result of call
+  result <- newIORef$ error "TABI.callret: undefined result"          -- create variable to store result of call
   let return_callback p = do                                          -- callback used to return result of call
         writeIORef result =<< TABI.required p ""
         return 0

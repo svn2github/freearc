@@ -255,7 +255,7 @@ decompress method callback      - распаковать данные
 -}
 
 -- |Процедуры упаковки для различных алгоритмов сжатия.
---freearcCompress   num method | aSTORING ==  method =  copy_data
+--to do: freearcCompress   num method | aSTORING ==  method =  copy_data
 --freearcCompress   num method | isFakeMethod method =  eat_data
 freearcCompress   num method                       =  CompressionLib.compress method
 
