@@ -65,6 +65,9 @@ extern "C" {
 
 typedef TABI_FUNCTION CALLBACK_FUNC;
 
+namespace CELS
+{
+
 struct COMPRESSION_METHOD
 {
   TABI_MAP p;      // Call parameters
@@ -104,7 +107,12 @@ struct COMPRESSION_METHOD
   virtual MemSize GetDecompressionMem (void) = 0;
 };
 
+}
+
+// Compression method registration
 int CELS_Register (TABI_FUNCTION *method);
+// Central CELS function that provides all CELS services
+int CELS_Call (TABI_ELEMENT* params);
 
 
 // ****************************************************************************************************************************

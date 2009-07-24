@@ -135,7 +135,7 @@ askMethod service params method  =  unsafePerformIO$ TABI.call server ("service"
 ----------------------------------------------------------------------------------------------------
 
 -- |Server function implemented in C++
-foreign import ccall safe "Compression.h"
+foreign import ccall safe "Compression.h CELS_Call"
   server :: TABI.C_FUNCTION
 
 -- |Get/set number of threads used for (de)compression

@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include "CELS.h"
 
+namespace CELS
+{
+
 int COMPRESSION_METHOD::server()
 {
   char *service = p._str("service");
@@ -25,6 +28,7 @@ int COMPRESSION_METHOD::server()
   return FREEARC_ERRCODE_NOT_IMPLEMENTED;
 }
 
+}
 
 // ****************************************************************************************************************************
 // онддепфйю рюакхжш гюпецхярпхпнбюммшу лернднб яфюрхъ х онхяй б щрни рюакхже пеюкхгюжхх вхярн йнмйпермнцн лерндю *************
@@ -44,7 +48,7 @@ int CELS_Register (TABI_FUNCTION *method)
   return result;
 }
 
-//
+// Central CELS function that provides all CELS services
 int CELS_Call (TABI_ELEMENT* params)
 {
   for (int i=0; i<methodsCount; i++)
