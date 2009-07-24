@@ -1,0 +1,29 @@
+Name:               tabi
+Version:            0.1
+Synopsis:           Typeful tagged cross-language calling convention
+Category:           FFI
+License:            BSD3
+License-file:       LICENSE
+Stability:          experimental
+Author:             Bulat Ziganshin
+Maintainer:         Bulat.Ziganshin@gmail.com
+Homepage:           http://code.google.com/p/tabi/
+Build-type:         Simple
+Build-Depends:      base >= 2 && < 4
+Extensions:         ForeignFunctionInterface, CPP
+Ghc-Options:        -O2
+-- Tested-with:     ghc 6.6.1
+Exposed-modules:
+                    TABI
+Extra-source-files:
+                    tabi.h,
+                    tabi.hsc,
+                    tabi.lua,
+                    Examples/runall.cmd,
+                    Examples/cpp-example.cpp,
+                    Examples/cpp-server.cpp,
+                    Examples/hs-example.hs,
+                    Examples/example.lua
+
+-- See Cabal description at:
+-- http://www.haskell.org/ghc/docs/latest/html/Cabal/
