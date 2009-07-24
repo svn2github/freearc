@@ -16,9 +16,9 @@ import Foreign.C
 
 -- Rules of serialization for values that may be passed via TABI
 class Value a where
-  typeOf :: a -> Int32                     -- ^Integer constant that represents this type of values
-  pokeValue :: Ptr () -> a -> IO (IO ())   -- ^Write value to given memory address and return action that will free memory buffers allocated for this value
-  peekValue :: Int32 -> Ptr () -> IO (Maybe a)
+  typeOf :: a -> Int32                          -- ^Integer constant that represents this type of values
+  pokeValue :: Ptr () -> a -> IO (IO ())        -- ^Write value to given memory address and return action that will free memory buffers allocated for this value
+  peekValue :: Int32 -> Ptr () -> IO (Maybe a)  -- ^Read value from given memory address if its type allows conversion to type `a`
 
 instance Value Int where
   typeOf _ = #{const TABI_INTEGER}
@@ -66,18 +66,23 @@ instance Value (FunPtr a) where
 type FUNCTION    =  Ptr ELEMENT -> IO Int
 type C_FUNCTION  =  Ptr ELEMENT -> IO CInt
 foreign import ccall safe "wrapper"
-   mkCALL_BACK :: C_FUNCTION -> IO (FunPtr C_FUNCTION)
+   mkFUNCTION_WRAPPER :: C_FUNCTION -> IO (FunPtr C_FUNCTION)
+foreign import ccall "dynamic"
+   mkFUNCTION_DYNAMIC :: FunPtr C_FUNCTION -> C_FUNCTION
 
 instance Value FUNCTION where
   typeOf _ = #{const TABI_FUNCPTR}
   -- Write to memory C wrapper around Haskell callback
-  pokeValue ptr callback =  do let c_callback params = do
-                                     ret <- callback params
-                                     return (fromIntegral (ret :: Int))
-                               funptr_c_callback <- mkCALL_BACK c_callback
+  pokeValue ptr callback =  do let c_callback params  =  fromIntegral `fmap` callback params
+                               funptr_c_callback <- mkFUNCTION_WRAPPER c_callback
                                poke (castPtr ptr) funptr_c_callback
                                return (freeHaskellFunPtr funptr_c_callback)
-
+  -- Read pointer to C callback and convert it to Haskell function
+  peekValue t ptr | t == #{const TABI_FUNCPTR}  =
+                                                   do c_callback <- mkFUNCTION_DYNAMIC `fmap` peek (castPtr ptr)
+                                                      let callback params  =  fromIntegral `fmap` c_callback params
+                                                      return (Just callback)
+                  | otherwise                   =  return Nothing
 
 
 
@@ -104,8 +109,8 @@ pokeELEMENT array i (Pair n v) = do
 -- |Call that returns value of arbitrary type
 callret :: Value a => C_FUNCTION -> [ELEMENT] -> IO a
 callret server params = do
-  result <- newIORef$ error "undefined result"                             -- create variable to store result of call
-  let return_callback p = do                                               -- callback used to return result of call
+  result <- newIORef$ error "undefined result"                        -- create variable to store result of call
+  let return_callback p = do                                          -- callback used to return result of call
         writeIORef result =<< TABI.required p ""
         return 0
   call server (Pair "return" (return_callback::FUNCTION) : params)    -- add return callback to params list
@@ -115,11 +120,15 @@ callret server params = do
 call :: C_FUNCTION -> [ELEMENT] -> IO Int
 call server params = do
   let size x = (x+length params) * #{size TABI_ELEMENT}        -- memory required for serialization of all params plus x more values
-  allocaBytes (size 1) $ \array -> do                          -- alloc C-style array to store all params
-  actions <- zipWithM (pokeELEMENT array) [0..] params         -- write params to the array
+  allocaBytes (size 1) $ \c_params -> do                       -- alloc C-style array to store all params
+  actions <- zipWithM (pokeELEMENT c_params) [0..] params      -- write params to the array
   (flip finally) (sequence_ actions) $ do                      -- free at the end all memory used for marshalling params
-  poke (nameField (array `plusPtr` size 0)) nullPtr            -- put NULL marker at the N+1 array position
-  server array >>= return . fromIntegral
+  poke (nameField (c_params `plusPtr` size 0)) nullPtr         -- put NULL marker at the N+1 array position
+  server c_params >>= return . fromIntegral                    -- call server
+
+
+
+
 
 -- |Unmarshall required parameter
 required params name        =  parameter params name (raise ("required parameter "++name++" not found"))
@@ -137,8 +146,8 @@ parameter params name default_action = do
     Just value -> return value
     Nothing    -> raise ("parameter "++name++": type mismatch ("++show t++")")
 
--- |Search array of TABI_ELEMENTs for element having given name
-find params name = go params
+-- |Search C array of TABI_ELEMENTs for element having given name
+find c_params name = go c_params
   where go ptr = do cstr <- peek (nameField ptr)
                     if cstr==nullPtr
                       then return nullPtr
