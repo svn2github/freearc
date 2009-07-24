@@ -3,6 +3,11 @@
 ---- ”паковка и распаковка данных.                                                              ----
 ---- »нтерфейс с написанными на —и процедурами, выполн€ющими всю реальную работу.               ----
 ----------------------------------------------------------------------------------------------------
+#if 0
+module CompressionLib (module HsCELS) where
+import HsCELS
+#else
+
 module CompressionLib where
 
 import Control.Concurrent
@@ -348,3 +353,4 @@ type VoidPtr = Ptr ()
 -- |Universal integral types conversion routine
 ii x = fromIntegral x
 
+#endif

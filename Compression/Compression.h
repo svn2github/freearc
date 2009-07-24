@@ -99,9 +99,16 @@ typedef int CALLBACK_FUNC (const char *what, void *data, int size, void *auxdata
     }                                                                      \
 }
 
+#define READ_LEN(len, buf, size)                                           \
+{                                                                          \
+    if ((errcode=(len)=callback("read",buf,size,auxdata)) < 0) {           \
+        goto finished;                                                     \
+    }                                                                      \
+}
+
 #define READ_LEN_OR_EOF(len, buf, size)                                    \
 {                                                                          \
-    if ((errcode=len=callback("read",buf,size,auxdata)) <= 0) {            \
+    if ((errcode=(len)=callback("read",buf,size,auxdata)) <= 0) {          \
         goto finished;                                                     \
     }                                                                      \
 }

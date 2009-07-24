@@ -35,6 +35,8 @@ typedef TABI_RESULT_TYPE TABI_FUNCTION(TABI_ELEMENT*);
 
 #ifdef __cplusplus
 
+class TABI_DYNAMAP;
+
 class TABI_MAP
 {
 	public:
@@ -65,7 +67,7 @@ class TABI_MAP
 		TABI_GETTER( TABI_FUNCTION*,  VOID_FUNC,       _callback,   TABI_FUNCPTR,   funcptr);
 
                 // Return value using "return" callback
-		template<class T> TABI_RESULT_TYPE _return(T v) {return _callback("return") (DYNA_MAP(v));}
+		template<class T> TABI_RESULT_TYPE _return(T v) {return _callback("return") (TABI_DYNAMAP(v));}
 
                 // Dump first n elements (for debugging purposes)
 		void dump(int n)

@@ -11,7 +11,7 @@
 @call compile
 @cd ..
 @make
-@set c_modules=%ctempdir%/Environment.o %ctempdir%/URL.o %ctempdir%/Common.o %ctempdir%/CompressionLibrary.o %ctempdir%/C_PPMD.o %ctempdir%/C_LZP.o %ctempdir%/C_LZMA.o %ctempdir%/C_BCJ.o %ctempdir%/C_GRZip.o %ctempdir%/C_Dict.o %ctempdir%/C_REP.o %ctempdir%/C_MM.o %ctempdir%/C_TTA.o %ctempdir%/C_Tornado.o %ctempdir%/C_Delta.o %ctempdir%/C_External.o %ctempdir%/C_CLS.o %ctempdir%/C_Encryption.o -lstdc++ C:\Base\Compiler\ghc\gcc-lib\CRT_noglob.o -optl-s -optl-Xlinker -optl--large-address-aware
+@set c_modules=%ctempdir%/Environment.o %ctempdir%/URL.o %ctempdir%/Common.o %ctempdir%/CompressionLibrary.o %ctempdir%/C_PPMD.o %ctempdir%/C_LZP.o %ctempdir%/C_LZMA.o %ctempdir%/C_BCJ.o %ctempdir%/C_GRZip.o %ctempdir%/C_Dict.o %ctempdir%/C_REP.o %ctempdir%/C_MM.o %ctempdir%/C_TTA.o %ctempdir%/C_Tornado.o %ctempdir%/C_Delta.o %ctempdir%/C_External.o %ctempdir%/C_CLS.o %ctempdir%/C_Encryption.o %ctempdir%/CELS.o %ctempdir%/cels-rep.o -lstdc++ C:\Base\Compiler\ghc\gcc-lib\CRT_noglob.o -optl-s -optl-Xlinker -optl--large-address-aware
 @if .%1 == .-DFREEARC_GUI  set c_modules=%c_modules% %ctempdir%/GuiEnvironment.o -optl-mwindows
 @if .%2 == .-DFREEARC_GUI  set c_modules=%c_modules% %ctempdir%/GuiEnvironment.o -optl-mwindows
 @if .%3 == .-DFREEARC_GUI  set c_modules=%c_modules% %ctempdir%/GuiEnvironment.o -optl-mwindows

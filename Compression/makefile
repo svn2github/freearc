@@ -1,6 +1,6 @@
 include ../common.mak
 
-ALL: $(TEMPDIR)/Common.o $(TEMPDIR)/CompressionLibrary.o
+ALL: $(TEMPDIR)/Common.o $(TEMPDIR)/CompressionLibrary.o $(TEMPDIR)/CELS.o
 
 CODE_FLAGS = -fno-exceptions -fno-rtti \
                 -Wno-unknown-pragmas -Wno-sign-compare -Wno-conversion
@@ -14,3 +14,6 @@ $(TEMPDIR)/Common.o: Common.cpp Common.h Compression.h makefile
 
 $(TEMPDIR)/CompressionLibrary.o: CompressionLibrary.cpp Common.h Compression.h makefile
 	$(GCC) -c $(CFLAGS) -o $*.o $<
+
+$(TEMPDIR)/CELS.o: CELS.cpp CELS.h Common.h makefile
+	$(GCC) -c $(CFLAGS) -fexceptions -o $*.o $<

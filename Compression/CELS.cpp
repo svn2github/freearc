@@ -1,12 +1,12 @@
 #include <stdio.h>
-#include <tabi.h>
+#include "CELS.h"
 
-virtual int COMPRESSION_METHOD::server()
+int COMPRESSION_METHOD::server()
 {
   char *service = p._str("service");
 
   // Global services
-  if (strequ (service, "register"))               return Register();
+  if (strequ (service, "register"))               return FREEARC_OK; //to do: Register();
 
   // Invocation-specific services
   if (strequ (service, "decompress"))             {parse_method(); return decompress (p._callback("callback"), p);}
@@ -26,18 +26,30 @@ virtual int COMPRESSION_METHOD::server()
 }
 
 
-int RegisterCompressionMethod (TABI_SERVICE server)
+// ****************************************************************************************************************************
+// ПОДДЕРЖКА ТАБЛИЦЫ ЗАРЕГИСТРИРОВАННЫХ МЕТОДОВ СЖАТИЯ И ПОИСК В ЭТОЙ ТАБЛИЦЕ РЕАЛИЗАЦИИ ЧИСТО КОНКРЕТНОГО МЕТОДА *************
+// ****************************************************************************************************************************
+
+// Кол-во зарегистрированных методов сжатия и таблица, куда они заносятся
+int methodsCount = 0;
+TABI_FUNCTION* methodsTable[MAX_COMPRESSION_METHODS];
+
+// Compression method registration
+int CELS_Register (TABI_FUNCTION *method)
 {
-  if (server("register")==FREEARC_OK)
-    *ptr++ = server;
-  return FREEARC_OK;
+  CHECK (methodsCount < elements(methodsTable), (s,"INTERNAL ERROR: Overflow of compression methods table"));
+  int result = (*method)(TABI_DYNAMAP("register"));
+  if (result==FREEARC_OK)
+    methodsTable[methodsCount++] = method;
+  return result;
 }
 
-int cels_call (TABI_ELEMENT* params)
+//
+int CELS_Call (TABI_ELEMENT* params)
 {
-  for (p=table; p<ptr; p++)
+  for (int i=0; i<methodsCount; i++)
   {
-    int x = (*p)(params);
+    int x = methodsTable[i](params);
     // some auto-actions
     //SetDecompressionMem {if (mem>0)   ...;}
     //SetDictionary       {if (dict>0)  ...;}
@@ -50,9 +62,4 @@ int cels_call (TABI_ELEMENT* params)
   }
   return FREEARC_ERRCODE_NOT_IMPLEMENTED;
 }
-
-
-
-
-
 
