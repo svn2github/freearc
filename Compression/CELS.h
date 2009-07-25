@@ -120,8 +120,8 @@ int CELS_Call (TABI_ELEMENT* params);
 // ****************************************************************************************************************************
 
 // Auxiliary code to read/write data blocks and 4-byte headers
-#define INIT() callback (TABI_DYNAMAP("init"))
-#define DONE() callback (TABI_DYNAMAP("done"))
+#define INIT() callback (TABI_DYNAMAP("request","init"))
+#define DONE() callback (TABI_DYNAMAP("request","done"))
 
 #define MALLOC(type, ptr, size)                                            \
 {                                                                          \
@@ -145,7 +145,7 @@ int CELS_Call (TABI_ELEMENT* params);
 {                                                                          \
     void *localBuf = (buf);                                                \
     int localSize  = (size);                                               \
-    if (localSize  &&  (errcode=callback(TABI_DYNAMAP("read") ("buf",localBuf) ("size",localSize))) != localSize) { \
+    if (localSize  &&  (errcode=callback(TABI_DYNAMAP("request","read") ("buf",localBuf) ("size",localSize))) != localSize) { \
         if (errcode>=0) errcode=FREEARC_ERRCODE_IO;                        \
         goto finished;                                                     \
     }                                                                      \
@@ -153,14 +153,14 @@ int CELS_Call (TABI_ELEMENT* params);
 
 #define READ_LEN(len, buf, size)                                           \
 {                                                                          \
-    if ((errcode=(len)=callback(TABI_DYNAMAP("read") ("buf",buf) ("size",size))) < 0) {            \
+    if ((errcode=(len)=callback(TABI_DYNAMAP("request","read") ("buf",(void*)(buf)) ("size",size))) < 0) {            \
         goto finished;                                                     \
     }                                                                      \
 }
 
 #define READ_LEN_OR_EOF(len, buf, size)                                    \
 {                                                                          \
-    if ((errcode=(len)=callback(TABI_DYNAMAP("read") ("buf",buf) ("size",size))) <= 0) {            \
+    if ((errcode=(len)=callback(TABI_DYNAMAP("request","read") ("buf",(void*)(buf)) ("size",size))) <= 0) {            \
         goto finished;                                                     \
     }                                                                      \
 }
@@ -170,7 +170,7 @@ int CELS_Call (TABI_ELEMENT* params);
     void *localBuf = (buf);                                                \
     int localSize  = (size);                                               \
     /* "write" callback on success guarantees to write all the data and may return 0 */ \
-    if (localSize && (errcode=callback(TABI_DYNAMAP("write") ("buf",localBuf) ("size",localSize)))<0)  \
+    if (localSize && (errcode=callback(TABI_DYNAMAP("request","write") ("buf",localBuf) ("size",localSize)))<0)  \
         goto finished;                                                     \
 }
 
@@ -199,7 +199,7 @@ int CELS_Call (TABI_ELEMENT* params);
 
 #define QUASIWRITE(size)                                                   \
 {                                                                          \
-    callback(TABI_DYNAMAP("quasiwrite") ("size",size));                    \
+    callback(TABI_DYNAMAP("request","quasiwrite") ("size",size));          \
 }
 
 #define ReturnErrorCode(x)                                                 \

@@ -4,11 +4,13 @@
 namespace CELS
 {
 
+// ***********************************************************************************************************************
+// Реализация класса COMPRESSION_METHOD                                                                                  *
+// ***********************************************************************************************************************
+
 int COMPRESSION_METHOD::server()
 {
   char *service = p._str("service");
-
-  if (strequ (service, "encryption?"))    return 1;               // to do: ---
 
   // Global services
   if (strequ (service, "register"))               return FREEARC_OK; //to do: Register();
@@ -31,7 +33,67 @@ int COMPRESSION_METHOD::server()
   return FREEARC_ERRCODE_NOT_IMPLEMENTED;
 }
 
+
+// ****************************************************************************************************************************
+// МЕТОД "СЖАТИЯ" STORING *****************************************************************************************************
+// ****************************************************************************************************************************
+
+// Функция "(рас)паковки", копирующая данные один в один
+int copy_data (CALLBACK_FUNC *callback, void *auxdata)
+{
+  char buf[BUFFER_SIZE]; int len, errcode;
+  for(;;)
+  {
+    READ_LEN_OR_EOF(len, buf, BUFFER_SIZE);
+    WRITE(buf, len);
+  }
+finished:
+  return errcode;
 }
+
+// Реализация метода "сжатия" STORING
+struct STORING_METHOD : COMPRESSION_METHOD
+{
+  // Конструктор, присваивающий параметрам метода значения по умолчанию
+  STORING_METHOD (TABI_ELEMENT* params) : COMPRESSION_METHOD(params) {}
+  // Функции распаковки и упаковки
+  virtual int decompress (CALLBACK_FUNC *callback, void *auxdata)    {return copy_data (callback, auxdata);}
+#ifndef FREEARC_DECOMPRESS_ONLY
+  virtual int compress   (CALLBACK_FUNC *callback, void *auxdata)    {return copy_data (callback, auxdata);}
+
+  // Разбирает строку с параметрами метода
+  virtual void parse_method()
+  {
+    if (!strequ (p._str("method"), "storing"))
+      throw "STORING_METHOD:parse_method";
+  }
+
+  // Записать в buf[MAX_METHOD_STRLEN] строку, описывающую метод сжатия (функция, обратная к parse_method)
+  virtual void ShowCompressionMethod (char *buf)   {sprintf (buf, "storing");}
+
+  // Получить/установить объём памяти, используемой при упаковке/распаковке, размер словаря или размер блока
+  virtual MemSize GetCompressionMem   (void)    {return BUFFER_SIZE;}
+  virtual MemSize GetDictionary       (void)    {return 0;}
+  virtual MemSize GetBlockSize        (void)    {return 0;}
+  virtual void    SetCompressionMem   (MemSize) {}
+  virtual void    SetDecompressionMem (MemSize) {}
+  virtual void    SetDictionary       (MemSize) {}
+  virtual void    SetBlockSize        (MemSize) {}
+#endif
+  virtual MemSize GetDecompressionMem (void)    {return BUFFER_SIZE;}
+};
+
+// Function that represents STORING compression method
+int storing_server (TABI_ELEMENT* params)
+{
+  return STORING_METHOD(params).server();
+}
+
+// Register STORING method in CELS
+int storing_register = CELS_Register(storing_server);
+
+}  // namespace CELS
+
 
 // ****************************************************************************************************************************
 // ПОДДЕРЖКА ТАБЛИЦЫ ЗАРЕГИСТРИРОВАННЫХ МЕТОДОВ СЖАТИЯ И ПОИСК В ЭТОЙ ТАБЛИЦЕ РЕАЛИЗАЦИИ ЧИСТО КОНКРЕТНОГО МЕТОДА *************
@@ -55,19 +117,36 @@ int CELS_Register (TABI_FUNCTION *method)
 int CELS_Call (TABI_ELEMENT* params)
 {
   TABI_MAP p(params); p.dump();
+  char *service = p._str("service");
+
+  // ==== AUTO-SERVICE ======================================
+  // Ignore zero parameter to some Set* services
+  if (strequ (service, "SetCompressionMem") || strequ (service, "SetDecompressionMem") || strequ (service, "SetDictionary") || strequ (service, "SetBlockSize"))
+    if (p._int("mem",1)==0)
+      return p._return(p._str("method"));
+  if (start_with (service, "Limit"))                 return p._return(p._str("method"));   // to do: get & set
+  if (strequ (service, "encryption?"))               return 1;                             // to do: aes-specific
+  if (start_with (p._str("method",""), "aes"))       return p._return(p._str("method"));   // to do: aes-specific
+  //GetBlockSize        {return 0;}
+  //SetBlockSize        {}
+  //Limit               get & set
+  // ========================================================
+
+  // Find appropriate method to service this call
   for (int i=0; i<methodsCount; i++)
   {
     int x = methodsTable[i](params);
-    // some auto-actions
-    //SetDecompressionMem {if (mem>0)   ...;}
-    //SetDictionary       {if (dict>0)  ...;}
-    //GetBlockSize        {return 0;}
-    //SetBlockSize        {}
-    //Limit               get & set
-
     if (x!=FREEARC_ERRCODE_NOT_IMPLEMENTED)
       return x;
   }
   return FREEARC_ERRCODE_NOT_IMPLEMENTED;
+}
+
+// Temporary
+extern "C" {
+void tabi_dump(TABI_ELEMENT *params, int n=0)
+{
+	TABI_MAP(params).dump(n);
+}
 }
 

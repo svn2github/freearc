@@ -16,7 +16,7 @@ import Foreign.Ptr
 import Foreign.Marshal.Utils
 import Foreign.Storable
 
-import TABI hiding (doNothing)
+import TABI
 import Utils
 import Errors
 import Process
@@ -159,7 +159,8 @@ de_compress_PROCESS1 de_compress reader times command limit_memory comprMethod n
                          testMalloc
 #ifdef FREEARC_CELS
   let callback p = do
-        service <- TABI.required p ""
+        TABI.dump p
+        service <- TABI.required p "request"
         case service of
           -- Процедура чтения входных данных процесса упаковки/распаковки
           "read" -> do buf  <- TABI.required p "buf"
@@ -190,7 +191,7 @@ de_compress_PROCESS1 de_compress reader times command limit_memory comprMethod n
           else callback p
       -- Non-debugging wrapper
       debug f = f
-      debug_checked_callback what buf size = undefined --TABI.call checked_callback [Pair "" what, Pair "buf" size, Pair "buf" size]
+      debug_checked_callback what buf size = TABI.call (\a->fromIntegral `fmap` checked_callback a) [Pair "request" what, Pair "buf" buf, Pair "size" size]
 #else
   let -- Процедура чтения входных данных процесса упаковки/распаковки
       callback "read" buf size = do res <- reader buf size
@@ -229,7 +230,7 @@ de_compress_PROCESS1 de_compress reader times command limit_memory comprMethod n
 #endif
 
   -- СОБСТВЕННО УПАКОВКА ИЛИ РАСПАКОВКА
-  res <- debug_checked_callback "read" nullPtr 0  -- этот вызов позволяет отложить запуск следующего в цепочке алгоритма упаковки/распаковки до момента, когда предыдущий возвратит хоть какие-нибудь данные (а если это поблочный алгоритм - до момента, когда он обработает весь блок)
+  res <- debug_checked_callback "read" nullPtr (0::Int)  -- этот вызов позволяет отложить запуск следующего в цепочке алгоритма упаковки/распаковки до момента, когда предыдущий возвратит хоть какие-нибудь данные (а если это поблочный алгоритм - до момента, когда он обработает весь блок)
   opt_testMalloc command  &&&  showMemoryMap      -- напечатаем карту памяти непосредственно перед началом сжатия
   real_method <- limit_memory num comprMethod     -- обрежем метод сжатия при нехватке памяти
   result <- if res<0  then return res
