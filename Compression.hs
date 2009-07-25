@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -cpp #-}
 ----------------------------------------------------------------------------------------------------
 ---- Упаковка, распаковка и вычисление CRC.                                                     ----
 ---- Типы данных CompressionMethod, Compressor, UserCompressor - описание метода сжатия.        ----
@@ -20,6 +21,7 @@ import Foreign.Marshal.Pool
 import Foreign.Ptr
 import System.IO.Unsafe
 
+import qualified TABI
 import qualified CompressionLib
 import Utils
 import Errors
@@ -255,39 +257,23 @@ decompress method callback      - распаковать данные
 -}
 
 -- |Процедуры упаковки для различных алгоритмов сжатия.
---to do: freearcCompress   num method | aSTORING ==  method =  copy_data
---freearcCompress   num method | isFakeMethod method =  eat_data
+freearcCompress   num method | isFakeMethod method =  eat_data
 freearcCompress   num method                       =  CompressionLib.compress method
 
 -- |Процедуры распаковки для различных алгоритмов сжатия.
---freearcDecompress num method | aSTORING ==  method =  copy_data
 freearcDecompress num method | isFakeMethod method =  impossible_to_decompress   -- эти типы сжатых данных не подлежат распаковке
 freearcDecompress num method                       =  CompressionLib.decompress method
 
--- |Копирование данных без сжатия (-m0)
-copy_data callback = do
-  allocaBytes aHUGE_BUFFER_SIZE $ \buf -> do  -- используем `alloca`, чтобы автоматически освободить выделенный буфер при выходе
-    let go ptr = do
-          len <- callback "read" ptr ((buf+:aHUGE_BUFFER_SIZE)-:ptr)
-          if (len>0)
-            then do let newptr = ptr+:len
-                    if newptr < buf+:aHUGE_BUFFER_SIZE
-                       then go newptr
-                       else do result <- callback "write" buf (newptr-:buf)
-                               if (result>=0)
-                                 then go buf
-                                 else return (result)  -- Возвратим отрицательное число, если произошла ошибка/больше данных не нужно
-            else do if (len==0 && ptr>buf)
-                      then do result <-  callback "write" buf (ptr-:buf)
-                              return (if result>0 then 0 else result)
-                      else return len  -- Возвратим 0, если данные кончились, и отрицательное число, если произошла ошибка/больше данных не нужно
-    go buf -- возвратить результат
-
+{-# NOINLINE eat_data #-}
 -- |Читаем всё, не пишем ничего, а CRC считается в другом месте ;)
 eat_data callback = do
   allocaBytes aBUFFER_SIZE $ \buf -> do  -- используем `alloca`, чтобы автоматически освободить выделенный буфер при выходе
     let go = do
+#ifdef FREEARC_CELS
+          len <- TABI.call (\a->fromIntegral `fmap` callback a) [TABI.Pair "request" "read", TABI.Pair "buf" buf, TABI.Pair "size" (aBUFFER_SIZE::MemSize)]
+#else
           len <- callback "read" buf aBUFFER_SIZE
+#endif
           if (len>0)
             then go
             else return len   -- Возвратим 0, если данные кончились, и отрицательное число, если произошла ошибка/больше данных не нужно
@@ -295,9 +281,6 @@ eat_data callback = do
 
 impossible_to_decompress callback = do
   return CompressionLib.aFREEARC_ERRCODE_GENERAL   -- сразу возвратить ошибку, поскольку этот алгоритм (FAKE/CRC_ONLY) не подлежит распаковке
-
-{-# NOINLINE copy_data                       #-}
-{-# NOINLINE eat_data                        #-}
 
 
 ----------------------------------------------------------------------------------------------------

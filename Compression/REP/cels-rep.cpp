@@ -52,7 +52,7 @@ struct REP_METHOD : COMPRESSION_METHOD
     char  local_method [MAX_METHOD_STRLEN];
     strncopy (local_method, method, sizeof (local_method));
     split (local_method, COMPRESSION_METHOD_PARAMETERS_DELIMITER, parameters, MAX_PARAMETERS);
-    if (!strequ (parameters[0], "rep"))  throw "rep:parse_method";
+    if (!strequ (parameters[0], "rep"))  throw "REP_METHOD:parse_method";
 
     // Если название метода (нулевой параметр) - "rep", то разберём остальные параметры
     int error = 0;  // Признак того, что при разборе параметров произошла ошибка
@@ -141,6 +141,6 @@ int rep_server (TABI_ELEMENT* params)
 }
 
 // Register REP method in CELS
-int rep_register = CELS_Register(rep_server);
+//int rep_register = CELS_Register(rep_server);
 
 }
