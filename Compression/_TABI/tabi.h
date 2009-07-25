@@ -67,24 +67,27 @@ class TABI_MAP
 		TABI_GETTER( TABI_FUNCTION*,  VOID_FUNC,       _callback,   TABI_FUNCPTR,   funcptr);
 
                 // Return value using "return" callback
-		template<class T> TABI_RESULT_TYPE _return(T v) {return _callback("return") (TABI_DYNAMAP(v));}
+		template<class T> TABI_RESULT_TYPE _return(T v) {return _callback("return") (TABI_DYNAMAP("result",v));}
 
                 // Dump first n elements (for debugging purposes)
 		void dump(int n=0)
 		{
-			for (int i=0; i<n?n:999; i++)
+			printf("dumping TABI_MAP:\n");
+			for (int i=0; i<n?n:100; i++)
 			{
 				for (int j= 0; j< 4; j++)   printf("%02x ", *((unsigned char*)(p+i)+j)); printf("  ");
 				for (int j= 4; j< 8; j++)   printf("%02x ", *((unsigned char*)(p+i)+j)); printf("  ");
 				for (int j= 8; j<24; j++)   printf("%02x ", *((unsigned char*)(p+i)+j)); printf("  ");
 				if (p[i].name == NULL)
 					break;
-				printf("%10s ", p[i].name);
+				printf("%10s: ", p[i].name);
 				switch (p[i].type)
 				{
 					case TABI_STRING:	if (p[i].value.str)   printf("%s", p[i].value.str); break;
 					case TABI_INTEGER:	printf("%lld", p[i].value.int_number); break;
 					case TABI_FLOATING:	printf("%g", p[i].value.float_number); break;
+					case TABI_PTR:	        printf("<%x>", p[i].value.ptr); break;
+					case TABI_FUNCPTR:	printf("func<%x>", p[i].value.funcptr); break;
 				}
 				printf("\n");
 			}

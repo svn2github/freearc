@@ -1,5 +1,17 @@
 {-# OPTIONS -fglasgow-exts #-}
-module TABI where
+module TABI (
+  Value(..),
+  FUNCTION,
+  C_FUNCTION,
+  ELEMENT(..),
+  dump,
+  dump_n,
+  callret,               -- :: Value a => C_FUNCTION -> [ELEMENT] -> IO a
+  call,                  -- :: C_FUNCTION -> [ELEMENT] -> IO Int
+  required,
+  optional,
+  parameter,
+) where
 
 import Prelude hiding (catch)
 import Control.Exception
@@ -95,6 +107,11 @@ instance Value FUNCTION where
 -- |Basic TABI value, with name and type information
 data ELEMENT = forall a. (Value a) => Pair String a
 
+-- |Dump contents of ELEMENTs array
+dump ptr = dump_n ptr 0
+foreign import ccall safe "tabi_dump"
+  dump_n :: Ptr ELEMENT -> Int -> IO ()
+
 -- Convert pointer to TABI_ELEMENT to pointer to one of its fields
 nameField  = #{ptr TABI_ELEMENT, name}
 typeField  = #{ptr TABI_ELEMENT, type}
@@ -117,7 +134,7 @@ callret :: Value a => C_FUNCTION -> [ELEMENT] -> IO a
 callret server params = do
   result <- newIORef$ error "TABI.callret: undefined result"          -- create variable to store result of call
   let return_callback p = do                                          -- callback used to return result of call
-        writeIORef result =<< TABI.required p ""
+        writeIORef result =<< TABI.required p "result"
         return 0
   call server (Pair "return" (return_callback::FUNCTION) : params)    -- add return callback to params list
   readIORef result
