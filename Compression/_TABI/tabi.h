@@ -72,6 +72,28 @@ class TABI_MAP
                 // Dump first n elements (for debugging purposes)
 		void dump(int n=0)
 		{
+			printf("  TABI_MAP: ");
+			for (int i=0; i<n?n:100; i++)
+			{
+				if (p[i].name == NULL)
+					break;
+				if (i>0)  printf(", ");
+				printf("%s: ", p[i].name);
+				switch (p[i].type)
+				{
+					case TABI_STRING:	if (p[i].value.str)   printf("%s", p[i].value.str); break;
+					case TABI_INTEGER:	printf("%lld", p[i].value.int_number); break;
+					case TABI_FLOATING:	printf("%g", p[i].value.float_number); break;
+					case TABI_PTR:	        printf("<%p>", p[i].value.ptr); break;
+					case TABI_FUNCPTR:	printf("func<%p>", p[i].value.funcptr); break;
+				}
+			}
+			printf("\n");
+		}
+
+                // Memory dump first n elements (for debugging purposes)
+		void memory_dump(int n=0)
+		{
 			printf("dumping TABI_MAP:\n");
 			for (int i=0; i<n?n:100; i++)
 			{
@@ -86,8 +108,8 @@ class TABI_MAP
 					case TABI_STRING:	if (p[i].value.str)   printf("%s", p[i].value.str); break;
 					case TABI_INTEGER:	printf("%lld", p[i].value.int_number); break;
 					case TABI_FLOATING:	printf("%g", p[i].value.float_number); break;
-					case TABI_PTR:	        printf("<%x>", p[i].value.ptr); break;
-					case TABI_FUNCPTR:	printf("func<%x>", p[i].value.funcptr); break;
+					case TABI_PTR:	        printf("<%p>", p[i].value.ptr); break;
+					case TABI_FUNCPTR:	printf("func<%p>", p[i].value.funcptr); break;
 				}
 				printf("\n");
 			}
