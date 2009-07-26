@@ -179,8 +179,8 @@ runIndicators = do
 
   -- Обновляем заголовок окна, статистику и надпись индикатора прогресса раз в 0.5 секунды
   i' <- ref 0   -- а сам индикатор прогресса раз в 0.1 секунды
-  indicatorThread 0.1 $ \indicator indType title b bytes total processed p -> postGUIAsync$ do
-    i <- val i'; i' += 1; let once_a_halfsecond = (i `mod` 5 == 0)
+  indicatorThread 0.1 $ \updateMode indicator indType title b bytes total processed p -> postGUIAsync$ do
+    i <- val i'; i' += 1; let once_a_halfsecond  =  (updateMode==ForceUpdate)  ||  (i `mod` 5 == 0)
     -- Заголовок окна
     set window [windowTitle := title]                              `on` once_a_halfsecond
     -- Статистика
@@ -188,7 +188,7 @@ runIndicators = do
     -- Прогресс-бар и надпись на нём
     progressBarSetFraction progressBar processed                   `on` True
     progressBarSetText     progressBar p                           `on` once_a_halfsecond
-  backgroundThread 0.5 $ postGUIAsync$ do
+  backgroundThread 0.5 $ \updateMode -> postGUIAsync$ do
     -- Имя текущего файла или стадия выполнения команды
     uiMessage' <- val uiMessage
     labelSetText curFileLabel uiMessage'

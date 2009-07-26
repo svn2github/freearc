@@ -14,6 +14,7 @@ import Prelude hiding (catch)
 import Control.Monad
 import Control.Concurrent
 import Data.IORef
+import Data.Ratio
 import Numeric           (showFFloat)
 import System.CPUTime    (getCPUTime)
 import System.IO
@@ -293,8 +294,8 @@ uiDoneArchive = do
   -- Информация о времени работы и скорости упаковки/распаковки
   secs <- val refArchiveProcessingTime   -- время, затраченное непосредственно на упаковку/распаковку
   real_secs <- return_real_secs          -- полное время выполнения команды над текущим архивом
-  condPrintLine                     "t" $ msgStat cmd ++ "time: "++(secs>0 &&& "cpu " ++ showTime secs ++ ", ")
-  condPrintLine                     "t" $ "real " ++ showTime real_secs
+  condPrintLine                          "t" $ msgStat cmd ++ "time: "++(secs>0 &&& "cpu " ++ showTime secs ++ ", ")
+  condPrintLine                          "t" $ "real " ++ showTime real_secs
   when (real_secs>=0.01) $ condPrintLine "t" $ ". Speed " ++ showSpeed (bytes-fake_bytes) real_secs
 
   condPrintLineNeedSeparator "rdt" "\n"
@@ -401,9 +402,9 @@ uiReadData num bytes = do
       --print (rnum_bytes0, bytes, r_bytes0, r_bytes-r_bytes0)
       -- Возвращаем количество байт на входе первого алгоритма относительно предыдущего значения этой величины
       return (r_bytes-r_bytes0)
-    uiUpdateProgressIndicator ((unpBytes*9) `div` 10)
+    uiUpdateProgressIndicator (toRational unpBytes*9/10)
   when (num==1) $ do  -- 90% на последний алгоритм в цепочке и 10% на первый (чтобы сгладить вывод для external compression and so on)
-    uiUpdateProgressIndicator (bytes `div` 10)
+    uiUpdateProgressIndicator (toRational bytes/10)
 
  where
   -- Рекурсивно пересчитать bytes байт на входе алгоритма num в количество байт на входе алгоритма 1
@@ -444,7 +445,7 @@ uiStartProgressIndicator indType command bytes' total' = do
   let cmd        =  cmd_name command
       direction  =  if (cmdType cmd == ADD_CMD)  then " => "  else " <= "
       indicator  =  select_indicator command total
-  aProgressIndicatorState =: (indicator, indType, arcname, direction, 0, bytes', total')
+  aProgressIndicatorState =: (indicator, indType, arcname, direction, 0 :: Rational, bytes', total')
   indicator_start_real_secs =:: return_real_secs
   uiResumeProgressIndicator
 
@@ -457,7 +458,7 @@ uiUpdateProgressIndicator add_b =
     -- на выводимую СЕЙЧАС статистику. Вот такие вот приколы в нашем городке :)
     syncUI $ do
     (indicator, indType, arcname, direction, b, bytes', total') <- val aProgressIndicatorState
-    aProgressIndicatorState =: (indicator, indType, arcname, direction, b+add_b, bytes', total')
+    aProgressIndicatorState =: (indicator, indType, arcname, direction, b+toRational(add_b), bytes', total')
 
 -- |Завершить вывод индикатора прогресса
 uiDoneProgressIndicator = do

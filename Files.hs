@@ -257,7 +257,7 @@ getDrives = getLogicalDrives >>== unfoldr (\n -> Just (n `mod` 2, n `div` 2))
                              >>== concat
                              >>=  mapM (\d -> do t <- withCString d c_GetDriveType; return (d++"\t"++(driveTypes!!i t)))
 
-driveTypes = ["", ""]++split ',' "Removable,Fixed,Network,CD/DVD,Ramdisk"
+driveTypes = (split ',' "???,???,Removable,Fixed,Network,CD/DVD,Ramdisk") ++ repeat "???"
 
 foreign import stdcall unsafe "windows.h GetDriveTypeA"
   c_GetDriveType :: LPCSTR -> IO CInt

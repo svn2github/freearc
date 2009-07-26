@@ -358,6 +358,7 @@ err/warn box
   добавить ArcShellExt и all2arc.exe
   ini->bin
   при отсутствии LastCheck в freearc.history программа иногда показывает "иероглифы"
+  new-readme.txt
 -max -> bmf for bmp/tif
 rep: научиться использовать более двух блоков памяти при распаковке
 "lzp+ppmd:1gb" - не может выделить 1gb, но падает на I/O error в lzp (регресс 11b->20 июня)
@@ -367,7 +368,7 @@ iss
   сделать запись данных из lzma небольшими блоками
   проверка на исчерпание свободного места в write callback...
   unicode версия
-  чтоб установка и распаковка архива шло в один прогресс бар
+  чтоб установка и распаковка архива шли в один прогресс бар
   если бы он еще брал инфу из архива о том скока весят файлы после распаковки
   archive stats function (files, dirs, original/compressed size)
   possibly to add options to read first from ini specific output extract path for specific arc/exe to unpack?
@@ -375,12 +376,11 @@ iss
 fashell
   обработка 8000 выделенных файлов? ;)  или даже одного длинного имени файла
   Add to... и прочее если имя файла содержит %
-  "winrar beta 3 did not display archiving commands in context menu if user selected several archives"
+  показывать команды архивации когда выбрано 2 и более архива ("winrar beta 3 did not display archiving commands in context menu if user selected several archives")
 cvt
   ввод нового имени для одного архива
 other
   CleanStats при non-FM mode
-  перед запуском сжатия (в checkingCtrlBreak после read 0 - только при сжатии!) делать обрезание метода
   installer.exe -p"/q" will then launch setup.exe /q
   грузить facompress.dll с абс. путём чтобы не брались левые из PATH?
   icons

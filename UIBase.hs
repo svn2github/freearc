@@ -90,16 +90,18 @@ indicator_start_real_secs  =  unsafePerformIO$ newIORef$ (0::Double)
 -- |Синхронизация доступа к UI
 syncUI = withMVar mvarSyncUI . const;  mvarSyncUI = unsafePerformIO$ newMVar "mvarSyncUI"
 
+{-# NOINLINE indicators #-}
 -- |Переменные для разбуживания тредов индикации
-indicators  =  unsafePerformIO$ newMVar$ ([]::[MVar Action])
-type Action = IO()
+indicators  = unsafePerformIO$ newMVar$ ([]::[MVar Message])   -- list of indicator threads
+type Message = (Update, IO())                                  -- message sent to indicator thread in order to make an update
+data Update  = ForceUpdate | LazyUpdate  deriving (Eq)         -- ForceUpdate message sent with a final update after (de)compression was finished
 
 -- |Принудительно обновить все индикаторы
 updateAllIndicators = do
   indicators' <- val indicators
   for indicators' $ \indicator -> do
     x <- newEmptyMVar
-    putMVar indicator (putMVar x ())
+    putMVar indicator (ForceUpdate, putMVar x ())
     takeMVar x
 
 -- |Выполнять в бэкграунде action каждые secs секунд
@@ -109,20 +111,21 @@ backgroundThread secs action = do
   forkIO $ do
     foreverM $ do
       sleepSeconds secs
-      putMVar x doNothing0
+      putMVar x (LazyUpdate, doNothing0)
   forkIO $ do
     foreverM $ do
-      a <- takeMVar x
+      (updateMode, afterAction) <- takeMVar x
       syncUI $ do
-        action
-      a
+        action updateMode
+      afterAction
 
 -- |Тред, следящий за indicator, и выводящий время от времени его обновлённые значения
 indicatorThread secs output =
-  backgroundThread secs $ do
+  backgroundThread secs $ \updateMode -> do
     whenM (val aProgressIndicatorEnabled) $ do
       operationTerminated' <- val operationTerminated
-      (indicator, indType, arcname, direction, b, bytes', total') <- val aProgressIndicatorState
+      (indicator, indType, arcname, direction, bRational :: Rational, bytes', total') <- val aProgressIndicatorState
+      let b = round bRational  -- we use Rational in order to save decimal fractions (results of 90%/10% counting rule)
       when (indicator /= NoIndicator  &&  not operationTerminated') $ do
         bytes <- bytes' b;  total <- total'
         -- Отношение объёма обработанных данных к общему объёму
@@ -132,7 +135,7 @@ indicatorThread secs output =
         let remains  = if processed>0.001  then " "++showHMS(sec0+(secs-sec0)/processed-secs)  else ""
             winTitle = "{"++trimLeft p++remains++"}" ++ direction ++ takeFileName arcname
             p        = percents indicator bytes total
-        output indicator indType winTitle b bytes total processed p
+        output updateMode indicator indType winTitle b bytes total processed p
 
 {-# NOINLINE updateAllIndicators #-}
 {-# NOINLINE backgroundThread #-}

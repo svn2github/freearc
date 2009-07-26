@@ -139,7 +139,7 @@ run_decompress decompress_pipe compressed_file write_data = do
   crc <- ref aINIT_CRC                        -- Инициализируем значение CRC
   let writer buf len = do
         uiUnpackedBytes  (i len)              -- Информируем пользователя о ходе распаковки
-        uiUpdateProgressIndicator (i len)     -- -.-
+        uiUpdateProgressIndicator len         -- -.-
         crc          .<- updateCRC buf len    -- Обновим CRC содержимым буфера
         write_data       buf len              -- Запишем данные в файл
         send_backP       decompress_pipe ()   -- И возвратим использованный буфер
