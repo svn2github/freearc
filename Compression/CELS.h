@@ -199,7 +199,7 @@ int CELS_Call (TABI_ELEMENT* params);
 
 #define QUASIWRITE(size)                                                   \
 {                                                                          \
-    callback(TABI_DYNAMAP("request","quasiwrite") ("size",size));          \
+    callback(TABI_DYNAMAP("request","quasiwrite") ("bytes",size));         \
 }
 
 #define ReturnErrorCode(x)                                                 \

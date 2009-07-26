@@ -120,8 +120,8 @@ int CELS_Call (TABI_ELEMENT* params)
   char *service = p._str("service");
 
   // ==== AUTO-SERVICE ======================================
-  // Ignore zero parameter to some Set* services
-  if (strequ (service, "SetCompressionMem") || strequ (service, "SetDecompressionMem") || strequ (service, "SetDictionary") || strequ (service, "SetBlockSize"))
+  // Ignore zero mem parameter to Set* services
+  if (start_with (service, "Set") && isupper(service[3]))
     if (p._int("mem",1)==0)
       return p._return(p._str("method"));
   if (start_with (service, "Limit"))                 return p._return(p._str("method"));   // to do: get & set
@@ -135,9 +135,15 @@ int CELS_Call (TABI_ELEMENT* params)
   // Find appropriate method to service this call
   for (int i=0; i<methodsCount; i++)
   {
-    int x = methodsTable[i](params);
-    if (x!=FREEARC_ERRCODE_NOT_IMPLEMENTED)
-      return x;
+    try
+    {
+      int x = methodsTable[i](params);
+      if (x!=FREEARC_ERRCODE_NOT_IMPLEMENTED)
+        return x;
+    }
+    catch (...)
+    {
+    }
   }
   return FREEARC_ERRCODE_NOT_IMPLEMENTED;
 }

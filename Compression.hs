@@ -239,23 +239,6 @@ compressionDeleteTempCompressors = filter (/="tempfile")
 ----- (De)compression of data stream                                                           -----
 ----------------------------------------------------------------------------------------------------
 
-{-
-compress   method callback      - упаковать данные
-decompress method callback      - распаковать данные
-
-  method :: CompressionMethod - алгоритм упаковки
-  callback "read" buf size - прочитать входные данные в буфер `buf` длиной `size`
-                             Возвращает 0   - конец данных
-                                        <0  - прервать (рас)паковку (ошибка или больше данных не нужно)
-                                        >0  - кол-во прочитанных байт
-  callback "write" buf size - записать выходные данные
-                              Возвращает <0  - прервать (рас)паковку (ошибка или больше данных не нужно)
-                                         >=0 - всё ок
-                              При возвращении из этой функции данные должны быть "использованы", потому что
-                                (рас)паковщик может начать запись новых данных на то же место
-Входные и выходные буфера выделяются и освобождаются (рас)паковщиком
--}
-
 -- |Процедуры упаковки для различных алгоритмов сжатия.
 freearcCompress   num method | isFakeMethod method =  eat_data
 freearcCompress   num method                       =  CompressionLib.compress method
@@ -264,7 +247,6 @@ freearcCompress   num method                       =  CompressionLib.compress me
 freearcDecompress num method | isFakeMethod method =  impossible_to_decompress   -- эти типы сжатых данных не подлежат распаковке
 freearcDecompress num method                       =  CompressionLib.decompress method
 
-{-# NOINLINE eat_data #-}
 -- |Читаем всё, не пишем ничего, а CRC считается в другом месте ;)
 eat_data callback = do
   allocaBytes aBUFFER_SIZE $ \buf -> do  -- используем `alloca`, чтобы автоматически освободить выделенный буфер при выходе

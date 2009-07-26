@@ -141,6 +141,6 @@ int rep_server (TABI_ELEMENT* params)
 }
 
 // Register REP method in CELS
-//int rep_register = CELS_Register(rep_server);
+int rep_register = CELS_Register(rep_server);
 
 }
