@@ -104,15 +104,12 @@ struct REP_METHOD : COMPRESSION_METHOD
   // Настроить метод сжатия на использование заданного объёма памяти
   virtual void SetCompressionMem (MemSize mem)
   {
-    if (mem>0)
-    {
-      // Скопировано из rep_compress
-      int L = roundup_to_power_of (mymin(SmallestLen,MinMatchLen)/2, 2);  // Размер блоков, КС которых заносится в хеш
-      int k = sqrtb(L*2);
-      int HashSize = CalcHashSize (HashSizeLog, mem/5*4, k);
+    // Скопировано из rep_compress
+    int L = roundup_to_power_of (mymin(SmallestLen,MinMatchLen)/2, 2);  // Размер блоков, КС которых заносится в хеш
+    int k = sqrtb(L*2);
+    int HashSize = CalcHashSize (HashSizeLog, mem/5*4, k);
 
-      BlockSize = mem - HashSize*sizeof(int);
-    }
+    BlockSize = mem - HashSize*sizeof(int);
   }
 
   // Посчитать, сколько памяти требуется для упаковки заданным методом

@@ -119,17 +119,29 @@ int CELS_Call (TABI_ELEMENT* params)
   TABI_MAP p(params); p.dump();
   char *service = p._str("service");
 
-  // ==== AUTO-SERVICE ======================================
-  // Ignore zero mem parameter to Set* services
+  // ==== AUTO-SERVICES =====================================
+  // Ignore zero mem parameter to Set* calls
   if (start_with (service, "Set") && isupper(service[3]))
     if (p._int("mem",1)==0)
       return p._return(p._str("method"));
-  if (start_with (service, "Limit"))                 return p._return(p._str("method"));   // to do: get & set
+
+  // Limit* = Set* if Get*>limit
+  if (start_with (service, "Limit") && isupper(service[5]))                 return p._return(p._str("method"));   // to do: get & set
+/*
+  {
+    char new_service[MAX_METHOD_STRLEN];
+    sprintf(new_service, "Get%s", service+5);
+    MemSize mem = TABI_callret(CELS_Call, TABI_DYNAMAP(p) ("service", new_service));
+    if (mem <= p._longlong("mem"))         // if method already uses less memory than specified limit
+      return p._return(p._str("method"));  // then return method unmodified
+    sprintf(new_service, "Set%s", service+5);
+    return TABI_call(CELS_Call, TABI_DYNAMAP(p) ("service", new_service));
+  }
+*/
   if (strequ (service, "encryption?"))               return 1;                             // to do: aes-specific
   if (start_with (p._str("method",""), "aes"))       return p._return(p._str("method"));   // to do: aes-specific
-  //GetBlockSize        {return 0;}
-  //SetBlockSize        {}
-  //Limit               get & set
+  //default: GetBlockSize        {return 0;}
+  //default: SetBlockSize        {}
   // ========================================================
 
   // Find appropriate method to service this call
