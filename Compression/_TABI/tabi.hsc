@@ -4,8 +4,8 @@ module TABI (
   FUNCTION,
   C_FUNCTION,
   ELEMENT(..),
-  dump,
-  dump_n,
+--  dump,
+--  dump_n,
   callret,               -- :: Value a => C_FUNCTION -> [ELEMENT] -> IO a
   call,                  -- :: C_FUNCTION -> [ELEMENT] -> IO Int
   required,
@@ -108,9 +108,9 @@ instance Value FUNCTION where
 data ELEMENT = forall a. (Value a) => Pair String a
 
 -- |Dump contents of ELEMENTs array
-dump ptr = dump_n ptr 0
-foreign import ccall safe "tabi_dump"
-  dump_n :: Ptr ELEMENT -> Int -> IO ()
+--dump ptr = dump_n ptr 0
+--foreign import ccall safe "tabi_dump"
+--  dump_n :: Ptr ELEMENT -> Int -> IO ()
 
 -- Convert pointer to TABI_ELEMENT to pointer to one of its fields
 nameField  = #{ptr TABI_ELEMENT, name}
