@@ -329,6 +329,7 @@ uiDoneCommand Command{cmd_name=cmd} totals = do
 -- |Завершить выполнение программы
 uiDoneProgram = do
   condPrintLineNeedSeparator "" "\n"
+  programFinished =: True
   guiDoneProgram
 
 

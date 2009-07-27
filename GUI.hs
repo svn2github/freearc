@@ -150,10 +150,14 @@ runIndicators = do
   -- Обработчики событий (закрытие окна/нажатие кнопок)
   let askProgramClose = do
         active <- val pauseButton
-        terminationRequested <-
-            (if active then id else syncUI) $ do
-               pauseTiming $ do
-                 askYesNo window "0251 Abort operation?"
+        terminationRequested <- do
+          -- Allow to close window immediately if program already finished
+          finished <- val programFinished
+          if finished  then return True  else do
+          -- Otherwise - ask user's permission
+          (if active then id else syncUI) $ do
+             pauseTiming $ do
+               askYesNo window "0251 Abort operation?"
         when terminationRequested $ do
           pauseButton =: False
           ignoreErrors$ terminateOperation

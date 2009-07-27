@@ -80,6 +80,8 @@ putHeader                 =  unsafePerformIO$ init_once
 uiMessage                 =  unsafePerformIO$ newIORef$ ""
 -- |Счётчик просканированных файлов
 files_scanned             =  unsafePerformIO$ newIORef$ (0::Integer)
+-- |Устанавливается после завершения выполнения всех команд, когда мы просто ждём закрытия окна программы
+programFinished           =  unsafePerformIO$ newIORef$ False
 
 -- |Глобальная переменная, хранящая состояние индикатора прогресса
 aProgressIndicatorState    =  unsafePerformIO$ newIORef$ error "undefined UI::aProgressIndicatorState"
@@ -94,7 +96,7 @@ syncUI = withMVar mvarSyncUI . const;  mvarSyncUI = unsafePerformIO$ newMVar "mv
 -- |Переменные для разбуживания тредов индикации
 indicators  = unsafePerformIO$ newMVar$ ([]::[MVar Message])   -- list of indicator threads
 type Message = (Update, IO())                                  -- message sent to indicator thread in order to make an update
-data Update  = ForceUpdate | LazyUpdate  deriving (Eq)         -- ForceUpdate message sent with a final update after (de)compression was finished
+data Update  = ForceUpdate | LazyUpdate  deriving (Eq)         -- ForceUpdate message requesting whole update sent after (de)compression has been finished
 
 -- |Принудительно обновить все индикаторы
 updateAllIndicators = do
