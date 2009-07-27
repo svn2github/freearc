@@ -101,26 +101,41 @@ terminateOperation = do
 
 -- |Принудительно завершает выполнение программы с заданным exitCode и печатью сообщения msg
 shutdown msg exitCode = do
-  separator' =: ("","\n")
-  log_separator' =: "\n"
-  fin <- val finalizers
-  for fin $ \(name,id,action) -> do
-    action
-  compressionLib_cleanup
-
+  pause_option <- val pause_before_exit
   w <- val warnings
-  case w of
-    0 -> when (exitCode==aEXIT_CODE_SUCCESS) $ condPrintLineLn "k" "All OK"
-    _ -> condPrintLineLn "n"$ "There were "++show w++" warning(s)"
-  ignoreErrors (msg &&& condPrintLineLn "n" msg)
-  condPrintLineLn "e" ""
+  pause_before_exit =: "exit"
+  -- Make cleanup unless this is a second call (after pause)
+  when (pause_option/="exit") $ do
+    separator' =: ("","\n")
+    log_separator' =: "\n"
+    fin <- val finalizers
+    for fin $ \(name,id,action) -> do
+      action
+    compressionLib_cleanup
+
+    case w of
+      0 -> when (exitCode==aEXIT_CODE_SUCCESS) $ condPrintLineLn "k" "All OK"
+      _ -> condPrintLineLn "n"$ "There were "++show w++" warning(s)"
+    ignoreErrors (msg &&& condPrintLineLn "n" msg)
+    condPrintLineLn "e" ""
 #if !defined(FREEARC_WIN) && !defined(FREEARC_GUI)
-  putStrLn ""  -- в Unix отсутствует автоматический перевод строки в терминале по завершению программы
+    putStrLn ""  -- в Unix отсутствует автоматический перевод строки в терминале по завершению программы
 #endif
-  ignoreErrors$ closeLogFile
-  ignoreErrors$ hFlush stdout
-  ignoreErrors$ hFlush stderr
-  --killThread myThread
+    ignoreErrors$ closeLogFile
+    ignoreErrors$ hFlush stdout
+    ignoreErrors$ hFlush stderr
+    --killThread myThread
+
+    -- Make a pause if necessary
+    pause <- val pauseAction
+    pause `on` case pause_option of
+                 "on"          -> True
+                 "off"         -> False
+                 "on-warnings" -> w>0 || exitCode/=aEXIT_CODE_SUCCESS
+                 "on-error"    -> exitCode/=aEXIT_CODE_SUCCESS
+                 _             -> False
+
+  -- And finally - exit program!
   exit (exitCode  |||  (w &&& aEXIT_CODE_WARNINGS))
 #if 0
   -- Более корректный способ завершения программы, к сожалению arc.exe с ним иногда виснет
@@ -179,6 +194,17 @@ operationTerminated = unsafePerformIO (ref False)
 -- |Режим работы файл-менеджера: при этом registerError обрабатывается по-другому - мы дожидаемся завершения всех тредов упаковки и распаковки
 fileManagerMode = unsafePerformIO (ref False)
 {-# NOINLINE fileManagerMode #-}
+
+-- |Делать ли паузу перед выходом из программы?
+pause_before_exit = unsafePerformIO (ref "")
+{-# NOINLINE pause_before_exit #-}
+
+-- |UI-операция, вызываемая для задержки выхода из программы
+pauseAction = unsafePerformIO (ref$ return ())
+{-# NOINLINE pauseAction #-}
+
+setPauseAction :: (IO()) -> IO ()
+setPauseAction = (pauseAction =:)
 
 
 ---------------------------------------------------------------------------------------------------

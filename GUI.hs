@@ -98,11 +98,13 @@ guiStartProgram = gui $ do
   (windowProgress, clearStats) <- runIndicators
   widgetShowAll windowProgress
 
+-- |Задержать завершение программы
+guiPause = do
+  foreverM $ do
+    sleepSeconds 1
+
 -- |Завершить выполнение программы
-guiDoneProgram pause = do
-  when pause $ do
-    unlessM (val fileManagerMode) $ do
-      foreverM $ sleepSeconds 1
+guiDoneProgram = do
   return ()
 
 
@@ -162,6 +164,12 @@ runIndicators = do
         when terminationRequested $ do
           pauseButton =: False
           ignoreErrors$ terminateOperation
+
+  -- Обработка нажатия клавиш
+  window `onKeyPress` \event -> do
+    case (eventKey event) of
+      "Escape" -> do askProgramClose; return True
+      _        -> return False
 
   window `onDelete` \e -> do
     askProgramClose

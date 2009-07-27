@@ -352,14 +352,12 @@
 === To-do list ====================================================================================
 
 fmUnselectFilenames fm' (const True)  - наверно можно ускорить для больших списков файлов
---pause-before-exit: always, never, smart (default=never)
-  smart: after testing or if there are errors/warnings
-  ESC for exit
 инсталятор
   добавить ArcShellExt и all2arc.exe
   ini->bin
   при отсутствии LastCheck в freearc.history программа иногда показывает "иероглифы"
   new-readme.txt
+after "--" allow filenames starting with "@". use "-@" option to include listfiles anywhere on cmdline
 -max -> bmf for bmp/tif
 rep: научиться использовать более двух блоков памяти при распаковке
 "lzp+ppmd:1gb" - не может выделить 1gb, но падает на I/O error в lzp (регресс 11b->20 июня)
@@ -380,6 +378,9 @@ fashell
   показывать команды архивации когда выбрано 2 и более архива ("winrar beta 3 did not display archiving commands in context menu if user selected several archives")
 cvt
   ввод нового имени для одного архива
+gui-версия не обрабатывает правильно ошибки:
+  a x:\a
+  -mqq
 other
   CleanStats при non-FM mode
   installer.exe -p"/q" will then launch setup.exe /q

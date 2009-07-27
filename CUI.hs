@@ -70,11 +70,14 @@ uiResumeProgressIndicator = do
   myFlushStdout
   aProgressIndicatorEnabled =: True
 
+-- |Сделать паузу в выполнении программы
+guiPause = do
+  withoutEcho getHiddenChar
+  return ()
+
 -- |Завершить выполнение программы
-guiDoneProgram pause = do
-  when pause $ do
-    withoutEcho getHiddenChar
-    return ()
+guiDoneProgram = do
+  return ()
 
 {-# NOINLINE guiStartProgram #-}
 {-# NOINLINE guiStartFile #-}
