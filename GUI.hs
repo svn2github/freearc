@@ -258,10 +258,28 @@ createStats = do
         secs <- return_real_secs
         sec0 <- val indicator_start_real_secs
 
+        -- Если операция завершена - показываем точные результаты
+        if b==total_bytes
+          then do labelSetMarkup filesLabel$           ""
+                  labelSetMarkup bytesLabel$           ""
+                  labelSetMarkup compressedLabel$      ""
+                  labelSetMarkup timesLabel$           ""
+                  labelSetMarkup totalFilesLabel$      bold$ show3 total_files                            `on` indType==INDICATOR_FULL
+                  labelSetMarkup totalBytesLabel$      bold$ show3 total_bytes
+                  labelSetMarkup totalCompressedLabel$ bold$ show3 (cbytes)                               `on` indType==INDICATOR_FULL
+                  labelSetMarkup totalTimesLabel$      bold$ showHMS (secs)
+                  when (b>0) $ do                      -- Поля скорости/коэф. сжатия бессмысленно показывать пока не накоплена хоть какая-то статистика
+                    labelSetMarkup ratioLabel$         bold$ ratio2 cbytes b++"%"                         `on` indType==INDICATOR_FULL
+                  when (secs-sec0>0.001) $ do
+                    labelSetMarkup speedLabel$         bold$ showSpeed b (secs-sec0)
+
+          else do
+
         -- Определение Total compressed (точное только при распаковке архива целиком, иначе - оценка)
         cmd <- val ref_command >>== cmd_name
         let total_compressed
-              | cmdType cmd == ADD_CMD              =  "~"++show3 (total_bytes*cbytes `div` b)
+              | cmdType cmd == ADD_CMD              =  if b==total_bytes then show3 (cbytes)
+                                                                         else "~"++show3 (total_bytes*cbytes `div` b)
               | archive_total_bytes == total_bytes  =       show3 (archive_total_compressed)
               | archive_total_bytes == 0            =       show3 (0)
               | otherwise                           =  "~"++show3 (archive_total_compressed*total_bytes `div` archive_total_bytes)
