@@ -99,6 +99,7 @@ data Command = Command {
   , opt_broken_archive       :: !String             --   обрабатывать неисправный архив, полностью сканиру€ его в поисках оставшихс€ исправными блоков
   , opt_original             :: !String             --   перезагружать с указанного URL сбойные части архива
   , opt_save_bad_ranges      :: !String             --   записать в заданный файл список неисправных частей архива дл€ их перевыкачки
+  , opt_pause_before_exit    :: !String             --   сделать паузу перед выходом из программы
   , opt_cache                :: !Int                --   размер буфера упреждающего чтени€.
   , opt_limit_compression_memory   :: !MemSize      --   ограничение пам€ти при упаковке, байт
   , opt_limit_decompression_memory :: !MemSize      --   ограничение пам€ти при распаковке, байт
@@ -230,6 +231,7 @@ optionsList = sortOn (\(OPTION a b _) -> (a|||"zzz",b))
    ,OPTION ""      "bypass"             "setups proxy bypass list for URL access"
    ,OPTION ""      "original"           "redownload broken parts of archive from the URL"
    ,OPTION ""      "save-bad-ranges"    "save list of broken archive parts to the FILE"
+   ,OPTION ""      "pause-before-exit"  "make a PAUSE just before closing program window"
    ]
 
 -- |—писок опций, которым надо отдавать предпочтение при возникновении коллизий в разборе командной строки
@@ -322,7 +324,7 @@ aARC_VERSION_WITH_DATE = aARC_VERSION    -- aARC_VERSION ++ " ("++aARC_DATE++")"
 aARC_HEADER_WITH_DATE  = aARC_HEADER     -- aARC_HEADER  ++ " ("++aARC_DATE++")"
 aARC_HEADER  = aARC_NAME++" "++aARC_VERSION++" "
 aARC_VERSION = "0.52 alpha ("++aARC_DATE++")"                                  --  "0.51"
-aARC_DATE    = "July 26 2009"
+aARC_DATE    = "July 27 2009"
 aARC_NAME    = "FreeArc"
 aARC_AUTHOR  = "Bulat Ziganshin"
 aARC_EMAIL   = "Bulat.Ziganshin@gmail.com"

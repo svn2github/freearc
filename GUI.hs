@@ -99,9 +99,10 @@ guiStartProgram = gui $ do
   widgetShowAll windowProgress
 
 -- |Завершить выполнение программы
-guiDoneProgram = do
-  unlessM (val fileManagerMode) $ do
-    foreverM $ sleepSeconds 1
+guiDoneProgram pause = do
+  when pause $ do
+    unlessM (val fileManagerMode) $ do
+      foreverM $ sleepSeconds 1
   return ()
 
 

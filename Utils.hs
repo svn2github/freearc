@@ -293,6 +293,11 @@ bg action = do
   forkIO (action >>= putMVar resultVar)
   takeMVar resultVar
 
+#ifdef FREEARC_GUI
+isGUI = True
+#else
+isGUI = False
+#endif
 
 {-# NOINLINE foreverM #-}
 {-# NOINLINE repeat_while #-}

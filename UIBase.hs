@@ -82,6 +82,8 @@ uiMessage                 =  unsafePerformIO$ newIORef$ ""
 files_scanned             =  unsafePerformIO$ newIORef$ (0::Integer)
 -- |Устанавливается после завершения выполнения всех команд, когда мы просто ждём закрытия окна программы
 programFinished           =  unsafePerformIO$ newIORef$ False
+-- |Делать ли паузу перед выходом из программы?
+pause_before_exit         =  unsafePerformIO$ newIORef$ ""
 
 -- |Глобальная переменная, хранящая состояние индикатора прогресса
 aProgressIndicatorState    =  unsafePerformIO$ newIORef$ error "undefined UI::aProgressIndicatorState"

@@ -315,7 +315,8 @@ uiDoneSubCommand command subCommand results = do
   display_option' =: opt_display command
 
 -- |Выполнение команды завершено, напечатать суммарную статистику по всем обработанным архивам
-uiDoneCommand Command{cmd_name=cmd} totals = do
+uiDoneCommand command@Command{cmd_name=cmd} totals = do
+  pause_before_exit =: opt_pause_before_exit command
   let sum4 (a0,b0,c0,d0) (a,b,c,d)   =  (a0+a,b0+b,c0+c,d0+d)
       (counts, files, bytes, cbytes) =  foldl sum4 (0,0,0,0) totals
   when (counts>1) $ do
@@ -330,7 +331,14 @@ uiDoneCommand Command{cmd_name=cmd} totals = do
 uiDoneProgram = do
   condPrintLineNeedSeparator "" "\n"
   programFinished =: True
-  guiDoneProgram
+  -- Make a pause before exiting program if required
+  w <- val warnings
+  pause <- val pause_before_exit
+  guiDoneProgram $ case pause of
+                     "on"          -> True
+                     "off"         -> False
+                     "on-warnings" -> w>0
+                     _             -> False
 
 
 {-# NOINLINE uiStartProgram #-}

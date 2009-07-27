@@ -38,7 +38,7 @@ import UIBase
 -- |Запускает background thread для вывода индикатора прогресса
 guiStartProgram = do
   -- Обновляем индикатор прогресса и заголовок окна раз в 0.5 секунды
-  indicatorThread 0.5 $ \indicator indType title b bytes total processed p -> do
+  indicatorThread 0.5 $ \updateMode indicator indType title b bytes total processed p -> do
     myPutStr$ back_percents indicator ++ p
     myFlushStdout
     setConsoleTitle title
@@ -71,8 +71,10 @@ uiResumeProgressIndicator = do
   aProgressIndicatorEnabled =: True
 
 -- |Завершить выполнение программы
-guiDoneProgram = do
-  return ()
+guiDoneProgram pause = do
+  when pause $ do
+    withoutEcho getHiddenChar
+    return ()
 
 {-# NOINLINE guiStartProgram #-}
 {-# NOINLINE guiStartFile #-}

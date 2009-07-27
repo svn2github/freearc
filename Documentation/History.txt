@@ -348,13 +348,13 @@
 0.51 (April 28 2009)
 
 
-  aARC_VERSION = "0.51", aARCHIVE_VERSION = make4byte 0 0 5 1
+  aARC_VERSION = "0.52", aARCHIVE_VERSION = make4byte 0 0 5 2
 === To-do list ====================================================================================
 
 fmUnselectFilenames fm' (const True)  - наверно можно ускорить для больших списков файлов
 --pause-before-exit: always, never, smart (default=never)
   smart: after testing or if there are errors/warnings
-  Close button after finish - don't ask further questions
+  ESC for exit
 инсталятор
   добавить ArcShellExt и all2arc.exe
   ini->bin

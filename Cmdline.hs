@@ -132,6 +132,7 @@ parseCmdline cmdline  =  (`mapMaybeM` split ";" cmdline) $ \args -> do
       pretest               =  findOptArg   o "pretest"       "1" .$  changeTo [("-","0"), ("+","2"), ("","2")]
       broken_archive        =  findReqArg   o "BrokenArchive" "-"  ||| "0"
       language              =  findReqArg   o "language"      "--"
+      pause_before_exit     =  findOptArg   o "pause-before-exit" "--"   .$changeTo [("--",iif isGUI (iif (cmd=="t") "on" "on-warnings") "off"), ("","on"), ("yes","on"), ("no","off"), ("always","on"), ("never","off")]
       noarcext              =  findNoArg    o "noarcext"
       crconly               =  findNoArg    o "crconly"
       nodata                =  findNoArg    o "nodata"
@@ -140,7 +141,7 @@ parseCmdline cmdline  =  (`mapMaybeM` split ";" cmdline) $ \args -> do
       exclude_path          =  findOptArg   o "ExcludePath"   "--"
 
       add_exclude_path  =  exclude_path .$ changeTo [("--", "9"), ("", "0")] .$ readInt
-      dir_exclude_path  =  if        cmd=="e"                  then 0
+      dir_exclude_path  =  if                cmd=="e"          then 0
                              else if cmdType cmd==EXTRACT_CMD  then add_exclude_path
                              else                                   3
 
@@ -161,11 +162,12 @@ parseCmdline cmdline  =  (`mapMaybeM` split ";" cmdline) $ \args -> do
       is_op_option _         = False
 
   -- ѕроверить, что опции принимают одно из допустимых значений
-  testOption "overwrite"     "o"  overwrite      (words "+ - p")
-  testOption "indicator"     "i"  indicator      (words "0 1 2")
-  testOption "pretest"       "tp" pretest        (words "0 1 2 3")
-  testOption "BrokenArchive" "ba" broken_archive (words "- 0 1")
-  testOption "ExcludePath"   "ep" exclude_path   ([""]++words "1 2 3 --")
+  testOption "overwrite"         "o"  overwrite         (words "+ - p")
+  testOption "indicator"         "i"  indicator         (words "0 1 2")
+  testOption "pretest"           "tp" pretest           (words "0 1 2 3")
+  testOption "BrokenArchive"     "ba" broken_archive    (words "- 0 1")
+  testOption "ExcludePath"       "ep" exclude_path      ([""]++words "1 2 3 --")
+  testOption "pause-before-exit" ""   pause_before_exit (words "on off on-warnings on-error")
 
   -- ќпределить им€ SFX-модул€, который будет добавлен в начало архива
   let sfxname  =  findOptArg o "sfx" (if take 1 cmd=="s"  then drop 1 cmd  else "--")   -- команда "s..." эквивалентна команде "ch -sfx..."
@@ -708,6 +710,7 @@ parseCmdline cmdline  =  (`mapMaybeM` split ";" cmdline) $ \args -> do
     , opt_broken_archive       = broken_archive
     , opt_original             = findOptArg   o "original"          "--"
     , opt_save_bad_ranges      = findReqArg   o "save-bad-ranges"   ""
+    , opt_pause_before_exit    = pause_before_exit
     , opt_limit_compression_memory   = climit
     , opt_limit_decompression_memory = dlimit
 

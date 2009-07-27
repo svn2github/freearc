@@ -222,7 +222,9 @@ errormsg (CMDLINE_BAD_OPTION_FORMAT option) =
 
 errormsg (INVALID_OPTION_VALUE fullname shortname valid_values) = do
   or <- i18n"0323 or"
-  i18fmt ["0326 %1 option must be one of: %2", fullname, enumerate or (map (('-':shortname)++) valid_values)]
+  let spelling | shortname>"" = (('-':shortname)++)
+               | otherwise    = (("--"++fullname++"=")++)
+  i18fmt ["0326 %1 option must be one of: %2", fullname, enumerate or (map spelling valid_values)]
 
 errormsg (CMDLINE_NO_COMMAND args) =
   i18fmt ["0327 no command name in command: %1", unwords args]
