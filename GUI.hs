@@ -100,6 +100,8 @@ guiStartProgram = gui $ do
 
 -- |Задержать завершение программы
 guiPause = do
+  uiMessage =: ""
+  updateAllIndicators
   foreverM $ do
     sleepSeconds 1
 

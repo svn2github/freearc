@@ -101,11 +101,10 @@ terminateOperation = do
 
 -- |Принудительно завершает выполнение программы с заданным exitCode и печатью сообщения msg
 shutdown msg exitCode = do
-  pause_option <- val pause_before_exit
   w <- val warnings
-  pause_before_exit =: "exit"
   -- Make cleanup unless this is a second call (after pause)
-  when (pause_option/="exit") $ do
+  unlessM (val programFinished) $ do
+    programFinished =: True
     separator' =: ("","\n")
     log_separator' =: "\n"
     fin <- val finalizers
@@ -127,6 +126,7 @@ shutdown msg exitCode = do
     --killThread myThread
 
     -- Make a pause if necessary
+    pause_option <- val pause_before_exit
     pause <- val pauseAction
     pause `on` case pause_option of
                  "on"          -> True
@@ -191,6 +191,10 @@ finalizers = unsafePerformIO (ref [])
 operationTerminated = unsafePerformIO (ref False)
 {-# NOINLINE operationTerminated #-}
 
+-- |Устанавливается после завершения выполнения всех команд, когда мы просто ждём закрытия окна программы
+programFinished = unsafePerformIO (ref False)
+{-# NOINLINE programFinished #-}
+
 -- |Режим работы файл-менеджера: при этом registerError обрабатывается по-другому - мы дожидаемся завершения всех тредов упаковки и распаковки
 fileManagerMode = unsafePerformIO (ref False)
 {-# NOINLINE fileManagerMode #-}
@@ -200,11 +204,8 @@ pause_before_exit = unsafePerformIO (ref "")
 {-# NOINLINE pause_before_exit #-}
 
 -- |UI-операция, вызываемая для задержки выхода из программы
-pauseAction = unsafePerformIO (ref$ return ())
+pauseAction = unsafePerformIO (ref$ return ()) :: IORef (IO())
 {-# NOINLINE pauseAction #-}
-
-setPauseAction :: (IO()) -> IO ()
-setPauseAction = (pauseAction =:)
 
 
 ---------------------------------------------------------------------------------------------------

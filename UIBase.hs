@@ -80,8 +80,6 @@ putHeader                 =  unsafePerformIO$ init_once
 uiMessage                 =  unsafePerformIO$ newIORef$ ""
 -- |Счётчик просканированных файлов
 files_scanned             =  unsafePerformIO$ newIORef$ (0::Integer)
--- |Устанавливается после завершения выполнения всех команд, когда мы просто ждём закрытия окна программы
-programFinished           =  unsafePerformIO$ newIORef$ False
 
 -- |Глобальная переменная, хранящая состояние индикатора прогресса
 aProgressIndicatorState    =  unsafePerformIO$ newIORef$ error "undefined UI::aProgressIndicatorState"

@@ -34,7 +34,7 @@ import UIBase
 -- |Отметить начало выполнения программы
 uiStartProgram = do
   guiStartProgram
-  setPauseAction guiPause
+  pauseAction =: guiPause
 
 -- |Отметить начало выполнения команды
 uiStartCommand command = do
@@ -331,7 +331,6 @@ uiDoneCommand Command{cmd_name=cmd} totals = do
 -- |Завершить выполнение программы
 uiDoneProgram = do
   condPrintLineNeedSeparator "" "\n"
-  programFinished =: True
   guiDoneProgram
 
 
