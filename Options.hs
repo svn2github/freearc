@@ -319,6 +319,7 @@ aARCHIVE_VERSION = make4byte 0 0 5 2
 {-# NOINLINE aARC_AUTHOR #-}
 {-# NOINLINE aARC_EMAIL #-}
 {-# NOINLINE aARC_WEBSITE #-}
+{-# NOINLINE aARC_LICENSE #-}
 -- |Краткое наименование программы, выводимое в начале работы
 aARC_VERSION_WITH_DATE = aARC_VERSION    -- aARC_VERSION ++ " ("++aARC_DATE++")"
 aARC_HEADER_WITH_DATE  = aARC_HEADER     -- aARC_HEADER  ++ " ("++aARC_DATE++")"
@@ -329,10 +330,12 @@ aARC_NAME    = "FreeArc"
 aARC_AUTHOR  = "Bulat Ziganshin"
 aARC_EMAIL   = "Bulat.Ziganshin@gmail.com"
 aARC_WEBSITE = "http://freearc.org"
+aARC_LICENSE = ["High-performance archiver", "Free for commercial and non-commercial use"]
 
 {-# NOINLINE aHELP #-}
 -- |HELP, выводимый при вызове программы без параметров
 aHELP = aARC_HEADER++" "++aARC_WEBSITE++"  "++aARC_DATE++"\n"++
+        joinWith ". " aARC_LICENSE++"\n"++
         "Usage: Arc command [options...] archive [files... @listfiles...]\n" ++
         joinWith "\n  " ("Commands:":commandsList) ++ "\nOptions:\n" ++ optionsHelp
 

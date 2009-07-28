@@ -353,7 +353,7 @@
 
 fmUnselectFilenames fm' (const True)  - наверно можно ускорить для больших списков файлов
 инсталятор
-  добавить ArcShellExt и all2arc.exe
+  добавить ArcShellExt, all2arc.exe, 7zg, inno setup dll & script
   ini->bin
   при отсутствии LastCheck в freearc.history программа иногда показывает "иероглифы"
   new-readme.txt
@@ -370,11 +370,13 @@ iss
   чтоб установка и распаковка архива шли в один прогресс бар
   если бы он еще брал инфу из архива о том скока весят файлы после распаковки
   archive stats function (files, dirs, original/compressed size)
+  http://forum.ru-board.com/topic.cgi?forum=5&topic=29437&start=1777&limit=1&m=1#1
   possibly to add options to read first from ini specific output extract path for specific arc/exe to unpack?
     sometimes need [or someone forgot] to compress file/s with specific subfolder
 fashell
   обработка 8000 выделенных файлов? ;)  или даже одного длинного имени файла
   Add to... и прочее если имя файла содержит %
+  сделать тексты в меню локализируемыми с темплейтами типа %filename, %arcname...
   показывать команды архивации когда выбрано 2 и более архива ("winrar beta 3 did not display archiving commands in context menu if user selected several archives")
 cvt
   ввод нового имени для одного архива
@@ -383,8 +385,10 @@ gui-версия не обрабатывает правильно ошибки:
   -mqq
 other
   CleanStats при non-FM mode
+  выводить в заголовке окна "testing a.arc", "SUCESSFULLY TESTED a.arc", "% WARNINGS IN TESTING a.arc", "ERROR IN ..."
   installer.exe -p"/q" will then launch setup.exe /q
   грузить facompress.dll с абс. путём чтобы не брались левые из PATH?
+  иконки - хотя бы dir/arc/archives/rest
   icons
     SHFILEINFO shFileInfo;
     SHGetFileInfo(filename, 0, &shFileInfo, sizeof(shFileInfo), SHGFI_ICON);

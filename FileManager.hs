@@ -842,7 +842,7 @@ myGUI run args = do
                  ,aboutDialogName      := aARC_NAME
                  ,aboutDialogVersion   := aARC_VERSION_WITH_DATE
                  ,aboutDialogCopyright := "(c) "++aARC_EMAIL
-                 ,aboutDialogComments  := "High-performance archiver"
+                 ,aboutDialogComments  := unlines aARC_LICENSE
                  ,aboutDialogWebsite   := homeURL
                  ,aboutDialogAuthors   := ["Igor Pavlov (author of LZMA and EXE filter)"
                                           ,"Dmitry Shkarin (author of PPMd)"
