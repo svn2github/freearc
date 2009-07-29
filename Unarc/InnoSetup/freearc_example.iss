@@ -4,9 +4,12 @@
 ;
 ;[Russian]
 ;Пример распаковки FreeArc архива при помощи unarc.dll, с отображением прогресса распаковки в окне Inno Setup.
-;НЕОБХОДИМО УСТАНОВИТЬ КОРРЕКТНОЕ ЗНАЧЕНИЕ totalSize НИЖЕ!
 ;
 ;Один архив можно слить с инсталятором, если их общий размер не более 2Гб, через "copy /b setup.exe+xxx.arc newsetup.exe" и указать в коде Archives = '{srcexe}'
+;
+; Изменения от Bulat Ziganshin, 29-07-2009
+;   - функция ArchiveOrigSize возвращает объём данных в архиве
+;   - наименования колбэков изменены на read и write (было progress и written)
 ;
 ; Изменения от Bulat Ziganshin, 10-07-2009
 ;   - Кнопка 'Отмена установки' теперь по расположению, размеру и надписи точно дублирует стандартную кнопку Отмена
@@ -48,12 +51,12 @@
 
 [Setup]
 AppName=FreeArc Example
-AppVerName=FreeArc Example 2.0
+AppVerName=FreeArc Example 3.0
 DefaultDirName={pf}\FreeArc Example
 UsePreviousAppDir=false
 DirExistsWarning=no
 ShowLanguageDialog=auto
-OutputBaseFilename=FreeArcExample
+OutputBaseFilename=FreeArc_Example
 OutputDir=.
 VersionInfoCopyright=Bulat Ziganshin, Victor Dobrov, SotM, CTACKo
 
@@ -98,7 +101,6 @@ rus.sec= сек
 
 [Files]
 ;Source: *.arc; DestDir: {app}; Flags: nocompression
-Source: arc.ini; DestDir: {tmp}; Flags: dontcopy
 Source: unarc.dll; DestDir: {tmp}; Flags: dontcopy deleteafterinstall
 Source: compiler:InnoCallback.dll; DestDir: {tmp}; Flags: dontcopy
 
