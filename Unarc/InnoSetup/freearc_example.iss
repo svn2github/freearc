@@ -1,9 +1,10 @@
 ;[English]
 ;Example of using unarc.dll for decompression of FreeArc archives with displaying of progress indicator in Inno Setup window.
-;YOU NEED TO PROVIDE CORRECT VALUE FOR totalSize BELOW!
+;All you need to use this script is to compile it and put .arc archives to the same directory as installer
 ;
 ;[Russian]
 ;ѕример распаковки FreeArc архива при помощи unarc.dll, с отображением прогресса распаковки в окне Inno Setup.
+;¬сЄ что вам нужно - это откомпилировать скрипт как есть и поместить архивы .arc в каталог, где находит€с инстал€тор
 ;
 ;ќдин архив можно слить с инстал€тором, если их общий размер не более 2√б, через "copy /b setup.exe+xxx.arc newsetup.exe" и указать в коде Archives = '{srcexe}'
 ;
