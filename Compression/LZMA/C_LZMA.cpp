@@ -14,6 +14,9 @@ extern "C" {
 #include "C_LZMA.h"
 }
 
+//  оличество байт, записываемых за раз в LZMA Decode
+#define LZ_CHUNKS (8<<20)
+
 enum
 {
   kBT2,
