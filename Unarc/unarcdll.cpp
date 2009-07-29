@@ -33,8 +33,8 @@ public:
   Mutex mutex;
   Event DoEvent, EventDone;
 
-  char *what; int int1, int2, result; char *str;
-  bool event (char *_what, int _int1, int _int2, char *_str);
+  char *what; Number n1, n2; int result; char *str;
+  bool event (char *_what, Number _n1, Number _n2, char *_str);
 
   DLLUI (COMMAND *_command) : command(_command) {}
   bool AllowProcessing (char cmd, int silent, FILENAME arcname, char* comment, int cmtsize, FILENAME outdir);
@@ -51,12 +51,12 @@ public:
 /******************************************************************************
 ** Реализация интерфейса с программой, использующей DLL ***********************
 ******************************************************************************/
-bool DLLUI::event (char *_what, int _int1, int _int2, char *_str)
+bool DLLUI::event (char *_what, Number _n1, Number _n2, char *_str)
 {
   Lock _(mutex);
   what = _what;
-  int1 = _int1;
-  int2 = _int2;
+  n1   = _n1;
+  n2   = _n2;
   str  = _str;
 
   DoEvent.Signal();
@@ -71,12 +71,12 @@ void DLLUI::BeginProgress (uint64 totalBytes)
 
 bool DLLUI::ProgressRead (uint64 readBytes)
 {
-  return event ("progress", readBytes>>20, totalBytes>>20, "");
+  return event ("read", readBytes>>20, totalBytes>>20, "");
 }
 
 bool DLLUI::ProgressWrite (uint64 writtenBytes)
 {
-  return event ("written", writtenBytes>>20, 0, "");
+  return event ("write", writtenBytes>>20, 0, "");
 }
 
 bool DLLUI::ProgressFile (bool isdir, const char *operation, FILENAME filename, uint64 filesize)
@@ -121,8 +121,18 @@ static DWORD WINAPI timer_thread (void *paramPtr)
 
 static DWORD WINAPI decompress_thread (void *paramPtr)
 {
+  uint64 total_files, origsize, compsize;
   DLLUI *ui = (DLLUI*) paramPtr;
-  PROCESS (*ui->command, *ui);      //   Выполнить разобранную команду
+  // Выполнить разобранную команду
+  if ( ui->command->cmd=='l' )
+  {
+    PROCESS (*ui->command, *ui, total_files, origsize, compsize);
+    ui->event ("total_files", total_files,  0, "");
+    ui->event ("origsize",    origsize>>20, 0, "");
+    ui->event ("compsize",    compsize>>20, 0, "");
+  }
+  else
+    PROCESS (*ui->command, *ui);
   ui->what = "quit";
   ui->DoEvent.Signal();
   return 0;
@@ -160,7 +170,7 @@ int __cdecl FreeArcExtract (cbtype *callback, ...)
       ui->DoEvent.Lock();
       if (strequ (ui->what, "quit"))
         {return command.ok? FREEARC_OK : FREEARC_ERRCODE_GENERAL;}
-      ui->result = callback (ui->what, ui->int1, ui->int2, ui->str);
+      ui->result = callback (ui->what, ui->n1, ui->n2, ui->str);
       ui->EventDone.Signal();
     }
     thread.Wait();

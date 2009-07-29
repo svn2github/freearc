@@ -34,6 +34,9 @@ public:
   // Распаковать или протестировать файлы из солид-блока с номером block_num каталога dirblock
   void ExtractFiles (DIRECTORY_BLOCK *dirblock, int block_num);
 
+  // Получить информацию об архиве
+  PROCESS (COMMAND &_cmd, BASEUI &_UI, uint64 &total_files, uint64 &origsize, uint64 &compsize);
+
   // Читает структуру архива и вызывает в зависимости от выполняемой команды
   // ListFiles для каждого блока каталога или ExtractFiles для каждого солид-блока
   PROCESS(COMMAND &_cmd, BASEUI &_UI);
@@ -238,6 +241,30 @@ void PROCESS::ExtractFiles (DIRECTORY_BLOCK *dirblock, int block_num)
 
 
 /******************************************************************************
+** Получить информацию об архиве **********************************************
+******************************************************************************/
+
+PROCESS::PROCESS (COMMAND &_cmd, BASEUI &_UI, uint64 &total_files, uint64 &origsize, uint64 &compsize) : cmd(&_cmd), UI(&_UI)
+{
+  arcinfo.arcfile.open (cmd->arcname, READ_MODE);                     // Откроем файл архива
+  arcinfo.read_structure();                                           // Прочитаем структуру архива
+  total_files = origsize = compsize = 0;
+
+  iterate_array (i, arcinfo.control_blocks_descriptors) {             // Переберём все служебные блоки в архиве...
+    BLOCK& block_descriptor = arcinfo.control_blocks_descriptors[i];
+    if (block_descriptor.type == DIR_BLOCK) {                         // ... и отберём из них блоки каталога
+      DIRECTORY_BLOCK dirblock (arcinfo, block_descriptor);           // Прочитаем блок каталога
+      iterate_var (i, dirblock.total_files)                           // Переберём все файлы в каталоге
+      	origsize += dirblock.size[i];
+      iterate_array (i, dirblock.data_block)                          // Переберём все солид-блоки в каталоге
+      	compsize += dirblock.data_block[i].compsize;
+      total_files += dirblock.total_files;
+    }
+  }
+}
+
+
+/******************************************************************************
 ** Головная процедура выполнения команды над архивом **************************
 ******************************************************************************/
 
@@ -282,4 +309,5 @@ void PROCESS::quit()
   arcinfo.arcfile.tryClose();
   UI->Abort (cmd);
 }
+
 
