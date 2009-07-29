@@ -363,12 +363,14 @@ rep: научитьс€ использовать более двух блоков пам€ти при распаковке
 "lzp+ppmd:1gb" - не может выделить 1gb, но падает на I/O error в lzp (регресс 11b->20 июн€)
 пустые каталоги не удал€ютс€ из архива (в FM)
 iss
-  обновление имени файла - раз в 0.1 сек
+  long mb -> Extended
+  брать arc.ini из тек. каталога
   сделать запись данных из lzma небольшими блоками
+  если бы он еще брал инфу из архива о том скока вес€т файлы после распаковки
+  обновление имени файла - раз в 0.1 сек
   проверка на исчерпание свободного места в write callback...
   unicode верси€
   чтоб установка и распаковка архива шли в один прогресс бар
-  если бы он еще брал инфу из архива о том скока вес€т файлы после распаковки
   archive stats function (files, dirs, original/compressed size)
   http://forum.ru-board.com/topic.cgi?forum=5&topic=29437&start=1777&limit=1&m=1#1
   possibly to add options to read first from ini specific output extract path for specific arc/exe to unpack?
