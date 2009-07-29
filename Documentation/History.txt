@@ -351,12 +351,14 @@
   aARC_VERSION = "0.52", aARCHIVE_VERSION = make4byte 0 0 5 2
 === To-do list ====================================================================================
 
++грузить facompress.dll с абс. путём чтобы не брались левые из PATH
+127percents.arc!!!
 fmUnselectFilenames fm' (const True)  - наверно можно ускорить для больших списков файлов
 инсталятор
   добавить ArcShellExt, all2arc.exe, 7zg, inno setup dll & script
   ini->bin
   при отсутствии LastCheck в freearc.history программа иногда показывает "иероглифы"
-  new-readme.txt
+  отшлифовать новый readme.txt
 after "--" allow filenames starting with "@". use "-@" option to include listfiles anywhere on cmdline
 -max -> bmf for bmp/tif
 rep: научиться использовать более двух блоков памяти при распаковке
@@ -364,14 +366,11 @@ rep: научиться использовать более двух блоков памяти при распаковке
 пустые каталоги не удаляются из архива (в FM)
 iss
   брать arc.ini из тек. каталога
-  +сделать запись данных из lzma небольшими блоками (по 8мб)
-  +если бы он еще брал инфу из архива о том скока весят файлы после распаковки
   обновление имени файла - раз в 0.1 сек
   проверка на исчерпание свободного места в write callback...
   unicode версия
   long mb -> Extended
   чтоб установка и распаковка архива шли в один прогресс бар
-  archive stats function (files, dirs, original/compressed size)
   http://forum.ru-board.com/topic.cgi?forum=5&topic=29437&start=1777&limit=1&m=1#1
   possibly to add options to read first from ini specific output extract path for specific arc/exe to unpack?
     sometimes need [or someone forgot] to compress file/s with specific subfolder
@@ -389,7 +388,6 @@ other
   CleanStats при non-FM mode
   выводить в заголовке окна "testing a.arc", "SUCESSFULLY TESTED a.arc", "% WARNINGS IN TESTING a.arc", "ERROR IN ..."
   installer.exe -p"/q" will then launch setup.exe /q
-  грузить facompress.dll с абс. путём чтобы не брались левые из PATH?
   иконки - хотя бы dir/arc/archives/rest
   icons
     SHFILEINFO shFileInfo;

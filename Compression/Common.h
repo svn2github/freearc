@@ -194,6 +194,7 @@ typedef char* CFILENAME;
 typedef char  TCHAR;
 #define _T
 #define _tcschr         strchr
+#define	_tcsrchr	strrchr
 #define _tcscpy         strcpy
 #define _stprintf       sprintf
 #define _tcslen         strlen
