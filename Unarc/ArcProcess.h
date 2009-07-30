@@ -246,6 +246,9 @@ void PROCESS::ExtractFiles (DIRECTORY_BLOCK *dirblock, int block_num)
 
 PROCESS::PROCESS (COMMAND &_cmd, BASEUI &_UI, uint64 &total_files, uint64 &origsize, uint64 &compsize) : cmd(&_cmd), UI(&_UI)
 {
+  CurrentProcess = this;
+  SetCompressionThreads (GetProcessorsCount());
+
   arcinfo.arcfile.open (cmd->arcname, READ_MODE);                     // Откроем файл архива
   arcinfo.read_structure();                                           // Прочитаем структуру архива
   total_files = origsize = compsize = 0;
@@ -274,6 +277,7 @@ PROCESS::PROCESS (COMMAND &_cmd, BASEUI &_UI) : cmd(&_cmd), UI(&_UI)
 {
   CurrentProcess = this;
   SetCompressionThreads (GetProcessorsCount());
+
   arcinfo.arcfile.open (cmd->arcname, READ_MODE);                     // Откроем файл архива
   arcinfo.read_structure();                                           // Прочитаем структуру архива
   // Выведем заголовок операции на экран и запросим у пользователя разрешение на распаковку SFX

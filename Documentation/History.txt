@@ -351,7 +351,7 @@
   aARC_VERSION = "0.52", aARCHIVE_VERSION = make4byte 0 0 5 2
 === To-do list ====================================================================================
 
-+грузить facompress.dll с абс. путЄм чтобы не брались левые из PATH
+по окончании работы делать default key Cancel (чтобы нажатие на enter/space сразу закрывало диалог)
 127percents.arc!!!
 fmUnselectFilenames fm' (const True)  - наверно можно ускорить дл€ больших списков файлов
 инстал€тор
@@ -385,6 +385,8 @@ gui-верси€ не обрабатывает правильно ошибки:
   a x:\a
   -mqq
 other
+  ¬ключение/выключение ассоциаций после переноса FreeArc: http://forum.ru-board.com/topic.cgi?forum=5&topic=29437&start=1780#4
+  отдельный код jb,rb дл€ переполнени€ диска и обработка его в iss script
   CleanStats при non-FM mode
   выводить в заголовке окна "testing a.arc", "SUCESSFULLY TESTED a.arc", "% WARNINGS IN TESTING a.arc", "ERROR IN ..."
   installer.exe -p"/q" will then launch setup.exe /q

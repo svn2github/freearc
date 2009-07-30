@@ -124,7 +124,7 @@ static DWORD WINAPI decompress_thread (void *paramPtr)
   uint64 total_files, origsize, compsize;
   DLLUI *ui = (DLLUI*) paramPtr;
   // Выполнить разобранную команду
-  if ( ui->command->cmd=='l' )
+  if (ui->command->cmd=='l')
   {
     PROCESS (*ui->command, *ui, total_files, origsize, compsize);
     ui->event ("total_files", total_files,  0, "");
