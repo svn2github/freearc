@@ -36,7 +36,7 @@ public:
   virtual void ListHeader (COMMAND &) {}
   virtual void ListFooter (COMMAND &) {}
   virtual void ListFiles (DIRECTORY_BLOCK *, COMMAND &) {}
-  virtual void Abort (COMMAND*)  {exit (FREEARC_EXIT_ERROR);}
+  virtual void Abort (COMMAND*, int errcode)  {exit (FREEARC_EXIT_ERROR);}
 };
 
 

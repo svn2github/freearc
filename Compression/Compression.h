@@ -26,6 +26,7 @@ extern "C" {
 #define FREEARC_ERRCODE_BAD_COMPRESSED_DATA      (-7)  /* Data can't be decompressed */
 #define FREEARC_ERRCODE_NOT_IMPLEMENTED          (-8)  /* Requested feature isn't supported */
 #define FREEARC_ERRCODE_NO_MORE_DATA_REQUIRED    (-9)  /* Required part of data was already decompressed */
+#define FREEARC_ERRCODE_OPERATION_TERMINATED    (-10)  /* operation terminated by user */
 
 
 // Константы для удобной записи объёмов памяти

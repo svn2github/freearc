@@ -42,7 +42,7 @@ public:
   PROCESS(COMMAND &_cmd, BASEUI &_UI);
 
   // Процедура экстренного выхода
-  void quit();
+  void quit(int errcode);
 } *CurrentProcess;
 
 
@@ -80,7 +80,7 @@ void PROCESS::outfile_open (PASS pass)
              case 'n': included = FALSE;  break;
              case 'a': cmd->yes = TRUE;   break;
              case 's': cmd->no  = TRUE;   included = FALSE;  break;
-             case 'q': quit();
+             case 'q': quit(FREEARC_ERRCODE_OPERATION_TERMINATED);
            }
          }
        }
@@ -89,7 +89,7 @@ void PROCESS::outfile_open (PASS pass)
   if (pass==FIRST_PASS || dir->size[curfile]>0)   // Не писать повторно о распаковке каталогов/пустых файлов
     if (!(dir->isdir[curfile] && cmd->cmd!='x'))  // Не сообщать о тестировании каталогов ;)
       if (!UI->ProgressFile (dir->isdir[curfile], included? (cmd->cmd=='t'? "Testing":"Extracting"):"Skipping", MYFILE(xname).displayname(), bytes_to_write))
-        quit();
+        quit(FREEARC_ERRCODE_OPERATION_TERMINATED);
 }
 
 // Записать данные в выходной файл
@@ -98,7 +98,7 @@ void PROCESS::outfile_write (void *buf, int size)
   crc = UpdateCRC (buf, size, crc);
   if (included && cmd->cmd!='t' && size)
     outfile.write(buf,size);
-  if (!UI->ProgressWrite (writtenBytes += size))  quit();
+  if (!UI->ProgressWrite (writtenBytes += size))  quit(FREEARC_ERRCODE_IO);
 }
 
 // Закрыть выходной файл
@@ -125,7 +125,7 @@ int PROCESS::DecompressCallback (const char *what, void *buf, int size)
   if (strequ (what, "read")) {
     int read_bytes = mymin (bytes_left, size);
     if (read_bytes==0)  return 0;
-    if (!UI->ProgressRead (archive_pos))  quit();
+    if (!UI->ProgressRead (archive_pos))  quit(FREEARC_ERRCODE_OPERATION_TERMINATED);
     int len = infile->tryRead (buf, read_bytes);
     if (len>0)  bytes_left -= len,  archive_pos += len;
     return len;
@@ -306,12 +306,12 @@ PROCESS::PROCESS (COMMAND &_cmd, BASEUI &_UI) : cmd(&_cmd), UI(&_UI)
 
 
 // Процедура экстренного выхода
-void PROCESS::quit()
+void PROCESS::quit(int errcode)
 {
   cmd->ok = FALSE;
   if (outfile.isopen())  outfile.close(), delete_file(outfile.filename);
   arcinfo.arcfile.tryClose();
-  UI->Abort (cmd);
+  UI->Abort (cmd, errcode);
 }
 
 

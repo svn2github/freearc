@@ -15,7 +15,7 @@ void UnarcQuit();
 // Ёкстренный выход из программы в случае ошибки
 void UnarcQuit()
 {
-  CurrentProcess->quit();
+  CurrentProcess->quit(FREEARC_ERRCODE_GENERAL);
 }
 
 
@@ -83,7 +83,7 @@ class INSTALLER_GUI : public GUI
 
 
     // Wipe temporary outdir on unsuccesful extraction
-    virtual void Abort (COMMAND *cmd)
+    virtual void Abort (COMMAND *cmd, int errcode)
     {
         if (cmd->tempdir)
         {
@@ -91,7 +91,7 @@ class INSTALLER_GUI : public GUI
             wipedir (utf8_to_utf16 (cmd->outpath, tmp));
             free(tmp);
         }
-        GUI::Abort (cmd);
+        GUI::Abort (cmd, errcode);
     }
 } UI;
 #endif

@@ -16,7 +16,7 @@ void UnarcQuit();
 // Ёкстренный выход из программы в случае ошибки
 void UnarcQuit()
 {
-  CurrentProcess->quit();
+  CurrentProcess->quit(FREEARC_ERRCODE_GENERAL);
 }
 
 
@@ -44,7 +44,7 @@ public:
   bool ProgressWrite (uint64 writtenBytes);
   bool ProgressFile  (bool isdir, const char *operation, FILENAME filename, uint64 filesize);
   char AskOverwrite  (FILENAME filename, uint64 size, time_t modified);
-  void Abort         (COMMAND *cmd);
+  void Abort         (COMMAND *cmd, int errcode);
 };
 
 
@@ -100,9 +100,9 @@ char DLLUI::AskOverwrite (FILENAME filename, uint64 size, time_t modified)
   return 'n';
 }
 
-void DLLUI::Abort (COMMAND *cmd)
+void DLLUI::Abort (COMMAND *cmd, int errcode)
 {
-  event ("quit", 0, 0, "");
+  event ("quit", errcode, 0, "");
 }
 
 
@@ -134,6 +134,7 @@ static DWORD WINAPI decompress_thread (void *paramPtr)
   else
     PROCESS (*ui->command, *ui);
   ui->what = "quit";
+  ui->n1   = FREEARC_OK;
   ui->DoEvent.Signal();
   return 0;
 }
@@ -169,7 +170,7 @@ int __cdecl FreeArcExtract (cbtype *callback, ...)
     {
       ui->DoEvent.Lock();
       if (strequ (ui->what, "quit"))
-        {return command.ok? FREEARC_OK : FREEARC_ERRCODE_GENERAL;}
+        return ui->n1;  // error code of command
       ui->result = callback (ui->what, ui->n1, ui->n2, ui->str);
       ui->EventDone.Signal();
     }
