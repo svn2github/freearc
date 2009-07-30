@@ -70,7 +70,7 @@ int dict_decompress (MemSize BlockSize, int MinCompression, int MinWeakChars, in
   }
 finished:
   BigFreeAndNil(In); BigFreeAndNil(Out);
-  return x<=0? x : FREEARC_ERRCODE_IO;  // 0, если всё в порядке, и код ошибки иначе
+  return x<=0? x : FREEARC_ERRCODE_GENERAL;  // 0, если всё в порядке, и код ошибки иначе
 }
 
 

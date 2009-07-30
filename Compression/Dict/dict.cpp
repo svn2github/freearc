@@ -1177,7 +1177,7 @@ dict[UCHAR_MAX+1];
 #define put_byte(c)      (*outptr++ = (c))
 #define put_word(p,len)  (memcpy (outptr, (p), (len)), outptr += (len))
 
-// Распаковать входные данные buf[bufsize] в outbuf и возвратить размер распакованных данных
+// Распаковать входные данные buf[bufsize] в outbuf и возвратить размер распакованных данных в *outsize
 int DictDecode (byte *buf, unsigned bufsize, byte *outbuf, unsigned *outsize)
 {
     int retcode = 0;
@@ -1227,7 +1227,7 @@ int DictDecode (byte *buf, unsigned bufsize, byte *outbuf, unsigned *outsize)
                 dict2(i,j).ptr = wordptr;
                 // Скопируем начало слова из предыдущего
                 for( int k=0; k<dict2(i,j).len; k++ ) {
-                    if (prevptr==NULL)  {retcode = -1; goto done;}  // Ошибка во входных данных - копирование данных из предыдущего слова, которого нет :)
+                    if (prevptr==NULL)  {retcode = FREEARC_ERRCODE_BAD_COMPRESSED_DATA; goto done;}  // Ошибка во входных данных - копирование данных из предыдущего слова, которого нет :)
                     *wordptr++ = *prevptr++;
                 }
                 // И прочитаем остаток слова из входного потока

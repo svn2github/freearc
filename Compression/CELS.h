@@ -27,10 +27,12 @@ extern "C" {
 #define FREEARC_ERRCODE_ONLY_DECOMPRESS          (-3)  /* Program builded with FREEARC_DECOMPRESS_ONLY, so don't try to use compress */
 #define FREEARC_ERRCODE_OUTBLOCK_TOO_SMALL       (-4)  /* Output block size in (de)compressMem is not enough for all output data */
 #define FREEARC_ERRCODE_NOT_ENOUGH_MEMORY        (-5)  /* Can't allocate memory needed for (de)compression */
-#define FREEARC_ERRCODE_IO                       (-6)  /* Error when reading or writing data */
+#define FREEARC_ERRCODE_READ                     (-6)  /* Error when reading data */
 #define FREEARC_ERRCODE_BAD_COMPRESSED_DATA      (-7)  /* Data can't be decompressed */
 #define FREEARC_ERRCODE_NOT_IMPLEMENTED          (-8)  /* Requested feature isn't supported */
 #define FREEARC_ERRCODE_NO_MORE_DATA_REQUIRED    (-9)  /* Required part of data was already decompressed */
+#define FREEARC_ERRCODE_OPERATION_TERMINATED    (-10)  /* Operation terminated by user */
+#define FREEARC_ERRCODE_WRITE                   (-11)  /* Error when writing data */
 
 
 // Константы для удобной записи объёмов памяти
@@ -146,7 +148,7 @@ int CELS_Call (TABI_ELEMENT* params);
     void *localBuf = (buf);                                                \
     int localSize  = (size);                                               \
     if (localSize  &&  (errcode=callback(TABI_DYNAMAP("request","read") ("buf",localBuf) ("size",localSize))) != localSize) { \
-        if (errcode>=0) errcode=FREEARC_ERRCODE_IO;                        \
+        if (errcode>=0) errcode=FREEARC_ERRCODE_READ;                      \
         goto finished;                                                     \
     }                                                                      \
 }
@@ -186,7 +188,7 @@ int CELS_Call (TABI_ELEMENT* params);
     int localHeaderSize;                                                   \
     unsigned char localHeader[4];                                          \
     READ_LEN_OR_EOF (localHeaderSize, localHeader, 4);                     \
-    if (localHeaderSize!=4)  {errcode=FREEARC_ERRCODE_IO; goto finished;}  \
+    if (localHeaderSize!=4)  {errcode=FREEARC_ERRCODE_READ; goto finished;}\
     (var) = value32 (localHeader);                                         \
 }
 

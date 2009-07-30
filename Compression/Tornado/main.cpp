@@ -95,7 +95,7 @@ int ReadWriteCallback (const char *what, void *buf, int size, void *r_)
       if (r.fout)
       {
           if (size != file_write (r.fout, buf, size))
-              return FREEARC_ERRCODE_IO;
+              return FREEARC_ERRCODE_WRITE;
       }
       r.outsize += size;
     } else {
@@ -430,8 +430,11 @@ add_remove_ext: // Remove COMPRESS_EXT on the end of name or add DECOMPRESS_EXT 
             case FREEARC_ERRCODE_NOT_ENOUGH_MEMORY:
                 fprintf (stderr, "\nNot enough memory for (de)compression!");
                 break;
-            case FREEARC_ERRCODE_IO:
-                fprintf (stderr, "\nI/O error!");
+            case FREEARC_ERRCODE_READ:
+                fprintf (stderr, "\nRead error! Bad media?");
+                break;
+            case FREEARC_ERRCODE_WRITE:
+                fprintf (stderr, "\nWrite error! Disk full?");
                 break;
             case FREEARC_ERRCODE_BAD_COMPRESSED_DATA:
                 fprintf (stderr, "\nData can't be decompressed!");

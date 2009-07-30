@@ -27,7 +27,7 @@ int read_func (void *buf, int size)
 }
 int write_func (void *buf, int size)
 {
-  return fwrite(buf,1,size,outfile)==size? size : FREEARC_ERRCODE_IO;
+  return fwrite(buf,1,size,outfile)==size? size : FREEARC_ERRCODE_WRITE;
 }
 
 int process (char *method)

@@ -98,7 +98,7 @@ void PROCESS::outfile_write (void *buf, int size)
   crc = UpdateCRC (buf, size, crc);
   if (included && cmd->cmd!='t' && size)
     outfile.write(buf,size);
-  if (!UI->ProgressWrite (writtenBytes += size))  quit(FREEARC_ERRCODE_IO);
+  if (!UI->ProgressWrite (writtenBytes += size))  quit(FREEARC_ERRCODE_WRITE);
 }
 
 // Закрыть выходной файл

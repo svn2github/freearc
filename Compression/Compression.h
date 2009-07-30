@@ -22,11 +22,12 @@ extern "C" {
 #define FREEARC_ERRCODE_ONLY_DECOMPRESS          (-3)  /* Program builded with FREEARC_DECOMPRESS_ONLY, so don't try to use compress */
 #define FREEARC_ERRCODE_OUTBLOCK_TOO_SMALL       (-4)  /* Output block size in (de)compressMem is not enough for all output data */
 #define FREEARC_ERRCODE_NOT_ENOUGH_MEMORY        (-5)  /* Can't allocate memory needed for (de)compression */
-#define FREEARC_ERRCODE_IO                       (-6)  /* Error when reading or writing data */
+#define FREEARC_ERRCODE_READ                     (-6)  /* Error when reading data */
 #define FREEARC_ERRCODE_BAD_COMPRESSED_DATA      (-7)  /* Data can't be decompressed */
 #define FREEARC_ERRCODE_NOT_IMPLEMENTED          (-8)  /* Requested feature isn't supported */
 #define FREEARC_ERRCODE_NO_MORE_DATA_REQUIRED    (-9)  /* Required part of data was already decompressed */
-#define FREEARC_ERRCODE_OPERATION_TERMINATED    (-10)  /* operation terminated by user */
+#define FREEARC_ERRCODE_OPERATION_TERMINATED    (-10)  /* Operation terminated by user */
+#define FREEARC_ERRCODE_WRITE                   (-11)  /* Error when writing data */
 
 
 // Константы для удобной записи объёмов памяти
@@ -63,10 +64,10 @@ extern "C" {
 typedef int CALLBACK_FUNC (const char *what, void *data, int size, void *auxdata);
 
 // Макросы для чтения/записи в(ы)ходных потоков с проверкой, что передано ровно столько данных, сколько было запрошено
-#define checked_read(ptr,size)         if ((x = callback("read" ,ptr,size,auxdata)) != size) { x>=0 && (x=FREEARC_ERRCODE_IO); goto finished; }
-#define checked_write(ptr,size)        if ((x = callback("write",ptr,size,auxdata)) != size) { x>=0 && (x=FREEARC_ERRCODE_IO); goto finished; }
+#define checked_read(ptr,size)         if ((x = callback("read" ,ptr,size,auxdata)) != size) { x>=0 && (x=FREEARC_ERRCODE_READ); goto finished; }
+#define checked_write(ptr,size)        if ((x = callback("write",ptr,size,auxdata)) != size) { x>=0 && (x=FREEARC_ERRCODE_WRITE); goto finished; }
 // Макрос для чтения входных потоков с проверкой на ошибки и конец входных данных
-#define checked_eof_read(ptr,size)     if ((x = callback("write",ptr,size,auxdata)) != size) { x>0  && (x=FREEARC_ERRCODE_IO); goto finished; }
+#define checked_eof_read(ptr,size)     if ((x = callback("write",ptr,size,auxdata)) != size) { x>0  && (x=FREEARC_ERRCODE_WRITE); goto finished; }
 
 // Auxiliary code to read/write data blocks and 4-byte headers
 #define INIT() callback ("init", NULL, 0, auxdata)
@@ -95,7 +96,7 @@ typedef int CALLBACK_FUNC (const char *what, void *data, int size, void *auxdata
     void *localBuf = (buf);                                                \
     int localSize  = (size);                                               \
     if (localSize  &&  (errcode=callback("read",localBuf,localSize,auxdata)) != localSize) { \
-        if (errcode>=0) errcode=FREEARC_ERRCODE_IO;                        \
+        if (errcode>=0) errcode=FREEARC_ERRCODE_READ;                      \
         goto finished;                                                     \
     }                                                                      \
 }
@@ -135,7 +136,7 @@ typedef int CALLBACK_FUNC (const char *what, void *data, int size, void *auxdata
     int localHeaderSize;                                                   \
     unsigned char localHeader[4];                                          \
     READ_LEN_OR_EOF (localHeaderSize, localHeader, 4);                     \
-    if (localHeaderSize!=4)  {errcode=FREEARC_ERRCODE_IO; goto finished;}  \
+    if (localHeaderSize!=4)  {errcode=FREEARC_ERRCODE_READ; goto finished;}\
     (var) = value32 (localHeader);                                         \
 }
 

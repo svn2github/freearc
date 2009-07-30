@@ -22,16 +22,16 @@ int external_program (bool IsCompressing, CALLBACK_FUNC *callback, void *auxdata
     while ( (x = callback ("read", Buf, LARGE_BUFFER_SIZE, auxdata)) > 0 )
     {
         if (f==NULL)  {f = fopen (infile, "wb");  // Не открываем файл пока не прочтём хоть сколько-нибудь данных (для решения проблем с перепаковкой солид-блоков)
-        	       if (!f)  {x=FREEARC_ERRCODE_IO; break;}
+        	       if (!f)  {x=FREEARC_ERRCODE_WRITE; break;}
                        registerTemporaryFile (infile,f);}
         if (runCmd!=0 && runCmd!=1) {            // Для совместимости со старыми версиями FreeArc, которые не добавляли 1 перед сжатыми данными (убрать из FreeArc 0.80!)
             outfile = "data7777";
             bytes += 1;
-            if (file_write(f,&runCmd,1) != 1)   {x=FREEARC_ERRCODE_IO; break;}
+            if (file_write(f,&runCmd,1) != 1)   {x=FREEARC_ERRCODE_WRITE; break;}
             runCmd = 1;
         }
         bytes += x;
-        if (file_write(f,Buf,x) != x)           {x=FREEARC_ERRCODE_IO; break;}
+        if (file_write(f,Buf,x) != x)           {x=FREEARC_ERRCODE_WRITE; break;}
     }
     free(Buf);  Buf = NULL;
     unregisterTemporaryFile (infile);
@@ -70,7 +70,7 @@ int external_program (bool IsCompressing, CALLBACK_FUNC *callback, void *auxdata
         if (!IsCompressing)                 {remove (infile); return FREEARC_ERRCODE_INVALID_COMPRESSOR;}
         rename (infile, outfile);
         f = fopen (outfile, "rb" );
-        if (!f)                             {remove (infile); remove (outfile); return FREEARC_ERRCODE_IO;}
+        if (!f)                             {remove (infile); remove (outfile); return FREEARC_ERRCODE_READ;}
         registerTemporaryFile (outfile,f);
         BYTE uncompressed[1] = {0};
         if (IsCompressing)                  checked_write(uncompressed,1);

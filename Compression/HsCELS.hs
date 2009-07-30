@@ -36,11 +36,12 @@ aFREEARC_ERRCODE_INVALID_COMPRESSOR    = -2
 aFREEARC_ERRCODE_ONLY_DECOMPRESS       = -3
 aFREEARC_ERRCODE_OUTBLOCK_TOO_SMALL    = -4
 aFREEARC_ERRCODE_NOT_ENOUGH_MEMORY     = -5
-aFREEARC_ERRCODE_IO                    = -6
+aFREEARC_ERRCODE_READ                  = -6
 aFREEARC_ERRCODE_BAD_COMPRESSED_DATA   = -7
 aFREEARC_ERRCODE_NOT_IMPLEMENTED       = -8
 aFREEARC_ERRCODE_NO_MORE_DATA_REQUIRED = -9
 aFREEARC_ERRCODE_OPERATION_TERMINATED  = -10
+aFREEARC_ERRCODE_WRITE                 = -11
 
 compressionErrorMessage x
   | x==aFREEARC_OK                            = "All OK"
@@ -49,11 +50,12 @@ compressionErrorMessage x
   | x==aFREEARC_ERRCODE_ONLY_DECOMPRESS       = "program build with FREEARC_DECOMPRESS_ONLY, so don't try to use compress"
   | x==aFREEARC_ERRCODE_OUTBLOCK_TOO_SMALL    = "output block size in (de)compressMem is not enough for all output data in %1"
   | x==aFREEARC_ERRCODE_NOT_ENOUGH_MEMORY     = "0367 can't allocate memory required for (de)compression in %1"
-  | x==aFREEARC_ERRCODE_IO                    = "0368 I/O error in compression algorithm %1"
+  | x==aFREEARC_ERRCODE_READ                  = "0999 Read error (bad media?) in compression algorithm %1"
   | x==aFREEARC_ERRCODE_BAD_COMPRESSED_DATA   = "0369 bad compressed data in %1"
   | x==aFREEARC_ERRCODE_NOT_IMPLEMENTED       = "requested feature isn't supported in %1"
   | x==aFREEARC_ERRCODE_NO_MORE_DATA_REQUIRED = "required part of data was already decompressed"
   | x==aFREEARC_ERRCODE_OPERATION_TERMINATED  = "operation terminated by user"
+  | x==aFREEARC_ERRCODE_WRITE                 = "0999 Write error (disk full?) in compression algorithm %1"
   | otherwise                                 = "unknown (de)compression error "++show x++" in %1"
 
 
