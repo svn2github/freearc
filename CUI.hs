@@ -64,8 +64,8 @@ uiSuspendProgressIndicator = do
 
 -- |Возобновить вывод индикатора прогресса и вывести его текущее значение
 uiResumeProgressIndicator = do
-  (indicator, indType, arcname, direction, b, bytes', total') <- val aProgressIndicatorState
-  bytes <- bytes' b;  total <- total'
+  (indicator, indType, arcname, direction, b :: Rational, bytes', total') <- val aProgressIndicatorState
+  bytes <- bytes' (round b);  total <- total'
   myPutStr$ percents indicator bytes total
   myFlushStdout
   aProgressIndicatorEnabled =: True
