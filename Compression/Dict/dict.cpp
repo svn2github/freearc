@@ -1026,7 +1026,7 @@ inline CodeWord *FindWord (byte *p0, byte *endbuf)
     // содержат только 7 пробелов, то hash0 будет хешем от 7 пробелов и по этому адресу в code_words
     // будет 5-пробельное слово - хошь-верь, хошь-нет)
     byte *p = p0;
-    unsigned hash0 = hashsize + *p++;
+    unsigned hash0 = hashsize + *p++;   if (p==endbuf)  return NULL;
     do {
         // Вычислим hash для слова [p0,p)
         byte c = *p++;
