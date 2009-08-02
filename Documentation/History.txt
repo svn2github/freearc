@@ -351,8 +351,6 @@
   aARC_VERSION = "0.52", aARCHIVE_VERSION = make4byte 0 0 5 2
 === To-do list ====================================================================================
 
-127percents.arc!!!
-fmUnselectFilenames fm' (const True)  - наверно можно ускорить для больших списков файлов
 инсталятор
   добавить ArcShellExt, all2arc.exe, 7zg, inno setup dll & script
   ini->bin

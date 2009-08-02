@@ -795,8 +795,8 @@ refreshCommand fm' = do
   chdir fm' (fm_current fm)
   when (selected>[]) $ do
     fmSetCursor fm' curfile
-  fmUnselectFilenames fm' (const True)
-  fmSelectFilenames   fm' ((`elem` selected).fmname)
+  fmUnselectAll fm'
+  fmSelectFilenames fm' ((`elem` selected).fmname)
 
 -- |Просмотреть файл
 runViewCommand           = runEditCommand
