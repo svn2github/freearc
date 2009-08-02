@@ -1,13 +1,17 @@
 ;[English]
 ;Example of using unarc.dll for decompression of FreeArc archives with displaying of progress indicator in Inno Setup window.
-;All you need to use this script is to compile it and put .arc archives to the same directory as installer
-;
+;All you need to use the script is to compile it and put .arc archives to the same directory as installer.
+;The script requires Inno Setup QuickStart Pack 5.2.3 and above! (http://files.jrsoftware.org)
+
 ;[Russian]
 ;Пример распаковки FreeArc архива при помощи unarc.dll, с отображением прогресса распаковки в окне Inno Setup.
-;Всё что вам нужно - это откомпилировать скрипт как есть и поместить архивы .arc в каталог, где находитяс инсталятор
-;
-;Один архив можно слить с инсталятором, если их общий размер не более 2Гб, через "copy /b setup.exe+xxx.arc newsetup.exe" и указать в коде Archives = '{srcexe}'
-;
+
+; Версия 3.2 от Bulat Ziganshin, 31-07-2009
+;   - исправлена unarc.dll - теперь она не вылетает на сбойных архивах
+; miniFAQ
+;   - Подготовка скрипта: добавьте строки с архивами в секцию [Files], установите флаги external dontcopy, если надо, укажите компоненты/задачи.
+;   - один архив можно слить с инсталятором, если их общий размер не более 2Гб, через "copy /b setup.exe+xxx.arc newsetup.exe", добавив в [Files] "{srcexe}"
+
 ; Версия 3.1 от Bulat Ziganshin, 29-07-2009
 ;   - более плавный индикатор прогресса (данные из LZMA пишутся кусками по 8 мб вместо dictsize)
 ;   - больше не грузятся всякие левые facompress.dll из PATH

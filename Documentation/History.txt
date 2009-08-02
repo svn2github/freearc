@@ -361,6 +361,7 @@ fmUnselectFilenames fm' (const True)  - наверно можно ускорить для больших списк
   отшлифовать новый readme.txt
 after "--" allow filenames starting with "@". use "-@" option to include listfiles anywhere on cmdline
 -max -> bmf for bmp/tif
+инсталятор для external compressors add-on
 rep: научиться использовать более двух блоков памяти при распаковке
 "lzp+ppmd:1gb" - не может выделить 1gb, но падает на I/O error в lzp (регресс 11b->20 июня)
 пустые каталоги не удаляются из архива (в FM)
@@ -384,11 +385,16 @@ cvt
 gui-версия не обрабатывает правильно ошибки:
   a x:\a
   -mqq
+внешний вид
+  выводить в заголовке окна "testing/compressing/extracting a.arc"
+  по окончании операции в заголовке и поле Message "SUCESSFULLY TESTED a.arc", "% WARNINGS IN TESTING a.arc", "ERROR IN ..."
+О поле с логом
+  в GTK нет возможности сделать, чтобы в этом поле текст, который не поместился по ширине, переносился на новую строчку?
+  можно писать в нем полные пути файлов (хотя бы в первый раз, в сообщении о начале операции)? сейчас сообщения об ошибках дают полные пути, а другие - только имя.
 other
   Включение/выключение ассоциаций после переноса FreeArc: http://forum.ru-board.com/topic.cgi?forum=5&topic=29437&start=1780#4
-  отдельный код jb,rb для переполнения диска и обработка его в iss script
+  отдельный код ошибки для переполнения диска и обработка его в iss script
   CleanStats при non-FM mode
-  выводить в заголовке окна "testing a.arc", "SUCESSFULLY TESTED a.arc", "% WARNINGS IN TESTING a.arc", "ERROR IN ..."
   installer.exe -p"/q" will then launch setup.exe /q
   иконки - хотя бы dir/arc/archives/rest
   icons
@@ -397,7 +403,7 @@ other
     ExtractIcon - file's individual icon
     http://msdn.microsoft.com/en-us/library/dd183402(VS.85).aspx
   загружать иконки для всех команд из png/ico файлов
-
+ДОБАВИТЬ В 7z.dll ПОДДЕРЖКУ .arc ИЛИ СДЕЛАТЬ unarc.dll С АНАЛОГИЧНЫМ ИНТЕРФЕЙСОМ (и chaining к 7z.dll)!!!!!!!!!!!!!!!!!!!
 
   -ap
     FAR: -apdir1 + dir1/dir2/file in filelist (rar-style?)
