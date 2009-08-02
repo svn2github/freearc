@@ -83,7 +83,7 @@ HRESULT COutBuffer::FlushPart()
     _overDict = true;
     _pos = 0;
   }
-  // Лимит распаковки - до LZ_CHUNKS байт, но не превышая размеры буфера (или _streamPos, если оно больше _pos, то есть кончик буфера остался недозаписан)
+  // ╦шьшЄ Ёрёяръютъш - фю LZ_CHUNKS срщЄ, эю эх яЁхт√°р  ЁрчьхЁ√ сєЇхЁр (шыш _streamPos, хёыш юэю сюы№°х _pos, Єю хёЄ№ ъюэўшъ сєЇхЁр юёЄрыё  эхфючряшёрэ)
   if (_streamPos <= _pos)
     _limitPos = min( _pos+LZ_CHUNKS, _bufferSize);
   else
