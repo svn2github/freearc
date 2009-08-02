@@ -71,7 +71,7 @@ uiResumeProgressIndicator = do
   aProgressIndicatorEnabled =: True
 
 -- |Сделать паузу в выполнении программы
-guiPause = do
+guiPauseAtEnd = do
   withoutEcho getHiddenChar
   return ()
 

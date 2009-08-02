@@ -99,7 +99,7 @@ guiStartProgram = gui $ do
   widgetShowAll windowProgress
 
 -- |Задержать завершение программы
-guiPause = do
+guiPauseAtEnd = do
   uiMessage =: ""
   updateAllIndicators
   foreverM $ do
@@ -203,10 +203,11 @@ runIndicators = do
     -- Прогресс-бар и надпись на нём
     progressBarSetFraction progressBar processed                   `on` True
     progressBarSetText     progressBar p                           `on` once_a_halfsecond
+    widgetGrabFocus cancelButton                                   `on` (updateMode==ForceUpdate)  -- make Cancel button default after operation was finished
+
   backgroundThread 0.5 $ \updateMode -> postGUIAsync$ do
     -- Имя текущего файла или стадия выполнения команды
-    uiMessage' <- val uiMessage
-    labelSetText curFileLabel uiMessage'
+    labelSetText curFileLabel =<< val uiMessage
 
   -- Очищает все поля с информацией о текущем архиве
   let clearAll = do
