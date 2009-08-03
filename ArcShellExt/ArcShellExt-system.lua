@@ -45,7 +45,7 @@ end
 
 -- function called from C to get command for menu item i
 function get_command(i)
-  return string.format (items[i].command, items[i].param)
+  return items[i].command
 end
 
 
