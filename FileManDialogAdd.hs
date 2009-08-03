@@ -58,8 +58,8 @@ addDialog fm' exec cmd files mode = do
                    ("j" , []    ) -> "0149 Join all archives"
                    ("j" , [file]) -> "0150 Join %1 with another archive"
                    ("j" , _     ) -> "0151 Join %2 archives"
-                   ("cvt",[file]) -> "0999 Convert %1 to FreeArc format"
-                   ("cvt",_     ) -> "0999 Convert %2 archives to FreeArc format"
+                   ("cvt",[file]) -> "0428 Convert %1 to FreeArc format"
+                   ("cvt",_     ) -> "0429 Convert %2 archives to FreeArc format"
   let wintitle  =  formatn title [head files, show3$ length files]
   -- Создадим диалог со стандартными кнопками OK/Cancel
   fmDialog fm' wintitle $ \(dialog,okButton) -> do

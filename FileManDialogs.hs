@@ -84,7 +84,7 @@ extractDialog fm' exec cmd arcnames arcdir files = do
     (decryption, decryptionOnOK) <- decryptionBox fm' dialog   -- Настройки расшифровки
     ; boxPackStart upbox decryption           PackNatural 5
 
-    keepBrokenButton <- fmCheckButtonWithHistory fm' "KeepBroken" False "0999 Keep broken extracted files"
+    keepBrokenButton <- fmCheckButtonWithHistory fm' "KeepBroken" False "0425 Keep broken extracted files"
     ; boxPackStart upbox (widget keepBrokenButton) PackNatural 5  `on` cmd/="t"
 
     (hbox, options, optionsStr)  <- fmCheckedEntryWithHistory fm' "xoptions" "0072 Additional options:"
@@ -337,11 +337,11 @@ settingsDialog fm' = do
 
 ------ Закладка интеграции с Explorer ---------------------------------------------------------
 #if defined(FREEARC_WIN)
-    vbox <- newPage "0999 Explorer integration";  let pack x = boxPackStart vbox x PackNatural 1
+    vbox <- newPage "0421 Explorer integration";  let pack x = boxPackStart vbox x PackNatural 1
 
     associateButton   <- fmCheckButtonWithHistory fm' "Settings.Associate"            True "0172 Associate FreeArc with .arc files"
-    contextMenuButton <- fmCheckButtonWithHistory fm' "Settings.ContextMenu"          True "0999 Enable context menu in Explorer"
-    cascadedButton    <- fmCheckButtonWithHistory fm' "Settings.ContextMenu.Cascaded" True "0999 Make it cascaded"
+    contextMenuButton <- fmCheckButtonWithHistory fm' "Settings.ContextMenu"          True "0422 Enable context menu in Explorer"
+    cascadedButton    <- fmCheckButtonWithHistory fm' "Settings.ContextMenu.Cascaded" True "0423 Make it cascaded"
     empty             <- label ""
 
     pack (widget associateButton)
@@ -361,7 +361,7 @@ settingsDialog fm' = do
     let pack x = boxPackStart vbox x PackNatural 1
 
     empty <- label ""
-    notes <- label =<< i18n"0999 Enable individual commands:"
+    notes <- label =<< i18n"0424 Enable individual commands:"
 
     pack (widget cascadedButton)
     pack (widget empty)

@@ -38,7 +38,7 @@ Filled only for languages providing their own translations
 0394 Compress the selected files into SFX using FreeArc=Сжать выделенные файлы в SFX с помощью FreeArc
 0395 Add to archive...=Добавить в архив...
 0396 Compress the selected files using FreeArc via dialog=Сжать выделенные файлы с помощью FreeArc через диалог
-
+--
 0397 Open with FreeArc=Открыть в FreeArc
 0398 Open the selected archive(s) with FreeArc=Открыть выделенный архив с помощью FreeArc
 0399 Extract to "%s"=Распаковать в "%s"
@@ -49,17 +49,17 @@ Filled only for languages providing their own translations
 0404 Extract the selected archive(s) via dialog=Распаковать выделенные архивы через диалог
 0405 Test=Протестировать
 0406 Test the selected archive(s)=Протестировать выделенные архивы
-
+--
 0407 Convert to SFX=Преобразовать в SFX
 0408 Convert the selected archive(s) to SFX=Преобразовать выделенные архивы в SFX
 0409 Convert from SFX=Преобразовать из SFX
 0410 Convert the selected SFX(es) to normal archive(s)=Преобразовать выделенные архивы из SFX в обычные архивы
-
+--
 0411 Modify...=Модифицировать...
 0412 Modify the selected archives via dialog=Модифицировать выделенные архивы через диалог
 0413 Join...=Объединить...
 0414 Join the selected archives via dialog=Объединить выделенные архивы через диалог
-
+--
 0415 Convert to .arc=Преобразовать в .arc
 0416 Convert the selected archive(s) to FreeArc format=Преобразовать выделенные архивы в формат FreeArc
 0417 Convert to .arc SFX=Преобразовать в .arc SFX
@@ -114,6 +114,8 @@ Tools menu/toolbar
 0294 Recompress files in archive=Перепаковать файлы в архиве
 0270 Convert to SFX=Превратить в SFX
 0271 Convert archive to SFX=Превратить архив в SFX
+0426 Convert to FreeArc=Преобразовать в FreeArc
+0427 Convert foreign archive to FreeArc format=Преобразовать чужой архив в формат FreeArc
 0272 Encrypt=Зашифровать
 0273 Encrypt archive contents=Зашифровать содержимое архива
 0274 Protect=Защитить
@@ -196,6 +198,8 @@ Add dialog
 0149 Join all archives=Объединить все архивы
 0150 Join %1 with another archive=Объединить %1 с другим архивом
 0151 Join %2 archives=Объединить %2 архивов
+0428 Convert %1 to FreeArc format=Преобразовать %1 в формат FreeArc
+0429 Convert %2 archives to FreeArc format=Преобразовать %2 архивов в формат FreeArc
 ---------
 0182 Main=Основное
 0131 Output archive:=Выходной архив:
@@ -288,6 +292,7 @@ Extract dialog
 0021 Select output directory=Выбор выходного каталога
 0014 Append archive name to the output directory=Добавить имя архива к имени выходного каталога
 --Other
+0425 Keep broken extracted files=Не удалять извлечённые с ошибками файлы
 0072 Additional options:=Дополнительные опции:
 
 
@@ -332,6 +337,11 @@ Settings dialog
 0370 Watch for new versions via Internet=Отслеживать появление новых версий через Интернет
 0168 You should restart FreeArc in order for a language settings to take effect.=Вы должны перезапустить FreeArc чтобы заработали новые настройки локализации.
 0169 Passwords need to be entered again after restart.=Пароли должны быть введены заново после перезапуска
+--
+0421 Explorer integration=Интеграция с Explorer
+0422 Enable context menu in Explorer=Включить контекстное меню в Explorer
+0423 Make it cascaded=Сделать его каскадным
+0424 Enable individual commands:=Включить отдельные команды:
 --
 0388 Info=Информация
 0389 Largest contiguous free memblock:=Наибольший непрерывный блок свободной памяти:
@@ -537,8 +547,9 @@ Errors returned by compression methods
 0365 general (de)compression error in %1=ошибка (рас)паковки в %1
 0366 invalid compression method or parameters in %1=ошибочный метод сжатия или его параметр в %1
 0367 can't allocate memory required for (de)compression in %1=невозможно выделить память, необходимую для (рас)паковки в %1
-0368 I/O error in compression algorithm %1=ошибка чтения/записи в алгоритме (рас)паковки %1
 0369 bad compressed data in %1=ошибка в сжатых данных алгоритма %1
+0430 read error (bad media?) in compression algorithm %1=ошибка чтения в алгоритме (рас)паковки %1
+0431 write error (disk full?) in compression algorithm %1=ошибка записи (диск полон?) в алгоритме (рас)паковки %1
 
 
 === Standard profiles ====================================================

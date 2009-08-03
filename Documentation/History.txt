@@ -351,6 +351,7 @@
   aARC_VERSION = "0.52", aARCHIVE_VERSION = make4byte 0 0 5 2
 === To-do list ====================================================================================
 
+BMP files should be feed to BMF one-by-one, not like a solid block, something similar to "ARC a -mbmf2 -s1f test *.bmp"
 инсталятор
   добавить ArcShellExt, all2arc.exe, 7zg, inno setup dll & script
   ini->bin
