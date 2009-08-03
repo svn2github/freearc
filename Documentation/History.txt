@@ -374,7 +374,6 @@ iss
     sometimes need [or someone forgot] to compress file/s with specific subfolder
 fashell
   обработка 8000 выделенных файлов? ;)  или даже одного длинного имени файла
-  Add to... и прочее если имя файла содержит %
   сделать тексты в меню локализируемыми с темплейтами типа %filename, %arcname...
   показывать команды архивации когда выбрано 2 и более архива ("winrar beta 3 did not display archiving commands in context menu if user selected several archives")
 cvt

@@ -410,11 +410,16 @@ parseCmdline cmdline  =  (`mapMaybeM` split ";" cmdline) $ \args -> do
   let group_type_names = go "$binary" lower_group_strings  -- начальна€ группа - "$binary"
       go t []     = []           -- пройти по списку групп, замен€€ маски файлов
       go t (x:xs) = case x of    --   на предшествующие им имена типов файлов ("$text", "$rgb" и так далее)
-                      '$':_ | x/="$default" -> x : go x xs
+                      '$':_ | x/="$default" -> x : go (proper_type x) xs
                       _                     -> t : go t xs
+      -- ѕервый тип из списка слов x, вход€щий в compressor_types
+      proper_type x    = (find (`elem` compressor_types) (words x)) `defaultVal` ""
+      -- —писок типов файлов, используемых в data_compressor (выбранном пользователем методе сжати€)
+      compressor_types = map fst data_compressor
+
   -- —писок номеров методов сжати€ из списка `data_compressor`, соответствующих каждой группе из arc.groups
   let group_types =  map typeNum group_type_names
-      typeNum t   =  t `elemIndex` (map fst data_compressor) `defaultVal` 0
+      typeNum t   =  (t `elemIndex` compressor_types) `defaultVal` 0
   -- —писок предикатов, провер€ющих что файл принадлежит одному из типов, перечисленных в `data_compressor`
   let type_predicates  =  const False : map match_type [1..maximum group_types]
       match_type t     =  any_function$ concat$ zipWith (\a b->if a==t then [b] else []) group_types group_predicates
