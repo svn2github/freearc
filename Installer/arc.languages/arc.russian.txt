@@ -31,6 +31,43 @@ Filled only for languages providing their own translations
 0257 Command-line help (URL, not translation!)=FreeArc040-rus.htm
 
 
+=== Explorer context menu =======================================================
+0391 Add to "%s"=Добавить в "%s"
+0392 Compress the selected files using FreeArc=Сжать выделенные файлы с помощью FreeArc
+0393 Add to SFX "%s"=Добавить в SFX "%s"
+0394 Compress the selected files into SFX using FreeArc=Сжать выделенные файлы в SFX с помощью FreeArc
+0395 Add to archive...=Добавить в архив...
+0396 Compress the selected files using FreeArc via dialog=Сжать выделенные файлы с помощью FreeArc через диалог
+
+0397 Open with FreeArc=Открыть в FreeArc
+0398 Open the selected archive(s) with FreeArc=Открыть выделенный архив с помощью FreeArc
+0399 Extract to "%s"=Распаковать в "%s"
+0400 Extract the selected archive(s) to new folder=Распаковать выделенные архивы в новый каталог
+0401 Extract here=Распаковать здесь
+0402 Extract the selected archive(s) to the same folder=Распаковать выделенные архивы в текущий каталог
+0403 Extract...=Распаковать...
+0404 Extract the selected archive(s) via dialog=Распаковать выделенные архивы через диалог
+0405 Test=Протестировать
+0406 Test the selected archive(s)=Протестировать выделенные архивы
+
+0407 Convert to SFX=Преобразовать в SFX
+0408 Convert the selected archive(s) to SFX=Преобразовать выделенные архивы в SFX
+0409 Convert from SFX=Преобразовать из SFX
+0410 Convert the selected SFX(es) to normal archive(s)=Преобразовать выделенные архивы из SFX в обычные архивы
+
+0411 Modify...=Модифицировать...
+0412 Modify the selected archives via dialog=Модифицировать выделенные архивы через диалог
+0413 Join...=Объединить...
+0414 Join the selected archives via dialog=Объединить выделенные архивы через диалог
+
+0415 Convert to .arc=Преобразовать в .arc
+0416 Convert the selected archive(s) to FreeArc format=Преобразовать выделенные архивы в формат FreeArc
+0417 Convert to .arc SFX=Преобразовать в .arc SFX
+0418 Convert the selected archive(s) to FreeArc SFX=Преобразовать выделенные архивы в FreeArc SFXы
+0419 Convert to .arc...=Преобразовать в .arc...
+0420 Convert the selected archive(s) to FreeArc format via dialog=Преобразовать выделенные архивы в формат FreeArc через диалог
+
+
 === Menu ========================================================================
 Main menu
 0050 File=Файл
