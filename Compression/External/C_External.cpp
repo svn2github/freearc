@@ -338,6 +338,7 @@ int AddExternalCompressor (char *params)
         version[i].packcmd        = "";
         version[i].unpackcmd      = "";
         version[i].defaultopt     = "";
+        version[i].solid          = 1;
     }
 
 
@@ -376,6 +377,7 @@ int AddExternalCompressor (char *params)
             else if (strequ (left, "datafile"))    version[i].datafile    = subst (strdup_msg(right), "{compressor}", version[i].name);
             else if (strequ (left, "packedfile"))  version[i].packedfile  = subst (strdup_msg(right), "{compressor}", version[i].name);
             else if (strequ (left, "default"))     version[i].defaultopt  = subst (strdup_msg(right), "{compressor}", version[i].name);
+            else if (strequ (left, "solid"))       version[i].solid       = parseInt (right, &error);
             else                                   error=1;
 
             if (error)  return 0;

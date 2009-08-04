@@ -53,6 +53,8 @@ isMM_Method      method  =  method_name method == "mm"
 isJPG_Method     method  =  method_name method == "jpg"
 -- |GRZip метод сжати€.
 isGRZIP_Method   method  =  method_name method == "grzip"
+-- |ћетод, которому нужно подавать файлы по одному на солид-блок (bmf, tta и так далее)
+isNonSolidMethod         =  CompressionLib.compressionIs "nosolid?"
 -- |ќчень быстрый метод упаковки (>10 mb/s на 1√√ц процессоре)
 isVeryFastMethod         =  CompressionLib.compressionIs "VeryFast?"
 -- |Ѕыстрый метод распаковки

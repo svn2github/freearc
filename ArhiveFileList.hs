@@ -339,11 +339,11 @@ splitToSolidBlocks command filelist  =  (dirs &&& [(aNO_COMPRESSION,dirs)])
         else files.$ splitBy (opt_group_data command .$ addBlockSizeCrit) (opt_recompress command)
                   .$ map (\x->(compressor,x))
       where
-        -- Для цепочек алгоритмов, начинающихся с TTA/MM/JPG, отключить солид-сжатие
+        -- Для цепочек алгоритмов, начинающихся с non-solid алгоритмов (TTA/MM/JPG/BMF/...) - отключить солид-сжатие
         -- Для цепочек алгоритмов, начинающихся с DICT - ограничить солид-блок размером блока DICT
         -- Для остальных блочных алгоритмов (grzip, lzp) alone - размером блока в алгоритме сжатия.
         addBlockSizeCrit = case compressor of
-            algorithm:_ | makeNonSolid  algorithm     ->  const [GroupNone]
+            algorithm:_ | isNonSolidMethod algorithm  ->  const [GroupNone]
             algorithm:_ | isDICT_Method algorithm     ->  ([GroupByBlockSize $ getBlockSize algorithm]++)
             [algorithm] | getBlockSize algorithm > 0  ->  ([GroupByBlockSize $ getBlockSize algorithm]++)
             _                                         ->  id
@@ -353,8 +353,9 @@ splitToSolidBlocks command filelist  =  (dirs &&& [(aNO_COMPRESSION,dirs)])
 -- когда алгоритм содержит строку "*8" и не содержит строки ":o", то есть
 -- все данные сжимаются как непрерывная последовательность байтов, которую
 -- нет нужды разбивать на отдельные блоки
-makeNonSolid m = any_function [isTTA_Method, isMM_Method, isJPG_Method] m
-                 && (not (m `substr` "*8")  ||  (m `substr` ":o"))
+--makeNonSolid m = compressionIs "MakeNonSolid" m
+--                 any_function [isTTA_Method, isMM_Method, isJPG_Method] m
+--                 && (not (m `substr` "*8")  ||  (m `substr` ":o"))
 
 
 ----------------------------------------------------------------------------------------------------
