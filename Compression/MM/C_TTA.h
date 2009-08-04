@@ -20,6 +20,13 @@ public:
 
   // Конструктор, присваивающий параметрам метода сжатия значения по умолчанию
   TTA_METHOD();
+  // Универсальный метод: возвращаем различные простые характеристики метода сжатия
+  virtual int doit (char *what, int param, void *data, CALLBACK_FUNC *callback)
+  {
+      // Запретить солид-сжатие, если кодируются 2+ байтовые значения или пропускаются байты в начале каждого файла
+      if (strequ (what,"nosolid?"))   return word_size!=8 || offset!=0;
+      else return COMPRESSION_METHOD::doit (what, param, data, callback);
+  }
 
   // Функции распаковки и упаковки
   virtual int decompress (CALLBACK_FUNC *callback, void *auxdata);

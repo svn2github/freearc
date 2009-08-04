@@ -33,11 +33,11 @@ public:
   int     MinCompression;   // Минимальный процент сжатия. Если выходные данные больше, то вместо них будут записаны оригинальные (несжатые) данные
 
   EXTERNAL_METHOD() {};
-  // Универсальный метод: даём положительный ответ на запросы "external?"
+  // Универсальный метод: возвращаем различные простые характеристики метода сжатия
   virtual int doit (char *what, int param, void *data, CALLBACK_FUNC *callback)
   {
-      if (strequ (what,"external?"))  return 1;
-      else if (strequ (what,"nosolid?"))  return !solid;
+      if      (strequ (what,"external?"))  return 1;
+      else if (strequ (what,"nosolid?"))   return !solid;
       else return COMPRESSION_METHOD::doit (what, param, data, callback);
   }
 
