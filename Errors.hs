@@ -126,14 +126,15 @@ shutdown msg exitCode = do
     --killThread myThread
 
     -- Make a pause if necessary
-    pause_option <- val pause_before_exit
-    pause <- val pauseAction
-    pause `on` case pause_option of
-                 "on"          -> True
-                 "off"         -> False
-                 "on-warnings" -> w>0 || exitCode/=aEXIT_CODE_SUCCESS
-                 "on-error"    -> exitCode/=aEXIT_CODE_SUCCESS
-                 _             -> False
+    when (exitCode/=aEXIT_CODE_USER_BREAK) $ do
+      pause_option <- val pause_before_exit
+      pause <- val pauseAction
+      pause `on` case pause_option of
+                   "on"          -> True
+                   "off"         -> False
+                   "on-warnings" -> w>0 || exitCode/=aEXIT_CODE_SUCCESS
+                   "on-error"    -> exitCode/=aEXIT_CODE_SUCCESS
+                   _             -> False
 
   -- And finally - exit program!
   exit (exitCode  |||  (w &&& aEXIT_CODE_WARNINGS))
@@ -306,6 +307,7 @@ enumerate s list  =  joinWith2 ", " (" "++s++" ") (map quote list)
 ---- Коды выхода для различных ошибок --------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------
 
+errcode TERMINATED     = aEXIT_CODE_USER_BREAK
 errcode BAD_PASSWORD{} = aEXIT_CODE_BAD_PASSWORD
 errcode _              = aEXIT_CODE_FATAL_ERROR
 
@@ -423,10 +425,10 @@ registerError err = do
   msg <- errormsg err
   msg <- i18fmt ["0316 ERROR: %1", msg]
   val errorHandlers >>= mapM_ ($msg)
-  -- Если мы в режиме файл-менеджера, то придётся ждать завершения всех тредов компрессии,
-  -- иначе - просто совершаем аварийный выход из программы
+  -- Если мы не в режиме файл-менеджера - совершаем аварийный выход из программы
   unlessM (val fileManagerMode) $ do
     shutdown msg (errcode err)
+  -- Иначе ждём завершения всех тредов компрессии
   operationTerminated =: True
   fail ""
 
