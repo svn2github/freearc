@@ -12,11 +12,14 @@
 ***    0185 Protection:=Protection: (written in your language, of course)  ***
 ***  It's tooltip:                                                         ***
 ***    1185 Protection:=Appends recovery information to archive            ***
+***                                                                        ***
+***  Also, one section contains relative URLs for language-specific        ***
+***  resources                                                             ***
 ******************************************************************************
 
 Language name in english and mother tongue
 0000 Language=Chinese Simplified (简体中文)
-0159 Copyright=Translated by TeLeMan\nLast Updated: 2009-04-19
+0159 Copyright=Translated by TeLeMan\nLast Updated: 2009-08-04
 
 Language-specific URLs relative to http://freearc.org/ and helpfiles
 Filled only for languages providing their own translations
@@ -27,6 +30,44 @@ Filled only for languages providing their own translations
 0256 Helpfile (URL, not translation!)=??
 0257 Command-line help (URL, not translation!)=??
 
+
+=== Explorer context menu =======================================================
+0391 Add to "%s"=添加到"%s"
+0392 Compress the selected files using FreeArc=使用FreeArc压缩选择的文件
+0393 Add to SFX "%s"=添加到自解压格式"%s"
+0394 Compress the selected files into SFX using FreeArc=使用FreeArc压缩选择的文件为自解压格式
+0395 Add to archive...=添加到压缩文件...
+0396 Compress the selected files using FreeArc via dialog=通过FreeArc对话框压缩选择的文件
+--
+0397 Open with FreeArc=使用FreeArc打开
+0398 Open the selected archive(s) with FreeArc=使用FreeArc打开选择的压缩文件
+0399 Extract to "%s"=解压缩到"%s"
+0400 Extract the selected archive(s) to new folder=解压缩选择的压缩文件到新文件夹中
+0401 Extract here=解压缩到当前目录
+0402 Extract the selected archive(s) to the same folder=解压缩选择的压缩文件到同一个文件夹中
+0403 Extract...=解压缩...
+0404 Extract the selected archive(s) via dialog=通过对话框解压缩选择的压缩文件
+0405 Test=测试
+0406 Test the selected archive(s)=测试选择的压缩文件
+--
+0407 Convert to SFX=转换为自解压格式
+0408 Convert the selected archive(s) to SFX=转换选择的压缩文件为自解压格式
+0409 Convert from SFX=转换自解压格式
+0410 Convert the selected SFX(es) to normal archive(s)=转换选择的自解压格式为普通压缩文件
+--
+0411 Modify...=修改...
+0412 Modify the selected archives via dialog=通过对话框修改选择的压缩文件
+0413 Join...=合并
+0414 Join the selected archives via dialog=通过对话框合并选择的压缩文件
+--
+0415 Convert to .arc=转换为.arc
+0416 Convert the selected archive(s) to FreeArc format=转换选择的压缩文件为FreeArc格式
+0417 Convert to .arc SFX=转换为.arc自解压格式
+0418 Convert the selected archive(s) to FreeArc SFX=转换选择的压缩文件为FreeArc自解压格式
+0419 Convert to .arc...=转换为.arc...
+0420 Convert the selected archive(s) to FreeArc format via dialog=通过对话框转换选择的压缩文件为FreeArc格式
+
+
 === Menu ========================================================================
 Main menu
 0050 File=文件
@@ -36,7 +77,7 @@ Main menu
 0260 Options=选项
 0261 Help=帮助
 
-File menu/toolbar 
+File menu/toolbar
 0262 Open archive=打开
 0265 Open archive=打开压缩文件
 0263 Select all=全部选定
@@ -64,7 +105,6 @@ Commands menu/toolbar
 0033 Delete=删除
 0043 Delete files (from archive)=(从压缩文件中)删除文件
 
-
 Tools menu/toolbar
 0266 Lock=锁定
 0267 Lock archive from further changes=锁定压缩文件防止以后被修改
@@ -74,6 +114,8 @@ Tools menu/toolbar
 0294 Recompress files in archive=将压缩文件中的文件重新压缩
 0270 Convert to SFX=自解压
 0271 Convert archive to SFX=将压缩文件转换为自解压格式
+0426 Convert to FreeArc=FreeArc格式
+0427 Convert foreign archive to FreeArc format=转换其他格式的压缩文件为FreeArc格式
 0272 Encrypt=加密
 0273 Encrypt archive contents=加密压缩文件内容
 0274 Protect=保护
@@ -109,8 +151,8 @@ Help menu/toolbar
 0288 About=关于
 0289 About=关于
 
-=== File manager ==================================================================
 
+=== File manager ==================================================================
 Navibar
 0006 Up=向上
 0007 Save=保存
@@ -135,6 +177,7 @@ Messages
 0145 You can't join archives directly from archive!=你不能直接从压缩文件中合并任何压缩文件
 0251 Abort operation?=终止操作？
 
+
 === Dialogs =======================================================================
 Archive open dialog
 0305 Open archive=打开压缩文件
@@ -142,6 +185,7 @@ Archive open dialog
 0307 FreeArc archives (*.arc)=FreeArc压缩文件(*.arc)
 0308 Archives and SFXes (*.arc;*.exe)=压缩文件和自解压格式文件(*.arc;*.exe)
 0309 All files (*)=所有文件(*)
+
 
 Add dialog
 --Title
@@ -154,6 +198,8 @@ Add dialog
 0149 Join all archives=合并所有压缩文件
 0150 Join %1 with another archive= 合并"%1"压缩文件
 0151 Join %2 archives=合并%2个压缩文件
+0428 Convert %1 to FreeArc format=转换"%1"为FreeArc格式
+0429 Convert %2 archives to FreeArc format=转换"%2"压缩文件为FreeArc格式
 ---------
 0182 Main=主要
 0131 Output archive:=输出的压缩文件名：
@@ -246,6 +292,7 @@ Extract dialog
 0021 Select output directory=选择输出目录
 0014 Append archive name to the output directory=附加压缩文件名到输出目录
 --Other
+0425 Keep broken extracted files=保持损坏的已解压缩的文件
 0072 Additional options:=附加选项：
 
 
@@ -291,6 +338,11 @@ Settings dialog
 0168 You should restart FreeArc in order for a language settings to take effect.=你需要重启FreeArc才能使语言设置生效。
 0169 Passwords need to be entered again after restart.=口令需要重启后再次输入。
 --
+0421 Explorer integration=资源管理器集成
+0422 Enable context menu in Explorer=在资源管理器中启用右键菜单
+0423 Make it cascaded=启用级联模式
+0424 Enable individual commands:=分别设置命令：
+--
 0388 Info=信息
 0389 Largest contiguous free memblock:=最大连续剩余内存
 
@@ -304,6 +356,7 @@ Checking for updates
 0296 Cannot open %1. Do you want to check the page with browser?=不能打开"%1"页面。\n是否要用浏览器检查这个页面？
 0297 Nothing new at %1=在"%1"页面上没有发现新版本
 0298 Found new information at %1! Open the page with browser?=在"%1"页面上发现更新！是否用浏览器打开页面？
+
 
 === Profile settings ============================================================
 --Compression settings
@@ -357,9 +410,9 @@ Many dialogs
 
 Progress indicator
 --Buttons
-0052 Background=后台(&B)
-0053 Pause=暂停(&P)
-0054 Continue=继续(&C)
+0052 &Background=后台(&B)
+0053 &Pause=暂停(&P)
+0054 &Continue=继续(&C)
 --Labels
 0056 Files=文件个数
 0057 Total files=总计文件个数
@@ -425,6 +478,7 @@ Archive comment dialog
 0243 Adding to %1=正在添加文件到"%1"压缩文件
 0244 FILES SUCCESFULLY ADDED TO %1=成功添加文件到"%1"压缩文件
 0245 %2 WARNINGS WHILE ADDING TO %1=添加文件到"%1"压缩文件时有%2个警告
+
 0299 Lock archive(s)?=是否锁定压缩文件?
 0300 Locking archive %1=正在锁定"%1"压缩文件
 0301 SUCCESFULLY LOCKED ARCHIVE %1=成功锁定"%1"压缩文件
@@ -493,8 +547,9 @@ Errors returned by compression methods
 0365 general (de)compression error in %1=在%1中出现一般(解)压缩错误
 0366 invalid compression method or parameters in %1=在%1中有无效的压缩方法或参数
 0367 can't allocate memory required for (de)compression in %1=在%1中没有足够的内存来(解)压缩
-0368 I/O error in compression algorithm %1=在%1压缩算法中出现I/O错误
 0369 bad compressed data in %1=在%1中有错误的压缩数据
+0430 read error (bad media?) in compression algorithm %1=在压缩算法%1中发生读取错误(介质损坏？)
+0431 write error (disk full?) in compression algorithm %1=在压缩算法%1中发生写入错误(磁盘已满？)
 
 
 === Standard profiles ====================================================
@@ -558,7 +613,6 @@ Additional extraction options
 0764 Full archive test before performing operation=在压缩前进行完整备份测试
 
 
-
 === Tooltips (index=N+1000) ===========================================
 
 ******************************************************************************************
@@ -593,7 +647,6 @@ Add dialog
 1138 Bytes, no more than:=指定固实快的大小。
 1139 Files, no more than:=指定一个固实块可以包含的最大文件数。
 1140 Split by extension=按照文件扩展名分割固实块(即一个固实块只能包含一种文件扩展名)。
-
 
 --Encryption settings
 1120 Encrypt archive directory=加密压缩文件的文件和目录信息(文件名、大小、CRC等属性)。加密后的压缩文件必须要输入口令或者密钥文件才能打开。强烈推荐使用这个选项来确保数据的真正安全。

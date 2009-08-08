@@ -12,11 +12,14 @@
 ***    0185 Protection:=Protection: (written in your language, of course)  ***
 ***  It's tooltip:                                                         ***
 ***    1185 Protection:=Appends recovery information to archive            ***
+***                                                                        ***
+***  Also, one section contains relative URLs for language-specific        ***
+***  resources                                                             ***
 ******************************************************************************
 
 Language name in english and mother tongue
 0000 Language=Dutch (Nederlands)
-0159 Copyright=Vertaald door (Translated by):\nPatrick Noyens (aka Pat357)\nFerry Heibrink \n1 april 2009
+0159 Copyright=Vertaald door (Translated by):\nPatrick Noyens (aka Pat357)\nFerry Heibrink \n4 augustus 2009
 
 Language-specific URLs relative to http://freearc.org/ and helpfiles
 Filled only for languages providing their own translations
@@ -26,6 +29,43 @@ Filled only for languages providing their own translations
 0372 Wiki page (URL, not translation!)=??
 0256 Helpfile (URL, not translation!)=??
 0257 Command-line help (URL, not translation!)=??
+
+
+=== Explorer context menu =======================================================
+0391 Add to "%s"=Toevoegen aan "%s"
+0392 Compress the selected files using FreeArc=Geselecteerde bestanden inpakken met FreeArc
+0393 Add to SFX "%s"=Toevoegen aan SFX-archief
+0394 Compress the selected files into SFX using FreeArc=Geselecteerde bestanden inpakken naar SFX-archief met FreeArc
+0395 Add to archive...=Toevoegen aan archief...
+0396 Compress the selected files using FreeArc via dialog=Geselecteerde bestanden inpakken via FreeArc dialoog
+--
+0397 Open with FreeArc=Openen met FreeArc
+0398 Open the selected archive(s) with FreeArc=Geselecteerde archieven openen met FreeArc
+0399 Extract to "%s"=Uitpakken naar "%s"
+0400 Extract the selected archive(s) to new folder=Geselecteerde archieven uitpakken in nieuwe map
+0401 Extract here=Hier uitpakken
+0402 Extract the selected archive(s) to the same folder=Geselecteerde archieven uitpakken naar dezelfde map
+0403 Extract...=Uitpakken...
+0404 Extract the selected archive(s) via dialog=Geselecteerde archieven uitpakken via dialoog
+0405 Test=Test
+0406 Test the selected archive(s)=Geselecteerde archieven testen
+--
+0407 Convert to SFX=Converteer naar SFX
+0408 Convert the selected archive(s) to SFX=Geselecteerde archieven converteren naar SFX (EXE archieven
+0409 Convert from SFX=Converteer van SFX
+0410 Convert the selected SFX(es) to normal archive(s)=Geselecteerde archieven van SFX naar normale .ARC archieven converteren
+--
+0411 Modify...=Wijzigen
+0412 Modify the selected archives via dialog=Geselecteerde archieven wijzigen via dialoog
+0413 Join...=Samenvoegen...
+0414 Join the selected archives via dialog=Geselecteerde archieven samenvoegen via dialoog
+--
+0415 Convert to .arc=Converteer naar .ARC
+0416 Convert the selected archive(s) to FreeArc format=Geselecteerde archieven converteren naar FreeArc archieven
+0417 Convert to .arc SFX=Converteer naar FreeArc .SFX
+0418 Convert the selected archive(s) to FreeArc SFX=Geselecteerde archieven converteren naar FreeArc .SFX's (EXE archieven)
+0419 Convert to .arc...=Naar .ARC converteren
+0420 Convert the selected archive(s) to FreeArc format via dialog=Geselecteerde archieven converteren naar FreeArc archieven via dialoog
 
 
 === Menu ========================================================================
@@ -67,13 +107,15 @@ Commands menu/toolbar
 
 Tools menu/toolbar
 0266 Lock=Vergrendelen
-0267 Lock archive from further changes=Archief vergrendelen zodat niet meer kan worden gewijzigd
+0267 Lock archive from further changes=Archief vergrendelen (kan niet meer worden gewijzigd)
 0268 Comment=Commentaar
 0269 Edit archive comment=Toevoegen/wijzigen van commentaar
 0293 Recompress=Opnieuw inpakken
 0294 Recompress files in archive=Archief inhoud opniew inpakken
 0270 Convert to SFX=Maak SFX
 0271 Convert archive to SFX=Maak archief SFX
+0426 Convert to FreeArc=Converteer naar FreeArc archieven
+0427 Convert foreign archive to FreeArc format=Extern archief converteren naar FreeArc archief
 0272 Encrypt=Beveiligen met paswoord
 0273 Encrypt archive contents=Archief beveiligen met paswoord
 0274 Protect=Herstelinformatie
@@ -133,7 +175,7 @@ Messages
 0071 %1: no such file or directory!=%1: bestand of map bestaat niet
 0133 You can't compress files directly from archive!=Je kunt geen bestanden rechtstreeks vanuit het archief inpakken!
 0145 You can't join archives directly from archive!=Je kunt geen bestanden rechtstreeks vanuit het archief samenvoegen!
-0251 Abort operation?=Afbreken
+0251 Abort operation?=Afbreken?
 
 
 === Dialogs =======================================================================
@@ -156,6 +198,8 @@ Add dialog
 0149 Join all archives=Voeg alle archieven samen
 0150 Join %1 with another archive=Voeg %1 samen met een ander archief
 0151 Join %2 archives=Samenvoegen %2 archieven
+0428 Convert %1 to FreeArc format=%1 converteren naar FreeArc archief
+0429 Convert %2 archives to FreeArc format=%2 archieven converteren naar FreeArc archieven (FreeArc-formaat)
 ---------
 0182 Main=Hoofd
 0131 Output archive:=Doelbestand &Archief:
@@ -248,6 +292,7 @@ Extract dialog
 0021 Select output directory=Selecteer doelmap
 0014 Append archive name to the output directory=Voeg naam van archief toe aan doelmap
 --Other
+0425 Keep broken extracted files=Uitgepakte bestanden die defect zijn behouden
 0072 Additional options:=Overige opties:
 
 
@@ -292,6 +337,11 @@ Settings dialog
 0370 Watch for new versions via Internet=Automatisch controleren voor nieuwere versies via internet
 0168 You should restart FreeArc in order for a language settings to take effect.=U dient FreeArc te herstarten alvorens de taalinstellingen geactiveerd worden.
 0169 Passwords need to be entered again after restart.=Wachtwoorden dienen na herstarten opnieuw ingevoerd te worden.
+--
+0421 Explorer integration=Intergratie in verkenner
+0422 Enable context menu in Explorer=gebruik context-menu in verkenner
+0423 Make it cascaded=1 hoofdmenu met verschillende submenu's gebruiken (cascaded menu)
+0424 Enable individual commands:=Aparte comando's aanzetten
 --
 0388 Info=Informatie
 0389 Largest contiguous free memblock:=Grootste aaneensluitend vrij geheugenblok:
@@ -429,7 +479,7 @@ Archive comment dialog
 0244 FILES SUCCESFULLY ADDED TO %1=BESTANDEN SUCCESVOEG TOEGEVOEGD AAN %1
 0245 %2 WARNINGS WHILE ADDING TO %1=%2 WAARSCHUWINGEN TIJDENS TOEVOEGEN AAN %1
 
-0299 Lock archive(s)?=Archief vergrendelen/verzegelen
+0299 Lock archive(s)?=Archief vergrendelen/verzegelen?
 0300 Locking archive %1=Vergrendelen archief %1
 0301 SUCCESFULLY LOCKED ARCHIVE %1= ARCHIEF %1 SUCCESVOL VERGRENDELD
 0302 %2 WARNINGS WHILE LOCKING ARCHIVE %1=%2 WAARSCHUWINGEN TIJDENS VERGRENDELEN ARCHIEF %1
@@ -497,8 +547,9 @@ Errors returned by compression methods
 0365 general (de)compression error in %1=algemene fout bij inpakken of uitpakken in %1
 0366 invalid compression method or parameters in %1=ongeldige compressie methode of parameters in %1
 0367 can't allocate memory required for (de)compression in %1=kan nodig geheugen voor in- of uitpakken niet vrijmaken voor %1 - onvoldoende vrij geheugen
-0368 I/O error in compression algorithm %1=I/O fout in compressie-algoritme %1
 0369 bad compressed data in %1=ongeldige ingepakte gegevens in %1
+0430 read error (bad media?) in compression algorithm %1=Leesfout (slecht medium?)in inpak-algoritme %1
+0431 write error (disk full?) in compression algorithm %1=schrijffout (disk vol?)in inpak/uitpak-algoritme %1
 
 
 === Standard profiles ====================================================

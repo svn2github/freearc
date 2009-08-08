@@ -12,11 +12,14 @@
 ***    0185 Protection:=Protection: (written in your language, of course)  ***
 ***  It's tooltip:                                                         ***
 ***    1185 Protection:=Appends recovery information to archive            ***
+***                                                                        ***
+***  Also, one section contains relative URLs for language-specific        ***
+***  resources                                                             ***
 ******************************************************************************
 
 Language name in english and mother tongue
 0000 Language=German (Deutsch)
-0159 Copyright=Vacon\nPeter Bauder alias JangoFat (based on 7zip language file;edited for FreeArc-0.50-win32-alpha-2009-04-15)\nOriginal copyrights:\nTranslated by Soeren Finster\n7-Zip 4.07 beta\nUpdated by JAK-Software.DE\n7-Zip 4.55 beta\nMaintained by Joachim Henke (since 4.12 beta)
+0159 Copyright=Peter Bauder alias JangoFat (based on 7zip language file;edited for FreeArc-0.52-alpha-2009-08-04)\nVacon\nOriginal copyrights:\nTranslated by Soeren Finster\n7-Zip 4.07 beta\nUpdated by JAK-Software.DE\n7-Zip 4.55 beta\nMaintained by Joachim Henke (since 4.12 beta)
 
 Language-specific URLs relative to http://freearc.org/ and helpfiles
 Filled only for languages providing their own translations
@@ -26,6 +29,43 @@ Filled only for languages providing their own translations
 0372 Wiki page (URL, not translation!)=??
 0256 Helpfile (URL, not translation!)=??
 0257 Command-line help (URL, not translation!)=??
+
+
+=== Explorer context menu =======================================================
+0391 Add to "%s"=Hinzufügen zu "%s"
+0392 Compress the selected files using FreeArc=Ausgewählte Dateien mit FreeArc komprimieren
+0393 Add to SFX "%s"=Hinzufügen zu SFX-Exe "%s"
+0394 Compress the selected files into SFX using FreeArc=Ausgewählte Dateien zu SFX-Exe mit FreeArc komprimieren
+0395 Add to archive...=Hinzufügen zu Archiv...
+0396 Compress the selected files using FreeArc via dialog=Ausgewählte Dateien mit Hilfe des FreeArc- Dialogs komprimieren
+--
+0397 Open with FreeArc=Mit FreeArc öffnen
+0398 Open the selected archive(s) with FreeArc=Ausgewählte(s) Archiv(e) mit FreeArc öffnen
+0399 Extract to "%s"=Entpacken nach "%s"
+0400 Extract the selected archive(s) to new folder=Ausgewählte(s) Archiv(e) in neues Verzeichnis entpacken
+0401 Extract here=Hier entpacken
+0402 Extract the selected archive(s) to the same folder=Ausgewählte(s) Archiv(e) in dasselbe Verzeichnis entpacken
+0403 Extract...=Entpacken nach...
+0404 Extract the selected archive(s) via dialog=Ausgewählte(s) Archiv(e) mit Hilfe des FreeArc- Dialogs entpacken
+0405 Test=Überprüfen
+0406 Test the selected archive(s)=Ausgewählte(s) Archiv(e) überprüfen
+--
+0407 Convert to SFX=Konvertiere zu SFX-Exe
+0408 Convert the selected archive(s) to SFX=Ausgewählte(s) Archiv(e) zu SFX-Exe konvertieren
+0409 Convert from SFX=Von SFX-Exe konvertieren
+0410 Convert the selected SFX(es) to normal archive(s)=Ausgewählte SFX-Exe- Datei(en) in normale(s) Archiv(e) konvertieren
+--
+0411 Modify...=Modifizieren...
+0412 Modify the selected archives via dialog=Ausgewählte(s) Archiv(e) mit Hilfe des FreeArc- Dialogs modifizieren
+0413 Join...=Verbinden...
+0414 Join the selected archives via dialog=Ausgewählte Archive mit Hilfe des FreeArc- Dialogs verbinden
+--
+0415 Convert to .arc=Konvertieren zu .arc
+0416 Convert the selected archive(s) to FreeArc format=Ausgewählte(s) Archiv(e) ins FreeArc- Format konvertieren
+0417 Convert to .arc SFX=Konvertiere zu FreeArc SFX-Exe
+0418 Convert the selected archive(s) to FreeArc SFX=Ausgewählte(s) Archiv(e) zu FreeArc- SFX-Exe konvertieren
+0419 Convert to .arc...=Konvertiere zu .arc...
+0420 Convert the selected archive(s) to FreeArc format via dialog=Ausgewählte(s) Archiv(e) ins FreeArc- Format mit Hilfe des FreeArc- Dialogs konvertieren
 
 
 === Menu ========================================================================
@@ -74,6 +114,8 @@ Tools menu/toolbar
 0294 Recompress files in archive=Datein im Archiv rekomprimieren
 0270 Convert to SFX=zu SFX-Exe...
 0271 Convert archive to SFX=Archiv zu SFX-Exe konvertieren
+0426 Convert to FreeArc=Konvertiere ins FreeArc- Format
+0427 Convert foreign archive to FreeArc format=Konvertiere fremdes Archiv ins FreeArc- Format
 0272 Encrypt=Verschlüsseln
 0273 Encrypt archive contents=Archivinhalt verschlüsseln
 0274 Protect=Wiederherstellungsinfos...
@@ -156,6 +198,8 @@ Add dialog
 0149 Join all archives=Alle Archive verbinden
 0150 Join %1 with another archive=Verbinde %1 mit einem anderen Archiv
 0151 Join %2 archives=Verbinde %2 Archive
+0428 Convert %1 to FreeArc format=Konveriere %1 ins FreeArc- Format
+0429 Convert %2 archives to FreeArc format=Konvertiere 2% Archive ins FreeArc- Format
 ---------
 0182 Main=Primär
 0131 Output archive:=&Archiv:
@@ -248,6 +292,7 @@ Extract dialog
 0021 Select output directory=Ausgabeverzeichnis auswählen:
 0014 Append archive name to the output directory=Ausgabeverzeichnis aus Archivnamen bilden
 --Other
+0425 Keep broken extracted files=Beschädigte extrahierte Dateien behalten
 0072 Additional options:=Zusätzliche Optionen:
 
 
@@ -292,6 +337,11 @@ Settings dialog
 0370 Watch for new versions via Internet=Neue Version über das Internet suchen
 0168 You should restart FreeArc in order for a language settings to take effect.=Zum Übernehmen der Spracheinstellungen muss FreeArc neugestartet werden.
 0169 Passwords need to be entered again after restart.=Passwörter müssen nach dem Neustarten neu eingegeben werden.
+--
+0421 Explorer integration=Explorerintegration
+0422 Enable context menu in Explorer=Kontextmenü im Explorer aktivieren
+0423 Make it cascaded=kaskadiertes Menü aktivieren
+0424 Enable individual commands:=Individuelle Befehle aktivieren:
 --
 0388 Info=Informationen
 0389 Largest contiguous free memblock:=Größter zusammenhängender freier Speicherblock:
@@ -497,8 +547,9 @@ Errors returned by compression methods
 0365 general (de)compression error in %1=allgemeiner (De)Kompressionsfehler in %1
 0366 invalid compression method or parameters in %1=ungültige Kompressionsmethode oder Parameter in %1
 0367 can't allocate memory required for (de)compression in %1=kann notwendigen Speicher für (De)Kompression %1 nicht zuweisen
-0368 I/O error in compression algorithm %1=I/O Fehler in Kompressionsalgorithmus von %1
 0369 bad compressed data in %1=fehlerhaft komprimierte Daten in %1
+0430 read error (bad media?) in compression algorithm %1=Lesefehler in Kompressionsalgorithmus (beschädigtes Medium?)
+0431 write error (disk full?) in compression algorithm %1=Schreibfehler in Kompressionsalgorithmus (Festplatte voll?)
 
 
 === Standard profiles ====================================================
