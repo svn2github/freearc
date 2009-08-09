@@ -407,6 +407,7 @@ Many dialogs
 0081 &Cancel=&Отмена
 0363 &Select=&Выбрать
 0364 &Close=&Закрыть
+0432 &Detach=&Фоном
 
 Progress indicator
 --Buttons

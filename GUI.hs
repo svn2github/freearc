@@ -272,18 +272,18 @@ createStats = do
 
         -- Если операция завершена - показываем точные результаты
         if b==total_bytes
-          then do labelSetMarkup filesLabel$           ""
-                  labelSetMarkup bytesLabel$           ""
-                  labelSetMarkup compressedLabel$      ""
-                  labelSetMarkup timesLabel$           ""
-                  labelSetMarkup totalFilesLabel$      bold$ show3 total_files                            `on` indType==INDICATOR_FULL
-                  labelSetMarkup totalBytesLabel$      bold$ show3 total_bytes
-                  labelSetMarkup totalCompressedLabel$ bold$ show3 (cbytes)                               `on` indType==INDICATOR_FULL
-                  labelSetMarkup totalTimesLabel$      bold$ showHMS (secs)
+          then do (labelSetMarkup filesLabel$           ""                           )
+                  (labelSetMarkup bytesLabel$           ""                           )
+                  (labelSetMarkup compressedLabel$      ""                           )
+                  (labelSetMarkup timesLabel$           ""                           )
+                  (labelSetMarkup totalFilesLabel$      bold$ show3 total_files      )                      `on` indType==INDICATOR_FULL
+                  (labelSetMarkup totalBytesLabel$      bold$ show3 total_bytes      )
+                  (labelSetMarkup totalCompressedLabel$ bold$ show3 (cbytes)         )                      `on` indType==INDICATOR_FULL
+                  (labelSetMarkup totalTimesLabel$      bold$ showHMS (secs)         )
                   when (b>0) $ do                      -- Поля скорости/коэф. сжатия бессмысленно показывать пока не накоплена хоть какая-то статистика
-                    labelSetMarkup ratioLabel$         bold$ ratio2 cbytes b++"%"                         `on` indType==INDICATOR_FULL
+                    (labelSetMarkup ratioLabel$         bold$ ratio2 cbytes b++"%"   )                      `on` indType==INDICATOR_FULL
                   when (secs-sec0>0.001) $ do
-                    labelSetMarkup speedLabel$         bold$ showSpeed b (secs-sec0)
+                    (labelSetMarkup speedLabel$         bold$ showSpeed b (secs-sec0))
 
           else do
 
@@ -296,18 +296,18 @@ createStats = do
               | archive_total_bytes == 0            =       show3 (0)
               | otherwise                           =  "~"++show3 (archive_total_compressed*total_bytes `div` archive_total_bytes)
 
-        labelSetMarkup filesLabel$           bold$ show3 files                                  `on` indType==INDICATOR_FULL
-        labelSetMarkup bytesLabel$           bold$ show3 b
-        labelSetMarkup compressedLabel$      bold$ show3 cbytes                                 `on` indType==INDICATOR_FULL
-        labelSetMarkup timesLabel$           bold$ showHMS secs
-        labelSetMarkup totalFilesLabel$      bold$ show3 total_files                            `on` indType==INDICATOR_FULL
-        labelSetMarkup totalBytesLabel$      bold$ show3 total_bytes
+        (labelSetMarkup filesLabel$           bold$ show3 files                                )  `on` indType==INDICATOR_FULL
+        (labelSetMarkup bytesLabel$           bold$ show3 b                                    )
+        (labelSetMarkup compressedLabel$      bold$ show3 cbytes                               )  `on` indType==INDICATOR_FULL
+        (labelSetMarkup timesLabel$           bold$ showHMS secs                               )
+        (labelSetMarkup totalFilesLabel$      bold$ show3 total_files                          )  `on` indType==INDICATOR_FULL
+        (labelSetMarkup totalBytesLabel$      bold$ show3 total_bytes                          )
         when (b>0 && secs-sec0>0.001) $ do   -- Поля скорости/коэф. сжатия бессмысленно показывать пока не накоплена хоть какая-то статистика
-        labelSetMarkup ratioLabel$           bold$ ratio2 cbytes b++"%"                         `on` indType==INDICATOR_FULL
-        labelSetMarkup speedLabel$           bold$ showSpeed b (secs-sec0)
+        (labelSetMarkup ratioLabel$           bold$ ratio2 cbytes b++"%"                       )  `on` indType==INDICATOR_FULL
+        (labelSetMarkup speedLabel$           bold$ showSpeed b (secs-sec0)                    )
         when (processed>0.001) $ do          -- Поля оценки времени/результата сжатия показываются только после сжатия 0.1% всей информации
-        labelSetMarkup totalCompressedLabel$ bold$ total_compressed                             `on` indType==INDICATOR_FULL
-        labelSetMarkup totalTimesLabel$      bold$ "~"++showHMS (sec0 + (secs-sec0)/processed)
+        (labelSetMarkup totalCompressedLabel$ bold$ total_compressed                           )  `on` indType==INDICATOR_FULL
+        (labelSetMarkup totalTimesLabel$      bold$ "~"++showHMS (sec0 + (secs-sec0)/processed))
 
   -- Процедура, очищающая текущую статистику
   let clearStats  =  val labels' >>= mapM_ (`labelSetMarkup` "     ")
@@ -659,17 +659,21 @@ eventKey (Key {eventKeyName = name, eventModifier = modifier}) =
 -- |Добавить к диалогу стандартную кнопку со стандартной иконкой
 addStdButton dialog responseId = do
   let (emsg,item) = case responseId of
-                      ResponseYes    -> ("0079 _Yes",    stockYes         )
-                      ResponseNo     -> ("0080 _No",     stockNo          )
-                      ResponseOk     -> ("0362 _OK",     stockOk          )
-                      ResponseCancel -> ("0081 _Cancel", stockCancel      )
-                      ResponseClose  -> ("0364 _Close",  stockClose       )
-                      _              -> ("???",          stockMissingImage)
+                      ResponseYes            -> ("0079 _Yes",    stockYes         )
+                      ResponseNo             -> ("0080 _No",     stockNo          )
+                      ResponseOk             -> ("0362 _OK",     stockOk          )
+                      ResponseCancel         -> ("0081 _Cancel", stockCancel      )
+                      ResponseClose          -> ("0364 _Close",  stockClose       )
+                      x | x==aResponseDetach -> ("0432 _Detach", stockMissingImage)
+                      _                      -> ("???",          stockMissingImage)
   msg <- i18n emsg
   button <- dialogAddButton dialog msg responseId
   image  <- imageNewFromStock item iconSizeButton
   buttonSetImage button image
   return button
+
+-- |Кнопка фонового выполнения команды
+aResponseDetach = ResponseUser 1
 
 
 {-# NOINLINE debugMsg #-}

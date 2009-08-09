@@ -71,7 +71,7 @@ openDialog (cmd:"--":params) exec dialog = do
   startGUI
   cmdChan <- newChan
   gui $ do
-    let exec = writeChan cmdChan . map thd3
+    let exec _bgmode = writeChan cmdChan . map thd3
     fm' <- newEmptyFM
     dialog fm' exec cmd params
   --
@@ -556,8 +556,13 @@ myGUI run args = do
       mapM_ (myHandleErrors runWithMsg) commands
       whenM (isEmptyChan cmdChan)$ postGUIAsync$ do widgetHide windowProgress; refreshCommand fm'
       --uiDoneProgram
-  let exec = writeChan cmdChan
 
+  -- Depending on execution mode, either queue commands or run external FreeArc instances
+  let exec False cmds  =  writeChan cmdChan cmds
+      exec True  cmds  =  do freearc <- getExeName
+                             fm <- val fm'
+                             for cmds $ \(_,_,cmd) -> do
+                               Files.runCommand (unparseCommand$ [freearc]++cmd) (fm_curdir fm) False
 
 ----------------------------------------------------------------------------------------------------
 ---- Меню Commands ---------------------------------------------------------------------------------
@@ -599,11 +604,11 @@ myGUI run args = do
         -- Стереть файлы из архива
         then do closeFMArc fm'
                 let arcname = fm_arcname fm
-                exec [(["0228 Deleting from %1",
-                        "0229 FILES SUCCESFULLY DELETED FROM %1",
-                        "0230 %2 WARNINGS WHILE DELETING FROM %1"],
-                       [takeFileName arcname],
-                       ["d", "--noarcext", "--", arcname]++files)]
+                exec False [(["0228 Deleting from %1",
+                              "0229 FILES SUCCESFULLY DELETED FROM %1",
+                              "0230 %2 WARNINGS WHILE DELETING FROM %1"],
+                             [takeFileName arcname],
+                             ["d", "--noarcext", "--", arcname]++files)]
         -- Удалить файлы на диске
         else io$ mapM_ (ignoreErrors.fileRemove.(fm_dir fm </>)) files
 
@@ -619,11 +624,11 @@ myGUI run args = do
       whenM (askOkCancel window (formatn msg [head archives, show3$ length archives])) $ do
         closeFMArc fm'
         for archives $ \arcname -> do
-          exec [(["0300 Locking archive %1",
-                  "0301 SUCCESFULLY LOCKED ARCHIVE %1",
-                  "0302 %2 WARNINGS WHILE LOCKING ARCHIVE %1"],
-                 [takeFileName arcname],
-                 ["ch", "--noarcext", "-k", "--", arcname])]
+          exec False [(["0300 Locking archive %1",
+                        "0301 SUCCESFULLY LOCKED ARCHIVE %1",
+                        "0302 %2 WARNINGS WHILE LOCKING ARCHIVE %1"],
+                       [takeFileName arcname],
+                       ["ch", "--noarcext", "-k", "--", arcname])]
 
   -- Изменить комментарий архива
   commentAct `onActionActivate` do
@@ -658,11 +663,11 @@ myGUI run args = do
       whenM (askOkCancel window (formatn msg [head archives, show3$ length archives])) $ do
         closeFMArc fm'
         for archives $ \arcname -> do
-          exec [(["0382 Repairing archive %1",
-                  "0383 SUCCESFULLY REPAIRED ARCHIVE %1",
-                  "0384 %2 WARNINGS WHILE REPAIRING ARCHIVE %1"],
-                 [takeFileName arcname],
-                 ["r", "--noarcext", "--", arcname])]
+          exec False [(["0382 Repairing archive %1",
+                        "0383 SUCCESFULLY REPAIRED ARCHIVE %1",
+                        "0384 %2 WARNINGS WHILE REPAIRING ARCHIVE %1"],
+                       [takeFileName arcname],
+                       ["r", "--noarcext", "--", arcname])]
 
   -- Модификация архивов
   modifyAct `onActionActivate` do

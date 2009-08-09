@@ -512,7 +512,7 @@ fmFileBox fm' dialog tag dialogType makeControl dialogTitle filters filter_p pro
 fmInputString fm' tag title filter_p process = do
   fm <- val fm'
   -- Создадим диалог со стандартными кнопками OK/Cancel
-  fmDialog fm' title $ \(dialog,okButton) -> do
+  fmDialog fm' title [] $ \(dialog,okButton) -> do
     x <- fmEntryWithHistory fm' tag filter_p process
 
     upbox <- dialogGetUpper dialog
@@ -556,7 +556,7 @@ fmExpanderWithHistory fm' tag deflt title = do
 
 {-# NOINLINE fmDialog #-}
 -- |Диалог со стандартными кнопками OK/Cancel
-fmDialog fm' title action = do
+fmDialog fm' title flags action = do
   fm <- val fm'
   title <- i18n title
   bracketCtrlBreak "fmDialog" dialogNew widgetDestroy $ \dialog -> do
@@ -564,11 +564,18 @@ fmDialog fm' title action = do
                 containerBorderWidth := 0]
     when (isJust$ fm_window_ fm) $ do
       set dialog [windowTransientFor := fm_window fm]
-    addStdButton dialog ResponseOk      >>= \okButton -> do
+    -- Создать 2 или 3 кнопки
+    addStdButton dialog ResponseOk       >>= \okButton -> do
+    addStdButton dialog aResponseDetach  `on`  (AddDetachButton `elem` flags)
     addStdButton dialog ResponseCancel
+    --
     dialogSetDefaultResponse dialog ResponseOk
     tooltips =:: tooltipsNew
     action (dialog,okButton)
+
+-- |Доп. флаги для настройки fmDialog
+data FMDialogFlags = AddDetachButton  -- ^Добавлять Detach button в диалог?
+                     deriving Eq
 
 {-# NOINLINE fmDialogRun #-}
 -- |Отработать диалог с сохранением его положения и размера в истории

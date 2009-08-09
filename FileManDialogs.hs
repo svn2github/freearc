@@ -56,7 +56,7 @@ extractDialog fm' exec cmd arcnames arcdir files = do
                    (_,   files,  arcnames)  -> "0027 Extract files from %4 archives"
   let wintitle  =  formatn title [head files, show3$ length files, takeFileName$ head arcnames, show3$ length arcnames]
   -- Создадим диалог со стандартными кнопками OK/Cancel
-  fmDialog fm' wintitle $ \(dialog,okButton) -> do
+  fmDialog fm' wintitle [AddDetachButton] $ \(dialog,okButton) -> do
     upbox <- dialogGetUpper dialog
 
     ; outFrame <- frameNew
@@ -99,7 +99,9 @@ extractDialog fm' exec cmd arcnames arcdir files = do
 
     widgetShowAll upbox
     choice <- fmDialogRun fm' dialog (if cmd/="t" then "ExtractDialog" else "TestDialog")
-    when (choice==ResponseOk) $ do
+    when (choice `elem` [ResponseOk, aResponseDetach]) $ do
+      -- Запустить команду в отдельной копии FreeArc?
+      let detach = (choice == aResponseDetach)
       overwriteOption    <- val overwrite
       dir'               <- val dir;         saveHistory dir
       isAddDir           <- val addDirButton
@@ -115,21 +117,22 @@ extractDialog fm' exec cmd arcnames arcdir files = do
                   _   -> ["0234 Extracting files from %1",
                           "0235 FILES SUCCESFULLY EXTRACTED FROM %1",
                           "0236 %2 WARNINGS WHILE EXTRACTING FILES FROM %1"]
-      exec$ (arcnames ||| ["*"]) .$map (\arcname ->
-            (msgs, [takeFileName arcname],
-             [cmd]++
-             (cmd/="t" &&& (
-               ["-dp"++clear dir']++
-               (isAddDir &&& ["-ad"])++
-               (arcdir &&& files &&& ["-ap"++clear arcdir])++
-               (keepBroken &&& ["-kb"])++
-               (overwriteOption  `select`  ",-o+,-u -o+,-o-")))++
-             decryptionOptions++
-             (logfile'         &&&  ["--logfile="++clear logfile'])++
-             ["--fullnames"]++
-             ["--noarcext"]++
-             (optionsEnabled   &&&  words (clear optionsStr'))++
-             ["--", clear arcname]++files))
+      exec detach$
+          (arcnames ||| ["*"]) .$map (\arcname ->
+          (msgs, [takeFileName arcname],
+           [cmd]++
+           (cmd/="t" &&& (
+             ["-dp"++clear dir']++
+             (isAddDir &&& ["-ad"])++
+             (arcdir &&& files &&& ["-ap"++clear arcdir])++
+             (keepBroken &&& ["-kb"])++
+             (overwriteOption  `select`  ",-o+,-u -o+,-o-")))++
+           decryptionOptions++
+           (logfile'         &&&  ["--logfile="++clear logfile'])++
+           ["--fullnames"]++
+           ["--noarcext"]++
+           (optionsEnabled   &&&  words (clear optionsStr'))++
+           ["--", clear arcname]++files))
 
 
 ----------------------------------------------------------------------------------------------------
@@ -146,7 +149,7 @@ arcinfoDialog fm' exec mode arcnames arcdir files = do
   title <- i18n"0085 All about %1"
   let wintitle  =  format title (takeFileName arcname)
   -- Создадим диалог со стандартными кнопками OK/Cancel
-  fmDialog fm' wintitle $ \(dialog,okButton) -> do
+  fmDialog fm' wintitle [] $ \(dialog,okButton) -> do
     (nb,newPage) <- startNotebook dialog
 ------ Главная закладка ----------------------------------------------------------------------------
     vbox <- newPage "0174 Main";  let pack n makeControl = do control <- makeControl
@@ -223,7 +226,7 @@ arcinfoDialog fm' exec mode arcnames arcdir files = do
                    ,"--"
                    ,arcname]
         --
-        exec [(msgs, [takeFileName arcname], cmd)]
+        exec False [(msgs, [takeFileName arcname], cmd)]
 
 
 ----------------------------------------------------------------------------------------------------
@@ -232,7 +235,7 @@ arcinfoDialog fm' exec mode arcnames arcdir files = do
 
 settingsDialog fm' = do
   fm <- val fm'
-  fmDialog fm' "0067 Settings" $ \(dialog,okButton) -> do
+  fmDialog fm' "0067 Settings" [] $ \(dialog,okButton) -> do
     (nb,newPage) <- startNotebook dialog
 ------ Главная закладка ----------------------------------------------------------------------
     vbox <- newPage "0174 Main";  let pack x = boxPackStart vbox x PackNatural 1

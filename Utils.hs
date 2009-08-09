@@ -155,6 +155,11 @@ a ||| b | isDefaultValue a = b
 a &&& b | isDefaultValue a = defaultValue
         | otherwise        = b
 
+-- |¬ыполнить b если a (условное выполнение с условием в конце строки)
+infixr 0 `on`
+on b a | isDefaultValue a = return ()
+       | otherwise        = b >> return ()
+
 -- |ѕрименить функцию f к списку только если он не пустой
 unlessNull f xs  =  xs &&& f xs
 
@@ -191,10 +196,6 @@ foreach = flip mapM
 
 -- |¬ыполнить дл€ каждого элемента из списка
 for = flip mapM_
-
--- |”словное выполнение с условием в конце строки
-infixr 0 `on`
-on = flip (&&&)
 
 -- |”добный способ записать сначала то, что должно об€зательно быть выполнено в конце :)
 doFinally = flip finally

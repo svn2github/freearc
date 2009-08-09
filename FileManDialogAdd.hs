@@ -62,7 +62,7 @@ addDialog fm' exec cmd files mode = do
                    ("cvt",_     ) -> "0429 Convert %2 archives to FreeArc format"
   let wintitle  =  formatn title [head files, show3$ length files]
   -- Создадим диалог со стандартными кнопками OK/Cancel
-  fmDialog fm' wintitle $ \(dialog,okButton) -> do
+  fmDialog fm' wintitle [AddDetachButton] $ \(dialog,okButton) -> do
     fmCacheConfigFile fm' $ do
     (nb,newPage) <- startNotebook dialog
 
@@ -159,7 +159,9 @@ addDialog fm' exec cmd files mode = do
     widgetShowAll dialog
     --current_time  <- getClockTime;  debugMsg (show$ diffTimes current_time start_time)
     choice <- fmDialogRun fm' dialog "AddDialog"
-    when (choice==ResponseOk) $ do
+    when (choice `elem` [ResponseOk, aResponseDetach]) $ do
+      -- Запустить команду в отдельной копии FreeArc?
+      let detach = (choice == aResponseDetach)
       -- Main settings
       arcname' <- val arcname;  saveHistory arcname   `on`  (cmd `notElem` words "ch cvt")
       arcpath' <- val arcpath;  saveHistory arcpath   `on`  cmd=="a"
@@ -276,9 +278,10 @@ addDialog fm' exec cmd files mode = do
         do all2arc <- all2arc_path
            Files.runCommand (unparseCommand$ [all2arc] ++ options ++ ["--"] ++ files) (fm_curdir fm) False
         else do
-      exec$ if cmd=="ch" then (files ||| ["*"]) .$map (\archive -> command (fm_curdir fm </> archive) [])
-       else if separate' then files.$map (\file -> command (fm_curdir fm </> dropTrailingPathSeparator file++aDEFAULT_ARC_EXTENSION) [file])
-                         else [command arcname' files]
+      exec detach$
+             if cmd=="ch" then (files ||| ["*"]) .$map (\archive -> command (fm_curdir fm </> archive) [])
+        else if separate' then files.$map (\file -> command (fm_curdir fm </> dropTrailingPathSeparator file++aDEFAULT_ARC_EXTENSION) [file])
+                          else [command arcname' files]
 
 
 ----------------------------------------------------------------------------------------------------
