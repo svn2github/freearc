@@ -442,6 +442,7 @@ settingsDialog fm' = do
       bValues     <- val `mapM` (map fst commands)
       registerShellExtensions associate oldContextMenu contextMenu cascaded (zip bValues (map snd commands))
 #endif
+      return ()
 
 
 ----------------------------------------------------------------------------------------------------
@@ -509,7 +510,7 @@ registerShellExtensions associate oldContextMenu contextMenu cascaded commands =
         dll_register ""
         return ()
 #else
-unregisterShellExtensions = doNothing
+unregisterShellExtensions = doNothing0
 #endif
 
 

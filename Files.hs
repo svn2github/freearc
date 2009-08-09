@@ -33,6 +33,7 @@ import System.Posix.Types
 import System.IO
 import System.IO.Error hiding (catch)
 import System.IO.Unsafe
+import System.Environment
 import System.Locale
 import System.Time
 import System.Process
@@ -167,6 +168,9 @@ configFilePlaces  filename  =  do dir1 <- getAppUserDataDirectory "FreeArc"
 -- |Места для поиска sfx-модулей
 libraryFilePlaces filename  =  return ["/usr/lib/FreeArc"       </> filename
                                       ,"/usr/local/lib/FreeArc" </> filename]
+
+-- |Имя исполняемого файла программы
+getExeName = getProgName
 #endif
 
 
