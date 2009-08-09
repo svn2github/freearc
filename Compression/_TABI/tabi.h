@@ -67,7 +67,7 @@ class TABI_MAP
 		TABI_GETTER( TABI_FUNCTION*,  VOID_FUNC,       _callback,   TABI_FUNCPTR,   funcptr);
 
                 // Return value using "return" callback
-		template<class T> TABI_RESULT_TYPE _return(T v) {return _callback("return") (TABI_DYNAMAP("result",v));}
+		template<class T> TABI_RESULT_TYPE _return(T v);
 
                 // Dump first n elements (for debugging purposes)
 		void dump(int n=0)
@@ -165,5 +165,10 @@ class TABI_DYNAMAP : public TABI_MAP
 		TABI_ELEMENT place[100];
 		int i;
 };
+
+
+// Return value using "return" callback
+template<class T> TABI_RESULT_TYPE TABI_MAP::_return(T v) {return _callback("return") (TABI_DYNAMAP("result",v));}
+
 
 #endif // __cplusplus

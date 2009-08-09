@@ -22,12 +22,15 @@ unsigned GetMaxMemToAlloc (void);                          // Макс. объём памяти
 unsigned GetAvailablePhysicalMemory (void);                // Объём свободной физической памяти компьютера
 void TestMalloc (void);                                    // Печатает статистику свободной памяти
 int GetProcessorsCount (void);                             // Общее количество процессоров (точнее, физических ядер) в системе. Используется для определения того, сколько "тяжёлых" вычислительных потоков целесообразно запустить в программе
-DWORD RegistryDeleteTree(HKEY hStartKey, LPTSTR pKeyName);  // Delete entrire subtree from Windows Registry
 uint UpdateCRC (void *Addr, uint Size, uint StartCRC);     // Обновить CRC содержимым блока данных
 uint CalcCRC (void *Addr, uint Size);                      // Вычислить CRC блока данных
 void memxor (char *dest, char *src, uint size);            // От-xor-ить два блока данных
 int systemRandomData (char *rand_buf, int rand_size);
 void BuildPathTo (CFILENAME name);                         // Создать каталоги на пути к name
+
+#ifdef FREEARC_WIN
+DWORD RegistryDeleteTree(HKEY hStartKey, LPTSTR pKeyName);  // Delete entrire subtree from Windows Registry
+#endif
 
 // GuiEnvironment.cpp
 int BrowseForFolder(TCHAR *prompt, TCHAR *in_filename, TCHAR *out_filename);                      // Дать пользователю выбрать каталог

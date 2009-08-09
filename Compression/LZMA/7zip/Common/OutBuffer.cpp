@@ -33,7 +33,7 @@ void COutBuffer::SetStream(ISequentialOutStream *stream)
 void COutBuffer::Init()
 {
   _streamPos = 0;
-  _limitPos = min( LZ_CHUNKS, _bufferSize);
+  _limitPos = mymin (LZ_CHUNKS, _bufferSize);
   _pos = 0;
   _processedSize = 0;
   _overDict = false;
@@ -85,9 +85,9 @@ HRESULT COutBuffer::FlushPart()
   }
   // Лимит распаковки - до LZ_CHUNKS байт, но не превышая размеры буфера (или _streamPos, если оно больше _pos, то есть кончик буфера остался недозаписан)
   if (_streamPos <= _pos)
-    _limitPos = min( _pos+LZ_CHUNKS, _bufferSize);
+    _limitPos = mymin (_pos+LZ_CHUNKS, _bufferSize);
   else
-    _limitPos = min( _pos+LZ_CHUNKS, _streamPos);
+    _limitPos = mymin (_pos+LZ_CHUNKS, _streamPos);
   _processedSize += size;
   return result;
 }

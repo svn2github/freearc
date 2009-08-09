@@ -335,20 +335,26 @@ void SetFileDateTime(const CFILENAME Filename, time_t mtime)
   utime (Filename, &times);
 }
 
-// Execute file `filename` in the directory `curdir` optionally waiting until it finished
-void RunFile (const CFILENAME filename, const CFILENAME curdir, int wait_finish)
+// Execute `command` in the directory `curdir` optionally waiting until it finished
+void RunCommand (const CFILENAME command, const CFILENAME curdir, int wait_finish)
 {
   char *olddir = (char*) malloc(MY_FILENAME_MAX*4),
-       *cmd    = (char*) malloc(strlen(filename)+10);
+       *cmd    = (char*) malloc(strlen(command)+10);
   getcwd(olddir, MY_FILENAME_MAX*4);
 
   chdir(curdir);
-  sprintf(cmd, "./%s%s", filename, wait_finish? "" : " &");
+  sprintf(cmd, "./%s%s", command, wait_finish? "" : " &");
   system(cmd);
 
   chdir(olddir);
   free(cmd);
   free(olddir);
+}
+
+// Execute file `filename` in the directory `curdir` optionally waiting until it finished
+void RunFile (const CFILENAME filename, const CFILENAME curdir, int wait_finish)
+{
+  RunCommand (filename, curdir, wait_finish);
 }
 
 #endif // Windows/Unix

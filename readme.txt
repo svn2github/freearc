@@ -17,9 +17,9 @@ It should be easy to compile FreeArc:
      cd ..
 6. For compiling console version (Arc.exe):
      compile-O2.cmd
-7. For compiling GUI version (WinArc.exe):
+7. For compiling GUI version (FreeArc.exe):
      compile-GUI-O2.cmd
-8. When compilation will be finished, you will find Arc.exe/WinArc.exe in Tests subdirectory
+8. When compilation will be finished, you will find Arc.exe/FreeArc.exe in Tests subdirectory
 9. For compiling SFX modules, Unarc and FAR plugin:
      cd Unarc
      make
@@ -35,10 +35,9 @@ It should be easy to compile FreeArc:
      cd HsLua && ghc --make Setup.hs && ./Setup configure && ./Setup build && ./Setup install && cd ..
 4. For compiling console version (arc):
      ./compile-O2
-5. For compiling GUI version (winarc):
+5. For compiling GUI version (freearc):
      ./compile-GUI-O2
-6. When compilation will be finished, you will find arc/winarc executables in Tests subdirectory
+6. When compilation will be finished, you will find arc/freearc executables in Tests subdirectory
 7. For compiling SFX modules and Unarc:
      cd Unarc
      make linux
-
