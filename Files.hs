@@ -326,8 +326,12 @@ clearArchiveBit filename = do
     attr <- getFileAttributes filename
     when (attr.&.fILE_ATTRIBUTE_ARCHIVE /= 0) $ do
         setFileAttributes filename (attr - fILE_ATTRIBUTE_ARCHIVE)
+-- |Clear all file's attributes (before deletion)
+clearFileAttributes filename = do
+    setFileAttributes filename 0
 #else
-clearArchiveBit _ = return ()
+clearArchiveBit     = doNothing
+clearFileAttributes = doNothing
 #endif
 
 

@@ -246,10 +246,13 @@ postProcess_wrapper command archiving = do
                                     -- Удаление файлов
                                     condPrintLineLn "n"$ "Deleting successfully archived files"
                                     files <- val files2delete
-                                    --print$ map diskName files   -- debugging tool :)
                                     for files $ \fi -> do
                                         whenM (check_that_file_was_not_changed fi) $ do
-                                            ignoreErrors.fileRemove.fpFullname.fiDiskName$ fi
+                                            let filename = diskName fi
+                                            fileRemove filename `catch` \e -> do
+                                                -- Remove readonly/hidden/system attributes and try to remove file again
+                                                ignoreErrors$ clearFileAttributes filename
+                                                ignoreErrors$ fileRemove filename
                                     -- Удаление каталогов
                                     when (opt_delete_files command == DEL_FILES_AND_DIRS) $ do
                                         dirs <- val dirs2delete
