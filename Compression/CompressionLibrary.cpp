@@ -515,7 +515,7 @@ void unregisterTemporaryFile (MYFILE &file)
 // This function cleans up the Compression Library
 void compressionLib_cleanup (void)
 {
-  iterate_var(i,TemporaryFilesCount)
+  for(int i=TemporaryFilesCount-1; i>=0; i--)
     TemporaryFiles[i]->tryClose(),
     TemporaryFiles[i]->remove();
 }

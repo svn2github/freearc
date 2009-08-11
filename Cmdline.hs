@@ -619,6 +619,8 @@ parseCmdline cmdline  =  (`mapMaybeM` split ";" cmdline) $ \args -> do
                '%':envvar -> getEnv envvar
                dir        -> return dir
 
+  setup_command <<= (setTempDir workdir)
+
   -- Определить порядок сортировки файлов в архиве
   let sort_order  =  case (orig_sort_order, group_data) of
         (Just "-", _)  -> ""                    -- Если порядок сортировки задан как "-", то отключить сортировку

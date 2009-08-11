@@ -299,6 +299,40 @@ char *oem_to_utf8 (const char  *oem, char *utf8)
 // File/system operations *****************************************************
 //*****************************************************************************
 
+// Directory for temporary files
+static CFILENAME TempDir = 0;
+
+// Set temporary files directory
+void SetTempDir (const CFILENAME dir)
+{
+  if (dir && TempDir && _tcscmp(dir,TempDir)==0)
+    return;  // the same string
+  FreeAndNil(TempDir);
+  if (dir && *dir)
+  {
+    TempDir = (CFILENAME) malloc_msg ((_tcslen(dir)+1) * sizeof(*dir));
+    _tcscpy (TempDir, dir);
+  }
+}
+
+// Return last value set or GetTempPath()
+CFILENAME GetTempDir (void)
+{
+  if (!TempDir)
+  {
+#ifdef FREEARC_WIN
+    TempDir = (CFILENAME) malloc_msg();
+    GetTempPathW(MY_FILENAME_MAX, TempDir);
+    realloc (TempDir, (_tcslen(TempDir)+1) * sizeof(*TempDir));
+#else
+    TempDir = (CFILENAME) malloc_msg(2);
+    _tcscpy (TempDir, ".");
+#endif
+  }
+  return TempDir;
+}
+
+
 #ifdef FREEARC_WIN
 #include <sys/utime.h>
 

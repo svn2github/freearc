@@ -6,7 +6,7 @@ extern "C" {
 
 int external_program (bool IsCompressing, CALLBACK_FUNC *callback, void *auxdata, char *infile_basename, char *outfile_basename, char *cmd, char *method, int MinCompression, double *addtime)
 {
-    MYTEMPDIR t;      if (!t.dir_exists())   {return FREEARC_ERRCODE_WRITE;}   // Cannot make tempdir
+    MYTEMPDIR t;     registerTemporaryFile (t);
     MYFILE infile;    infile.SetBaseDir (t.utf8name);  infile.setname (infile_basename);
     MYFILE outfile;  outfile.SetBaseDir (t.utf8name); outfile.setname (outfile_basename);
 
@@ -86,10 +86,11 @@ int external_program (bool IsCompressing, CALLBACK_FUNC *callback, void *auxdata
         checked_write (Buf, x);
     }
 finished:
+    free(Buf);
     unregisterTemporaryFile (outfile);
     outfile.close();
     outfile.remove();
-    free(Buf);
+    unregisterTemporaryFile (t);
     return x;         // 0, если всё в порядке, и код ошибки иначе
 }
 

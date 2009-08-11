@@ -174,6 +174,13 @@ getExeName = getProgName
 #endif
 
 
+-- |Set directory for temporary files
+setTempDir dir = withCFilePath dir c_SetTempDir
+
+foreign import ccall safe "Environment.h SetTempDir"
+  c_SetTempDir :: CFilePath -> IO ()
+
+
 ----------------------------------------------------------------------------------------------------
 ---- Запуск внешних программ и работа с Windows registry -------------------------------------------
 ----------------------------------------------------------------------------------------------------

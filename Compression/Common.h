@@ -191,6 +191,7 @@ static inline void WINAPI UnixTimeToFileTime( time_t time, FILETIME* ft )
 typedef char* CFILENAME;
 typedef char  TCHAR;
 #define _T
+#define _tcscmp         strcmp
 #define _tcschr         strchr
 #define	_tcsrchr	strrchr
 #define _tcscpy         strcpy
@@ -240,6 +241,8 @@ void SetFileDateTime (const CFILENAME Filename, time_t t); // Установить время/д
 void RunProgram (const CFILENAME filename, const CFILENAME curdir, int wait_finish);  // Execute program `filename` in the directory `curdir` optionally waiting until it finished
 void RunCommand (const CFILENAME command,  const CFILENAME curdir, int wait_finish);  // Execute `command` in the directory `curdir` optionally waiting until it finished
 void RunFile    (const CFILENAME filename, const CFILENAME curdir, int wait_finish);  // Execute file `filename` in the directory `curdir` optionally waiting until it finished
+void SetTempDir (const CFILENAME dir);     // Set temporary files directory
+CFILENAME GetTempDir (void);               // Return last value set or GetTempPath (%TEMP)
 
 
 // ****************************************************************************
@@ -478,6 +481,7 @@ void BigFree(void *address) throw();
 #define BigFree(address) MyFree(address)
 #endif
 
+
 // ****************************************************************************
 // Функции парсинга и арифметики **********************************************
 // ****************************************************************************
@@ -614,6 +618,14 @@ double GetGlobalTime     (void);   // Returns number of wall-clock seconds since
 double GetThreadCPUTime  (void);   // Returns number of seconds spent in this thread
 #endif
 
+// Checked malloc
+static inline void *malloc_msg (unsigned long size = MY_FILENAME_MAX * 4)
+{
+  void *ptr = malloc(size);
+  CHECK (ptr, (s,"ERROR: can't alloc %lu memory bytes", size));
+  return ptr;
+}
+
 
 #ifdef __cplusplus
 }       // extern "C"
@@ -633,9 +645,11 @@ struct MYFILE
 
   void SetBaseDir (char *utf8dir)    // Set base dir
   {
-    strcpy (utf8name, utf8dir);
-    if (utf8name[0] != '\0')  strcat (utf8name, STR_PATH_DELIMITER);
-    utf8lastname = strchr(utf8name, 0);
+    if (utf8dir != utf8name)
+      strcpy (utf8name, utf8dir);
+    if (utf8name[0] != '\0' && !is_path_char (last_char(utf8name)))
+      strcat (utf8name, STR_PATH_DELIMITER);
+    utf8lastname = str_end(utf8name);
   }
 
 #ifdef FREEARC_WIN
@@ -672,9 +686,9 @@ struct MYFILE
                                            if ((char*)filename!=utf8name)  free(filename);
                                            free(oemname); free(utf8name);}
   // File operations
-  bool exists ()                          {return file_exists(filename);}
-  bool rename (MYFILE &other)             {return rename_file(filename, other.filename);}
-  bool remove ()                          {return remove_file(filename);}
+  virtual bool exists ()                  {return file_exists(filename);}
+  virtual bool rename (MYFILE &other)     {return rename_file(filename, other.filename);}
+  virtual bool remove ()                  {return remove_file(filename);}
 
   bool tryOpen (MODE mode)    // Пытается открыть файл для чтения или записи
   {
@@ -730,6 +744,7 @@ struct MYDIR : MYFILE
   int create_dir() {return ::create_dir(filename);}
   int remove_dir() {return ::remove_dir(filename);}
   int dir_exists() {return ::dir_exists(filename);}
+  virtual bool remove ()  {return remove_dir();}
 };
 
 
@@ -737,7 +752,8 @@ struct MYDIR : MYFILE
 struct MYTEMPDIR : MYDIR
 {
   MYTEMPDIR() {
-    SetBaseDir ("c:\\temp");  ///////////////////////////// global set from Haskell
+    utf16_to_utf8 (GetTempDir(), utf8name);
+    SetBaseDir (utf8name);
     for (unsigned i = (unsigned) GetTickCount(), cnt=0; cnt<1000; cnt++)
     {
         i = i*54322457 + 137;
