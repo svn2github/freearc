@@ -309,7 +309,7 @@ PROCESS::PROCESS (COMMAND &_cmd, BASEUI &_UI) : cmd(&_cmd), UI(&_UI)
 void PROCESS::quit(int errcode)
 {
   cmd->ok = FALSE;
-  if (outfile.isopen())  outfile.close(), delete_file(outfile.filename);
+  if (outfile.isopen())  outfile.close(), outfile.remove();
   arcinfo.arcfile.tryClose();
   UI->Abort (cmd, errcode);
 }

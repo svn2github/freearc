@@ -351,7 +351,6 @@
   aARC_VERSION = "0.52", aARCHIVE_VERSION = make4byte 0 0 5 2
 === To-do list ====================================================================================
 
-BMP files should be feed to BMF one-by-one, not like a solid block, something similar to "ARC a -mbmf2 -s1f test *.bmp"
 инсталятор
   добавить ArcShellExt, all2arc.exe, 7zg, inno setup dll & script
   ini->bin
@@ -619,6 +618,7 @@ other
     $bmp/$wav - group solid block by 64kb?
     для решения проблемы -ld1gb - выделять память небольшими блоками (при распаковке в lzma, rep, ppmd, tor)
     tor:5 -> delta+tor:5:t0 ?  видимо, имеет смысл только на быстрых машинах
+    BMP files should be feed to BMF one-by-one (the same for wav). Needs "patching" decompressed file since it loses .bmp format headers
   Compressor: лучше всего для толстых алгоритмов использовать внешние компрессоры. уже сейчас можно взять compressor.exe и использовать его подобным образом. в будущем же
     compressor будет совместим по формату данных с внутренними алгоритмами так, что к примеру можно будет упаковать внешним lzma со словарём в 1 гиг, а распаковывать внутренним
     понятно, будут 32 и 64-разрядные версии, причём компилироваться они будут ICC, что увеличит скорость на 10-20%

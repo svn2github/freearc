@@ -213,8 +213,8 @@ FARPROC LoadFromDLL (char *funcname);
 extern int compress_all_at_once;
 
 // Register/unregister temporary files that should be deleted on ^Break
-void registerTemporaryFile   (char *name, DEFAULT(FILE* file, NULL));
-void unregisterTemporaryFile (char *name);
+void registerTemporaryFile   (MYFILE &file);
+void unregisterTemporaryFile (MYFILE &file);
 
 // This function should cleanup Compression Library
 void compressionLib_cleanup (void);

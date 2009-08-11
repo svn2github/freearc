@@ -491,20 +491,20 @@ FARPROC LoadFromDLL (char *funcname)
 
 // Table of temporary files that should be deleted on ^Break
 static int TemporaryFilesCount=0;
-static struct {char *name; FILE* file;}  TemporaryFiles[10];
+static MYFILE *TemporaryFiles[100];
 
-void registerTemporaryFile (char *name, FILE* file)
+void registerTemporaryFile (MYFILE &file)
 {
-  unregisterTemporaryFile (name);  // First, delete all existing registrations of the same file
-  TemporaryFiles[TemporaryFilesCount].name = name;
-  TemporaryFiles[TemporaryFilesCount].file = file;
-  TemporaryFilesCount++;
+  unregisterTemporaryFile (file);  // First, delete all existing registrations of the same file
+  TemporaryFiles[TemporaryFilesCount] = &file;
+  if (TemporaryFilesCount < elements(TemporaryFiles))
+    TemporaryFilesCount++;
 }
 
-void unregisterTemporaryFile (char *name)
+void unregisterTemporaryFile (MYFILE &file)
 {
   iterate_var(i,TemporaryFilesCount)
-    if (strequ (TemporaryFiles[i].name, name))
+    if (TemporaryFiles[i] == &file)
     {
       memmove (TemporaryFiles+i, TemporaryFiles+i+1, (TemporaryFilesCount-(i+1)) * sizeof(TemporaryFiles[i]));
       TemporaryFilesCount--;
@@ -516,8 +516,8 @@ void unregisterTemporaryFile (char *name)
 void compressionLib_cleanup (void)
 {
   iterate_var(i,TemporaryFilesCount)
-    TemporaryFiles[i].file!=NULL  &&  fclose (TemporaryFiles[i].file),
-    remove (TemporaryFiles[i].name);
+    TemporaryFiles[i]->tryClose(),
+    TemporaryFiles[i]->remove();
 }
 
 

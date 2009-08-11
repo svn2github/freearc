@@ -10,10 +10,6 @@ extern "C" {
 #define INIT_CRC 0xffffffff
 
 // Environment.cpp
-void SetFileDateTime (const CFILENAME Filename, time_t t); // Установить время/дату модификации файла
-void RunProgram (const CFILENAME filename, const CFILENAME curdir, int wait_finish);  // Execute program `filename` in the directory `curdir` optionally waiting until it finished
-void RunCommand (const CFILENAME command,  const CFILENAME curdir, int wait_finish);  // Execute `command` in the directory `curdir` optionally waiting until it finished
-void RunFile    (const CFILENAME filename, const CFILENAME curdir, int wait_finish);  // Execute file `filename` in the directory `curdir` optionally waiting until it finished
 int long_path_size (void);                                 // Максимальная длина имени файла
 void FormatDateTime (char *buf, int bufsize, time_t t);    // Отформатировать время/дату для команды листинга
 CFILENAME GetExeName (CFILENAME buf, int bufsize);         // Вернуть имя исполняемого файла программы
@@ -26,7 +22,6 @@ uint UpdateCRC (void *Addr, uint Size, uint StartCRC);     // Обновить CRC содер
 uint CalcCRC (void *Addr, uint Size);                      // Вычислить CRC блока данных
 void memxor (char *dest, char *src, uint size);            // От-xor-ить два блока данных
 int systemRandomData (char *rand_buf, int rand_size);
-void BuildPathTo (CFILENAME name);                         // Создать каталоги на пути к name
 
 #ifdef FREEARC_WIN
 DWORD RegistryDeleteTree(HKEY hStartKey, LPTSTR pKeyName);  // Delete entrire subtree from Windows Registry

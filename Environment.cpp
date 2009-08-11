@@ -182,69 +182,6 @@ int GetProcessorsCount (void)
   return si.dwNumberOfProcessors;
 }
 
-void SetFileDateTime (const CFILENAME Filename, time_t mtime)
-{
-  struct _stat st;
-    _wstat (Filename, &st);
-  struct _utimbuf times;
-    times.actime  = st.st_atime;
-    times.modtime = mtime;
-  _wutime (Filename, &times);
-}
-
-// Execute program `filename` in the directory `curdir` optionally waiting until it finished
-void RunProgram (const CFILENAME filename, const CFILENAME curdir, int wait_finish)
-{
-  STARTUPINFO si;
-  PROCESS_INFORMATION pi;
-  ZeroMemory (&si, sizeof(si));
-  si.cb = sizeof(si);
-  ZeroMemory (&pi, sizeof(pi));
-  BOOL process_created = CreateProcessW (filename, NULL, NULL, NULL, FALSE, 0, NULL, curdir, &si, &pi);
-
-  if (process_created && wait_finish)
-      WaitForSingleObject (pi.hProcess, INFINITE);
-
-  CloseHandle (pi.hProcess);
-  CloseHandle (pi.hThread);
-}
-
-// Execute `command` in the directory `curdir` optionally waiting until it finished
-void RunCommand (const CFILENAME command, const CFILENAME curdir, int wait_finish)
-{
-  STARTUPINFO si;
-  PROCESS_INFORMATION pi;
-  ZeroMemory (&si, sizeof(si));
-  si.cb = sizeof(si);
-  ZeroMemory (&pi, sizeof(pi));
-  BOOL process_created = CreateProcessW (NULL, command, NULL, NULL, FALSE, 0, NULL, curdir, &si, &pi);
-
-  if (process_created && wait_finish)
-      WaitForSingleObject (pi.hProcess, INFINITE);
-
-  CloseHandle (pi.hProcess);
-  CloseHandle (pi.hThread);
-}
-
-// Execute file `filename` in the directory `curdir` optionally waiting until it finished
-void RunFile (const CFILENAME filename, const CFILENAME curdir, int wait_finish)
-{
-  SHELLEXECUTEINFO sei;
-  ZeroMemory(&sei, sizeof(SHELLEXECUTEINFO));
-  sei.cbSize = sizeof(SHELLEXECUTEINFO);
-  sei.fMask = (wait_finish? SEE_MASK_NOCLOSEPROCESS : 0);
-  sei.hwnd = GetActiveWindow();
-  sei.lpFile = filename;
-  sei.lpDirectory = curdir;
-  sei.nShow = SW_SHOW;
-
-  DWORD rc = ShellExecuteEx(&sei);
-  if (rc && wait_finish)
-    WaitForSingleObject(sei.hProcess, INFINITE),
-    CloseHandle (sei.hProcess);
-}
-
-
 // Delete entrire subtree from Windows Registry
 DWORD RegistryDeleteTree(HKEY hStartKey, LPTSTR pKeyName)
 {
@@ -322,39 +259,6 @@ unsigned GetAvailablePhysicalMemory (void)
 int GetProcessorsCount (void)
 {
   return get_nprocs();
-}
-
-void SetFileDateTime(const CFILENAME Filename, time_t mtime)
-{
-#undef stat
-  struct stat st;
-    stat (Filename, &st);
-  struct utimbuf times;
-    times.actime  = st.st_atime;
-    times.modtime = mtime;
-  utime (Filename, &times);
-}
-
-// Execute `command` in the directory `curdir` optionally waiting until it finished
-void RunCommand (const CFILENAME command, const CFILENAME curdir, int wait_finish)
-{
-  char *olddir = (char*) malloc(MY_FILENAME_MAX*4),
-       *cmd    = (char*) malloc(strlen(command)+10);
-  getcwd(olddir, MY_FILENAME_MAX*4);
-
-  chdir(curdir);
-  sprintf(cmd, "./%s%s", command, wait_finish? "" : " &");
-  system(cmd);
-
-  chdir(olddir);
-  free(cmd);
-  free(olddir);
-}
-
-// Execute file `filename` in the directory `curdir` optionally waiting until it finished
-void RunFile (const CFILENAME filename, const CFILENAME curdir, int wait_finish)
-{
-  RunCommand (filename, curdir, wait_finish);
 }
 
 #endif // Windows/Unix
@@ -443,26 +347,6 @@ FILENAME basename (FILENAME fullname)
     if (in_set (*p, ALL_PATH_DELIMITERS))
       basename = p+1;
   return basename;
-}
-
-// Создать каталоги на пути к name
-void BuildPathTo (CFILENAME name)
-{
-  CFILENAME path_ptr = NULL;
-  for (CFILENAME p = _tcschr(name,0); --p >= name;)
-    if (_tcschr (_T(DIRECTORY_DELIMITERS), *p))
-      {path_ptr=p; break;}
-  if (path_ptr==NULL)  return;
-
-  TCHAR oldc = *path_ptr;
-  *path_ptr = 0;
-
-  if (! file_exists (name))
-  {
-    BuildPathTo (name);
-    create_dir  (name);
-  }
-  *path_ptr = oldc;
 }
 
 

@@ -159,9 +159,7 @@ static inline char *drop_dirname (char *filename)
 #include <fcntl.h>
 #include <tchar.h>
 typedef TCHAR* CFILENAME;
-static inline void delete_file (CFILENAME name) {_tremove(name);}
-static inline void create_dir  (CFILENAME name) {_tmkdir(name);}
-static inline int  file_exists (CFILENAME name) {return _taccess(name,0) == 0;}
+static inline int create_dir (CFILENAME name)   {return _tmkdir(name);}
 #define set_flen(stream,new_size)               (chsize( file_no(stream), new_size ))
 #define get_flen(stream)                        (_filelengthi64(fileno(stream)))
 #define myeof(file)                             (feof(file))
@@ -200,12 +198,14 @@ typedef char  TCHAR;
 #define _tcslen         strlen
 #define _tstat          stat
 #define _stat           stat
+#define _trmdir         rmdir
+#define _trename        rename
+#define _tremove        remove
+#define _taccess        access
 
 typedef int (*FARPROC) (void);
 
-static inline void delete_file (char *name)     {remove(name);}
-static inline void create_dir  (char *name)     {mkdir(name,0777);}
-static inline int  file_exists (char *name)     {return access(name,0) == 0;}
+static inline int create_dir (CFILENAME name)   {return mkdir(name,0777);}
 #define get_flen(stream)                        (myfilelength( fileno (stream)))
 #define set_binary_mode(file)
 #define myeof(file)                             (get_flen(file) == ftell(file))
@@ -219,10 +219,14 @@ static inline off_t myfilelength (int h)
 
 #endif // FREEARC_UNIX
 
-#define rename_file(oldname,newname)            rename(oldname,newname)
-#define delete_dir(name)                        rmdir(name)
 #define file_read(file, buf, size)              fread  (buf, 1, size, file)
 #define file_write(file, buf, size)             fwrite (buf, 1, size, file)
+
+static inline int remove_dir  (CFILENAME name)  {return _trmdir(name);}
+static inline int remove_file (CFILENAME name)  {return _tremove(name);}
+static inline int file_exists (CFILENAME name)  {return _taccess(name,0) == 0;}
+
+static inline int rename_file (CFILENAME oldname, CFILENAME newname)  {return _trename(oldname,newname);}
 
 static inline int dir_exists (const TCHAR *name)
 {
@@ -230,6 +234,12 @@ static inline int dir_exists (const TCHAR *name)
   _tstat(name,&st);
   return (st.st_mode & S_IFDIR) != 0;
 }
+
+void BuildPathTo(CFILENAME name);  // Создать каталоги на пути к name
+void SetFileDateTime (const CFILENAME Filename, time_t t); // Установить время/дату модификации файла
+void RunProgram (const CFILENAME filename, const CFILENAME curdir, int wait_finish);  // Execute program `filename` in the directory `curdir` optionally waiting until it finished
+void RunCommand (const CFILENAME command,  const CFILENAME curdir, int wait_finish);  // Execute `command` in the directory `curdir` optionally waiting until it finished
+void RunFile    (const CFILENAME filename, const CFILENAME curdir, int wait_finish);  // Execute file `filename` in the directory `curdir` optionally waiting until it finished
 
 
 // ****************************************************************************
@@ -608,6 +618,140 @@ double GetThreadCPUTime  (void);   // Returns number of seconds spent in this th
 #ifdef __cplusplus
 }       // extern "C"
 #endif
+
+
+/******************************************************************************
+** Класс, абстрагирующий работу с файлами *************************************
+******************************************************************************/
+
+enum MODE {READ_MODE, WRITE_MODE}; // режим открытия файла
+struct MYFILE
+{
+  int handle;
+  TCHAR *filename;
+  char *utf8name, *utf8lastname, *oemname;
+
+  void SetBaseDir (char *utf8dir)    // Set base dir
+  {
+    strcpy (utf8name, utf8dir);
+    if (utf8name[0] != '\0')  strcat (utf8name, STR_PATH_DELIMITER);
+    utf8lastname = strchr(utf8name, 0);
+  }
+
+#ifdef FREEARC_WIN
+#  ifdef FREEARC_GUI                 // Win32 GUI *****************************************
+  void setname (FILENAME _filename)  {strcpy (utf8lastname, _filename);
+                                      utf8_to_utf16 (utf8name, filename);}
+  CFILENAME displayname (void)       {return filename;}
+
+#  else                              // Win32 console *************************************
+  void setname (FILENAME _filename)  {strcpy (utf8lastname, _filename);
+                                      utf8_to_utf16 (utf8name, filename);
+                                      CharToOemW (filename, oemname);}
+  FILENAME displayname (void)        {return oemname;}
+#  endif
+
+#else                                // Linux *********************************************
+  void setname (FILENAME _filename)  {strcpy (utf8lastname, _filename);  filename = utf8name;}
+  FILENAME displayname (void)        {return utf8name;}
+
+#endif                               // END ***********************************************
+
+  void init()                             {handle=-1;
+#ifdef FREEARC_WIN
+                                           filename = (TCHAR*) malloc (MY_FILENAME_MAX*4);
+#  endif
+                                           oemname  = (char*)  malloc (MY_FILENAME_MAX);
+                                           utf8name = (char*)  malloc (MY_FILENAME_MAX*4);
+                                           *utf8name=0; utf8lastname=utf8name;}
+
+  MYFILE ()                               {init();}
+  MYFILE (FILENAME filename)              {init(); setname (filename);}
+  MYFILE (FILENAME filename, MODE mode)   {init(); open (filename, mode);}
+  ~MYFILE()                               {tryClose();
+                                           if ((char*)filename!=utf8name)  free(filename);
+                                           free(oemname); free(utf8name);}
+  // File operations
+  bool exists ()                          {return file_exists(filename);}
+  bool rename (MYFILE &other)             {return rename_file(filename, other.filename);}
+  bool remove ()                          {return remove_file(filename);}
+
+  bool tryOpen (MODE mode)    // Пытается открыть файл для чтения или записи
+  {
+    if (mode==WRITE_MODE)  BuildPathTo (filename);
+#ifdef FREEARC_WIN
+    handle = ::_wopen (filename, mode==READ_MODE? O_RDONLY|O_BINARY : O_WRONLY|O_BINARY|O_CREAT|O_TRUNC, S_IREAD|S_IWRITE);
+#else
+    handle =   ::open (filename, mode==READ_MODE? O_RDONLY : O_WRONLY|O_CREAT|O_TRUNC, S_IREAD|S_IWRITE);
+#endif
+    return handle>=0;
+  }
+
+  MYFILE& open (MODE mode)    // Открывает файл для чтения или записи
+  {
+    bool success = tryOpen(mode);
+    CHECK (success, (s,"ERROR: can't open file %s", utf8name));
+    return *this;
+  }
+
+  MYFILE& open (FILENAME _filename, MODE mode)    // Открывает файл для чтения или записи
+  {
+    setname (_filename);
+    return open (mode);
+  }
+
+  void SetFileDateTime (time_t mtime)   {::SetFileDateTime (filename, mtime);}   // Устанавливает mtime файла
+  void close()    // Закрывает файл
+  {
+    CHECK (::close(handle)==0, (s,"ERROR: can't close file %s", utf8name));
+    handle = -1;
+  }
+  bool isopen()    {return handle>=0;}
+  void tryClose()  {if (isopen()) close();}
+
+#ifdef FREEARC_WIN
+  FILESIZE size    ()                {return _filelengthi64 (handle);}            // Возвращает размер файла
+  FILESIZE curpos  ()                {return _lseeki64 (handle, 0,   SEEK_CUR);}  // Текущая позиция в файле
+  void     seek    (FILESIZE pos)    {CHECK( _lseeki64 (handle, pos, SEEK_SET) == pos, (s,"ERROR: file seek operation failed"));}       // Переходит на заданную позицию в файле
+#else
+  FILESIZE size    ()                {return myfilelength (handle);}
+  FILESIZE curpos  ()                {return lseek (handle, 0,   SEEK_CUR);}
+  void     seek    (FILESIZE pos)    {CHECK( lseek (handle, pos, SEEK_SET) == pos, (s,"ERROR: file seek operation failed"));}
+#endif
+
+  FILESIZE tryRead (void *buf, FILESIZE size)   {int result = ::read (handle, buf, size); CHECK(result>=0, (s,"ERROR: file read operation failed")); return result;}           // Возвращает кол-во прочитанных байт, которое может быть меньше запрошенного
+  void     read    (void *buf, FILESIZE size)   {CHECK (tryRead (buf, size) == size, (s,"ERROR: can't read %lu bytes", (unsigned long)size));}         // Возбуждает исключение, если не удалось прочесть указанное число байт
+  void     write   (void *buf, FILESIZE size)   {CHECK (::write (handle, buf, size) == size, (s,"ERROR: file write operation failed"));}
+};
+
+
+struct MYDIR : MYFILE
+{
+  int create_dir() {return ::create_dir(filename);}
+  int remove_dir() {return ::remove_dir(filename);}
+  int dir_exists() {return ::dir_exists(filename);}
+};
+
+
+// Temporary directory, created and removed automatically by constructor/destructor
+struct MYTEMPDIR : MYDIR
+{
+  MYTEMPDIR() {
+    SetBaseDir ("c:\\temp");  ///////////////////////////// global set from Haskell
+    for (unsigned i = (unsigned) GetTickCount(), cnt=0; cnt<1000; cnt++)
+    {
+        i = i*54322457 + 137;
+        char dirname[100];
+        sprintf(dirname, "%s%u", "freearc", i);
+        setname(dirname);
+        if (create_dir() == 0)   return;  // Success
+    }
+  }
+  ~MYTEMPDIR() {
+    remove_dir();
+  }
+};
+
 
 /******************************************************************************
 ** Bounds-checked arrays ******************************************************
