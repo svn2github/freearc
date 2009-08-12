@@ -10,7 +10,7 @@ int external_program (bool IsCompressing, CALLBACK_FUNC *callback, void *auxdata
     MYFILE infile;    infile.SetBaseDir (t.utf8name);  infile.setname (infile_basename);
     MYFILE outfile;  outfile.SetBaseDir (t.utf8name); outfile.setname (outfile_basename);
 
-    BYTE* Buf = (BYTE*) malloc(LARGE_BUFFER_SIZE);  // буфер, используемый для чтения/записи данных
+    BYTE* Buf = (BYTE*) malloc(LARGE_BUFFER_SIZE);    // буфер, используемый для чтения/записи данных
     if (!Buf)  {return FREEARC_ERRCODE_NOT_ENOUGH_MEMORY;}
     int x;                                            // код, возвращённый последней операцией чтения/записи
     int ExitCode = 0;                                 // код возврата внешней программы
@@ -49,8 +49,9 @@ int external_program (bool IsCompressing, CALLBACK_FUNC *callback, void *auxdata
     if (*cmd && runCmd) {
     	char temp[30];
         printf ("\n%s %s bytes with %s\n", IsCompressing? "Compressing":"Unpacking", show3(bytes,temp), cmd);
+        MYFILE _tcmd(cmd); // utf8->utf16 conversion
         double time0 = GetGlobalTime();
-/////////////////////////////////        ExitCode = RunCommand (t.filename, cmd, TRUE);
+        ExitCode = RunCommand (_tcmd.filename, t.filename, TRUE);
         printf ("\nErrorlevel=%d\n", ExitCode);
         if (addtime)  *addtime += GetGlobalTime() - time0;
     } else {

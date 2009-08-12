@@ -239,7 +239,7 @@ static inline int dir_exists (const TCHAR *name)
 void BuildPathTo(CFILENAME name);  // Создать каталоги на пути к name
 void SetFileDateTime (const CFILENAME Filename, time_t t); // Установить время/дату модификации файла
 void RunProgram (const CFILENAME filename, const CFILENAME curdir, int wait_finish);  // Execute program `filename` in the directory `curdir` optionally waiting until it finished
-void RunCommand (const CFILENAME command,  const CFILENAME curdir, int wait_finish);  // Execute `command` in the directory `curdir` optionally waiting until it finished
+int  RunCommand (const CFILENAME command,  const CFILENAME curdir, int wait_finish);  // Execute `command` in the directory `curdir` optionally waiting until it finished
 void RunFile    (const CFILENAME filename, const CFILENAME curdir, int wait_finish);  // Execute file `filename` in the directory `curdir` optionally waiting until it finished
 void SetTempDir (const CFILENAME dir);     // Set temporary files directory
 CFILENAME GetTempDir (void);               // Return last value set or GetTempPath (%TEMP)
@@ -673,16 +673,16 @@ struct MYFILE
 
   void init()                             {handle=-1;
 #ifdef FREEARC_WIN
-                                           filename = (TCHAR*) malloc (MY_FILENAME_MAX*4);
+                                           filename = (TCHAR*) malloc_msg (MY_FILENAME_MAX*4);
 #  endif
-                                           oemname  = (char*)  malloc (MY_FILENAME_MAX);
-                                           utf8name = (char*)  malloc (MY_FILENAME_MAX*4);
+                                           oemname  = (char*)  malloc_msg (MY_FILENAME_MAX);
+                                           utf8name = (char*)  malloc_msg (MY_FILENAME_MAX*4);
                                            *utf8name=0; utf8lastname=utf8name;}
 
   MYFILE ()                               {init();}
   MYFILE (FILENAME filename)              {init(); setname (filename);}
   MYFILE (FILENAME filename, MODE mode)   {init(); open (filename, mode);}
-  ~MYFILE()                               {tryClose();
+  virtual ~MYFILE()                       {tryClose();
                                            if ((char*)filename!=utf8name)  free(filename);
                                            free(oemname); free(utf8name);}
   // File operations
@@ -744,7 +744,7 @@ struct MYDIR : MYFILE
   int create_dir() {return ::create_dir(filename);}
   int remove_dir() {return ::remove_dir(filename);}
   int dir_exists() {return ::dir_exists(filename);}
-  virtual bool remove ()  {return remove_dir();}
+  virtual bool remove ()  {return remove_dir();}      // for registerTemporaryFile
 };
 
 

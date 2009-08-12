@@ -351,6 +351,7 @@
   aARC_VERSION = "0.52", aARCHIVE_VERSION = make4byte 0 0 5 2
 === To-do list ====================================================================================
 
+RunFile - имена с пробелами??
 инсталятор
   добавить ArcShellExt, all2arc.exe, 7zg, inno setup dll & script
   ini->bin

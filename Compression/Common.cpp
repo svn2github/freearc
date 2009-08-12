@@ -364,20 +364,25 @@ void RunProgram (const CFILENAME filename, const CFILENAME curdir, int wait_fini
 }
 
 // Execute `command` in the directory `curdir` optionally waiting until it finished
-void RunCommand (const CFILENAME command, const CFILENAME curdir, int wait_finish)
+int RunCommand (const CFILENAME command, const CFILENAME curdir, int wait_finish)
 {
   STARTUPINFO si;
   PROCESS_INFORMATION pi;
   ZeroMemory (&si, sizeof(si));
   si.cb = sizeof(si);
   ZeroMemory (&pi, sizeof(pi));
+  DWORD ExitCode = 0;  // код возврата вызываемой программы
+
   BOOL process_created = CreateProcessW (NULL, command, NULL, NULL, FALSE, 0, NULL, curdir, &si, &pi);
-
-  if (process_created && wait_finish)
+  if (process_created)
+  {
+    if (wait_finish)
       WaitForSingleObject (pi.hProcess, INFINITE);
-
-  CloseHandle (pi.hProcess);
-  CloseHandle (pi.hThread);
+      GetExitCodeProcess  (pi.hProcess, &ExitCode);
+    CloseHandle (pi.hProcess);
+    CloseHandle (pi.hThread);
+  }
+  return ExitCode;
 }
 
 // Execute file `filename` in the directory `curdir` optionally waiting until it finished
@@ -412,19 +417,20 @@ void SetFileDateTime(const CFILENAME Filename, time_t mtime)
 }
 
 // Execute `command` in the directory `curdir` optionally waiting until it finished
-void RunCommand (const CFILENAME command, const CFILENAME curdir, int wait_finish)
+int RunCommand (const CFILENAME command, const CFILENAME curdir, int wait_finish)
 {
-  char *olddir = (char*) malloc(MY_FILENAME_MAX*4),
-       *cmd    = (char*) malloc(strlen(command)+10);
-  getcwd(olddir, MY_FILENAME_MAX*4);
+  char *olddir = (char*) malloc_msg (),
+       *cmd    = (char*) malloc_msg (strlen(command)+10);
+  getcwd(olddir, MY_FILENAME_MAX);
 
   chdir(curdir);
   sprintf(cmd, "./%s%s", command, wait_finish? "" : " &");
-  system(cmd);
+  int ExitCode = system(cmd);
 
   chdir(olddir);
   free(cmd);
   free(olddir);
+  return ExitCode;
 }
 
 // Execute file `filename` in the directory `curdir` optionally waiting until it finished
