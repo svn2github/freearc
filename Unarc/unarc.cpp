@@ -65,19 +65,14 @@ class INSTALLER_GUI : public GUI
     void EndProgress (COMMAND *cmd)
     {
     	GUI::EndProgress (cmd);
-        if (cmd->runme)
+        if (*cmd->runme.filename)
         {
-            CFILENAME tmp  = (TCHAR*) malloc (MY_FILENAME_MAX * 4);
-            CFILENAME tmp2 = (TCHAR*) malloc (MY_FILENAME_MAX * 4);
-
-            // Execute cmd->runme in the directory cmd->outpath
-            RunProgram (utf8_to_utf16 (cmd->runme, tmp), utf8_to_utf16 (cmd->outpath, tmp2), cmd->wipeoutdir);
+            // Execute runme in the directory outpath
+            RunProgram (cmd->runme.filename, cmd->outpath.filename, cmd->wipeoutdir);
 
             // Wipe outdir after installation was completed
             if (cmd->wipeoutdir)
-                wipedir (utf8_to_utf16 (cmd->outpath, tmp));
-
-            free(tmp); free(tmp2);
+                wipedir (cmd->outpath.filename);
         }
     }
 
@@ -86,11 +81,7 @@ class INSTALLER_GUI : public GUI
     virtual void Abort (COMMAND *cmd, int errcode)
     {
         if (cmd->tempdir)
-        {
-            CFILENAME tmp  =  (TCHAR*) malloc (MY_FILENAME_MAX * 4);
-            wipedir (utf8_to_utf16 (cmd->outpath, tmp));
-            free(tmp);
-        }
+            wipedir (cmd->outpath.filename);
         GUI::Abort (cmd, errcode);
     }
 } UI;
@@ -107,7 +98,7 @@ int main (int argc, char *argv[])
   UI.DisplayHeader (HEADER1 NAME);
   COMMAND command (argc, argv);    // Распарсить команду
   if (command.ok)                  // Если парсинг был удачен и можно выполнить команду
-    PROCESS (command, UI);         //   Выполнить разобранную команду
+    PROCESS (&command, &UI);       //   Выполнить разобранную команду
   printf ("\n");
   return command.ok? EXIT_SUCCESS : FREEARC_EXIT_ERROR;
 }

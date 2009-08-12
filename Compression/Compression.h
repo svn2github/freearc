@@ -212,10 +212,6 @@ FARPROC LoadFromDLL (char *funcname);
 // Used in 4x4 only: read entire input buffer before compression begins, allocate output buffer large enough to hold entire compressed output
 extern int compress_all_at_once;
 
-// Register/unregister temporary files that should be deleted on ^Break
-void registerTemporaryFile   (MYFILE &file);
-void unregisterTemporaryFile (MYFILE &file);
-
 // This function should cleanup Compression Library
 void compressionLib_cleanup (void);
 

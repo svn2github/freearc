@@ -463,6 +463,42 @@ void BuildPathTo (CFILENAME name)
 }
 
 
+// ****************************************************************************************************************************
+// онддепфйю яохяйю бпелеммшу тюикнб х сдюкемхе ху опх юбюпхимнл бшунде хг опнцпюллш ******************************************
+// ****************************************************************************************************************************
+
+// Table of temporary files that should be deleted on ^Break
+static int TemporaryFilesCount=0;
+static MYFILE *TemporaryFiles[100];
+
+void registerTemporaryFile (MYFILE &file)
+{
+  unregisterTemporaryFile (file);  // First, delete all existing registrations of the same file
+  TemporaryFiles[TemporaryFilesCount] = &file;
+  if (TemporaryFilesCount < elements(TemporaryFiles))
+    TemporaryFilesCount++;
+}
+
+void unregisterTemporaryFile (MYFILE &file)
+{
+  iterate_var(i,TemporaryFilesCount)
+    if (TemporaryFiles[i] == &file)
+    {
+      memmove (TemporaryFiles+i, TemporaryFiles+i+1, (TemporaryFilesCount-(i+1)) * sizeof(TemporaryFiles[i]));
+      TemporaryFilesCount--;
+      return;
+    }
+}
+
+void removeTemporaryFiles (void)
+{
+  // Enum files in reverse order in order to delete dirs after files they contain
+  for(int i=TemporaryFilesCount-1; i>=0; i--)
+    TemporaryFiles[i]->tryClose(),
+    TemporaryFiles[i]->remove();
+}
+
+
 
 #ifndef FREEARC_NO_TIMING
 

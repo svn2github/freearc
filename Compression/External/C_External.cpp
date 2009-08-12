@@ -6,9 +6,9 @@ extern "C" {
 
 int external_program (bool IsCompressing, CALLBACK_FUNC *callback, void *auxdata, char *infile_basename, char *outfile_basename, char *cmd, char *method, int MinCompression, double *addtime)
 {
-    MYTEMPDIR t;     registerTemporaryFile (t);
-    MYFILE infile;    infile.SetBaseDir (t.utf8name);  infile.setname (infile_basename);
-    MYFILE outfile;  outfile.SetBaseDir (t.utf8name); outfile.setname (outfile_basename);
+    MYDIR t;  if (!t.create_tempdir())    return FREEARC_ERRCODE_WRITE;
+    MYFILE infile (t, infile_basename);
+    MYFILE outfile(t, outfile_basename);
 
     BYTE* Buf = (BYTE*) malloc(LARGE_BUFFER_SIZE);    // буфер, используемый для чтения/записи данных
     if (!Buf)  {return FREEARC_ERRCODE_NOT_ENOUGH_MEMORY;}

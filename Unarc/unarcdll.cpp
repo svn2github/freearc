@@ -126,13 +126,13 @@ static DWORD WINAPI decompress_thread (void *paramPtr)
   // Выполнить разобранную команду
   if (ui->command->cmd=='l')
   {
-    PROCESS (*ui->command, *ui, total_files, origsize, compsize);
+    PROCESS (ui->command, ui, total_files, origsize, compsize);
     ui->event ("total_files", total_files,  0, "");
     ui->event ("origsize",    origsize>>20, 0, "");
     ui->event ("compsize",    compsize>>20, 0, "");
   }
   else
-    PROCESS (*ui->command, *ui);
+    PROCESS (ui->command, ui);
   ui->what = "quit";
   ui->n1   = FREEARC_OK;
   ui->DoEvent.Signal();

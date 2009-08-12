@@ -35,7 +35,7 @@ public:
   virtual char AskOverwrite (MYFILENAME filename, uint64 size, time_t modified) {return 'n';}
   virtual void ListHeader (COMMAND &) {}
   virtual void ListFooter (COMMAND &) {}
-  virtual void ListFiles (DIRECTORY_BLOCK *, COMMAND &) {}
+  virtual void ListFiles (DIRECTORY_BLOCK*, COMMAND &) {}
   virtual void Abort (COMMAND*, int errcode)  {exit (FREEARC_EXIT_ERROR);}
 };
 
@@ -49,10 +49,10 @@ public:
   char cmd;             // Выполняемая команда
   FILENAME arcname;     // Имя обрабатываемого командой архива
   FILENAME *filenames;  // Имена обрабатываемых командой файлов из архива
-  FILENAME outpath;     // Опция -dp
-  FILENAME runme;       // Файл, запускаемый после распаковки
-  BOOL wipeoutdir;      // Удалить файлы из outpath после завершения работы runme?
+  MYDIR    outpath;     // Каталог, куда распаковываются файлы (опция -dp или временный)
+  MYFILE   runme;       // Файл, запускаемый после распаковки
   BOOL tempdir;         // Мы извлекали файлы во временный каталог?
+  BOOL wipeoutdir;      // Удалить файлы из outpath после завершения работы runme?
   BOOL ok;              // Команда выполняется успешно?
   int  silent;          // Опция -s
   BOOL yes;             // Опция -o+
@@ -140,8 +140,8 @@ COMMAND::COMMAND (int argc, char *argv[])
   // Default options
   noarcext  = FALSE;
   nooptions = FALSE;
-  outpath = "";
-  runme = NULL;
+  outpath.setname("");
+  runme.setname("");
   wipeoutdir = FALSE;
   tempdir = FALSE;
   yes = FALSE;
@@ -157,37 +157,20 @@ COMMAND::COMMAND (int argc, char *argv[])
   {
       silent = 2;
 
-      // Get TEMP path and convert it into UTF-8
-      CFILENAME TempPathW = (TCHAR*)   malloc (MY_FILENAME_MAX * 4);
-       FILENAME TempPath  = (FILENAME) malloc (MY_FILENAME_MAX * 4);
-      GetTempPathW(MY_FILENAME_MAX, TempPathW);
-      utf16_to_utf8 (TempPathW, TempPath);
-
       // Create unique tempdir
-      tempdir = TRUE;
-      outpath = (FILENAME) malloc (MY_FILENAME_MAX * 4);
-      for (unsigned i = (unsigned) GetTickCount(), cnt=0; ; cnt++)
-      {
-          i = i*54322457 + 137;
-          sprintf (outpath, "%s%s%u", TempPath, "installer", i);
-          utf8_to_utf16 (outpath, TempPathW);
-          if (_wmkdir(TempPathW) == 0)   break;  // Break on success
-
-          if (cnt>1000) {
+      if (!outpath.create_tempdir()) {
 #ifdef FREEARC_GUI
-            MessageBoxW (NULL, _T("Error creating temporary directory"), _T("Extraction impossible"), MB_OK | MB_ICONERROR);
+        MessageBoxW (NULL, _T("Error creating temporary directory"), _T("Extraction impossible"), MB_OK | MB_ICONERROR);
 #else
-            printf("Error creating temporary directory");
+        printf("Error creating temporary directory");
 #endif
-            ok = false;
-            return;
-          }
+        ok = false;
+        return;
       }
-      free(TempPathW);
+      tempdir = TRUE;
 
       // Run setup.exe from this dir
-      runme   = (FILENAME) malloc (MY_FILENAME_MAX * 4);
-      sprintf (runme, "%s%s%s", outpath, STR_PATH_DELIMITER, "setup.exe");
+      runme.setname (outpath, "setup.exe");
 
       // Delete extracted files afterwards
       wipeoutdir = TRUE;
@@ -206,7 +189,7 @@ COMMAND::COMMAND (int argc, char *argv[])
       else if (strequ(argv[0],"-t"))       cmd = 't', silent = silent || 2;
       else if (strequ(argv[0],"-y"))       yes = TRUE;
       else if (strequ(argv[0],"-n"))       no  = TRUE;
-      else if (start_with(argv[0],"-d"))   outpath = argv[0]+2;
+      else if (start_with(argv[0],"-d"))   outpath.setname(argv[0]+2);
       else if (strequ(argv[0],"-s"))       silent = 1;
       else if (strequ(argv[0],"-s0"))      silent = 0;
       else if (strequ(argv[0],"-s1"))      silent = 1;
@@ -221,7 +204,7 @@ COMMAND::COMMAND (int argc, char *argv[])
   if (ok)  return;
 
   // Display help
-  char *helpMsg = (char*) malloc(1000+strlen(arcname));
+  char *helpMsg = (char*) malloc_msg(1000+strlen(arcname));
   sprintf (helpMsg,
 #ifdef FREEARC_GUI
          HEADER1 NAME HEADER2
@@ -259,7 +242,7 @@ COMMAND::COMMAND (int argc, char *argv[])
       if (strequ(argv[0],"--noarcext"))    noarcext =TRUE;
       else if (strequ(argv[0],"-o+"))      yes      =TRUE;
       else if (strequ(argv[0],"-o-"))      no       =TRUE;
-      else if (start_with(argv[0],"-dp"))  outpath = argv[0]+3;
+      else if (start_with(argv[0],"-dp"))  outpath.setname(argv[0]+3);
       else if (strequ(argv[0],"--"))       nooptions=TRUE;
       else ok=FALSE;
     }

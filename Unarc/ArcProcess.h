@@ -35,11 +35,11 @@ public:
   void ExtractFiles (DIRECTORY_BLOCK *dirblock, int block_num);
 
   // Получить информацию об архиве
-  PROCESS (COMMAND &_cmd, BASEUI &_UI, uint64 &total_files, uint64 &origsize, uint64 &compsize);
+  PROCESS (COMMAND* _cmd, BASEUI* _UI, uint64 &total_files, uint64 &origsize, uint64 &compsize);
 
   // Читает структуру архива и вызывает в зависимости от выполняемой команды
   // ListFiles для каждого блока каталога или ExtractFiles для каждого солид-блока
-  PROCESS(COMMAND &_cmd, BASEUI &_UI);
+  PROCESS(COMMAND* _cmd, BASEUI* _UI);
 
   // Процедура экстренного выхода
   void quit(int errcode);
@@ -244,7 +244,7 @@ void PROCESS::ExtractFiles (DIRECTORY_BLOCK *dirblock, int block_num)
 ** Получить информацию об архиве **********************************************
 ******************************************************************************/
 
-PROCESS::PROCESS (COMMAND &_cmd, BASEUI &_UI, uint64 &total_files, uint64 &origsize, uint64 &compsize) : cmd(&_cmd), UI(&_UI)
+PROCESS::PROCESS (COMMAND* _cmd, BASEUI* _UI, uint64 &total_files, uint64 &origsize, uint64 &compsize) : cmd(_cmd), UI(_UI)
 {
   CurrentProcess = this;
   SetCompressionThreads (GetProcessorsCount());
@@ -273,7 +273,7 @@ PROCESS::PROCESS (COMMAND &_cmd, BASEUI &_UI, uint64 &total_files, uint64 &origs
 
 // Читает структуру архива и вызывает в зависимости от выполняемой команды
 // ListFiles для каждого блока каталога или ExtractFiles для каждого солид-блока
-PROCESS::PROCESS (COMMAND &_cmd, BASEUI &_UI) : cmd(&_cmd), UI(&_UI)
+PROCESS::PROCESS (COMMAND* _cmd, BASEUI* _UI) : cmd(_cmd), UI(_UI)
 {
   CurrentProcess = this;
   SetCompressionThreads (GetProcessorsCount());
@@ -281,7 +281,7 @@ PROCESS::PROCESS (COMMAND &_cmd, BASEUI &_UI) : cmd(&_cmd), UI(&_UI)
   arcinfo.arcfile.open (cmd->arcname, READ_MODE);                     // Откроем файл архива
   arcinfo.read_structure();                                           // Прочитаем структуру архива
   // Выведем заголовок операции на экран и запросим у пользователя разрешение на распаковку SFX
-  if (!UI->AllowProcessing (cmd->cmd, cmd->silent, MYFILE(cmd->arcname).displayname(), &arcinfo.arcComment[0], arcinfo.arcComment.size, cmd->outpath)) {
+  if (!UI->AllowProcessing (cmd->cmd, cmd->silent, MYFILE(cmd->arcname).displayname(), &arcinfo.arcComment[0], arcinfo.arcComment.size, cmd->outpath.utf8name)) {
     cmd->ok = FALSE;  return;
   }
   if (cmd->cmd!='t')  outfile.SetBaseDir (UI->GetOutDir());

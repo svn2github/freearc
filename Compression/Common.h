@@ -618,6 +618,12 @@ double GetGlobalTime     (void);   // Returns number of wall-clock seconds since
 double GetThreadCPUTime  (void);   // Returns number of seconds spent in this thread
 #endif
 
+// Register/unregister temporary files that should be deleted on ^Break
+class MYFILE;
+void registerTemporaryFile   (MYFILE &file);
+void unregisterTemporaryFile (MYFILE &file);
+void removeTemporaryFiles    (void);
+
 // Checked malloc
 static inline void *malloc_msg (unsigned long size = MY_FILENAME_MAX * 4)
 {
@@ -674,13 +680,17 @@ struct MYFILE
   void init()                             {handle=-1;
 #ifdef FREEARC_WIN
                                            filename = (TCHAR*) malloc_msg (MY_FILENAME_MAX*4);
-#  endif
+#endif
                                            oemname  = (char*)  malloc_msg (MY_FILENAME_MAX);
                                            utf8name = (char*)  malloc_msg (MY_FILENAME_MAX*4);
-                                           *utf8name=0; utf8lastname=utf8name;}
+                                           utf8lastname = utf8name;
+                                           setname("");}
+
+  void setname (MYFILE &base, FILENAME filename) {SetBaseDir (base.utf8name); setname (filename);}
 
   MYFILE ()                               {init();}
   MYFILE (FILENAME filename)              {init(); setname (filename);}
+  MYFILE (MYFILE &base, FILENAME filename){init(); setname (base, filename);}
   MYFILE (FILENAME filename, MODE mode)   {init(); open (filename, mode);}
   virtual ~MYFILE()                       {tryClose();
                                            if ((char*)filename!=utf8name)  free(filename);
@@ -745,13 +755,11 @@ struct MYDIR : MYFILE
   int remove_dir() {return ::remove_dir(filename);}
   int dir_exists() {return ::dir_exists(filename);}
   virtual bool remove ()  {return remove_dir();}      // for registerTemporaryFile
-};
 
-
-// Temporary directory, created and removed automatically by constructor/destructor
-struct MYTEMPDIR : MYDIR
-{
-  MYTEMPDIR() {
+  // Make it a temporary directory, removed automatically by destructor
+  bool is_temp;
+  bool create_tempdir()
+  {
     utf16_to_utf8 (GetTempDir(), utf8name);
     SetBaseDir (utf8name);
     for (unsigned i = (unsigned) GetTickCount(), cnt=0; cnt<1000; cnt++)
@@ -760,12 +768,12 @@ struct MYTEMPDIR : MYDIR
         char dirname[100];
         sprintf(dirname, "%s%u", "freearc", i);
         setname(dirname);
-        if (create_dir() == 0)   return;  // Success
+        if (create_dir() == 0)   {registerTemporaryFile(*this); is_temp = TRUE; return TRUE;}  // Success
     }
+    return FALSE;                                                // Fail
   }
-  ~MYTEMPDIR() {
-    remove_dir();
-  }
+  MYDIR()  {is_temp = FALSE;};
+  ~MYDIR() {if (is_temp)  remove_dir(), unregisterTemporaryFile(*this); ;};
 };
 
 
