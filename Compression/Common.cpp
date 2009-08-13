@@ -563,29 +563,44 @@ double GetGlobalTime (void)
 // Returns number of seconds spent in this thread
 double GetThreadCPUTime (void)
 {
-    FILETIME kt, ut, x, y;
-    int ok = GetThreadTimes(GetCurrentThread(),&x,&y,&kt,&ut);
-    return !ok? -1 : ((double) (((long long)(ut.dwHighDateTime) << 32) + ut.dwLowDateTime)) / 10000000;
+  FILETIME kt, ut, x, y;
+  int ok = GetThreadTimes(GetCurrentThread(),&x,&y,&kt,&ut);
+  return !ok? -1 : ((double) (((long long)(ut.dwHighDateTime) << 32) + ut.dwLowDateTime)) / 10000000;
+}
+
+// Time-based random number
+unsigned time_based_random(void)
+{
+  return (unsigned) GetTickCount();
 }
 #endif // FREEARC_WIN
+
 
 #ifdef FREEARC_UNIX
 // Returns number of wall-clock seconds since some moment
 double GetGlobalTime (void)
 {
-    struct timespec ts;
-    int res = clock_gettime(CLOCK_REALTIME, &ts);
-    return res? -1 : (ts.tv_sec + ((double)ts.tv_nsec) / 1000000000);
+  struct timespec ts;
+  int res = clock_gettime(CLOCK_REALTIME, &ts);
+  return res? -1 : (ts.tv_sec + ((double)ts.tv_nsec) / 1000000000);
 }
 
 // Returns number of seconds spent in this thread
 double GetThreadCPUTime (void)
 {
-    // clock_gettime() gives us per-thread CPU time.  It isn't
-    // reliable on Linux, but it's the best we have.
-    struct timespec ts;
-    int res = clock_gettime(CLOCK_THREAD_CPUTIME_ID, &ts);
-    return res? -1 : (ts.tv_sec + ((double)ts.tv_nsec) / 1000000000);
+  // clock_gettime() gives us per-thread CPU time.  It isn't
+  // reliable on Linux, but it's the best we have.
+  struct timespec ts;
+  int res = clock_gettime(CLOCK_THREAD_CPUTIME_ID, &ts);
+  return res? -1 : (ts.tv_sec + ((double)ts.tv_nsec) / 1000000000);
+}
+
+// Time-based random number
+unsigned time_based_random(void)
+{
+  struct timespec ts;
+  clock_gettime(CLOCK_REALTIME, &ts);
+  return (unsigned)(ts.tv_sec + ts.tv_nsec);
 }
 #endif // FREEARC_UNIX
 

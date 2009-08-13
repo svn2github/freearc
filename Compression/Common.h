@@ -616,6 +616,9 @@ void EnvResetConsoleTitle (void);  // ¬осстановить заголовок, который был в нача
 // Timing execution
 double GetGlobalTime     (void);   // Returns number of wall-clock seconds since some moment
 double GetThreadCPUTime  (void);   // Returns number of seconds spent in this thread
+
+// Time-based random number
+unsigned time_based_random(void);
 #endif
 
 // Register/unregister temporary files that should be deleted on ^Break
@@ -768,7 +771,7 @@ struct MYDIR : MYFILE
   {
     utf16_to_utf8 (GetTempDir(), utf8name);
     SetBaseDir (utf8name);
-    for (unsigned i = (unsigned) GetTickCount(), cnt=0; cnt<1000; cnt++)
+    for (unsigned i = time_based_random(), cnt=0; cnt<1000; cnt++)
     {
         i = i*54322457 + 137;
         char dirname[100];
@@ -793,7 +796,7 @@ struct Array
 {
     int n;
     ELEM *p;
-    Array(int _n)             {n=_n; p=(ELEM*)malloc(sizeof(ELEM)*n);}
+    Array(int _n)             {n=_n; p=(ELEM*)malloc_msg(sizeof(ELEM)*n);}
     ~Array()                  {free(p);}
     ELEM& operator [](int i)  {CHECK( 0<=i && i<n, (s,"INDEXING ERROR: %d instead of [0,%d)", i, n));
                                return p[n];}
