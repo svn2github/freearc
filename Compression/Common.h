@@ -645,6 +645,10 @@ static inline void *malloc_msg (unsigned long size = MY_FILENAME_MAX * 4)
 enum MODE {READ_MODE, WRITE_MODE}; // режим открытия файла
 struct MYFILE
 {
+  // Mark file as temporary, removed automatically by destructor
+  bool is_temp;
+  void mark_as_temporary()           {registerTemporaryFile(*this); is_temp = TRUE;}
+
   int handle;
   TCHAR *filename;
   char *utf8name, *utf8lastname, *oemname;
@@ -677,7 +681,8 @@ struct MYFILE
 
 #endif                               // END ***********************************************
 
-  void init()                             {handle=-1;
+  void init()                             {handle   = -1;
+                                           is_temp  = FALSE;
 #ifdef FREEARC_WIN
                                            filename = (TCHAR*) malloc_msg (MY_FILENAME_MAX*4);
 #endif
@@ -692,13 +697,15 @@ struct MYFILE
   MYFILE (FILENAME filename)              {init(); setname (filename);}
   MYFILE (MYFILE &base, FILENAME filename){init(); setname (base, filename);}
   MYFILE (FILENAME filename, MODE mode)   {init(); open (filename, mode);}
-  virtual ~MYFILE()                       {tryClose();
+  virtual void done()                     {tryClose();
+                                           if (is_temp)  remove(), unregisterTemporaryFile(*this), is_temp = FALSE;}
+  virtual ~MYFILE()                       {done();
                                            if ((char*)filename!=utf8name)  free(filename);
                                            free(oemname); free(utf8name);}
   // File operations
   virtual bool exists ()                  {return file_exists(filename);}
   virtual bool rename (MYFILE &other)     {return rename_file(filename, other.filename);}
-  virtual bool remove ()                  {return remove_file(filename);}
+  virtual int  remove ()                  {return remove_file(filename);}
 
   bool tryOpen (MODE mode)    // Пытается открыть файл для чтения или записи
   {
@@ -754,10 +761,9 @@ struct MYDIR : MYFILE
   int create_dir() {return ::create_dir(filename);}
   int remove_dir() {return ::remove_dir(filename);}
   int dir_exists() {return ::dir_exists(filename);}
-  virtual bool remove ()  {return remove_dir();}      // for registerTemporaryFile
+  virtual int remove ()  {return remove_dir();}
 
   // Make it a temporary directory, removed automatically by destructor
-  bool is_temp;
   bool create_tempdir()
   {
     utf16_to_utf8 (GetTempDir(), utf8name);
@@ -768,12 +774,11 @@ struct MYDIR : MYFILE
         char dirname[100];
         sprintf(dirname, "%s%u", "freearc", i);
         setname(dirname);
-        if (create_dir() == 0)   {registerTemporaryFile(*this); is_temp = TRUE; return TRUE;}  // Success
+        if (create_dir() == 0)   {mark_as_temporary(); return TRUE;}  // Success
     }
-    return FALSE;                                                // Fail
+    return FALSE;                                                     // Fail
   }
-  MYDIR()  {is_temp = FALSE;};
-  ~MYDIR() {if (is_temp)  remove_dir(), unregisterTemporaryFile(*this); ;};
+  virtual ~MYDIR()  {done();}
 };
 
 
