@@ -315,7 +315,7 @@ void SetTempDir (const CFILENAME dir)
   }
 }
 
-// Return last value set or GetTempPath()
+// Return last value set or OS-default temporary directory
 CFILENAME GetTempDir (void)
 {
   if (!TempDir)
@@ -325,8 +325,10 @@ CFILENAME GetTempDir (void)
     GetTempPathW(MY_FILENAME_MAX, TempDir);
     realloc (TempDir, (_tcslen(TempDir)+1) * sizeof(*TempDir));
 #else
-    TempDir = (CFILENAME) malloc_msg(2);
-    _tcscpy (TempDir, ".");
+    TempDir = tempnam(NULL,NULL);
+    CFILENAME *basename = drop_dirname(TempDir);
+    if (basename > TempDir)
+      basename[-1] = '\0';
 #endif
   }
   return TempDir;
@@ -567,12 +569,6 @@ double GetThreadCPUTime (void)
   int ok = GetThreadTimes(GetCurrentThread(),&x,&y,&kt,&ut);
   return !ok? -1 : ((double) (((long long)(ut.dwHighDateTime) << 32) + ut.dwLowDateTime)) / 10000000;
 }
-
-// Time-based random number
-unsigned time_based_random(void)
-{
-  return (unsigned) GetTickCount();
-}
 #endif // FREEARC_WIN
 
 
@@ -594,14 +590,12 @@ double GetThreadCPUTime (void)
   int res = clock_gettime(CLOCK_THREAD_CPUTIME_ID, &ts);
   return res? -1 : (ts.tv_sec + ((double)ts.tv_nsec) / 1000000000);
 }
+#endif // FREEARC_UNIX
 
 // Time-based random number
 unsigned time_based_random(void)
 {
-  struct timespec ts;
-  clock_gettime(CLOCK_REALTIME, &ts);
-  return (unsigned)(ts.tv_sec + ts.tv_nsec);
+  double t = GetGlobalTime();
+  return (unsigned)t + (unsigned)(t*1000000000);
 }
-#endif // FREEARC_UNIX
-
 #endif // !FREEARC_NO_TIMING
