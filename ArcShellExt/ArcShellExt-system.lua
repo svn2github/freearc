@@ -81,9 +81,22 @@ function quote(filename)
   return "\""..filename.."\""
 end
 
+-- Concat arrays
+function concat(table1, table2)
+  local t = {}
+  local t1 = table1 or {}
+  for i,v in ipairs(t1) do
+    t[i] = v
+  end
+  for i,v in ipairs(table2 or {}) do
+    t[i+#t1] = v
+  end
+  return t
+end
+
 -- Concat associative tables
 function append(table1, table2)
-  t = {}
+  local t = {}
   for i,v in pairs(table1 or {}) do
     t[i] = v
   end
@@ -99,7 +112,7 @@ end
 -- Check for SFX
 function check_for_sfx(filename)
   -- Check that last 256 bytes of file contains sign of FreeArc footer block
-  data = read_from_file (filename, 2, -256, 256)
+  local data = read_from_file (filename, 2, -256, 256)
   return (string.find (data, "ArC\1\8", 1, true))
 end
 

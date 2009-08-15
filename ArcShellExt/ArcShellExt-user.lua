@@ -69,7 +69,7 @@ register_menu_handler (function (filenames)
 
   -- If only FreeArc archives are selected - provide appropriate menu
   if all_archives then
-    menu = {
+    extr_menu = {
       #filenames==1 and append (command.open,         {command = freearc.." "..filename}),
                         append (command.extractTo,    {command = multi_command (freearc, " x -ad --noarcext -- ", filenames),  param = subdir}),
                         append (command.extractHere,  {command = multi_command (freearc, " x --noarcext -- ", filenames)}),
@@ -80,20 +80,21 @@ register_menu_handler (function (filenames)
                         append (command.modify,       {command = freearc.." --add-dialog ch -- "..filename}),
       #filenames>1  and append (command.join,         {command = freearc.." --add-dialog j -- "..filename}),
     }
+    if #filenames>1   then menu = concat(extr_menu,menu)   else menu = extr_menu end
 
   -- If only rar/7z/zip/tar.gz/tar.bz2 archives are selected - provide appropriate menu
   elseif all_zips then
-    menu = {
+    extr_menu = {
       append (command.zip2arc,  {command = all2arc.."      -- "..filename}),
       append (command.zip2sfx,  {command = all2arc.." -sfx -- "..filename}),
       append (command.zip2a,    {command = freearc.." --add-dialog cvt -- "..filename}),
     }
+    if #filenames>1   then menu = concat(extr_menu,menu)   else menu = extr_menu end
   end
 
   if cascaded then
     menu = { {text = "FreeArc",  submenu = menu,  help = "FreeArc commands"} }
   end
-
 
   return menu
 end)

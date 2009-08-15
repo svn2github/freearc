@@ -358,8 +358,7 @@ RunFile - имена с пробелами??
   при отсутствии LastCheck в freearc.history программа иногда показывает "иероглифы"
   отшлифовать новый readme.txt
 after "--" allow filenames starting with "@". use "-@" option to include listfiles anywhere on cmdline
--max -> bmf for bmp/tif
-инсталятор для external compressors add-on
+инсталятор для external compressors add-on с обновлением PATH
 rep: научиться использовать более двух блоков памяти при распаковке
 "lzp+ppmd:1gb" - не может выделить 1gb, но падает на I/O error в lzp (регресс 11b->20 июня)
 пустые каталоги не удаляются из архива (в FM)
@@ -375,7 +374,6 @@ iss
     sometimes need [or someone forgot] to compress file/s with specific subfolder
 fashell
   обработка 8000 выделенных файлов? ;)  или даже одного длинного имени файла
-  ?сделать тексты в меню локализируемыми с темплейтами типа %filename, %arcname...
   показывать команды архивации когда выбрано 2 и более архива ("winrar beta 3 did not display archiving commands in context menu if user selected several archives")
 cvt
   ввод нового имени для одного архива
@@ -385,7 +383,7 @@ gui-версия не обрабатывает правильно ошибки:
 внешний вид
   выводить в заголовке окна "testing/compressing/extracting a.arc"
   по окончании операции в заголовке и поле Message "SUCESSFULLY TESTED a.arc", "% WARNINGS IN TESTING a.arc", "ERROR IN ..."
-О поле с логом
+О поле с логом (внизу FM)
   в GTK нет возможности сделать, чтобы в этом поле текст, который не поместился по ширине, переносился на новую строчку?
   можно писать в нем полные пути файлов (хотя бы в первый раз, в сообщении о начале операции)? сейчас сообщения об ошибках дают полные пути, а другие - только имя.
 other
