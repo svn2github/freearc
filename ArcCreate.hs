@@ -175,10 +175,10 @@ temparc_prefix = "$$temparc$$"
 temparc_suffix = ".tmp"
 
 -- |Выполнить `action` с именем временного файла и затем переименовать его
-tempfile_wrapper filename command deleteFiles pretestArchive action  =  find 0 >>= doit
+tempfile_wrapper filename command deleteFiles pretestArchive action  =  find 1 >>= doit
   where -- Найти свободное имя для временного файла
-        find n = do let tempname = (opt_workdir command ||| takeDirectory filename)
-                                   </> (temparc_prefix++show n++temparc_suffix)
+        find n = do tempdir <- if opt_create_in_workdir command  then getTempDir  else return (takeDirectory filename)
+                    let tempname = tempdir </> (temparc_prefix++show n++temparc_suffix)
                     found <- fileExist tempname
                     case found of
                         True  | n==999    -> registerError$ GENERAL_ERROR ["0311 can't create temporary file"]
@@ -204,8 +204,8 @@ tempfile_wrapper filename command deleteFiles pretestArchive action  =  find 0 >
                              fileRename tempname filename
                                  `catch` (\_-> do condPrintLineLn "n"$ "Copying temporary archive "++tempname++" to "++filename
                                                   fileCopy tempname filename; fileRemove tempname)
-                           -- Если указаны опции "-t" и "-w", то ещё раз протестируем окончательный архив
-                           when (opt_test command && opt_workdir command/="") $ do
+                           -- Если указаны опции "-t" и "--create-in-workdir", то ещё раз протестируем окончательный архив
+                           when (opt_test command && opt_create_in_workdir command) $ do
                                test_archive filename (opt_keep_broken command || opt_delete_files command /= NO_DELETE)
 
         -- Протестировать архив и выйти, удалив его, если при этом возникли проблемы

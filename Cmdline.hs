@@ -128,7 +128,8 @@ parseCmdline cmdline  =  (`mapMaybeM` split ";" cmdline) $ \args -> do
       indicator             =  findOptArg   o "indicator"     "1"  ||| "0"   -- по умолчанию -i1; -i эквивалентно -i0
       recovery              =  findOptArg   o "recovery"      (if take 2 cmd=="rr"  then drop 2 cmd  else "--")   -- команда "rr..." эквивалентна команде "ch -rr..."
                                                               .$  changeTo [("0.1%","0*4kb"), ("0.01%","0*64kb")]
-      orig_workdir          =  findOptArg   o "workdir" "--"   ||| "%TEMP"
+      orig_workdir          =  findOptArg   o "workdir"       ""  .$  changeTo [("--","")]
+      create_in_workdir     =  findNoArg    o "create-in-workdir"
       pretest               =  findOptArg   o "pretest"       "1" .$  changeTo [("-","0"), ("+","2"), ("","2")]
       broken_archive        =  findReqArg   o "BrokenArchive" "-"  ||| "0"
       language              =  findReqArg   o "language"      "--"
@@ -614,8 +615,8 @@ parseCmdline cmdline  =  (`mapMaybeM` split ";" cmdline) $ \args -> do
       registerError$ CMDLINE_INCOMPATIBLE_OPTIONS "m[f]/-d[f]" "-ac"
 
   -- Каталог для временных файлов - может быть указан явно или через переменную среды
+  -- "" означает использование станд. для ОС каталога временных файлов
   workdir <- case orig_workdir of
-               "--"       -> return ""    -- По умолчанию (означает создавать файлы сразу в выходном каталоге)
                '%':envvar -> getEnv envvar
                dir        -> return dir
 
@@ -710,7 +711,7 @@ parseCmdline cmdline  =  (`mapMaybeM` split ";" cmdline) $ \args -> do
     , opt_sfx                  = sfx
     , opt_logfile              = findReqArg   o "logfile"           ""
     , opt_delete_files         = delete_files
-    , opt_workdir              = workdir
+    , opt_create_in_workdir    = create_in_workdir
     , opt_clear_archive_bit    = clear_archive_bit
     , opt_language             = language
     , opt_recovery             = recovery

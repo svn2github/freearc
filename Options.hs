@@ -92,7 +92,7 @@ data Command = Command {
   , opt_group2type           :: !(Int -> Int)       --   преобразует номер группы из arc.groups а номер типа файла из opt_data_compressor
   , opt_logfile              :: !String             --   имя лог-файла или ""
   , opt_delete_files         :: !DelOptions         --   удалить файлы/каталоги после успешной архивации?
-  , opt_workdir              :: !String             --   каталог для временных файлов или ""
+  , opt_create_in_workdir    :: !Bool               --   создать архив сначала во временном каталоге?
   , opt_clear_archive_bit    :: !Bool               --   сбросить атрибут Archive у успешно упакованных файлов (и файлов, которые уже есть в архиве)
   , opt_language             :: !String             --   язык/файл локализации
   , opt_recovery             :: !String             --   величина Recovery блока (в процентах, байтах или секторах)
@@ -184,6 +184,7 @@ optionsList = sortOn (\(OPTION a b _) -> (a|||"zzz",b))
    ,OPTION "op"    "OldPassword"        "old PASSWORD used only for decryption"
    ,OPTION "okf"   "OldKeyfile"         "old KEYFILE used only for decryption"
    ,OPTION "w"     "workdir"            "DIRECTORY for temporary files"
+   ,OPTION ""      "create-in-workdir"  "create archive in workdir and then move to final location"
    ,OPTION "sc"    "charset"            "CHARSETS used for listfiles and comment files"
    ,OPTION ""      "language"           "load localisation from FILE"
    ,OPTION "tp"    "pretest"            "test archive before operation using MODE"
