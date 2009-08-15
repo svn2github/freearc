@@ -352,9 +352,13 @@
 === To-do list ====================================================================================
 
 RunFile - имена с пробелами??
+tiny sfx - можно уменьшить размер на 10 кб исключением gettemppath и его dll?
+fashell
+  обработка 8000 выделенных файлов? ;)  или даже одного длинного имени файла
+  ren to ShellExt?
 инстал€тор
   добавить ArcShellExt, all2arc.exe, 7zg, inno setup dll & script
-  ini->bin
+  ini->bin в portable
   при отсутствии LastCheck в freearc.history программа иногда показывает "иероглифы"
   отшлифовать новый readme.txt
 after "--" allow filenames starting with "@". use "-@" option to include listfiles anywhere on cmdline
@@ -363,18 +367,10 @@ rep: научитьс€ использовать более двух блоков пам€ти при распаковке
 "lzp+ppmd:1gb" - не может выделить 1gb, но падает на I/O error в lzp (регресс 11b->20 июн€)
 пустые каталоги не удал€ютс€ из архива (в FM)
 iss
-  брать arc.ini из тек. каталога
-  обновление имени файла - раз в 0.1 сек
+  unarc.dll: брать arc.ini из тек. каталога
   проверка на исчерпание свободного места в write callback...
-  unicode верси€
-  long mb -> Extended
-  чтоб установка и распаковка архива шли в один прогресс бар
-  http://forum.ru-board.com/topic.cgi?forum=5&topic=29437&start=1777&limit=1&m=1#1
-  possibly to add options to read first from ini specific output extract path for specific arc/exe to unpack?
-    sometimes need [or someone forgot] to compress file/s with specific subfolder
-fashell
-  обработка 8000 выделенных файлов? ;)  или даже одного длинного имени файла
-  показывать команды архивации когда выбрано 2 и более архива ("winrar beta 3 did not display archiving commands in context menu if user selected several archives")
+  совместимость с InnoSetup/Unicode при русских именах архивов, файлов в них, каталогов инстал€ции
+  отдельный код ошибки дл€ переполнени€ диска и обработка его в iss script
 cvt
   ввод нового имени дл€ одного архива
 gui-верси€ не обрабатывает правильно ошибки:
@@ -389,7 +385,6 @@ gui-верси€ не обрабатывает правильно ошибки:
 other
   Bug: зависание при выборе €зыка при English в freearc.ini и russian в arc.ini
   ¬ключение/выключение ассоциаций после переноса FreeArc: http://forum.ru-board.com/topic.cgi?forum=5&topic=29437&start=1780#4
-  отдельный код ошибки дл€ переполнени€ диска и обработка его в iss script
   CleanStats при non-FM mode
   installer.exe -p"/q" will then launch setup.exe /q
   иконки - хот€ бы dir/arc/archives/rest
@@ -399,6 +394,7 @@ other
     ExtractIcon - file's individual icon
     http://msdn.microsoft.com/en-us/library/dd183402(VS.85).aspx
   загружать иконки дл€ всех команд из png/ico файлов
+
 ƒќЅј¬»“№ ¬ 7z.dll ѕќƒƒ≈–∆ ” .arc »Ћ» —ƒ≈Ћј“№ unarc.dll — јЌјЋќ√»„Ќџћ »Ќ“≈–‘≈…—ќћ (и chaining к 7z.dll)!!!!!!!!!!!!!!!!!!!
 
   -ap
@@ -466,7 +462,6 @@ other
       (пуста€ строка в конце)
     перевод сообщений об ошибках (errormsg) и интернализаци€ cmdline версии
   -ilog a-la RAR (выключить поддержку Lua)
-  arc.ini: нужна возможность указать non-solid mode дл€ внешнего упаковщика
 
 
 

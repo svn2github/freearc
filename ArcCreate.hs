@@ -243,20 +243,23 @@ postProcess_wrapper command archiving = do
                       evalList dirs   `seq`  (dirs2delete  ++= dirs )
                   -- Удалить сархивированные файлы и каталоги
                   deleteFiles = when (opt_delete_files command /= NO_DELETE) $ do
+                                    -- Функция удаления, при необходимости снимающая атрибуты у файла
+                                    let superRemove removeAction fi = do
+                                            let filename = diskName fi
+                                            removeAction filename `catch` \e -> do
+                                                -- Remove readonly/hidden/system attributes and try to remove file/directory again
+                                                ignoreErrors$ clearFileAttributes filename
+                                                ignoreErrors$ removeAction filename
                                     -- Удаление файлов
                                     condPrintLineLn "n"$ "Deleting successfully archived files"
                                     files <- val files2delete
                                     for files $ \fi -> do
                                         whenM (check_that_file_was_not_changed fi) $ do
-                                            let filename = diskName fi
-                                            fileRemove filename `catch` \e -> do
-                                                -- Remove readonly/hidden/system attributes and try to remove file again
-                                                ignoreErrors$ clearFileAttributes filename
-                                                ignoreErrors$ fileRemove filename
+                                            superRemove fileRemove fi
                                     -- Удаление каталогов
                                     when (opt_delete_files command == DEL_FILES_AND_DIRS) $ do
                                         dirs <- val dirs2delete
-                                        for (reverse dirs) (ignoreErrors.dirRemove.fpFullname.fiDiskName)   -- Каталоги обычно сохраняются в порядке обхода, то есть родительский каталог в списке раньше дочерних. Так что reverse позволяет удалить сначала дочерние каталоги
+                                        for (reverse dirs) (superRemove dirRemove)   -- Каталоги обычно сохраняются в порядке обхода, то есть родительский каталог в списке раньше дочерних. Так что reverse позволяет удалить сначала дочерние каталоги
 
               -- Выполнить архивацию, занося успешно сархивированные файлы в списки files2delete и dirs2delete.
               -- Удалить файлы после архивации, если задана опция -d[f]

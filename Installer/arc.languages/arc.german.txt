@@ -19,7 +19,7 @@
 
 Language name in english and mother tongue
 0000 Language=German (Deutsch)
-0159 Copyright=Peter Bauder alias JangoFat (based on 7zip language file;edited for FreeArc-0.52-alpha-2009-08-04)\nVacon\nOriginal copyrights:\nTranslated by Soeren Finster\n7-Zip 4.07 beta\nUpdated by JAK-Software.DE\n7-Zip 4.55 beta\nMaintained by Joachim Henke (since 4.12 beta)
+0159 Copyright=Peter Bauder alias JangoFat (based on 7zip language file;edited for FreeArc-0.52-alpha-2009-08-09)\nVacon\nOriginal copyrights:\nTranslated by Soeren Finster\n7-Zip 4.07 beta\nUpdated by JAK-Software.DE\n7-Zip 4.55 beta\nMaintained by Joachim Henke (since 4.12 beta)
 
 Language-specific URLs relative to http://freearc.org/ and helpfiles
 Filled only for languages providing their own translations
@@ -70,27 +70,27 @@ Filled only for languages providing their own translations
 
 === Menu ========================================================================
 Main menu
-0050 File=&Datei
-0066 Edit=&Bearbeiten
+0050 File=Datei
+0066 Edit=Bearbeiten
 0258 Commands=Befehle
-0259 Tools=&Extras
+0259 Tools=Extras
 0260 Options=Optionen
-0261 Help=&Hilfe
+0261 Help=Hilfe
 
 File menu/toolbar
 0262 Open archive=Öffnen
 0265 Open archive=Archiv öffnen
-0263 Select all=Alles &markieren
+0263 Select all=Alles markieren
 0290 Select all files=Alle Dateien markieren
 0037 Select=Auswählen
 0047 Select files=Dateien auswählen
 0038 Unselect=Auswahl aufheben
 0048 Unselect files=Dateiauswahl aufheben
-0264 Invert selection=Markierung &umkehren
-0291 Invert selection=Markierung &umkehren
-0039 Refresh=&Aktualisieren
+0264 Invert selection=Markierung umkehren
+0291 Invert selection=Markierung umkehren
+0039 Refresh=Aktualisieren
 0049 Reread archive/directory=Archiv/Verzeichnis neu einlesen
-0036 Exit=Be&enden
+0036 Exit=Beenden
 0046 Quit application=Programm verlassen
 
 Commands menu/toolbar
@@ -102,7 +102,7 @@ Commands menu/toolbar
 0044 Test files in archive(s)=Prüft die Integrität des ausgewählten Archivs
 0086 ArcInfo=Eigenschaften
 0087 Information about archive=Info zum gewählten Archiv
-0033 Delete=&Löschen
+0033 Delete=Löschen
 0043 Delete files (from archive)=Datei(en) (aus dem Archiv) löschen
 
 Tools menu/toolbar
@@ -202,7 +202,7 @@ Add dialog
 0429 Convert %2 archives to FreeArc format=Konvertiere 2% Archive ins FreeArc- Format
 ---------
 0182 Main=Primär
-0131 Output archive:=&Archiv:
+0131 Output archive:=Archiv:
 0132 Select output archive=Wähle zu erstellendes Archiv
 0141 Base directory inside archive:=Zielverzeichnis innerhalb des Archivs:
 --
@@ -213,7 +213,7 @@ Add dialog
 0192 Absolute (relative to root dir)=absoluter Pfad (ohne Laufwerkbuchtaben)
 0193 Full (including drive letter)=vollständig (inkl. Laufwerkbuchstaben)
 --
-0194 Update mode:=Art der Akt&ualisierung:
+0194 Update mode:=Art der Aktualisierung:
 0195 Add and replace files (default)=Hinzufügen und Ersetzen (Standard)
 0196 Add and update files=Hinzufügen und Aktualisieren
 0197 Fresh existing files=Vorhandene Dateien aktualisieren
@@ -222,7 +222,7 @@ Add dialog
 0183 Compression:=Kompression:
 0184 Encryption:=Verschlüsselung:
 0185 Protection:=Wiederherstellungsinfos:
-0186 Comment:=&Kommentar:
+0186 Comment:=Kommentar:
 0227 Make EXE:=Erstelle selbstentpackendes Archiv (Sfx-EXE):
 0128 Test archive after operation=Archiv nach dem Beenden des Kompressionsvorgangs testen
 0122 Delete files successfully archived=Original- Dateien nach erfolgreichem Archivieren löschen?
@@ -288,7 +288,7 @@ Extract dialog
 0003 Update old files=Alte Dateien überschreiben
 0051 Skip existing files=Vorhandene Dateien überspringen
 --Output directory
-0004 Output directory:=&Entpacken nach:
+0004 Output directory:=Entpacken nach:
 0021 Select output directory=Ausgabeverzeichnis auswählen:
 0014 Append archive name to the output directory=Ausgabeverzeichnis aus Archivnamen bilden
 --Other
@@ -310,27 +310,27 @@ Archive information dialog
 --
 0099 Compression memory:=Speicherbedarf beim Komprimieren:
 0100 Decompression memory:=Speicherbedarf beim Entpacken:
-0105 Dictionary:=Wörter&buchgröße:
+0105 Dictionary:=Wörterbuchgröße:
 --
 0094 Archive locked:=Archiv vor Veränderung geschützt:
 0095 Recovery info:=Wiederherstellungsinformationen:
 0096 SFX size:=SFX Größe:
-0156 Headers encrypted:=Datei&namen verschlüsselt:
+0156 Headers encrypted:=Dateinamen verschlüsselt:
 --
 0097 Encryption algorithms:=Verschlüsselungsverfahren:
-0098 Archive comment:=Archiv&kommentar:
+0098 Archive comment:=Archivkommentar:
 
 
 Settings dialog
 0067 Settings=Einstellungen
 0174 Main=Primär
 0068 Language:=Sprache:
-0069 Edit=&Bearbeiten
+0069 Edit=Bearbeiten
 0070 Import=Importieren
 0170 Full name:=Vollständiger Name:
 0171 Copyright:=Copyright:
 0166 Logfile:=Protokoll:
-0292 View=&Ansehen
+0292 View=Ansehen
 0167 Select logfile=Protokolldatei auswählen
 0172 Associate FreeArc with .arc files=.arc-Dateien mit FreeArc verknüpfen
 0361 Add captions to toolbar buttons=Beschriftung zu Toolbar- Buttons hinzufügen
@@ -340,7 +340,7 @@ Settings dialog
 --
 0421 Explorer integration=Explorerintegration
 0422 Enable context menu in Explorer=Kontextmenü im Explorer aktivieren
-0423 Make it cascaded=kaskadiertes Menü aktivieren
+0423 Make it cascaded=Kaskadiertes Menü aktivieren
 0424 Enable individual commands:=Individuelle Befehle aktivieren:
 --
 0388 Info=Informationen
@@ -363,7 +363,7 @@ Checking for updates
 0106 Compression=Kompression
 0175 Compression profile:=Kompressionsprofil:
 0178 Save=Speichern
-0107 Compression level=&Kompressionsstärke
+0107 Compression level=Kompressionsstärke
 0108 Maximum=Maximum
 0109 High=Hoch
 0110 Normal=Normal
@@ -374,7 +374,7 @@ Checking for updates
 0226 (fast, low-memory decompression)=(schnelles Entpacken mit geringem Speicherbedarf)
 0176 Filetype auto-detection=Automatische Dateityperkennung
 --Description of compression method selected
-0114 Compression level: %1=&Kompressionsstärke: %1
+0114 Compression level: %1=Kompressionsstärke: %1
 0115 Compression speed: %1, memory: %2=Packgeschwindigkeit:    %1, Speicherbedarf: %2
 0116 Decompression speed: %1, memory: %2=Entpackgeschwindigkeit: %1, Speicherbedarf: %2
 0390 All speeds were measured on 3GHz Core2Duo=Alle Geschwindigkeitsangaben wurden auf einem 3Ghz Core2Duo gemessen
@@ -388,7 +388,7 @@ Checking for updates
 0119 Encryption=Verschlüsselung
 0179 Encryption profile:=Verschlüsselungsprofil:
 0180 Save=Speichern
-0120 Encrypt archive directory=Datei&namen verschlüsseln
+0120 Encrypt archive directory=Dateinamen verschlüsseln
 0181 Use password=Passwort verwenden
 0123 Keyfile:=Schlüsseldatei:
 0124 Select keyfile=Schlüsseldatei auswählen
@@ -407,6 +407,7 @@ Many dialogs
 0081 &Cancel=Abbre&chen
 0363 &Select=Au&swählen
 0364 &Close=S&chließen
+0432 &Detach=In eigenem Prozess verarbeiten
 
 Progress indicator
 --Buttons
