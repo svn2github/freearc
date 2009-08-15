@@ -366,7 +366,7 @@ find_filter_and_process_files filespecs ff@FileFind{ ff_ep=ep, ff_scan_subdirs=s
        filespecs1 <- foreach filespecs $ \filespec -> do
          isDir <- case hasTrailingPathSeparator filespec of
                     True  -> return True
-                    False -> dirExist filespec
+                    False -> dirExist (disk_basedir </> filespec)
          when isDir $ do
            find_files_in_one_dir curdir True [dropTrailingPathSeparator filespec]
          return$ (isDir &&& addTrailingPathSeparator) filespec
