@@ -296,9 +296,10 @@ myGUI run args = do
 
   -- Список действий, выполняемых при закрытии окна файл-менеджера
   onExit <- newList
-  window `onDestroy` do
-    sequence_ =<< listVal onExit
-    mainQuit
+  -- Выход из программы
+  let exitProgram = do
+        sequence_ =<< listVal onExit
+        mainQuit
 
   -- Список ассоциаций клавиша->действие
   listView `onKeyPress` \event -> do
@@ -482,6 +483,64 @@ myGUI run args = do
 
 
 ----------------------------------------------------------------------------------------------------
+---- Движок выполнения консольных команд внутри FM gui ---------------------------------------------
+----------------------------------------------------------------------------------------------------
+
+  -- При выполнении операций не выходим по исключениям, а печатаем сообщения о них в логфайл
+  let myHandleErrors action x  =  do operationTerminated =: False
+                                     action x `catch` handler
+                                     operationTerminated =: False
+        where handler ex = do
+                errmsg <- case ex of
+                   Deadlock    -> i18n"0011 No threads to run: infinite loop or deadlock?"
+                   ErrorCall s -> return s
+                   other       -> return$ show ex
+                with' (val log_separator') (log_separator'=:) $ \_ -> do
+                  log_separator' =: ""
+                  io$ condPrintLineLn "w" errmsg
+                return ()
+
+  -- Выполнить команду архиватора
+  let runWithMsg ([formatStart,formatSuccess,formatFail],msgArgs,cmd) = do
+        when (cmd==["ExitProgram"])  $ gui exitProgram
+        -- Сообщение о начале выполнения команды
+        msgStart <- i18n formatStart
+        postGUIAsync$ fmStackMsg fm' (formatn msgStart msgArgs)
+        -- Выполнить и посчитать число ошибок
+        w <- count_warnings (parseCmdline cmd >>= mapM_ run)
+        -- Сообщение об успешном выполнении либо кол-ве допущенных ошибок
+        msgFinish <- i18n (if w==0  then formatSuccess  else formatFail)
+        postGUIAsync$ fmStackMsg fm' (formatn msgFinish (msgArgs++[show w]))
+
+  -- Commands executed by various buttons
+  cmdChan <- newChan
+  forkIO $ do
+    foreverM $ do
+      commands <- readChan cmdChan
+      postGUIAsync$ do clearStats; widgetShowAll windowProgress
+      mapM_ (myHandleErrors runWithMsg) commands
+      whenM (isEmptyChan cmdChan)$ postGUIAsync$ do widgetHide windowProgress; refreshCommand fm'
+      --uiDoneProgram
+
+  -- Depending on execution mode, either queue commands or run external FreeArc instances
+  let exec False cmds  =  writeChan cmdChan cmds
+      exec True  cmds  =  do freearc <- getExeName
+                             fm <- val fm'
+                             for cmds $ \(_,_,cmd) -> do
+                               Files.runCommand (unparseCommand$ [freearc]++cmd) (fm_curdir fm) False
+
+  -- Закрытие окна файл-менеджера
+  closed' <- ref False
+  let closeMainWindow = do
+        closed' =: True
+        fileManagerMode =: False
+        widgetHide window
+        writeChan cmdChan [(["","",""],[""],["ExitProgram"])]
+
+  window `onDestroy` closeMainWindow
+
+
+----------------------------------------------------------------------------------------------------
 ---- Меню File -------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------
 
@@ -514,55 +573,8 @@ myGUI run args = do
 
   -- Выход из программы
   exitAct `onActionActivate`
-    mainQuit
+    closeMainWindow
 
-
-----------------------------------------------------------------------------------------------------
----- Движок выполнения консольных команд внутри FM gui ---------------------------------------------
-----------------------------------------------------------------------------------------------------
-
-  -- При выполнении операций не выходим по исключениям, а печатаем сообщения о них в логфайл
-  let myHandleErrors action x  =  do operationTerminated =: False
-                                     action x `catch` handler
-                                     operationTerminated =: False
-        where handler ex = do
-                errmsg <- case ex of
-                   Deadlock    -> i18n"0011 No threads to run: infinite loop or deadlock?"
-                   ErrorCall s -> return s
-                   other       -> return$ show ex
-                with' (val log_separator') (log_separator'=:) $ \_ -> do
-                  log_separator' =: ""
-                  io$ condPrintLineLn "w" errmsg
-                return ()
-
-  -- Выполнить команду архиватора
-  let runWithMsg ([formatStart,formatSuccess,formatFail],msgArgs,cmd) = do
-        -- Сообщение о начале выполнения команды
-        msgStart <- i18n formatStart
-        postGUIAsync$ fmStackMsg fm' (formatn msgStart msgArgs)
-        --postGUIAsync$ fmStackMsg fm' (unwords cmd)
-        -- Выполнить и посчитать число ошибок
-        w <- count_warnings (parseCmdline cmd >>= mapM_ run)
-        -- Сообщение об успешном выполнении либо кол-ве допущенных ошибок
-        msgFinish <- i18n (if w==0  then formatSuccess  else formatFail)
-        postGUIAsync$ fmStackMsg fm' (formatn msgFinish (msgArgs++[show w]))
-
-  -- Commands executed by various buttons
-  cmdChan <- newChan
-  forkIO $ do
-    foreverM $ do
-      commands <- readChan cmdChan
-      postGUIAsync$ do clearStats; widgetShowAll windowProgress
-      mapM_ (myHandleErrors runWithMsg) commands
-      whenM (isEmptyChan cmdChan)$ postGUIAsync$ do widgetHide windowProgress; refreshCommand fm'
-      --uiDoneProgram
-
-  -- Depending on execution mode, either queue commands or run external FreeArc instances
-  let exec False cmds  =  writeChan cmdChan cmds
-      exec True  cmds  =  do freearc <- getExeName
-                             fm <- val fm'
-                             for cmds $ \(_,_,cmd) -> do
-                               Files.runCommand (unparseCommand$ [freearc]++cmd) (fm_curdir fm) False
 
 ----------------------------------------------------------------------------------------------------
 ---- Меню Commands ---------------------------------------------------------------------------------

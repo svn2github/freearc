@@ -363,16 +363,17 @@ find_filter_and_process_files filespecs ff@FileFind{ ff_ep=ep, ff_scan_subdirs=s
              else                     find (re || !-r-) f
 -}
        -- Заменить имена каталогов dir на две маски "dir dir/" чтобы охватить сам каталог и все файлы в нём
-       filespecs1 <- foreach filespecs $ \filespec -> do
-         isDir <- case hasTrailingPathSeparator filespec of
-                    True  -> return True
-                    False -> dirExist (disk_basedir </> filespec)
+       modified_filespecs <- foreach filespecs $ \filespec -> do
+         isDir <- if hasTrailingPathSeparator filespec
+                    then return True
+                    else dirExist (disk_basedir </> filespec)
          when isDir $ do
            find_files_in_one_dir curdir True [dropTrailingPathSeparator filespec]
          return$ (isDir &&& addTrailingPathSeparator) filespec
        --
-       mapM_ (find_files_in_one_dir curdir False) $ sort_and_groupOn (filenameLower.takeDirectory) filespecs1 where
+       mapM_ (find_files_in_one_dir curdir False) $ sort_and_groupOn (filenameLower.takeDirectory) modified_filespecs
 
+  where
     -- Обработать группу масок, относящихся к одному каталогу
     find_files_in_one_dir curdir addDir filespecs = do
       findFiles_FileInfo root FindFiles{ff_process_f=process_f.map_group_f, ff_recursive=recursive, ff_disk_eq_filtered=disk_eq_filtered, ff_stored_eq_filtered=stored_eq_filtered, ff_parent_or_root=parent_or_root, ff_accept_f=accept_f}
