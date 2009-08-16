@@ -271,8 +271,7 @@ addDialog fm' exec cmd files mode = do
             (optionsEnabled   &&&  words (clear optionsStr'))
       --
       let command archive filelist =
-           (msgs, [takeFileName archive],
-            [if create' then "create" else cmd] ++ options ++ ["--", clear archive] ++ filelist)
+            [if create' then "create" else cmd] ++ options ++ ["--", clear archive] ++ filelist
       --
       if cmd=="cvt" then
         do all2arc <- all2arc_path

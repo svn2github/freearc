@@ -110,16 +110,8 @@ extractDialog fm' exec cmd arcnames arcdir files = do
       keepBroken         <- val keepBrokenButton
       optionsEnabled     <- val options
       ; optionsStr'        <- val optionsStr;  saveHistory optionsStr  `on`  optionsEnabled
-      let msgs = case cmd of
-                  "t" -> ["0231 Testing %1",
-                          "0232 SUCCESFULLY TESTED %1",
-                          "0233 %2 WARNINGS WHILE TESTING %1"]
-                  _   -> ["0234 Extracting files from %1",
-                          "0235 FILES SUCCESFULLY EXTRACTED FROM %1",
-                          "0236 %2 WARNINGS WHILE EXTRACTING FILES FROM %1"]
       exec detach$
           (arcnames ||| ["*"]) .$map (\arcname ->
-          (msgs, [takeFileName arcname],
            [cmd]++
            (cmd/="t" &&& (
              ["-dp"++clear dir']++
@@ -132,7 +124,7 @@ extractDialog fm' exec cmd arcnames arcdir files = do
            ["--fullnames"]++
            ["--noarcext"]++
            (optionsEnabled   &&&  words (clear optionsStr'))++
-           ["--", clear arcname]++files))
+           ["--", clear arcname]++files)
 
 
 ----------------------------------------------------------------------------------------------------
@@ -216,17 +208,12 @@ arcinfoDialog fm' exec mode arcnames arcdir files = do
     when (choice==ResponseOk) $ do
       newComment <- val comment
       when (newComment /= ftComment footer) $ do
-        let msgs = ["0237 Modifying %1",
-                    "0238 SUCCESFULLY MODIFIED %1",
-                    "0239 %2 WARNINGS WHILE MODIFYING %1"]
-        let cmd  = ["ch"
-                   ,"--noarcext"
-                   ,newComment &&& ("--archive-comment="++newComment)
-                               ||| "-z-"
-                   ,"--"
-                   ,arcname]
-        --
-        exec False [(msgs, [takeFileName arcname], cmd)]
+        exec False [["ch"
+                    ,"--noarcext"
+                    ,newComment &&& ("--archive-comment="++newComment)
+                                ||| "-z-"
+                    ,"--"
+                    ,arcname]]
 
 
 ----------------------------------------------------------------------------------------------------
