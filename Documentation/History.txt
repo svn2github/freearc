@@ -362,6 +362,7 @@ fashell
   ini->bin в portable
   при отсутствии LastCheck в freearc.history программа иногда показывает "иероглифы"
   отшлифовать новый readme.txt
+  gtk2-runtime-2.16.5 (последний)
 after "--" allow filenames starting with "@". use "-@" option to include listfiles anywhere on cmdline
 инсталятор для external compressors add-on с обновлением PATH
 rep: научиться использовать более двух блоков памяти при распаковке

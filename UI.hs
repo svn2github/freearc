@@ -46,7 +46,8 @@ uiStartCommand command = do
   -- не должны попадать в лог-файл, так что мы обрезаем список и все строки в нём до 100 элементов
   openLogFile (opt_logfile command)
   curdir <- getCurrentDirectory
-  printLog (curdir++">arc "++unwords(map (takeSome 100 "...")$ hidePasswords$ takeSome 100 ["..."]$ cmd_args command)++"\n")
+  exe <- getExeName
+  printLog (curdir++">"++takeBaseName exe++" "++unwords(map (takeSome 100 "...")$ hidePasswords$ takeSome 100 ["..."]$ cmd_args command)++"\n")
   -- Выведем версию архиватора и используемые дополнительные опции
   let addArgs = cmd_additional_args command
   once putHeader$ condPrintLine "h" aARC_HEADER
@@ -81,6 +82,8 @@ uiStartArchive command @ Command {
       arcname = cmd_arcname command
   uiArcname =: arcname
   exist <- fileExist arcname
+  msg <- i18n (msgStartGUI cmd exist)
+  condPrintLine "G"  $ (format msg arcname)
   condPrintLine "a"  $ (msgStart cmd exist) ++ arcname
   condPrintLine "c"  $ (method &&& " using "++encode_method method)
   condPrintLine "ac" $ "\n"
@@ -89,6 +92,9 @@ uiStartArchive command @ Command {
           "Memory for compression "++showMem (getCompressionMem   method)
           ++", decompression "     ++showMem (getDecompressionMem method)
           ++", cache "             ++showMem cache
+  -- Сохранить информацию для последующего использования
+  ref_w0 =:: val warnings
+  ref_arcExist =: exist
 
 -- |Отметить начало упаковки или распаковки данных
 uiStartProcessing filelist archive_total_bytes archive_total_compressed = do
@@ -308,6 +314,14 @@ uiDoneArchive = do
 -- |Вызывается после всех вспомогательных операций (добавление recovery info, тестирование)
 uiDoneArchive2 = do
   command <- val ref_command
+  let cmd     = cmd_name    command
+      arcname = cmd_arcname command
+  w0 <- val ref_w0
+  w1 <- val warnings
+  let w = w1-w0  -- number of warnings while processing this archive
+  arcExist <- val ref_arcExist
+  msg <- i18n (msgFinishGUI cmd arcExist w)
+  condPrintLine "G" (formatn msg [arcname, show w])
   unless (cmd_subcommand command) $ do
     condPrintLineNeedSeparator "" "\n\n"
 

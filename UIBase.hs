@@ -76,6 +76,8 @@ refStartPauseTime         =  unsafePerformIO$ newIORef$ error "undefined UI::ref
 refArchiveProcessingTime  =  unsafePerformIO$ newIORef$ error "undefined UI::refArchiveProcessingTime"  :: IORef Double
 ref_ui_state              =  unsafePerformIO$ newIORef$ error "undefined UI::ref_ui_state"
 putHeader                 =  unsafePerformIO$ init_once
+ref_w0                    =  unsafePerformIO$ newIORef$ error "undefined UI::ref_w0"         :: IORef Int
+ref_arcExist              =  unsafePerformIO$ newIORef$ error "undefined UI::ref_arcExist"   :: IORef Bool
 -- Текущая стадия выполнения команды или имя файла из uiFileinfo
 uiMessage                 =  unsafePerformIO$ newIORef$ ""
 -- |Счётчик просканированных файлов
@@ -284,6 +286,45 @@ msgStart cmd arcExist =
                   (TEST_CMD,    _)      ->  "Testing archive: "
                   (EXTRACT_CMD, _)      ->  "Extracting archive: "
                   (RECOVER_CMD, _)      ->  "Recovering archive: "
+
+msgStartGUI cmd arcExist =
+                case (cmd, cmdType cmd, arcExist) of
+                  ("ch", _,           _)      ->  "0237 Modifying archive: %1"
+                  ("j",  _,           _)      ->  "0240 Joining archives to %1"
+                  ("d",  _,           _)      ->  "0228 Deleting files from archive: %1"
+                  ("k",  _,           _)      ->  "0300 Locking archive: %1"
+                  (_,    ADD_CMD,     False)  ->  "Creating archive: %1"
+                  (_,    ADD_CMD,     True)   ->  "Updating archive: %1"
+                  (_,    LIST_CMD,    _)      ->  "Listing archive: %1"
+                  (_,    TEST_CMD,    _)      ->  "0231 Testing archive: %1"
+                  (_,    EXTRACT_CMD, _)      ->  "0234 Extracting files from archive: %1"
+                  (_,    RECOVER_CMD, _)      ->  "0382 Repairing archive: %1"
+
+msgFinishGUI cmd arcExist 0 =
+                case (cmd, cmdType cmd, arcExist) of
+                  ("ch", _,           _)      ->  "0238 SUCCESFULLY MODIFIED %1"
+                  ("j",  _,           _)      ->  "0241 SUCCESFULLY JOINED ARCHIVES TO %1"
+                  ("d",  _,           _)      ->  "0229 FILES SUCCESFULLY DELETED FROM %1"
+                  ("k",  _,           _)      ->  "0301 SUCCESFULLY LOCKED ARCHIVE %1"
+                  (_,    ADD_CMD,     False)  ->  "SUCCESFULLY CREATED %1"
+                  (_,    ADD_CMD,     True)   ->  "SUCCESFULLY UPDATED %1"
+                  (_,    LIST_CMD,    _)      ->  "SUCCESFULLY LISTED %1"
+                  (_,    TEST_CMD,    _)      ->  "0232 SUCCESFULLY TESTED %1"
+                  (_,    EXTRACT_CMD, _)      ->  "0235 FILES SUCCESFULLY EXTRACTED FROM %1"
+                  (_,    RECOVER_CMD, _)      ->  "0383 SUCCESFULLY REPAIRED ARCHIVE %1"
+
+msgFinishGUI cmd arcExist w =
+                case (cmd, cmdType cmd, arcExist) of
+                  ("ch", _,           _)      ->  "0239 %2 WARNINGS WHILE MODIFYING %1"
+                  ("j",  _,           _)      ->  "0242 %2 WARNINGS WHILE JOINING ARCHIVES TO %1"
+                  ("d",  _,           _)      ->  "0230 %2 WARNINGS WHILE DELETING FROM %1"
+                  ("k",  _,           _)      ->  "0302 %2 WARNINGS WHILE LOCKING ARCHIVE %1"
+                  (_,    ADD_CMD,     False)  ->  "%2 WARNINGS WHILE CREATING %1"
+                  (_,    ADD_CMD,     True)   ->  "%2 WARNINGS WHILE UPDATING %1"
+                  (_,    LIST_CMD,    _)      ->  "%2 WARNINGS WHILE LISTING %1"
+                  (_,    TEST_CMD,    _)      ->  "0233 %2 WARNINGS WHILE TESTING %1"
+                  (_,    EXTRACT_CMD, _)      ->  "0236 %2 WARNINGS WHILE EXTRACTING FILES FROM %1"
+                  (_,    RECOVER_CMD, _)      ->  "0384 %2 WARNINGS WHILE REPAIRING ARCHIVE %1"
 
 msgDo cmd    =  case (cmdType cmd) of
                   ADD_CMD     -> "Compressing "

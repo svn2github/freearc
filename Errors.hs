@@ -362,6 +362,7 @@ printLineNeedSeparator str = do
 -- Записать строку в логфайл.
 -- Вывести её на экран при условии, что её вывод не запрещён опцией --display
 condPrintLine c line = do
+  if c=="G" then val loggingHandlers >>= mapM_ ($line) else do
   display_option <- val display_option'
   when (c/="$" || (display_option `contains` '#')) $ do
       printLog line
@@ -407,6 +408,8 @@ logfile'        = unsafePerformIO$ newIORef Nothing
 separator'      = unsafePerformIO$ newIORef ("","") :: IORef (String,String)
 log_separator'  = unsafePerformIO$ newIORef "\n"    :: IORef String
 display_option' = unsafePerformIO$ newIORef$ error "undefined display_option"
+-- Операции вывода сообщений в лог
+loggingHandlers = unsafePerformIO$ newIORef [] :: IORef [String -> IO ()]
 
 {-# NOINLINE printLine #-}
 {-# NOINLINE printLineNeedSeparator #-}

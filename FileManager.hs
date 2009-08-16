@@ -361,10 +361,11 @@ myGUI run args = do
 
 --  for [upButton,saveDirButton] (`buttonSetFocusOnClick` False)
 
-  -- Выводить errors/warnings внизу окна FreeArc
+  -- Выводить errors/warnings/messages внизу окна FreeArc
   showErrors' <- ref True
   errorHandlers   ++= [whenM (val showErrors') . postGUIAsync . fmStackMsg fm']
   warningHandlers ++= [whenM (val showErrors') . postGUIAsync . fmStackMsg fm']
+  loggingHandlers ++= [postGUIAsync . fmStackMsg fm']
 
   -- Отключает вывод сообщений об ошибках на время выполнения action
   let hideErrors action  =  bracket (showErrors' <=> False)  (showErrors' =: )  (\_ -> action)
@@ -512,7 +513,7 @@ myGUI run args = do
         msgFinish <- i18n (if w==0  then formatSuccess  else formatFail)
         postGUIAsync$ fmStackMsg fm' (formatn msgFinish (msgArgs++[show w]))
 
-  -- Commands executed by various buttons
+  -- Тред, выполняющий команды архиватора
   cmdChan <- newChan
   forkIO $ do
     foreverM $ do
@@ -530,9 +531,7 @@ myGUI run args = do
                                Files.runCommand (unparseCommand$ [freearc]++cmd) (fm_curdir fm) False
 
   -- Закрытие окна файл-менеджера
-  closed' <- ref False
   let closeMainWindow = do
-        closed' =: True
         fileManagerMode =: False
         widgetHide window
         writeChan cmdChan [(["","",""],[""],["ExitProgram"])]
