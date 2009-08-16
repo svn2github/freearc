@@ -175,7 +175,8 @@ myGUI run args = do
   onKeyActions <- newList
   let onKey = curry (onKeyActions <<=)
   -- Создадим окно индикатора прогресса и загрузим настройки/локализацию
-  (windowProgress, clearStats) <- runIndicators
+  (windowProgress, clearStats, messageBox) <- runIndicators
+  widgetHide messageBox
   -- Main menu
   standardGroup <- actionGroupNew "standard"
   let action name  =  (concat$ map (mapHead toUpper)$ words$ drop 5 name)++"Action"   -- "9999 the name" -> "TheNameAction"
@@ -518,7 +519,7 @@ myGUI run args = do
   forkIO $ do
     foreverM $ do
       commands <- readChan cmdChan
-      postGUIAsync$ do clearStats; widgetShowAll windowProgress
+      postGUIAsync$ do clearStats; widgetShowAll windowProgress; widgetHide messageBox
       mapM_ (myHandleErrors runWithMsg) commands
       whenM (isEmptyChan cmdChan)$ postGUIAsync$ do widgetHide windowProgress; refreshCommand fm'
       --uiDoneProgram
@@ -534,6 +535,7 @@ myGUI run args = do
   let closeMainWindow = do
         fileManagerMode =: False
         widgetHide window
+        widgetShowAll messageBox
         writeChan cmdChan [(["","",""],[""],["ExitProgram"])]
 
   window `onDestroy` closeMainWindow

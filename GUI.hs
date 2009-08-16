@@ -95,7 +95,7 @@ startGUI = do
 
 -- |Инициализация GUI-части программы (индикатора прогресса) для выполнения cmdline
 guiStartProgram = gui $ do
-  (windowProgress, clearStats) <- runIndicators
+  (windowProgress, clearStats, messageBox) <- runIndicators
   widgetShowAll windowProgress
 
 -- |Задержать завершение программы
@@ -219,7 +219,7 @@ runIndicators = do
 
   -- Поехали!
   widgetGrabFocus pauseButton
-  return (window, clearAll)
+  return (window, clearAll, messageBox)
 
 
 -- |Создание полей для вывода статистики
@@ -320,11 +320,11 @@ makeBoxForMessages = do
   comment <- scrollableTextView "" []
   widgetSetSizeRequest (widget comment) 0 0
   -- Выводить errors/warnings в этот TextView
-  let warn msg = unlessM (val fileManagerMode) $ do
+  let log msg = do postGUIAsync (comment ++= msg++"\n")
                    widgetSetSizeRequest (widget comment) (-1) (-1)
-                   postGUIAsync (comment ++= msg++"\n")
-  errorHandlers   ++= [warn]
-  warningHandlers ++= [warn]
+                   widgetShowAll (widget comment)
+  errorHandlers   ++= [log]
+  warningHandlers ++= [log]
   return (widget comment)
 
 
