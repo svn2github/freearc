@@ -456,19 +456,23 @@ Archive comment dialog
 
 
 === Infoline messages ====================================================
-0228 Deleting from %1=Удаление из %1
+0439 Listing archive %1=Содержание архива %1
+0445 SUCCESFULLY LISTED %1=Успешно описан архив %1
+0442 %2 WARNINGS WHILE LISTING %1=%2 ПРЕДУПРЕЖДЕНИЙ ПРИ СОЗДАНИИ ЛИСТИНГА %1
+
+0435 Deleting files from archive %1=Удаление файлов из архива %1
 0229 FILES SUCCESFULLY DELETED FROM %1=ФАЙЛЫ УСПЕШНО УДАЛЕНЫ ИЗ %1
 0230 %2 WARNINGS WHILE DELETING FROM %1=%2 ПРЕДУПРЕЖДЕНИЙ ПРИ УДАЛЕНИИ ИЗ %1
 
-0231 Testing %1=Тестирование %1
+0440 Testing archive %1=Тестирование архива %1
 0232 SUCCESFULLY TESTED %1=УСПЕШНО ПРОТЕСТИРОВАН %1
 0233 %2 WARNINGS WHILE TESTING %1=%2 ПРЕДУПРЕЖДЕНИЙ ПРИ ТЕСТИРОВАНИИ %1
 
-0234 Extracting files from %1=Распаковка %1
+0441 Extracting files from archive %1=Распаковка файлов из архива %1
 0235 FILES SUCCESFULLY EXTRACTED FROM %1=УСПЕШНО РАСПАКОВАН %1
 0236 %2 WARNINGS WHILE EXTRACTING FILES FROM %1=%2 ПРЕДУПРЕЖДЕНИЙ ПРИ РАСПАКОВКЕ %1
 
-0237 Modifying %1=Модификация %1
+0433 Modifying archive %1=Модификация архива %1
 0238 SUCCESFULLY MODIFIED %1=УСПЕШНО МОДИФИЦИРОВАН %1
 0239 %2 WARNINGS WHILE MODIFYING %1=%2 ПРЕДУПРЕЖДЕНИЙ ПРИ МОДИФИКАЦИИ %1
 
@@ -476,9 +480,13 @@ Archive comment dialog
 0241 SUCCESFULLY JOINED ARCHIVES TO %1=АРХИВЫ УСПЕШНО ОБЪЕДИНЕНЫ В %1
 0242 %2 WARNINGS WHILE JOINING ARCHIVES TO %1=%2 ПРЕДУПРЕЖДЕНИЙ ПРИ ОБЪЕДИНЕНИИ АРХИВОВ В %1
 
-0243 Adding to %1=Добавление в %1
-0244 FILES SUCCESFULLY ADDED TO %1=ФАЙЛЫ УСПЕШНО ДОБАВЛЕНЫ В %1
-0245 %2 WARNINGS WHILE ADDING TO %1=%2 ПРЕДУПРЕЖДЕНИЙ ПРИ ДОБАВЛЕНИИ В %1
+0437 Creating archive %1=Создание архива %1
+0443 SUCCESFULLY CREATED %1=УСПЕШНО СОЗДАН %1
+0434 %2 WARNINGS WHILE CREATING %1=%2 ПРЕДУПРЕЖДЕНИЙ ПРИ СОЗДАНИИ %1
+
+0438 Updating archive %1=Обновление архива %1
+0444 SUCCESFULLY UPDATED %1=УСПЕШНО ОБНОВЛЁН %1
+0436 %2 WARNINGS WHILE UPDATING %1=%2 ПРЕДУПРЕЖДЕНИЙ ПРИ ОБНОВЛЕНИИ %1
 
 0299 Lock archive(s)?=Защитить архив(ы) от изменений?
 0300 Locking archive %1=Защищаю от изменений архив %1

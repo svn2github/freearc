@@ -289,39 +289,39 @@ msgStart cmd arcExist =
 
 msgStartGUI cmd arcExist =
                 case (cmd, cmdType cmd, arcExist) of
-                  ("ch", _,           _)      ->  "0237 Modifying archive: %1"
+                  ("ch", _,           _)      ->  "0433 Modifying archive %1"
                   ("j",  _,           _)      ->  "0240 Joining archives to %1"
-                  ("d",  _,           _)      ->  "0228 Deleting files from archive: %1"
-                  ("k",  _,           _)      ->  "0300 Locking archive: %1"
-                  (_,    ADD_CMD,     False)  ->  "Creating archive: %1"
-                  (_,    ADD_CMD,     True)   ->  "Updating archive: %1"
-                  (_,    LIST_CMD,    _)      ->  "Listing archive: %1"
-                  (_,    TEST_CMD,    _)      ->  "0231 Testing archive: %1"
-                  (_,    EXTRACT_CMD, _)      ->  "0234 Extracting files from archive: %1"
-                  (_,    RECOVER_CMD, _)      ->  "0382 Repairing archive: %1"
+                  ("d",  _,           _)      ->  "0435 Deleting files from archive %1"
+                  ("k",  _,           _)      ->  "0300 Locking archive %1"
+                  (_,    ADD_CMD,     False)  ->  "0437 Creating archive %1"
+                  (_,    ADD_CMD,     True)   ->  "0438 Updating archive %1"
+                  (_,    LIST_CMD,    _)      ->  "0439 Listing archive %1"
+                  (_,    TEST_CMD,    _)      ->  "0440 Testing archive %1"
+                  (_,    EXTRACT_CMD, _)      ->  "0441 Extracting files from archive %1"
+                  (_,    RECOVER_CMD, _)      ->  "0382 Repairing archive %1"
 
-msgFinishGUI cmd arcExist 0 =
+msgFinishGUI cmd arcExist warnings@0 =
                 case (cmd, cmdType cmd, arcExist) of
                   ("ch", _,           _)      ->  "0238 SUCCESFULLY MODIFIED %1"
                   ("j",  _,           _)      ->  "0241 SUCCESFULLY JOINED ARCHIVES TO %1"
                   ("d",  _,           _)      ->  "0229 FILES SUCCESFULLY DELETED FROM %1"
                   ("k",  _,           _)      ->  "0301 SUCCESFULLY LOCKED ARCHIVE %1"
-                  (_,    ADD_CMD,     False)  ->  "SUCCESFULLY CREATED %1"
-                  (_,    ADD_CMD,     True)   ->  "SUCCESFULLY UPDATED %1"
-                  (_,    LIST_CMD,    _)      ->  "SUCCESFULLY LISTED %1"
+                  (_,    ADD_CMD,     False)  ->  "0443 SUCCESFULLY CREATED %1"
+                  (_,    ADD_CMD,     True)   ->  "0444 SUCCESFULLY UPDATED %1"
+                  (_,    LIST_CMD,    _)      ->  "0445 SUCCESFULLY LISTED %1"
                   (_,    TEST_CMD,    _)      ->  "0232 SUCCESFULLY TESTED %1"
                   (_,    EXTRACT_CMD, _)      ->  "0235 FILES SUCCESFULLY EXTRACTED FROM %1"
                   (_,    RECOVER_CMD, _)      ->  "0383 SUCCESFULLY REPAIRED ARCHIVE %1"
 
-msgFinishGUI cmd arcExist w =
+msgFinishGUI cmd arcExist warnings =
                 case (cmd, cmdType cmd, arcExist) of
                   ("ch", _,           _)      ->  "0239 %2 WARNINGS WHILE MODIFYING %1"
                   ("j",  _,           _)      ->  "0242 %2 WARNINGS WHILE JOINING ARCHIVES TO %1"
                   ("d",  _,           _)      ->  "0230 %2 WARNINGS WHILE DELETING FROM %1"
                   ("k",  _,           _)      ->  "0302 %2 WARNINGS WHILE LOCKING ARCHIVE %1"
-                  (_,    ADD_CMD,     False)  ->  "%2 WARNINGS WHILE CREATING %1"
-                  (_,    ADD_CMD,     True)   ->  "%2 WARNINGS WHILE UPDATING %1"
-                  (_,    LIST_CMD,    _)      ->  "%2 WARNINGS WHILE LISTING %1"
+                  (_,    ADD_CMD,     False)  ->  "0434 %2 WARNINGS WHILE CREATING %1"
+                  (_,    ADD_CMD,     True)   ->  "0436 %2 WARNINGS WHILE UPDATING %1"
+                  (_,    LIST_CMD,    _)      ->  "0442 %2 WARNINGS WHILE LISTING %1"
                   (_,    TEST_CMD,    _)      ->  "0233 %2 WARNINGS WHILE TESTING %1"
                   (_,    EXTRACT_CMD, _)      ->  "0236 %2 WARNINGS WHILE EXTRACTING FILES FROM %1"
                   (_,    RECOVER_CMD, _)      ->  "0384 %2 WARNINGS WHILE REPAIRING ARCHIVE %1"
