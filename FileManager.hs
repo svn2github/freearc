@@ -300,10 +300,6 @@ myGUI run args = do
 
   -- Список действий, выполняемых при закрытии окна файл-менеджера
   onExit <- newList
-  -- Выход из программы
-  let exitProgram = do
-        sequence_ =<< listVal onExit
-        mainQuit
 
   -- Список ассоциаций клавиша->действие
   listView `onKeyPress` \event -> do
@@ -492,9 +488,9 @@ myGUI run args = do
 ----------------------------------------------------------------------------------------------------
 
   -- При выполнении операций не выходим по исключениям, а печатаем сообщения о них в логфайл
-  let myHandleErrors action x  =  do operationTerminated =: False
-                                     action x `catch` handler
-                                     operationTerminated =: False
+  let myHandleErrors action  =  do operationTerminated =: False
+                                   action `catch` handler
+                                   operationTerminated =: False
         where handler ex = do
                 errmsg <- case ex of
                    Deadlock    -> i18n"0011 No threads to run: infinite loop or deadlock?"
@@ -505,19 +501,16 @@ myGUI run args = do
                   io$ condPrintLineLn "w" errmsg
                 return ()
 
-  -- Выполнить команду архиватора
-  let runWithMsg cmd = do
-        when (cmd==["ExitProgram"])  $ gui exitProgram
-        parseCmdline cmd >>= mapM_ run
-
   -- Тред, выполняющий команды архиватора
   cmdChan <- newChan
   forkIO $ do
     foreverM $ do
       commands <- readChan cmdChan
+      when (commands==[["ExitProgram"]])  $ shutdown "" aEXIT_CODE_SUCCESS
       postGUIAsync$ do clearStats; widgetShowAll windowProgress
-      mapM_ (myHandleErrors runWithMsg) commands
-      whenM (isEmptyChan cmdChan)$ postGUIAsync$ do widgetHide windowProgress; clearMessageBox; refreshCommand fm'
+      for commands $ \cmd -> do
+        myHandleErrors (parseCmdline cmd >>= mapM_ run)
+      whenM (isEmptyChan cmdChan)$ postGUIAsync$ do widgetHide windowProgress; clearMessageBox; warningsBefore =:: val warnings; refreshCommand fm'
       --uiDoneProgram
 
   -- Depending on execution mode, either queue commands or run external FreeArc instances
@@ -529,6 +522,7 @@ myGUI run args = do
 
   -- Закрытие окна файл-менеджера
   let closeMainWindow = do
+        sequence_ =<< listVal onExit
         fileManagerMode =: False
         showMessageBox
         widgetHide window

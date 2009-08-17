@@ -34,10 +34,10 @@ import UIBase
 -- |Отметить начало выполнения программы
 uiStartProgram = do
   guiStartProgram
-  pauseAction =: guiPauseAtEnd
 
 -- |Отметить начало выполнения команды
 uiStartCommand command = do
+  pauseAction =: guiPauseAtEnd
   ref_command =: command
   pause_before_exit =: opt_pause_before_exit command
   display_option' =: opt_display command

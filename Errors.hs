@@ -127,12 +127,13 @@ shutdown msg exitCode = do
 
     -- Make a pause if necessary
     when (exitCode/=aEXIT_CODE_USER_BREAK) $ do
+      warningsBefore' <- val warningsBefore
       pause_option <- val pause_before_exit
       pause <- val pauseAction
       pause `on` case pause_option of
                    "on"          -> True
                    "off"         -> False
-                   "on-warnings" -> w>0 || exitCode/=aEXIT_CODE_SUCCESS
+                   "on-warnings" -> w>warningsBefore' || exitCode/=aEXIT_CODE_SUCCESS
                    "on-error"    -> exitCode/=aEXIT_CODE_SUCCESS
                    _             -> False
 
@@ -452,6 +453,8 @@ count_warnings action = do
 
 -- |Счётчик ошибок, возникших в ходе работы программы
 warnings = unsafePerformIO$ newIORef 0 :: IORef Int
+-- |Количество предупреждений перед последним показом диалога прогресса
+warningsBefore = unsafePerformIO$ newIORef 0 :: IORef Int
 
 -- В зависимости от режима зарегистрировать ошибку или предупреждение
 registerThreadError err = do
@@ -465,6 +468,7 @@ warningHandlers = unsafePerformIO$ newIORef [] :: IORef [String -> IO ()]
 {-# NOINLINE registerError #-}
 {-# NOINLINE registerWarning #-}
 {-# NOINLINE warnings #-}
+{-# NOINLINE warningsBefore #-}
 {-# NOINLINE errorHandlers #-}
 {-# NOINLINE warningHandlers #-}
 
