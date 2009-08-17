@@ -410,10 +410,6 @@ Many dialogs
 0432 &Detach=&Фоном
 
 Progress indicator
---Buttons
-0052 &Background=&Фоном
-0053 &Pause=&Пауза
-0054 &Continue=&Продолжить
 --Labels
 0056 Files=Файлов
 0057 Total files=Всего файлов
@@ -434,6 +430,12 @@ Progress indicator
 0385 Scanning archive for damages=Проверка целостности архива
 0386 Protecting archive from damages=Добавление защитной записи к архиву
 0387 Recovering archive=Восстановление архива
+--Extra options
+0446 Keep window on top=Поверх всех окон
+--Buttons
+0052 &Background=&Фоном
+0053 &Pause=&Пауза
+0054 &Continue=&Продолжить
 
 File overwrite dialog
 0078 Confirm File Replace=Подтверждение замены файла

@@ -117,7 +117,7 @@ runIndicators = do
 
   -- Собственно окно индикатора прогресса
   window <- windowNew
-  vbox   <- vBoxNew False 10
+  vbox   <- vBoxNew False 0
   set window [windowWindowPosition := WinPosCenter,
               containerBorderWidth := 10, containerChild := vbox]
 
@@ -133,15 +133,21 @@ runIndicators = do
   boxPackStart curFileBox curFileLabel PackGrow 2
   widgetSetSizeRequest curFileLabel 30 (-1)
   progressBar  <- progressBarNew
+  expanderBox  <- expanderNew ""
   buttonBox    <- hBoxNew True 10
   (messageBox, msgbActions) <- makeBoxForMessages
   boxPackStart vbox statsBox     PackNatural 0
-  boxPackStart vbox curFileBox   PackNatural 0
+  boxPackStart vbox curFileBox   PackNatural 10
   boxPackStart vbox progressBar  PackNatural 0
-  boxPackEnd   vbox buttonBox    PackNatural 0
-  boxPackEnd   vbox messageBox   PackGrow    0
+  boxPackStart vbox expanderBox  PackNatural 0
+  boxPackStart vbox messageBox   PackGrow    0
+  boxPackStart vbox buttonBox    PackNatural 0
   miscSetAlignment curFileLabel 0 0    -- выровняем влево имя текущего файла
   progressBarSetText progressBar " "   -- нужен непустой текст чтобы установить правильную высоту progressBar
+
+  hbox <- hBoxNew False 0;                            containerAdd expanderBox hbox
+  onTop <- checkBox "0446 Keep window on top";        boxPackStart hbox (widget onTop) PackNatural 1
+  setOnUpdate onTop $   do windowSetKeepAbove window =<< val onTop
 
   -- Заполним кнопками нижнюю часть окна
   --buttonNew window stockClose ResponseClose
@@ -162,7 +168,9 @@ runIndicators = do
           -- Otherwise - ask user's permission
           (if active then id else syncUI) $ do
              pauseTiming $ do
-               askYesNo window "0251 Abort operation?"
+               inside (windowSetKeepAbove window False)
+                      (windowSetKeepAbove window =<< val onTop)
+                      (askYesNo window "0251 Abort operation?")
         when terminationRequested $ do
           pauseButton =: False
           ignoreErrors$ terminateOperation
