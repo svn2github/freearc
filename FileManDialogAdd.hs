@@ -145,11 +145,12 @@ addDialog fm' exec cmd files mode = do
     backupMode      =: 0
 
     -- Имя создаваемого по умолчанию архива зависит от имён архивируемых файлов/сливаемых архивов
-    let arcnameBase = case files of
-          [file] -> let base = dropTrailingPathSeparator file
-                    in if base==file  then dropExtension file  -- один файл    - избавимся от расширения
-                                      else base                -- один каталог - избавимся от слеша в конце
-          _      -> takeFileName (fm_curdir fm)                -- много файлов - используем имя текущего каталога
+    arcnameBase <- case files of
+      [file] -> do let realname = dropTrailingPathSeparator file
+                   isFile <- fileExist realname
+                   return$ if isFile then dropExtension realname  -- один файл    - избавимся от расширения
+                                     else realname                -- один каталог - избавимся от слеша в конце
+      _      -> return$ takeFileName (fm_curdir fm)               -- много файлов - используем имя текущего каталога
     arcname =: if isFM_Archive fm then fm_arcname fm
                                   else (arcnameBase ||| "archive") ++ aDEFAULT_ARC_EXTENSION
     arcpath =: ""

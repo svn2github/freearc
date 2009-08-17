@@ -134,7 +134,7 @@ runIndicators = do
   widgetSetSizeRequest curFileLabel 30 (-1)
   progressBar  <- progressBarNew
   buttonBox    <- hBoxNew True 10
-  messageBox   <- makeBoxForMessages
+  (messageBox, msgbActions) <- makeBoxForMessages
   boxPackStart vbox statsBox     PackNatural 0
   boxPackStart vbox curFileBox   PackNatural 0
   boxPackStart vbox progressBar  PackNatural 0
@@ -219,7 +219,7 @@ runIndicators = do
 
   -- Поехали!
   widgetGrabFocus pauseButton
-  return (window, clearAll, messageBox)
+  return (window, clearAll, msgbActions)
 
 
 -- |Создание полей для вывода статистики
@@ -319,13 +319,24 @@ createStats = do
 makeBoxForMessages = do
   comment <- scrollableTextView "" []
   widgetSetSizeRequest (widget comment) 0 0
+  saved <- ref ""
   -- Выводить errors/warnings в этот TextView
-  let log msg = do postGUIAsync (comment ++= msg++"\n")
-                   widgetSetSizeRequest (widget comment) (-1) (-1)
-                   widgetShowAll (widget comment)
+  let log msg = postGUIAsync$ do
+                  fm <- val fileManagerMode
+                  if fm
+                    then do saved ++= (msg++"\n")
+                    else do widgetSetSizeRequest (widget comment) (-1) (-1)
+                            comment ++= (msg++"\n")
+  -- После закрытия FM перенести все сообщения в этот widget
+  let afterFMClose = postGUIAsync$ do
+                       msg <- val saved
+                       saved =: ""
+                       when (msg>"") $ do
+                         widgetSetSizeRequest (widget comment) (-1) (-1)
+                         comment ++= (msg++"\n")
   errorHandlers   ++= [log]
   warningHandlers ++= [log]
-  return (widget comment)
+  return (widget comment, (saved =: "", afterFMClose))
 
 
 -- |Вызывается в начале обработки файла

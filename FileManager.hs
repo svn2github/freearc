@@ -78,6 +78,10 @@ openDialog (cmd:"--":params) exec dialog = do
   cmds <- readChan cmdChan
   exec$ joinWith [";"] cmds
 
+openDialog params exec dialog = do
+  startGUI
+  gui $ debugMsg "FileManager.hs: erroneous attempt to run dialog"
+
 
 ----------------------------------------------------------------------------------------------------
 ---- Главное меню программы и тулбар под ним -------------------------------------------------------
@@ -175,8 +179,7 @@ myGUI run args = do
   onKeyActions <- newList
   let onKey = curry (onKeyActions <<=)
   -- Создадим окно индикатора прогресса и загрузим настройки/локализацию
-  (windowProgress, clearStats, messageBox) <- runIndicators
-  widgetHide messageBox
+  (windowProgress, clearStats, (clearMessageBox,showMessageBox)) <- runIndicators
   -- Main menu
   standardGroup <- actionGroupNew "standard"
   let action name  =  (concat$ map (mapHead toUpper)$ words$ drop 5 name)++"Action"   -- "9999 the name" -> "TheNameAction"
@@ -512,9 +515,9 @@ myGUI run args = do
   forkIO $ do
     foreverM $ do
       commands <- readChan cmdChan
-      postGUIAsync$ do clearStats; widgetShowAll windowProgress; widgetHide messageBox
+      postGUIAsync$ do clearStats; widgetShowAll windowProgress
       mapM_ (myHandleErrors runWithMsg) commands
-      whenM (isEmptyChan cmdChan)$ postGUIAsync$ do widgetHide windowProgress; refreshCommand fm'
+      whenM (isEmptyChan cmdChan)$ postGUIAsync$ do widgetHide windowProgress; clearMessageBox; refreshCommand fm'
       --uiDoneProgram
 
   -- Depending on execution mode, either queue commands or run external FreeArc instances
@@ -527,8 +530,8 @@ myGUI run args = do
   -- Закрытие окна файл-менеджера
   let closeMainWindow = do
         fileManagerMode =: False
+        showMessageBox
         widgetHide window
-        widgetShowAll messageBox
         writeChan cmdChan [["ExitProgram"]]
 
   window `onDestroy` closeMainWindow
