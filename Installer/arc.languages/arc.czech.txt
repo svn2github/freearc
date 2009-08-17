@@ -12,6 +12,9 @@
 ***    0185 Protection:=Protection: (written in your language, of course)  ***
 ***  It's tooltip:                                                         ***
 ***    1185 Protection:=Appends recovery information to archive            ***
+***                                                                        ***
+***  Also, one section contains relative URLs for language-specific        ***
+***  resources                                                             ***
 ******************************************************************************
 
 Language name in english and mother tongue
@@ -26,6 +29,43 @@ Filled only for languages providing their own translations
 0372 Wiki page (URL, not translation!)=??
 0256 Helpfile (URL, not translation!)=??
 0257 Command-line help (URL, not translation!)=??
+
+
+=== Explorer context menu =======================================================
+0391 Add to "%s"=Přidat do "%s"
+0392 Compress the selected files using FreeArc=Zkomprimovat zvolené soubory ve FreeArcu
+0393 Add to SFX "%s"=Přidat do SFX "%s"
+0394 Compress the selected files into SFX using FreeArc=Zkomprimovat zvolené soubory do SFX ve FreeArcu
+0395 Add to archive...=Přidat do archivu...
+0396 Compress the selected files using FreeArc via dialog=Zkomprimovat zvolené soubory ve FreeArcu pomocí nabídky
+--
+0397 Open with FreeArc=Otevřít ve FreeArcu
+0398 Open the selected archive(s) with FreeArc=Otevřít zvolené archivy ve FreeArcu
+0399 Extract to "%s"=Rozbalit do "%s"
+0400 Extract the selected archive(s) to new folder=Rozbalit zvolené archivy do nové složky
+0401 Extract here=Rozbalit zde
+0402 Extract the selected archive(s) to the same folder=Rozbalit zvolené archivy do stejné složky
+0403 Extract...=Rozbalit...
+0404 Extract the selected archive(s) via dialog=Rozbalit zvolené archivy pomocí nabídky
+0405 Test=Otestovat
+0406 Test the selected archive(s)=Otestovat zvolené archivy
+--
+0407 Convert to SFX=Převést na SFX
+0408 Convert the selected archive(s) to SFX=Převést zvolené archivy na SFX
+0409 Convert from SFX=Převést z SFX
+0410 Convert the selected SFX(es) to normal archive(s)=Převést zvolené SFX na normální archivy
+--
+0411 Modify...=Upravit...
+0412 Modify the selected archives via dialog=Upravit zvolené archivy pomocí nabídky
+0413 Join...=Spojit...
+0414 Join the selected archives via dialog=Spojit zvolené archivy pomocí nabídky
+--
+0415 Convert to .arc=Převést na .arc
+0416 Convert the selected archive(s) to FreeArc format=Převést zvolené archivy na formát FreeArcu
+0417 Convert to .arc SFX=Převést na .arc SFX
+0418 Convert the selected archive(s) to FreeArc SFX=Převést zvolené archivy na FreeArc SFX
+0419 Convert to .arc...=Převést na .arc...
+0420 Convert the selected archive(s) to FreeArc format via dialog=Převést zvolené archivy na formát FreeArcu pomocí nabídky
 
 
 === Menu ========================================================================
@@ -74,6 +114,8 @@ Tools menu/toolbar
 0294 Recompress files in archive=Překomprimuje soubory v archivu
 0270 Convert to SFX=Převést na SFX
 0271 Convert archive to SFX=Převede archiv na samorozbalovací
+0426 Convert to FreeArc=Převést na FreeArc
+0427 Convert foreign archive to FreeArc format=Převede cizí archiv na formát FreeArcu
 0272 Encrypt=Zašifrovat
 0273 Encrypt archive contents=Zašifruje obsah archivu
 0274 Protect=Ochránit
@@ -156,6 +198,8 @@ Add dialog
 0149 Join all archives=Spojit všechny archivy
 0150 Join %1 with another archive=Spojit %1 s jiným archivem
 0151 Join %2 archives=Spojit vybrané archivy
+0428 Convert %1 to FreeArc format=Převést %1 na formát FreeArcu
+0429 Convert %2 archives to FreeArc format=Převést %2 archivů na formát FreeArcu
 ---------
 0182 Main=Hlavní
 0131 Output archive:=Uložit do archivu:
@@ -248,6 +292,7 @@ Extract dialog
 0021 Select output directory=Specifikujte umístění pro rozbalené soubory
 0014 Append archive name to the output directory=Připojit název archivu ke složce
 --Other
+0425 Keep broken extracted files=Ponechat poškozené rozbalené soubory
 0072 Additional options:=Další nastavení:
 
 
@@ -293,8 +338,13 @@ Settings dialog
 0168 You should restart FreeArc in order for a language settings to take effect.=Aby se změna jazyka projevila, musí být FreeArc restartován.
 0169 Passwords need to be entered again after restart.=Hesla musí být po restartu znovu zadána.
 --
+0421 Explorer integration=Integrace do Průzkumníka
+0422 Enable context menu in Explorer=Zapnout kontextové menu v Průzkumníkovi
+0423 Make it cascaded=Kaskádové menu
+0424 Enable individual commands:=Individuální nastavení příkazů:
+--
 0388 Info=Info
-0389 Largest contiguous free memblock:=Největší celistvé volné místo v paměti
+0389 Largest contiguous free memblock:=Největší celistvé volné místo v paměti:
 
 
 Logfiles
@@ -357,6 +407,7 @@ Many dialogs
 0081 &Cancel=&Zrušit
 0363 &Select=&Vybrat
 0364 &Close=Zavří&t
+0432 &Detach=O&dpojit
 
 Progress indicator
 --Buttons
@@ -497,8 +548,9 @@ Errors returned by compression methods
 0365 general (de)compression error in %1=obecná chyba (de)komprese v %1
 0366 invalid compression method or parameters in %1=neplatná kompresní metoda nebo parametry v %1
 0367 can't allocate memory required for (de)compression in %1=nelze alokovat paměť nutnou pro (de)kompresi v %1
-0368 I/O error in compression algorithm %1=I/O chyba v kompresním algoritmu %1
 0369 bad compressed data in %1=špatná komprimovaná data v %1
+0430 read error (bad media?) in compression algorithm %1=chyba čtení (špatné médium?) v kompresním algoritmu %1
+0431 write error (disk full?) in compression algorithm %1=chyba zápisu (zaplněný disk?) v kompresním algoritmu %1
 
 
 === Standard profiles ====================================================
