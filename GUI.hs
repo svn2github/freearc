@@ -95,7 +95,7 @@ startGUI = do
 
 -- |Инициализация GUI-части программы (индикатора прогресса) для выполнения cmdline
 guiStartProgram = gui $ do
-  (windowProgress, clearStats, messageBox) <- runIndicators
+  (windowProgress, msgbActions) <- runIndicators
   widgetShowAll windowProgress
 
 -- |Задержать завершение программы
@@ -210,16 +210,16 @@ runIndicators = do
     labelSetText curFileLabel =<< val uiMessage
 
   -- Очищает все поля с информацией о текущем архиве
-  let clearAll = do
-        set window [windowTitle := " "]
-        clearStats
-        labelSetText curFileLabel ""
-        progressBarSetFraction progressBar 0
-        progressBarSetText     progressBar " "
+  clearProgressWindow =: do
+    set window [windowTitle := " "]
+    clearStats
+    labelSetText curFileLabel ""
+    progressBarSetFraction progressBar 0
+    progressBarSetText     progressBar " "
 
   -- Поехали!
   widgetGrabFocus pauseButton
-  return (window, clearAll, msgbActions)
+  return (window, msgbActions)
 
 
 -- |Создание полей для вывода статистики
@@ -338,6 +338,13 @@ makeBoxForMessages = do
   warningHandlers ++= [log]
   return (widget comment, (saved =: "", afterFMClose))
 
+
+{-# NOINLINE clearProgressWindow #-}
+-- |Операция, очищающая окно индикатора прогресса
+clearProgressWindow = unsafePerformIO$ newIORef$ return () :: IORef (IO ())
+
+-- |Вызывается в начале обработки архива
+guiStartArchive = gui$ val clearProgressWindow >>= id
 
 -- |Вызывается в начале обработки файла
 guiStartFile = doNothing0

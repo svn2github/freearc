@@ -386,7 +386,6 @@ gui-верси€ не обрабатывает правильно ошибки:
 other
   Bug: зависание при выборе €зыка при English в freearc.ini и russian в arc.ini
   ¬ключение/выключение ассоциаций после переноса FreeArc: http://forum.ru-board.com/topic.cgi?forum=5&topic=29437&start=1780#4
-  CleanStats при non-FM mode
   installer.exe -p"/q" will then launch setup.exe /q
   иконки - хот€ бы dir/arc/archives/rest
   icons

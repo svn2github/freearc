@@ -71,6 +71,7 @@ uiStartArchive command @ Command {
   ref_command =: command
   display_option' =: opt_display command
   uiMessage =: ""
+  guiStartArchive
 
   -- Остаток процедуры не нужно выполнять, если это под-команда (например, тестирование после архивации)
   if cmd_subcommand command

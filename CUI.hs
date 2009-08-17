@@ -43,6 +43,9 @@ guiStartProgram = do
     myFlushStdout
     setConsoleTitle title
 
+-- |Вызывается в начале обработки архива
+guiStartArchive = doNothing0
+
 -- |Вызывается в начале обработки файла
 guiStartFile = do
   command <- val ref_command
