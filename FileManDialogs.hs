@@ -258,8 +258,8 @@ settingsDialog fm' = do
     -- Каталог для временных файлов
     (tempdirBox, _, tempdir) <- fmFileBox fm' dialog
                                           "tempdir" FileChooserActionSelectFolder
-                                   (label "0999 Temporary directory:")
-                                          "0999 Select temporary directory"
+                                   (label "0447 Temporary directory:")
+                                          "0448 Select directory for temporary files"
                                           aANYFILE_FILTER
                                           (const$ return True)
                                           (fmCanonicalizeDiskPath fm')

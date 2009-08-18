@@ -332,6 +332,8 @@ Settings dialog
 0166 Logfile:=Логфайл:
 0292 View=Просмотреть
 0167 Select logfile=Выберите логфайл
+0447 Temporary directory:=Каталог для временных файлов:
+0448 Select directory for temporary files=Укажите каталог для временных файлов
 0172 Associate FreeArc with .arc files=Ассоциировать FreeArc с файлами .arc
 0361 Add captions to toolbar buttons=Подписи под кнопками в тулбаре
 0370 Watch for new versions via Internet=Отслеживать появление новых версий через Интернет
