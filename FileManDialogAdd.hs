@@ -211,8 +211,6 @@ addDialog fm' exec cmd files mode = do
       -- Compression/encryption/decryption settings
       saveCompressionHistories
       encryptionOptions <- encryptionOnOk (encryptionEnabled &&& encryptionMethod')
-      -- Global settings
-      logfile'        <- fmGetHistory1 fm' "logfile" ""
 {-
       -- Запомним настройки в истории
       fmAddHistory fm' "acmd"$ joinWith "," [ "simpleMethod="  ++simpleMethod'
@@ -267,7 +265,6 @@ addDialog fm' exec cmd files mode = do
             (smallerEnabled   &&&  ["-sl"++clear smallerSize'])++
             -- Other
             (cmd/="cvt"       &&&  ["-dp"++fm_curdir fm])++
-            (logfile'         &&&  ["--logfile="++clear logfile'])++
             (cmd=="ch"        &&&  ["--noarcext"])++
             (optionsEnabled   &&&  words (clear optionsStr'))
       --

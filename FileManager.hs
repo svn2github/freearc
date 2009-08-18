@@ -514,11 +514,15 @@ myGUI run args = do
       --uiDoneProgram
 
   -- Depending on execution mode, either queue commands or run external FreeArc instances
-  let exec False cmds  =  writeChan cmdChan cmds
-      exec True  cmds  =  do freearc <- getExeName
-                             fm <- val fm'
-                             for cmds $ \cmd -> do
-                               Files.runCommand (unparseCommand$ [freearc]++cmd) (fm_curdir fm) False
+  let exec detach cmds = do
+        commonOptions <- returnCommonOptions fm'
+        cmds <- return$ map (commonOptions++) cmds
+        if not detach
+          then writeChan cmdChan cmds
+          else do freearc <- getExeName
+                  fm <- val fm'
+                  for cmds $ \cmd -> do
+                    Files.runCommand (unparseCommand$ [freearc]++cmd) (fm_curdir fm) False
 
   -- Закрытие окна файл-менеджера
   let closeMainWindow = do

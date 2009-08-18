@@ -106,7 +106,6 @@ extractDialog fm' exec cmd arcnames arcdir files = do
       dir'               <- val dir;         saveHistory dir
       isAddDir           <- val addDirButton
       decryptionOptions  <- decryptionOnOK
-      logfile'           <- fmGetHistory1 fm' "logfile" ""
       keepBroken         <- val keepBrokenButton
       optionsEnabled     <- val options
       ; optionsStr'        <- val optionsStr;  saveHistory optionsStr  `on`  optionsEnabled
@@ -120,7 +119,6 @@ extractDialog fm' exec cmd arcnames arcdir files = do
              (keepBroken &&& ["-kb"])++
              (overwriteOption  `select`  ",-o+,-u -o+,-o-")))++
            decryptionOptions++
-           (logfile'         &&&  ["--logfile="++clear logfile'])++
            ["--fullnames"]++
            ["--noarcext"]++
            (optionsEnabled   &&&  words (clear optionsStr'))++
@@ -196,6 +194,23 @@ arcinfoDialog fm' exec mode arcnames arcdir files = do
     boxPackStart vbox table PackNatural (ciphers &&& 10)
 
 
+------ Закладка тех. содержания архива -------------------------------------------------------------
+    vBox <- newPage "0999 Solid blocks"
+    let columnTitles = ["0999 Pos", "0999 Size", "0999 Compressed", "0999 Files", "0999 Method"]
+        n = map (drop 5) columnTitles
+    s <- i18ns columnTitles
+    let compressor = join_compressor.blCompressor
+    (listUI, listView, listModel, listSelection, columns, onColumnTitleClicked) <-
+        createListView compressor [(n!!0, s!!0, (show3.blPos),      [cellXAlign := 1]),
+                                   (n!!1, s!!1, (show3.blOrigSize), [cellXAlign := 1]),
+                                   (n!!2, s!!2, (show3.blCompSize), [cellXAlign := 1]),
+                                   (n!!3, s!!3, (show3.blFiles),    [cellXAlign := 1]),
+                                   (n!!4, s!!4, (compressor),       [])]
+    boxPackStart vBox listUI PackGrow 0
+    for columns $ \(name,col1) -> do New.treeViewColumnSetFixedWidth col1 100
+    changeList listModel listSelection dataBlocks
+
+
 ------ Закладка комментария архива -----------------------------------------------------------------
     vbox <- newPage "0199 Comment"
 
@@ -240,6 +255,14 @@ settingsDialog fm' = do
                                           (const$ return True)
                                           (fmCanonicalizeDiskPath fm')
     ; viewLogfileButton <- button "0292 View"
+    -- Каталог для временных файлов
+    (tempdirBox, _, tempdir) <- fmFileBox fm' dialog
+                                          "tempdir" FileChooserActionSelectFolder
+                                   (label "0999 Temporary directory:")
+                                          "0999 Select temporary directory"
+                                          aANYFILE_FILTER
+                                          (const$ return True)
+                                          (fmCanonicalizeDiskPath fm')
     -- Прочее
     toolbarTextButton   <- fmCheckButtonWithHistory fm' "ToolbarCaptions" True "0361 Add captions to toolbar buttons"
     checkNewsButton     <- fmCheckButtonWithHistory fm' "CheckNews"       True "0370 Watch for new versions via Internet"
@@ -321,6 +344,7 @@ settingsDialog fm' = do
     boxPackStart vbox                aboutLabel          PackNatural 5
     boxPackStart vbox                langFrame           PackNatural 5
     boxPackStart vbox                logfileBox          PackNatural 5
+    boxPackStart vbox                tempdirBox          PackNatural 5
     boxPackStart vbox       (widget  toolbarTextButton)  PackNatural 5
     boxPackStart vbox       (widget  checkNewsButton)    PackNatural 5
     boxPackStart vbox       (widget  notes)              PackNatural 5
@@ -421,6 +445,7 @@ settingsDialog fm' = do
       io$ buildPathTo inifile
       io$ saveConfigFile inifile$ map (join2 "=") [(aINITAG_LANGUAGE, takeFileName langFile)]
       logfile' <- val logfile;  saveHistory logfile
+      tempdir' <- val tempdir;  saveHistory tempdir
       saveHistory `mapM_` [toolbarTextButton, checkNewsButton]
       saveCompressionHistories
       saveEncryptionHistories ""
@@ -775,6 +800,15 @@ multiArchiveOperation fm' action = do
     else do files <- getSelection fm' (const [])
             fullnames <- mapM (fmCanonicalizePath fm') files
             action fullnames
+
+-- |Общие опции для всех операций
+returnCommonOptions fm' = do
+      logfile' <- fmGetHistory1 fm' "logfile" ""
+      tempdir' <- fmGetHistory1 fm' "tempdir" ""
+      return $
+           (logfile'  &&&  ["--logfile="++clear logfile'])++
+           (tempdir'  &&&  ["--workdir="++clear tempdir'])++
+           []
 
 -- |Обновить содержимое панели файл-менеджера актуальными данными
 refreshCommand fm' = do

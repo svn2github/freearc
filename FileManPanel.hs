@@ -594,6 +594,14 @@ fmDialogRun fm' dialog name = do
 ----------------------------------------------------------------------------------------------------
 
 createFilePanel = do
+  let columnTitles = ["0015 Name", "0016 Size", "0017 Modified", "0018 DIRECTORY"]
+      n = map (drop 5) columnTitles
+  s <- i18ns columnTitles
+  createListView fmname [(n!!0, s!!0, fmname,                                                       []),
+                         (n!!1, s!!1, (\fd -> if (fdIsDir fd) then (s!!3) else (show3$ fdSize fd)), [cellXAlign := 1]),
+                         (n!!2, s!!2, (guiFormatDateTime.fdTime),                                   [])]
+
+createListView searchField columns = do
   -- Scrolled window where this list will be put
   scrwin <- scrolledWindowNew Nothing Nothing
   scrolledWindowSetPolicy scrwin PolicyAutomatic PolicyAutomatic
@@ -605,22 +613,18 @@ createFilePanel = do
   model <- New.listStoreNew []
   set view [New.treeViewModel := model]
   -- Создаём колонки для её отображения.
-  let columnTitles = ["0015 Name", "0016 Size", "0017 Modified", "0018 DIRECTORY"]
-      n = map (drop 5) columnTitles
-  s <- i18ns columnTitles
   onColumnTitleClicked <- ref doNothing
-  columns <- fmap (dropEnd 1) $ sequence [
-     addColumn view model onColumnTitleClicked (n!!0) (s!!0) fmname                                                       []
-    ,addColumn view model onColumnTitleClicked (n!!1) (s!!1) (\fd -> if (fdIsDir fd) then (s!!3) else (show3$ fdSize fd)) [cellXAlign := 1]
-    ,addColumn view model onColumnTitleClicked (n!!2) (s!!2) (guiFormatDateTime.fdTime)                                   []
-    ,addColumn view model onColumnTitleClicked ("")   ("")   (const "")                                                   [] ]
+  let addColumnActions = columns.$map (\(a,b,c,d) -> addColumn view model onColumnTitleClicked a b c d)
+  columns <- sequence addColumnActions
+  addColumn view model onColumnTitleClicked "" "" (const "") []
   -- Включаем поиск по первой колонке
   New.treeViewSetEnableSearch view True
   New.treeViewSetSearchColumn view 0
   New.treeViewSetSearchEqualFunc view $ \col str iter -> do
     (i:_) <- New.treeModelGetPath model iter
     row <- New.listStoreGetValue model i
-    return (strLower(fmname row) ~= strLower(str)++"*")
+    return (strLower(searchField row) ~= strLower(str)++"*")
+    return False
   -- Enable multiple selection
   selection <- New.treeViewGetSelection view
   set selection [New.treeSelectionMode := SelectionMultiple]
