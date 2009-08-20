@@ -22,8 +22,11 @@
 #include <shlobj.h>
 #include <io.h>
 #include <fcntl.h>
+#include <tchar.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
-#include "Lua\lua.hpp"
+#include "Lua/lua.hpp"
 
 #define GUID_SIZE 128
 #define MAX_FILES 10
@@ -327,7 +330,7 @@ static void *l_alloc (void *ud, void *ptr, size_t osize, size_t nsize) {
     return realloc(ptr, nsize);
 }
 
-static int add_menu_item (lua_State *L) {
+static int Lua_add_menu_item (lua_State *L) {
   CShellExt *obj;
   lua_getallocf (L, (void**)&obj);
   return obj->add_menu_item();
@@ -335,7 +338,7 @@ static int add_menu_item (lua_State *L) {
 
 // Lua function that reads chunk of data from file with UTF8-encoded filename
 // Call: read_from_file (filename, origin, offset, bufsize)
-static int read_from_file (lua_State *L) {
+static int Lua_read_from_file (lua_State *L) {
   const char *filename = luaL_checkstring(L, 1);
   if (!filename)
     return 0;  ////lua_pushstring (L, errormsg); luaL_error / lua_error
@@ -372,6 +375,25 @@ static int read_from_file (lua_State *L) {
   return 1;
 }
 
+// Lua function that checks directory existance using UTF8-encoded filename
+// Call: dir_exists (filename)
+static int Lua_dir_exists (lua_State *L) {
+  const char *filename = luaL_checkstring(L, 1);
+  if (!filename)
+    return 0;  ////lua_pushstring (L, errormsg); luaL_error / lua_error
+
+  // Convert filename into UTF-16
+  wchar_t filenameW[MAX_PATH];
+  MultiByteToWideChar (CP_UTF8, 0, filename, -1, filenameW, MAX_PATH);
+
+  struct _stat st;
+  _wstat (filenameW, &st);
+  if ((st.st_mode & S_IFDIR) != 0)
+       lua_pushnumber (L, 1);
+  else lua_pushnil (L);
+  return 1;
+}
+
 CShellExt::CShellExt() {
   m_cRef = 0L;
   m_pDataObj = NULL;
@@ -384,8 +406,9 @@ CShellExt::CShellExt() {
 
   // Create Lua interpreter, register C functions and run Lua scripts to define Lua functions
   L = lua_newstate (l_alloc, this);  luaL_openlibs(L);
-  lua_register (L, "add_menu_item",  ::add_menu_item);
-  lua_register (L, "read_from_file", ::read_from_file);
+  lua_register (L, "add_menu_item",  ::Lua_add_menu_item);
+  lua_register (L, "read_from_file", ::Lua_read_from_file);
+  lua_register (L, "dir_exists",     ::Lua_dir_exists);
   load_user_funcs();
 }
 

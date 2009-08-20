@@ -28,7 +28,8 @@ register_menu_handler (function (filenames)
 
   -- Menu items for Compresion operations - the only menu items for non-archive files
   if #filenames==1 then
-    arcbase     = nameext
+    isdir       = dir_exists(filenames[1])
+    arcbase     = isdir and nameext or basename
     subdir      = basename..DIR_SEPARATOR
     add_options = ""   -- "-ep1": disabled due to bug in FreeArc
     filename    = quote(nameext)
