@@ -3,8 +3,8 @@ set VER=0.52
 
 del FreeArc*.exe FreeArc*.zip FreeArc*.bz2 FreeArc*.arc
 
-"C:\Program Files (x86)\NSIS\makensis.exe"       FreeArc.nsi
-"C:\Program Files (x86)\NSIS\makensis.exe" -DGTK FreeArc.nsi
+"C:\Program Files (x86)\NSIS\makensis.exe"           FreeArc.nsi
+"C:\Program Files (x86)\NSIS\makensis.exe" -DUPDATE  FreeArc.nsi
 
 ren FreeArc-install.exe FreeArc-%VER%-win32%V%.exe
 ren FreeArc-update.exe  FreeArc-update-%VER%-win32%V%.exe
@@ -20,7 +20,7 @@ cd gtk2-themes
 7z -mx a ..\FreeArc-portable-%VER%-win32%V%.zip
 cd ..
 copy /b FreeArc-portable-%VER%-win32%V%.zip FreeArc-portable-update-%VER%-win32%V%.zip
-cd GTK
+cd GTK2-Runtime
 7z -mx a ..\FreeArc-portable-%VER%-win32%V%.zip
 cd ..
 

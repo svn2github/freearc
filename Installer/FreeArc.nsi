@@ -57,10 +57,10 @@ ReserveFile "Documentation\readme.txt"
 ; MUI end ------
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-!ifdef GTK
-OutFile "FreeArc-install.exe"
-!else
+!ifdef UPDATE
 OutFile "FreeArc-update.exe"
+!else
+OutFile "FreeArc-install.exe"
 !endif
 
 InstallDir "$PROGRAMFILES\FreeArc"
@@ -94,15 +94,11 @@ Section "Install FreeArc" SEC01
   File /r "bin\*.*"
   SetOutPath "$INSTDIR\Documentation"
   File /r "Documentation\*.*"
-!ifdef GTK
+!ifndef UPDATE
   SetOutPath "$INSTDIR"
-  File /r "GTK\*.*"
+  File /r "GTK2-Runtime\*.*"
   SetOutPath "$INSTDIR"
   File /r "gtk2-themes\*.*"
-!else
-;Temporary - exclude from Update install in next version
-  SetOutPath "$INSTDIR\bin"
-  File    "GTK\bin\zlib1.dll"
 !endif
 SectionEnd
 
