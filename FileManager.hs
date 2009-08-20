@@ -761,7 +761,7 @@ myGUI run args = do
   -- Регистрирует использование программы и проверяет новости
   --  (manual=True - ручной вызов из меню, False - ежедневная автопроверка)
   let checkNews manual = do
-        fmStackMsg fm' "0295 Checking for updates..."
+        postGUIAsync$ fmStackMsg fm' "0295 Checking for updates..."
         forkIO_ $ do
           -- Сообщим об использовании программы
           whenJustM_ getUserID $ \userid -> do
@@ -783,7 +783,7 @@ myGUI run args = do
           -- Проверим страницу новостей
           handleErrors
             -- Выполняется при недоступности страницы новостей
-            (gui $ do
+            (postGUIAsync$ do
                 msg <- i18n"0296 Cannot open %1. Do you want to check the page with browser?"
                 whenM (askOkCancel window (format msg newsURL)) $ do
                   openWebsite newsURL)
@@ -791,7 +791,7 @@ myGUI run args = do
             (fileGetBinary newsURL >>== (`showHex` "").crc32) $ \new_crc -> do
           -- Страница новостей успешно прочитана
           old_crc <- fmGetHistory1 fm' "news_crc" ""
-          gui $ do
+          postGUIAsync$ do
           fmStackMsg fm' ""
           if (new_crc == old_crc) then do
              msg <- i18n"0297 Nothing new at %1"

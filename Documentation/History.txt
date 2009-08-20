@@ -357,7 +357,6 @@ fashell
   ren to ShellExt?
 инсталятор
   добавить ArcShellExt, all2arc.exe, 7zg, inno setup dll & script
-  при отсутствии LastCheck в freearc.history программа иногда показывает "иероглифы"
   отшлифовать новый readme.txt
 after "--" allow filenames starting with "@". use "-@" option to include listfiles anywhere on cmdline
 инсталятор для external compressors add-on с обновлением PATH
