@@ -621,6 +621,8 @@ double GetThreadCPUTime  (void);   // Returns number of seconds spent in this th
 unsigned time_based_random(void);
 #endif
 
+#ifdef __cplusplus
+
 // Register/unregister temporary files that should be deleted on ^Break
 class MYFILE;
 void registerTemporaryFile   (MYFILE &file);
@@ -635,10 +637,7 @@ static inline void *malloc_msg (unsigned long size = MY_FILENAME_MAX * 4)
   return ptr;
 }
 
-
-#ifdef __cplusplus
 }       // extern "C"
-#endif
 
 
 /******************************************************************************
@@ -806,6 +805,7 @@ struct Array
 #define ARRAYD(type,name,size)  type name[size]
 #endif
 
+#endif  // __cplusplus
 
 /******************************************************************************
 ** END. ***********************************************************************

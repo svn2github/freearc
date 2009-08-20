@@ -624,7 +624,6 @@ createListView searchField columns = do
     (i:_) <- New.treeModelGetPath model iter
     row <- New.listStoreGetValue model i
     return (strLower(searchField row) ~= strLower(str)++"*")
-    return False
   -- Enable multiple selection
   selection <- New.treeViewGetSelection view
   set selection [New.treeSelectionMode := SelectionMultiple]

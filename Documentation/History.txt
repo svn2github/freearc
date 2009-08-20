@@ -351,17 +351,14 @@
   aARC_VERSION = "0.52", aARCHIVE_VERSION = make4byte 0 0 5 2
 === To-do list ====================================================================================
 
-
 tiny sfx - можно уменьшить размер на 10 кб исключением gettemppath и его dll?
 fashell
   обработка 8000 выделенных файлов? ;)  или даже одного длинного имени файла
   ren to ShellExt?
 инсталятор
   добавить ArcShellExt, all2arc.exe, 7zg, inno setup dll & script
-  ini->bin в portable
   при отсутствии LastCheck в freearc.history программа иногда показывает "иероглифы"
   отшлифовать новый readme.txt
-  gtk2-runtime-2.16.5 (последний)
 after "--" allow filenames starting with "@". use "-@" option to include listfiles anywhere on cmdline
 инсталятор для external compressors add-on с обновлением PATH
 rep: научиться использовать более двух блоков памяти при распаковке
@@ -380,9 +377,7 @@ gui-версия не обрабатывает правильно ошибки:
 внешний вид
   выводить в заголовке окна "testing/compressing/extracting a.arc"
   по окончании операции в заголовке и поле Message "SUCESSFULLY TESTED a.arc", "% WARNINGS IN TESTING a.arc", "ERROR IN ..."
-О поле с логом (внизу FM)
-  в GTK нет возможности сделать, чтобы в этом поле текст, который не поместился по ширине, переносился на новую строчку?
-  можно писать в нем полные пути файлов (хотя бы в первый раз, в сообщении о начале операции)? сейчас сообщения об ошибках дают полные пути, а другие - только имя.
+  в GTK нет возможности сделать, чтобы в этом поле текст, который не поместился в поле с логом (внизу FM) по ширине, переносился на новую строчку?
 other
   Включение/выключение ассоциаций после переноса FreeArc: http://forum.ru-board.com/topic.cgi?forum=5&topic=29437&start=1780#4
   installer.exe -p"/q" will then launch setup.exe /q
@@ -393,6 +388,7 @@ other
     ExtractIcon - file's individual icon
     http://msdn.microsoft.com/en-us/library/dd183402(VS.85).aspx
   загружать иконки для всех команд из png/ico файлов
+  unix - run-by-ext - /etc/mailcap and xdg-mime
 
 ДОБАВИТЬ В 7z.dll ПОДДЕРЖКУ .arc ИЛИ СДЕЛАТЬ unarc.dll С АНАЛОГИЧНЫМ ИНТЕРФЕЙСОМ (и chaining к 7z.dll)!!!!!!!!!!!!!!!!!!!
 
