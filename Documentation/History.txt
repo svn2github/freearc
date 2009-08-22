@@ -354,7 +354,6 @@
 tiny sfx - можно уменьшить размер на 10 кб исключением gettemppath и его dll?
 fashell
   обработка 8000 выделенных файлов? ;)  или даже одного длинного имени файла
-  ren to ShellExt?
 инсталятор
   обновление freearc.history при первом использовании новой версии программы (заменить Compression methods)
   ppmd:384mb
@@ -388,7 +387,7 @@ other
     ExtractIcon - file's individual icon
     http://msdn.microsoft.com/en-us/library/dd183402(VS.85).aspx
   загружать иконки для всех команд из png/ico файлов
-  unix - run-by-ext - /etc/mailcap and xdg-mime
+  unix - run-by-extension - /etc/mailcap and xdg-mime
 
 ДОБАВИТЬ В 7z.dll ПОДДЕРЖКУ .arc ИЛИ СДЕЛАТЬ unarc.dll С АНАЛОГИЧНЫМ ИНТЕРФЕЙСОМ (и chaining к 7z.dll)!!!!!!!!!!!!!!!!!!!
 

@@ -25,10 +25,10 @@ xcopy arc.languages\arc.languages  !Release\bin\arc.languages        /e
 
 xcopy ..\Documentation\History.txt                      !Release\Addons
 xcopy ..\Unarc\FreeArc.fmt                             "!Release\Addons\FAR MultiArc plugin"
-xcopy ..\Unarc\unarc.dll                                !Release\InnoSetup
-xcopy ..\Unarc\InnoSetup\freearc_example.iss            !Release\InnoSetup
-xcopy ..\Unarc\InnoSetup\FreeArc_Example-Ext.iss        !Release\InnoSetup
-xcopy ..\Unarc\InnoSetup\readme.txt                     !Release\InnoSetup
+xcopy ..\Unarc\unarc.dll                                !Release\Addons\InnoSetup
+xcopy ..\Unarc\InnoSetup\freearc_example.iss            !Release\Addons\InnoSetup
+xcopy ..\Unarc\InnoSetup\FreeArc_Example-Ext.iss        !Release\Addons\InnoSetup
+xcopy ..\Unarc\InnoSetup\readme.txt                     !Release\Addons\InnoSetup
 xcopy ..\Documentation\FreeArc036-eng.htm               !Release\Documentation
 xcopy ..\Documentation\FreeArc040-rus.htm               !Release\Documentation
 xcopy ..\Documentation\FreeArc-GUI-Eng.htm              !Release\Documentation
