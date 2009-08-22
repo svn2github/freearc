@@ -356,7 +356,6 @@ fashell
   обработка 8000 выделенных файлов? ;)  или даже одного длинного имени файла
 инсталятор
   обновление freearc.history при первом использовании новой версии программы (заменить Compression methods)
-  ppmd:384mb
   отшлифовать новый readme.txt
 after "--" allow filenames starting with "@". use "-@" option to include listfiles anywhere on cmdline
 инсталятор для external compressors add-on с обновлением PATH
