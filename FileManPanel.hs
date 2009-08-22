@@ -55,6 +55,7 @@ newEmptyFM = do
                        , fm_onChdir      = []
                        , fm_sort_order   = ""
                        , subfm           = FM_Directory {subfm_dir=curdir}}
+  updateConfigFiles fm'
   return fm'
 
 -- |Создать переменную для хранения состояния файл-менеджера
@@ -75,6 +76,7 @@ newFM window view model selection statusLabel messageCombo = do
                        , fm_sort_order   = ""
                        , subfm           = FM_Directory {subfm_dir=curdir}}
   selection `New.onSelectionChanged` fmStatusBarTotals fm'
+  updateConfigFiles fm'
   return fm'
 
 -- |Открыть архив и возвратить его как объект состояния файл-менеджера
@@ -318,10 +320,13 @@ fmModifyHistory fm' tags text deleteCond = ignoreErrors $ do
     modifyConfigFile history_file ((newItem:) . deleteIf (deleteCond mainTag newItem))
 
 -- |Удалить тег из списка истории
-fmDeleteTagFromHistory fm' tag = ignoreErrors $ do
+fmDeleteTagFromHistory fm' tag  =  fmDeleteConditionalFromHistory fm' (\tag1 value1 -> tag==tag1)
+
+-- |Удалить из списка истории строки по условию
+fmDeleteConditionalFromHistory fm' cond = ignoreErrors $ do
   fm <- val fm'
   withMVar (fm_history_file fm) $ \history_file -> do
-    modifyConfigFile history_file (deleteIf ((tag==).fst.split2 '='))
+    modifyConfigFile history_file (deleteIf ((uncurry cond).split2 '='))
 
 -- |Извлечь список истории по заданному тэгу/тэгам
 fmGetHistory1 fm' tags deflt = do x <- fmGetHistory fm' tags; return (head (x++[deflt]))
@@ -355,6 +360,26 @@ fmCacheConfigFile fm' =
   bracket_ (do history <- fmGetConfigFile fm'
                fm' .= \fm -> fm {fm_history = Just history})
            (do fm' .= \fm -> fm {fm_history = Nothing})
+
+
+-- |Обновляет конфиг-файлы, если произошёл переход на новую версию
+updateConfigFiles fm' = do
+  let version = "000.52"
+  lastVersion <- fmGetHistory1 fm' "ConfigVersion" "0"
+  when (lastVersion < version) $ do
+    fmReplaceHistory fm' "compressionLast" "0110 Normal: -m4 -s128m"
+    fmDeleteConditionalFromHistory fm' (\tag value -> tag=="compression" && all isDigit (take 4 value))
+    fmAddHistory fm' "compression" "0752 No compression: -m0"
+    fmAddHistory fm' "compression" "0127 HDD-speed: -m1 -s8m"
+    fmAddHistory fm' "compression" "0112 Very fast: -m2 -s96m"
+    fmAddHistory fm' "compression" "0111 Fast: -m3 -s96m"
+    fmAddHistory fm' "compression" "0110 Normal: -m4 -s128m"
+    fmAddHistory fm' "compression" "0109 High: -m7 -md96m -ld192m"
+    fmAddHistory fm' "compression" "0775 Best asymmetric (with fast decompression): -m9x -ld192m -s256m"
+    fmAddHistory fm' "compression" "0774 Maximum (require 1 gb RAM for decompression): -mx -ld800m"
+    fmAddHistory fm' "compression" "0773 Ultra (require 2 gb RAM for decompression): -mx"
+    fmReplaceHistory fm' "ConfigVersion" version
+
 
 -- |Сохранить размеры и положение окна в истории
 saveSizePos fm' window name = do

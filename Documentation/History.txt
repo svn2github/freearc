@@ -355,12 +355,11 @@ tiny sfx - можно уменьшить размер на 10 кб исключением gettemppath и его dll?
 fashell
   обработка 8000 выделенных файлов? ;)  или даже одного длинного имени файла
 инсталятор
-  обновление freearc.history при первом использовании новой версии программы (заменить Compression methods)
   сначала обновляем news page, затем проверяем новости и копруеми новый crc и затем собираем installer
   отшлифовать новый readme.txt
 after "--" allow filenames starting with "@". use "-@" option to include listfiles anywhere on cmdline
 инсталятор для external compressors add-on с обновлением PATH
-rep: научиться использовать более двух блоков памяти при распаковке
+rep: научиться использовать более двух блоков памяти при распаковке; затем увеличить -ld до 1600 mb by default
 "lzp+ppmd:1gb" - не может выделить 1gb, но падает на I/O error в lzp (регресс 11b->20 июня)
 пустые каталоги не удаляются из архива (в FM)
 iss
