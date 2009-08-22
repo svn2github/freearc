@@ -1,7 +1,7 @@
 news_crc=48622d4d
 
 compressionLast=0110 Normal: -m4 -s128m
-compression=0771 Maximum: -mx
+compression=0773 Maximum (require 2 gb RAM to decompress!): -mx
 compression=0772 Maximum with fast decompression: -m9x -ld192m -s256m
 compression=0109 High: -m7 -md96m -ld192m
 compression=0110 Normal: -m4 -s128m

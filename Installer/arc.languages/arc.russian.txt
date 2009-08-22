@@ -567,7 +567,7 @@ Errors returned by compression methods
 
 === Standard profiles ====================================================
 Compression
-0771 Maximum=Максимальное
+0773 Maximum (require 2 gb RAM to decompress!)=Максимальное (требует 2 гб ОЗУ для распаковки!)
 0772 Maximum with fast decompression=Максимальное с быстрой распаковкой
 0752 No compression=Без сжатия
 
