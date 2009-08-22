@@ -351,15 +351,14 @@
   aARC_VERSION = "0.52", aARCHIVE_VERSION = make4byte 0 0 5 2
 === To-do list ====================================================================================
 
-tiny sfx - можно уменьшить размер на 10 кб исключением gettemppath и его dll?
+rep: научиться использовать более двух блоков памяти при распаковке; затем увеличить -ld до 1600 mb by default
 fashell
   обработка 8000 выделенных файлов? ;)  или даже одного длинного имени файла
 инсталятор
-  сначала обновляем news page, затем проверяем новости и копруеми новый crc и затем собираем installer
+  сначала обновляем news page, затем проверяем новости и копируем новый crc и затем собираем installer
   отшлифовать новый readme.txt
 after "--" allow filenames starting with "@". use "-@" option to include listfiles anywhere on cmdline
 инсталятор для external compressors add-on с обновлением PATH
-rep: научиться использовать более двух блоков памяти при распаковке; затем увеличить -ld до 1600 mb by default
 "lzp+ppmd:1gb" - не может выделить 1gb, но падает на I/O error в lzp (регресс 11b->20 июня)
 пустые каталоги не удаляются из архива (в FM)
 iss
@@ -372,6 +371,7 @@ cvt
 gui-версия не обрабатывает правильно ошибки:
   a x:\a
   -mqq
+tiny sfx - можно уменьшить размер на 10 кб исключением gettemppath и его dll?
 внешний вид
   выводить в заголовке окна "testing/compressing/extracting a.arc"
   по окончании операции в заголовке и поле Message "SUCESSFULLY TESTED a.arc", "% WARNINGS IN TESTING a.arc", "ERROR IN ..."

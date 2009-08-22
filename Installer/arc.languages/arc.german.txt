@@ -19,7 +19,7 @@
 
 Language name in english and mother tongue
 0000 Language=German (Deutsch)
-0159 Copyright=Peter Bauder alias JangoFat (based on 7zip language file;edited for FreeArc-0.52-alpha-2009-08-09)\nVacon\nOriginal copyrights:\nTranslated by Soeren Finster\n7-Zip 4.07 beta\nUpdated by JAK-Software.DE\n7-Zip 4.55 beta\nMaintained by Joachim Henke (since 4.12 beta)
+0159 Copyright=Peter Bauder alias JangoFat\nbased on 7zip language file\nedited for FreeArc-0.52-alpha-2009-08-22\n\nVacon\nOriginal copyrights:\nTranslated by Soeren Finster\n7-Zip 4.07 beta\nUpdated by JAK-Software.DE\n7-Zip 4.55 beta\nMaintained by Joachim Henke (since 4.12 beta)
 
 Language-specific URLs relative to http://freearc.org/ and helpfiles
 Filled only for languages providing their own translations
@@ -332,6 +332,8 @@ Settings dialog
 0166 Logfile:=Protokoll:
 0292 View=Ansehen
 0167 Select logfile=Protokolldatei auswählen
+0447 Temporary directory:=Temporäres Verzeichnis:
+0448 Select directory for temporary files=Verzeichnis für temporäre Dateien auswählen
 0172 Associate FreeArc with .arc files=.arc-Dateien mit FreeArc verknüpfen
 0361 Add captions to toolbar buttons=Beschriftung zu Toolbar- Buttons hinzufügen
 0370 Watch for new versions via Internet=Neue Version über das Internet suchen
@@ -410,10 +412,6 @@ Many dialogs
 0432 &Detach=In eigenem Prozess verarbeiten
 
 Progress indicator
---Buttons
-0052 &Background=&Hintergrund
-0053 &Pause=&Pause
-0054 &Continue=&Fortsetzen
 --Labels
 0056 Files=Bearbeite Datei:
 0057 Total files=Anzahl Dateien insgesamt:
@@ -434,6 +432,12 @@ Progress indicator
 0385 Scanning archive for damages=Scanne Archiv auf Schäden
 0386 Protecting archive from damages=Füge Wiederherstellungsinformationen hinzu
 0387 Recovering archive=Stelle Archiv wieder her
+--Extra options
+0446 Keep window on top=Fenster im Vordergrund halten
+--Buttons
+0052 &Background=&Hintergrund
+0053 &Pause=&Pause
+0054 &Continue=&Fortsetzen
 
 File overwrite dialog
 0078 Confirm File Replace=Überschreiben bestätigen
@@ -456,39 +460,47 @@ Archive comment dialog
 
 
 === Infoline messages ====================================================
-0228 Deleting from %1=Lösche aus %1
-0229 FILES SUCCESFULLY DELETED FROM %1=DATEI(EN) ERFOLGREICH AUS GELÖSCHT %1
-0230 %2 WARNINGS WHILE DELETING FROM %1=%2 WARNUNGEN BEIM LÖSCHEN AUS %1
+0439 Listing archive %1=Liste Inhalt des Archivs %1 auf
+0445 SUCCESFULLY LISTED %1=INHALT DES ARCHIVS %1 ERFOLGREICH AUFGELISTET
+0442 %2 WARNINGS WHILE LISTING %1=%2 WARNUNGEN WÄHREND DES AUFLISTENS VON %1
 
-0231 Testing %1=Teste %1
+0435 Deleting files from archive %1=Lösche Datei(en) aus Archiv %1
+0229 FILES SUCCESFULLY DELETED FROM %1=DATEI(EN) ERFOLGREICH AUS %1 GELÖSCHT
+0230 %2 WARNINGS WHILE DELETING FROM %1=%2 WARNUNGEN WÄHREND DES LÖSCHENS AUS %1
+
+0440 Testing archive %1=Teste Archiv %1
 0232 SUCCESFULLY TESTED %1=%1 ERFOLGREICH GETESTET
-0233 %2 WARNINGS WHILE TESTING %1=%2 WARNUNGEN BEIM TESTEN VON %1
+0233 %2 WARNINGS WHILE TESTING %1=%2 WARNUNGEN WÄHREND DES TESTENS VON %1
 
-0234 Extracting files from %1=Entpacke Datei(en) aus %1
+0441 Extracting files from archive %1=Entpacke Datei(en) aus Archiv %1
 0235 FILES SUCCESFULLY EXTRACTED FROM %1=DATEI(EN) ERFOLGREICH ENTPACKT AUS %1
-0236 %2 WARNINGS WHILE EXTRACTING FILES FROM %1=%2 WARNUNGEN BEIM ENTPACKEN DER DATEI(EN) AUS %1
+0236 %2 WARNINGS WHILE EXTRACTING FILES FROM %1=%2 WARNUNGEN WÄHREND DES ENTPACKENS DER DATEI(EN) AUS %1
 
-0237 Modifying %1=Verändere %1
-0238 SUCCESFULLY MODIFIED %1=%1 ERFOLGREICH VERÄNDERT
-0239 %2 WARNINGS WHILE MODIFYING %1=%2 WARNUNGEN BEIM VERÄNDERN VON %1
+0433 Modifying archive %1=Modifiziere Archiv %1
+0238 SUCCESFULLY MODIFIED %1=%1 ERFOLGREICH MODIFIZIERT
+0239 %2 WARNINGS WHILE MODIFYING %1=%2 WARNUNGEN WÄHREND DES VERÄNDERNS VON %1
 
 0240 Joining archives to %1=Verschmelze Archive zu %1
 0241 SUCCESFULLY JOINED ARCHIVES TO %1=ARCHIVE ERFOLGREICH VERSCHMOLZEN ZU %1
-0242 %2 WARNINGS WHILE JOINING ARCHIVES TO %1=%2 WARNUNGEN BEIM VERSCHMELZEN ZU %1
+0242 %2 WARNINGS WHILE JOINING ARCHIVES TO %1=%2 WARNUNGEN WÄHREND DES VERSCHMELZENS ZU %1
 
-0243 Adding to %1=Füge zu %1 hinzu
-0244 FILES SUCCESFULLY ADDED TO %1=DATEI(EN) EFOLGREICH HINZUGEFÜGT ZU %1
-0245 %2 WARNINGS WHILE ADDING TO %1=%2 WARNUNGEN BEIM HINZUFÜGEN ZU %1
+0437 Creating archive %1=Erstelle Archiv %1
+0443 SUCCESFULLY CREATED %1=%1 ERFOLGREICH ERSTELLT
+0434 %2 WARNINGS WHILE CREATING %1=%2 WARNUNGEN WÄHREND DES ERSTELLENS VON %1 
+
+0438 Updating archive %1=Aktualisiere Archiv %1
+0444 SUCCESFULLY UPDATED %1=%1 ERFOLGREICH AKTUALISIERT
+0436 %2 WARNINGS WHILE UPDATING %1=%2 WARNUNGEN WÄHREND DES AKTUALISIERENS VON %1
 
 0299 Lock archive(s)?=Archiv(e) verschließen?
 0300 Locking archive %1=Verschließe Archiv %1
 0301 SUCCESFULLY LOCKED ARCHIVE %1=ARCHIV %1 ERFOLGREICH VERSCHLOSSEN
-0302 %2 WARNINGS WHILE LOCKING ARCHIVE %1=%2 WARNUNGEN WÄHREND DEM VERSCHLIEßEN DES ARCHIVS %1
+0302 %2 WARNINGS WHILE LOCKING ARCHIVE %1=%2 WARNUNGEN WÄHREND DES VERSCHLIEßENS VON ARCHIV %1
 
 0381 Repair archive(s)? Repaired archive(s) will be placed into files named fixed.*=Archiv(e) reparieren? Reparierte(s) Archiv(e) werden wie folgt umbenannt \"fixed.*\"
 0382 Repairing archive %1=Repariere Archiv %1
 0383 SUCCESFULLY REPAIRED ARCHIVE %1=ARCHIV %1 ERFOLGREICH REPARIERT
-0384 %2 WARNINGS WHILE REPAIRING ARCHIVE %1=%2 WARNUNGEN WÄHREND DEM REPARIEREN DES ARCHIVS %1
+0384 %2 WARNINGS WHILE REPAIRING ARCHIVE %1=%2 WARNUNGEN WÄHREND DES REPARIERENS VON ARCHIV %1
 
 
 === Error messages =======================================================
@@ -557,6 +569,9 @@ Errors returned by compression methods
 Compression
 0771 Maximum=Maximum
 0772 Maximum with fast decompression=Maximum (mit schneller Dekompression)
+0773 Ultra (require 2 gb RAM for decompression)=Ultra (benötigt 2GB RAM für Dekompression)
+0774 Maximum (require 1 gb RAM for decompression)=Maximum (benötigt 1GB RAM für Dekompression)
+0775 Best asymmetric (with fast decompression)=Beste asymetrische Kompression (mit schneller Dekompression)
 0752 No compression=Keine Kompression (nur speichern)
 
 Encryption

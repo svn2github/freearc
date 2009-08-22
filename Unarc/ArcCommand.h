@@ -6,7 +6,7 @@
 #endif
 
 #define HEADER1        "FreeArc 0.52 "
-#define HEADER2        "  http://freearc.org  2009-06-17\n"
+#define HEADER2        "  http://freearc.org  2009-07-22\n"
 
 
 /******************************************************************************
