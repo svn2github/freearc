@@ -592,17 +592,17 @@ int rep_decompress (unsigned BlockSize, int MinCompression, int MinMatchLen, int
             while (offset > data-start && len  ||  end-data < len)
             {
                 MemSize dataPos = data-start+cumulative_size[current_block];   // Absolute position of LZ dest
-                MemSize fromPos = dataPos-offset;  int i;                      // Absolute position of LZ src
+                MemSize fromPos = dataPos-offset;  int j;                      // Absolute position of LZ src
                 if (offset<=dataPos) {
                     // Копируемая строка имеет меньшее смещение, чем текущая позиция
-                    for (i=current_block;  fromPos < cumulative_size[i]; i--);  // ищем блок, которому принадлежит копируемая строка
+                    for (j=current_block;  fromPos < cumulative_size[j]; j--);  // ищем блок, которому принадлежит копируемая строка
                 } else {
                     // Копируемая строка имеет большее смещение, чем текущая позиция
                     fromPos += BlockSize;
-                    for (i=current_block;  fromPos >= cumulative_size[i+1];  i++);  // ищем блок, которому принадлежит копируемая строка
+                    for (j=current_block;  fromPos >= cumulative_size[j+1];  j++);  // ищем блок, которому принадлежит копируемая строка
                 }
-                byte *from    = fromPos - cumulative_size[i] + datap[i];       // Memory address of LZ src
-                byte *fromEnd = endp[i];                                       // End of membuf containing LZ src
+                byte *from    = fromPos - cumulative_size[j] + datap[j];       // Memory address of LZ src
+                byte *fromEnd = endp[j];                                       // End of membuf containing LZ src
 
                 int bytes = mymin(len, mymin(end-data, fromEnd-from));  // How much bytes we can copy without overrunning src or dest buffers
                 //printf("? %d-%d=%d %d(%d %d)\n", dataPos, offset, fromPos, bytes, end-data, fromEnd-from);
