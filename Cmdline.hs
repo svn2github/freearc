@@ -304,7 +304,7 @@ parseCmdline cmdline  =  (`mapMaybeM` split ";" cmdline) $ \args -> do
   -- Ограничения на память при упаковке/распаковке
   let climit = parseLimit "75%"$ findReqArg o "LimitCompMem"   "--"
       dlimit = parseLimit d_def$ findReqArg o "LimitDecompMem" "--"
-      d_def  = if cmdType cmd == ADD_CMD  then "1gb"  else "75%"
+      d_def  = if cmdType cmd == ADD_CMD  then "1600mb"  else "75%"
       parseLimit deflt x = case x of
         "--" -> parsePhysMem deflt  -- По умолчанию: ограничить использование памяти 75% её физического объёма при упаковке, и 1гб при распаковке
         "-"  -> CompressionLib.aUNLIMITED_MEMORY   -- Не ограничивать использование памяти

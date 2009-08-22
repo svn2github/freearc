@@ -377,7 +377,7 @@ updateConfigFiles fm' = do
     fmAddHistory fm' "compression" "0109 High: -m7 -md96m -ld192m"
     fmAddHistory fm' "compression" "0775 Best asymmetric (with fast decompression): -m9x -ld192m -s256m"
     fmAddHistory fm' "compression" "0774 Maximum (require 1 gb RAM for decompression): -mx -ld800m"
-    fmAddHistory fm' "compression" "0773 Ultra (require 2 gb RAM for decompression): -mx"
+    fmAddHistory fm' "compression" "0773 Ultra (require 2 gb RAM for decompression): -mx -ld1600m"
     fmReplaceHistory fm' "ConfigVersion" version
 
 

@@ -1,7 +1,7 @@
 news_crc=48622d4d
 
 compressionLast=0110 Normal: -m4 -s128m
-compression=0773 Ultra (require 2 gb RAM for decompression): -mx
+compression=0773 Ultra (require 2 gb RAM for decompression): -mx -ld1600m
 compression=0774 Maximum (require 1 gb RAM for decompression): -mx -ld800m
 compression=0775 Best asymmetric (with fast decompression): -m9x -ld192m -s256m
 compression=0109 High: -m7 -md96m -ld192m
