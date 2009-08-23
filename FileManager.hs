@@ -845,7 +845,7 @@ myGUI run args = do
                  ,aboutDialogCopyright := "(c) "++aARC_EMAIL
                  ,aboutDialogComments  := unlines aARC_LICENSE
                  ,aboutDialogWebsite   := homeURL
-                 ,aboutDialogAuthors   := ["Igor Pavlov (author of LZMA and EXE filter)"
+                 ,aboutDialogAuthors   := ["Igor Pavlov (author of 7-zip, LZMA and EXE filter)"
                                           ,"Dmitry Shkarin (author of PPMd)"
                                           ,"Ilya Grebnov (author of GRZipII and LZP filter)"
                                           ,"Alexander Djourik and Pavel Zhilin (authors of TTA)"

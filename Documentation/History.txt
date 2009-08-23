@@ -354,6 +354,7 @@
 fashell
   обработка 8000 выделенных файлов? ;)  или даже одного длинного имени файла
 инсталятор
+  sfx linux/nodelete
   сначала обновляем news page, затем проверяем новости и копируем новый crc и затем собираем installer
   отшлифовать новый readme.txt
 after "--" allow filenames starting with "@". use "-@" option to include listfiles anywhere on cmdline

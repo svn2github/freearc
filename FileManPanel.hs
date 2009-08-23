@@ -364,7 +364,7 @@ fmCacheConfigFile fm' =
 
 -- |Обновляет конфиг-файлы, если произошёл переход на новую версию
 updateConfigFiles fm' = do
-  let version = "000.52"
+  let version = "000.52.01"
   lastVersion <- fmGetHistory1 fm' "ConfigVersion" "0"
   when (lastVersion < version) $ do
     fmReplaceHistory fm' "compressionLast" "0110 Normal: -m4 -s128m"
