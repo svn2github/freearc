@@ -535,19 +535,6 @@ replaceAtEnd from to s =
     Just remainder  -> reverse remainder ++ to
     Nothing         -> s
 
--- |Закодировать символы, запрещённые в URL
-urlEncode = concatMap (\c -> if isReservedChar(ord c) then '%':encode16 [c] else [c])
-  where
-        isReservedChar x
-            | x >= ord 'a' && x <= ord 'z' = False
-            | x >= ord 'A' && x <= ord 'Z' = False
-            | x >= ord '0' && x <= ord '9' = False
-            | x <= 0x20 || x >= 0x7F = True
-            | otherwise = x `elem` map ord [';','/','?',':','@','&'
-                                           ,'=','+',',','$','{','}'
-                                           ,'|','\\','^','[',']','`'
-                                           ,'<','>','#','%', chr 34]
-
 -- |Вернуть шестнадцатеричную запись строки символов с кодами <=255
 encode16 (c:cs) | n<256 = [intToDigit(n `div` 16), intToDigit(n `mod` 16)] ++ encode16 cs
                              where n = ord c

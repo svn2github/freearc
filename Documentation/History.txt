@@ -355,12 +355,14 @@ fashell
   обработка 8000 выделенных файлов? ;)  или даже одного длинного имени файла
 инстал€тор
   sfx linux/nodelete
+  откатитьс€ на старый gtk из-за About?
   сначала обновл€ем news page, затем провер€ем новости и копируем новый crc и затем собираем installer
   отшлифовать новый readme.txt
 after "--" allow filenames starting with "@". use "-@" option to include listfiles anywhere on cmdline
 инстал€тор дл€ external compressors add-on с обновлением PATH
 "lzp+ppmd:1gb" - не может выделить 1gb, но падает на I/O error в lzp (регресс 11b->20 июн€)
 пустые каталоги не удал€ютс€ из архива (в FM)
+tiny sfx - можно уменьшить размер на 10 кб исключением gettemppath и его dll?
 iss
   unarc.dll: брать arc.ini из тек. каталога
   проверка на исчерпание свободного места в write callback...
@@ -371,7 +373,6 @@ cvt
 gui-верси€ не обрабатывает правильно ошибки:
   a x:\a
   -mqq
-tiny sfx - можно уменьшить размер на 10 кб исключением gettemppath и его dll?
 внешний вид
   выводить в заголовке окна "testing/compressing/extracting a.arc"
   по окончании операции в заголовке и поле Message "SUCESSFULLY TESTED a.arc", "% WARNINGS IN TESTING a.arc", "ERROR IN ..."

@@ -28,7 +28,7 @@ import Utils
 import Errors
 import Files
 import FileInfo
-import Charsets            (i18n, i18ns)
+import Charsets            (i18n, i18ns, urlEncode)
 import Compression
 import Encryption
 import Options
