@@ -517,7 +517,7 @@ int rep_decompress (unsigned BlockSize, int MinCompression, int MinMatchLen, int
     while (remaining_size>0)
     {
         if (total_blocks >= MAX_BLOCKS)          ReturnErrorCode (FREEARC_ERRCODE_NOT_ENOUGH_MEMORY);
-        MemSize data_size = remaining_size;
+        MemSize data_size = mymin(remaining_size, remaining_size/2+2*mb);
         for(;;)
         {
             if (NULL  !=  (datap[total_blocks] = (byte*) BigAlloc (data_size)))  break;
