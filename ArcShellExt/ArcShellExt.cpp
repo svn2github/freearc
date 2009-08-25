@@ -29,8 +29,7 @@
 #include "Lua/lua.hpp"
 
 #define GUID_SIZE 128
-#define MAX_FILES 10
-#define MAX_CMDSTR (MAX_PATH * MAX_FILES)
+#define MY_FILENAME_MAX 65536  /* maximum filename size */
 #define ResultFromShort(i) ResultFromScode(MAKE_SCODE(SEVERITY_SUCCESS, 0, (USHORT)(i)))
 #define MYARRAYSIZE(arr) (sizeof(arr)/sizeof(*(arr)))
 
@@ -56,9 +55,9 @@ typedef struct{
 } DOREGSTRUCT, *LPDOREGSTRUCT;
 
 #ifdef ISS_JOINER
-#define szShellExtensionTitle "IssJoiner"
+#define szShellExtensionTitle _T("IssJoiner")
 #else
-#define szShellExtensionTitle "FreeArc"
+#define szShellExtensionTitle _T("FreeArc")
 #endif
 
 BOOL RegisterServer(CLSID, LPTSTR);
@@ -232,7 +231,7 @@ BOOL UnregisterServer(CLSID clsid, LPTSTR lpszTitle) {
 //---------------------------------------------------------------------------
 // MsgBoxDebug
 //---------------------------------------------------------------------------
-void MsgBoxDebug(LPTSTR lpszMsg) {
+void MsgBoxDebug(LPCSTR lpszMsg) {
   wchar_t msgW[MAX_PATH];
   MultiByteToWideChar (CP_UTF8, 0, lpszMsg, -1, msgW, MAX_PATH);
 
@@ -245,7 +244,7 @@ void MsgBoxDebug(LPTSTR lpszMsg) {
 //---------------------------------------------------------------------------
 // MsgBox
 //---------------------------------------------------------------------------
-void MsgBox(HWND hParent, LPTSTR lpszMsg) {
+void MsgBox(HWND hParent, LPCSTR lpszMsg) {
   wchar_t msgW[MAX_PATH];
   MultiByteToWideChar (CP_UTF8, 0, lpszMsg, -1, msgW, MAX_PATH);
 
@@ -258,7 +257,7 @@ void MsgBox(HWND hParent, LPTSTR lpszMsg) {
 //---------------------------------------------------------------------------
 // MsgBoxError
 //---------------------------------------------------------------------------
-void MsgBoxError(HWND hParent, LPTSTR lpszMsg) {
+void MsgBoxError(HWND hParent, LPCSTR lpszMsg) {
   wchar_t msgW[MAX_PATH];
   MultiByteToWideChar (CP_UTF8, 0, lpszMsg, -1, msgW, MAX_PATH);
 
@@ -344,8 +343,10 @@ static int Lua_read_from_file (lua_State *L) {
     return 0;  ////lua_pushstring (L, errormsg); luaL_error / lua_error
 
   // Convert filename into UTF-16
-  wchar_t filenameW[MAX_PATH];
-  MultiByteToWideChar (CP_UTF8, 0, filename, -1, filenameW, MAX_PATH);
+  TCHAR *filenameW = (TCHAR*) malloc (sizeof(TCHAR) * MY_FILENAME_MAX);
+  if (!filenameW)
+    return 0;  ////lua_pushstring (L, errormsg); luaL_error / lua_error
+  MultiByteToWideChar (CP_UTF8, 0, filename, -1, filenameW, MY_FILENAME_MAX);
 
   // Where and how many bytes to read
   int origin = luaL_checkinteger(L, 2);
@@ -354,6 +355,7 @@ static int Lua_read_from_file (lua_State *L) {
 
   // Open file
   int f = _wopen (filenameW, _O_BINARY | _O_RDONLY);
+  free(filenameW);
   if (f<0)
     return 0;  ////lua_pushstring (L, errormsg); luaL_error / lua_error
 
@@ -383,14 +385,15 @@ static int Lua_dir_exists (lua_State *L) {
     return 0;  ////lua_pushstring (L, errormsg); luaL_error / lua_error
 
   // Convert filename into UTF-16
-  wchar_t filenameW[MAX_PATH];
-  MultiByteToWideChar (CP_UTF8, 0, filename, -1, filenameW, MAX_PATH);
+  TCHAR *filenameW = (TCHAR*) malloc (sizeof(TCHAR) * MY_FILENAME_MAX);
+  MultiByteToWideChar (CP_UTF8, 0, filename, -1, filenameW, MY_FILENAME_MAX);
 
   struct _stat st;
   _wstat (filenameW, &st);
   if ((st.st_mode & S_IFDIR) != 0)
        lua_pushnumber (L, 1);
   else lua_pushnil (L);
+  free(filenameW);
   return 1;
 }
 
@@ -464,24 +467,25 @@ STDMETHODIMP CShellExt::Initialize(LPCITEMIDLIST pIDFolder, LPDATAOBJECT pDataOb
 //---------------------------------------------------------------------------
 
 void CShellExt::load_user_funcs() {
-  TCHAR szModuleFullName[MAX_PATH];
-  TCHAR* pDest;
+  TCHAR *szModuleFullNameW = (TCHAR*) malloc (sizeof(TCHAR) * MY_FILENAME_MAX);;
+  char  *szModuleFullName  = ( char*) malloc (            4 * MY_FILENAME_MAX);  ;
 
-  GetModuleFileName(_hModule, szModuleFullName, MAX_PATH);
-  pDest = strrchr(szModuleFullName, '\\' );
-  pDest++;
+  GetModuleFileName(_hModule, szModuleFullNameW, MAX_PATH);
+  WideCharToMultiByte (CP_UTF8, 0, szModuleFullNameW, -1, szModuleFullName, MY_FILENAME_MAX, NULL, NULL);
 
-  pDest[0] = 0;
-  strcat (szModuleFullName, "ArcShellExt-system.lua");
-  luaL_dofile (L, szModuleFullName);
+  char *filename = strrchr(szModuleFullName, '\\') + 1;
 
-  pDest[0] = 0;
-  strcat (szModuleFullName, "ArcShellExt-config.lua");
-  luaL_dofile (L, szModuleFullName);
+  strcpy (filename, "ArcShellExt-system.lua");
+  luaL_dofile (L, szModuleFullName);                           //unicode!
 
-  pDest[0] = 0;
-  strcat (szModuleFullName, "ArcShellExt-user.lua");
-  luaL_dofile (L, szModuleFullName);
+  strcpy (filename, "ArcShellExt-config.lua");
+  luaL_dofile (L, szModuleFullName);                           //unicode!
+
+  strcpy (filename, "ArcShellExt-user.lua");
+  luaL_dofile (L, szModuleFullName);                           //unicode!
+
+  free(szModuleFullName);
+  free(szModuleFullNameW);
 }
 
 int CShellExt::add_menu_item() {
@@ -554,25 +558,39 @@ STDMETHODIMP CShellExt::QueryContextMenu(HMENU _hMenu, UINT _nIndex, UINT _idCmd
   if (SUCCEEDED(hres) && m_stgMedium.hGlobal)
   {
     // Number of files selected
-    m_cbFiles = DragQueryFile((HDROP)m_stgMedium.hGlobal, (UINT)-1, 0, 0);
+    int numFiles = DragQueryFile((HDROP)m_stgMedium.hGlobal, (UINT)-1, 0, 0);
 
-    if (m_cbFiles)
+    if (numFiles)
     {
       // Call build_menu, passing list of files selected
       lua_getglobal (L, "build_menu");
 
-      if (!lua_checkstack (L, m_cbFiles))
+      if (!lua_checkstack (L, numFiles))
         return 0;////error
 
-      // Push UTF8 names of files selected
-      for (UINT i = 0; i < m_cbFiles; i++) {
-      	wchar_t WSelectedFilename[MAX_PATH];
-        DragQueryFileW ((HDROP)m_stgMedium.hGlobal, i, WSelectedFilename, MAX_PATH);
-        WideCharToMultiByte (CP_UTF8, 0, WSelectedFilename, -1, SelectedFilename, MAX_PATH, NULL, NULL);
+      // Push UTF8 names of files selected to the Lua stack and save them to filenames[]
+      TCHAR *WSelectedFilename = (TCHAR*) malloc (sizeof(TCHAR) * MY_FILENAME_MAX);
+      int    total_size = 0;
+      for (UINT i = 0; i < numFiles; i++)
+      {
+        DragQueryFile ((HDROP)m_stgMedium.hGlobal, i, WSelectedFilename, MY_FILENAME_MAX);
+        WideCharToMultiByte (CP_UTF8, 0, WSelectedFilename, -1, SelectedFilename, MY_FILENAME_MAX, NULL, NULL);
         lua_pushstring (L, SelectedFilename);
+        total_size += strlen(strrchr(SelectedFilename,'\\'));
       }
 
-      if (lua_pcall(L, m_cbFiles, 0, 0) != 0)
+      // Concat all filenames to one buffer
+      char *p = listfile_data = (char*) malloc (sizeof(char) * (total_size+1));
+      for (UINT i = 0; i < numFiles; i++)
+      {
+        DragQueryFile ((HDROP)m_stgMedium.hGlobal, i, WSelectedFilename, MY_FILENAME_MAX);
+        WideCharToMultiByte (CP_UTF8, 0, WSelectedFilename, -1, SelectedFilename, MY_FILENAME_MAX, NULL, NULL);
+        strcpy (p, strrchr(SelectedFilename,'\\')+1);
+        if (i<numFiles)  strcat (p, "\n");
+        p = strchr(p, '\0');
+      }
+
+      if (lua_pcall(L, numFiles, 0, 0) != 0)
         return 0;////error
         ;//error(L, "error running function `f': %s",
          //        lua_tostring(L, -1));
@@ -636,17 +654,152 @@ STDMETHODIMP CShellExt::InvokeCommand(LPCMINVOKECOMMANDINFO lpcmi) {
   return hr;
 }
 
-STDMETHODIMP CShellExt::RunProgram (HWND hParent, LPCSTR pszWorkingDir, LPCSTR cmd, LPCSTR pszParam, int iShowCmd) {
 
-  // Find current directory - it's name of any file selected minus last part
-  TCHAR* pDest = strrchr(SelectedFilename, '\\');
+// ****************************************************************************************
+// Execution of command that user has been selected ***************************************
+// ****************************************************************************************
+
+// Save buffer contents to tempfile and return its name
+TCHAR *SaveDataToTempFile (char *buffer, char *message)
+{
+  HANDLE hTempFile;
+  DWORD  dwRetVal;
+  DWORD  dwBytesWritten;
+  UINT   uRetVal;
+  TCHAR *lpPathBuffer = (TCHAR*) malloc (sizeof(TCHAR) * MY_FILENAME_MAX);
+  TCHAR *szTempName   = (TCHAR*) malloc (sizeof(TCHAR) * MY_FILENAME_MAX);
+  BOOL   fSuccess;
+
+  // Check mallocs
+  if (!lpPathBuffer || !szTempName)
+  {
+    sprintf (message, "malloc failed\n");
+    return NULL;
+  }
+
+   // Get the temp path
+  dwRetVal = GetTempPath(MY_FILENAME_MAX,     // length of the buffer
+                         lpPathBuffer);       // buffer for path
+  if (dwRetVal > MY_FILENAME_MAX  ||  dwRetVal == 0)
+  {
+    sprintf (message, "GetTempPath failed (%d)\n", GetLastError());
+    return NULL;
+  }
+
+  // Ask for a unique temporary file name
+  uRetVal = GetTempFileName(lpPathBuffer,      // directory for tmp files
+                            TEXT("filelist"),  // temp file name prefix
+                            0,                 // create unique name
+                            szTempName);       // buffer for name
+  if (uRetVal == 0)
+  {
+    sprintf (message, "GetTempFileName failed (%d)\n", GetLastError());
+    return NULL;
+  }
+  free(lpPathBuffer);
+
+
+  // Create the tempfile
+  hTempFile = CreateFile(szTempName,           // file name
+                         GENERIC_WRITE,        // open for writing
+                         0,                    // do not share
+                         NULL,                 // default security
+                         CREATE_ALWAYS,        // overwrite existing
+                         FILE_ATTRIBUTE_NORMAL,// normal file
+                         NULL);                // no template
+  if (hTempFile == INVALID_HANDLE_VALUE)
+  {
+    sprintf (message, "CreateFile failed (%d)\n", GetLastError());
+    return NULL;
+  }
+
+  // Save data to file
+  fSuccess = WriteFile(hTempFile,
+                       buffer,
+                       strlen(buffer),
+                       &dwBytesWritten,
+                       NULL);
+  if (!fSuccess || dwBytesWritten!=strlen(buffer))
+  {
+    sprintf (message, "WriteFile failed (%d)\n", GetLastError());
+    return NULL;
+  }
+
+  // Close the handle to the file.
+  fSuccess = CloseHandle (hTempFile);
+  if (!fSuccess)
+  {
+    sprintf (message, "CloseHandle failed (%d)\n", GetLastError());
+    return NULL;
+  }
+
+  return szTempName;
+}
+
+// Replace substring one time
+TCHAR *str_replace (TCHAR *str, TCHAR *from, const TCHAR *to)
+{
+  TCHAR *s = (TCHAR*) malloc (sizeof(TCHAR) * (_tcslen(str)+_tcslen(to)+1));
+  if (!s)  return NULL;
+  TCHAR *p = _tcsstr(str, from);
+  if (p) {
+    _stprintf(s, _T("%.*s%s%s"), p-str, str, to, p+_tcslen(from));
+  } else {
+    _tcscpy(s,str);
+  }
+  return s;
+}
+
+struct Param
+{
+  HANDLE hProcess;
+  TCHAR *listfile;
+};
+
+// Wait for program finish and then delete the list file
+static DWORD WINAPI WaitProgramFinish (void *paramPtr)
+{
+  Param *param = (Param*) paramPtr;
+  WaitForSingleObject (param->hProcess, INFINITE);
+  DeleteFile (param->listfile);
+  free (param->listfile);
+  free (param);
+  return 0;
+}
+
+STDMETHODIMP CShellExt::RunProgram (HWND hParent, LPCSTR pszWorkingDir, LPCSTR cmd0, LPCSTR pszParam, int iShowCmd)
+{
+  char message[MAX_PATH];
+
+  // Find current directory - it's the name of any file selected minus last part
+  char* pDest = strrchr(SelectedFilename, '\\');
   if (pDest==SelectedFilename || pDest[-1]==':')  pDest++;
   pDest[0] = 0;
-  wchar_t CurrentDirW[MAX_PATH];
-  MultiByteToWideChar (CP_UTF8, 0, SelectedFilename, -1, CurrentDirW, MAX_PATH);
+  TCHAR *CurrentDirW = (TCHAR*) malloc (sizeof(TCHAR) * MY_FILENAME_MAX);
+  MultiByteToWideChar (CP_UTF8, 0, SelectedFilename, -1, CurrentDirW, MY_FILENAME_MAX);
 
-  wchar_t *cmdW = (wchar_t*) malloc ((strlen(cmd)+1) * sizeof(*cmdW));
-  MultiByteToWideChar (CP_UTF8, 0, cmd, -1, cmdW, strlen(cmd)+1);
+  // Save listfile data to tempfile
+  TCHAR *listfile = SaveDataToTempFile (listfile_data, message);
+  if (!listfile) {
+    MsgBoxError (hParent, message);
+    return NOERROR;////error
+  }
+
+  // Convert cmd from UTF-8 to UTF-16
+  TCHAR *cmdW0 = (TCHAR*) malloc ((strlen(cmd0)+1) * sizeof(*cmdW0));
+  if (!cmdW0) {
+    MsgBoxError (hParent, "Memory allocation error");
+    return NOERROR;////error
+  }
+  MultiByteToWideChar (CP_UTF8, 0, cmd0, -1, cmdW0, strlen(cmd0)+1);
+
+  // Substitute listfile name in cmd
+  TCHAR *cmdW = str_replace(cmdW0, _T("{listfile}"), listfile);
+  free(cmdW0);
+  if (!cmdW) {
+    MsgBoxError (hParent, "Memory allocation error");
+    return NOERROR;////error
+  }
 
   STARTUPINFOW si;
   PROCESS_INFORMATION pi;
@@ -655,13 +808,25 @@ STDMETHODIMP CShellExt::RunProgram (HWND hParent, LPCSTR pszWorkingDir, LPCSTR c
   si.dwFlags = STARTF_USESHOWWINDOW;
   si.wShowWindow = SW_RESTORE;
   if (CreateProcessW (NULL, cmdW, NULL, NULL, FALSE, 0, NULL, CurrentDirW, &si, &pi)) {
-    CloseHandle (pi.hProcess);
     CloseHandle (pi.hThread);
+
+    Param *param = (Param*) malloc(sizeof(Param));
+    param->hProcess = pi.hProcess;
+    param->listfile = listfile;
+
+    CreateThread(
+            NULL,              // default security attributes
+            0,                 // use default stack size
+            WaitProgramFinish, // thread function
+            param,             // argument to thread function
+            0,                 // use default creation flags
+            NULL);             // returns the thread identifier (Win9x-incompatible)
+
   } else {
-    TCHAR message[MAX_PATH];
-    wsprintf(message, "Cannot run program: %s", cmd);
+    sprintf(message, "Cannot run program: %.*s", MAX_PATH-100, cmd0);
     MsgBoxError (hParent, message);
   }
+  free(CurrentDirW);
   free(cmdW);
 
   return NOERROR;
@@ -675,3 +840,4 @@ STDMETHODIMP CShellExt::RunProgram (HWND hParent, LPCSTR pszWorkingDir, LPCSTR c
 // GCS_VERB
 // memory management - use SHMalloc
 
+// "unicode!" - labeled things that are unicode-incompatible

@@ -45,8 +45,8 @@ register_menu_handler (function (filenames)
   arcname = arcbase..arcext
   sfxname = arcbase..exeext
   menu = {
-    append (command.add2arc,  {param = arcname,  command = freearc.." a --noarcext "     ..add_options.." -- \"" .. arcname .. "\" "..filename}),
-    append (command.add2sfx,  {param = sfxname,  command = freearc.." a -sfx --noarcext "..add_options.." -- \"" .. arcname .. "\" "..filename}),
+    append (command.add2arc,  {param = arcname,  command = freearc.." a --noarcext "     ..add_options.." -- \"" .. arcname .. "\" @{listfile}"}),
+    append (command.add2sfx,  {param = sfxname,  command = freearc.." a -sfx --noarcext "..add_options.." -- \"" .. arcname .. "\" @{listfile}"}),
     append (command.add,      {                  command = freearc.." --add-dialog a "   ..add_options.." -- "..filename}),
   }
 

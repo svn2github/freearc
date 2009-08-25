@@ -40,7 +40,8 @@ public:
 };
 typedef CShellExtClassFactory *LPCSHELLEXTCLASSFACTORY;
 
-  HBITMAP m_hFreeArcBmp;
+HBITMAP m_hFreeArcBmp;
+
 class CShellExt : public IContextMenu, IShellExtInit {
 public:
 protected:
@@ -59,7 +60,8 @@ protected:
   HMENU menu_stack [100];
   UINT  index_stack[100];
   int   menu_level;
-  TCHAR SelectedFilename[MAX_PATH];
+  char  SelectedFilename[MY_FILENAME_MAX];
+  char *listfile_data;
 
   STDMETHODIMP RunProgram (HWND hParent,
                            LPCSTR pszWorkingDir,

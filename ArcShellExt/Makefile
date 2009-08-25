@@ -12,7 +12,7 @@ ArcShellExt$(XVER).dll: ArcShellExt.obj ArcShellExt.res
 	$(link) $(dlllflags) -base:0x00400000  -out:$*.dll $** $(olelibsdll) shell32.lib ArcShellExt.lib comctl32.lib ArcShellExt.exp Lua\lua5.1$(XVER).lib
 
 .cpp.obj:
-	$(cc) $(cflags) -I..\HsLua\src $*.cpp
+	$(cc) $(cflags) -D_UNICODE -DUNICODE -I..\HsLua\src $*.cpp
 
 ArcShellExt.res: ArcShellExt.rc
 	$(rc) $(rcflags) $(rcvars) ArcShellExt.rc
