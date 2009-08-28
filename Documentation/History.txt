@@ -353,13 +353,19 @@
 
 fashell
   обработка 8000 выделенных файлов? ;)  или даже одного длинного имени файла
+    обрабатывать @files в parseGUIcommands ("@" заменить на ":"? или использовать опцию "-@")
+  установка в каталоги с unicode-именами и BOM в начале скрипта (luaL_dofile)
+  включать опции из Settings, в частности tempdir/logfile
 инстал€тор
   sfx linux/nodelete
+  перевести закладку Solid blocks в ArcInfo
+  перезапись arcshell.dll - автоперезагрузка
+  rep: убрать принудительное деление на блоки
   откатитьс€ на старый gtk из-за About?
-  сначала обновл€ем news page, затем провер€ем новости и копируем новый crc и затем собираем installer
   отшлифовать новый readme.txt
 after "--" allow filenames starting with "@". use "-@" option to include listfiles anywhere on cmdline
 инстал€тор дл€ external compressors add-on с обновлением PATH
+"поверх всех окон" и "solid blocks": сохранение настроек, сортировка
 "lzp+ppmd:1gb" - не может выделить 1gb, но падает на I/O error в lzp (регресс 11b->20 июн€)
 пустые каталоги не удал€ютс€ из архива (в FM)
 tiny sfx - можно уменьшить размер на 10 кб исключением gettemppath и его dll?
