@@ -96,11 +96,11 @@ splitArcPath fm' fullname = do
     then return$ ArcPath arcname (fullname `dropParentDir` arcname)
     else do
   -- ѕроверим существование каталога с таким именем (или "", чтобы избежать зацикливани€)
-  d <- not(isURL fullname) &&& io(dirExist fullname)
+  d <- not(isURL fullname) &&& dirExist fullname
   if d || fullname=="" then return$ DiskPath fullname
     else do
   -- ѕроверим существование файла с таким именем
-  f <- io(fileExist fullname)
+  f <- fileExist fullname
   if f then return$ ArcPath fullname ""
     else do
   -- ѕовторим все проверки, отрезав от fullname последнюю компоненту имени
@@ -118,7 +118,7 @@ fmCanonicalizeDiskPath fm' relname = do
   let name  =  unquote (trimRight relname)
   if (name=="")  then return ""  else do
   fm <- val fm'
-  io$ myCanonicalizePath$ fm_curdir fm </> name
+  myCanonicalizePath$ fm_curdir fm </> name
 
 -- |ѕеревести путь, записанный относительно текущего положени€ в FM, в абсолютный
 fmCanonicalizePath fm' relname = do
@@ -209,4 +209,3 @@ splitt n x = x
 -- »м€ n-й части каталога
 dirPart n = myPackStr.(!!n).(++[""]).splitDirectories.fdDirectory
 
-io=id

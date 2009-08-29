@@ -294,13 +294,13 @@ settingsDialog fm' = do
     showLang i18n
 
     -- Текущие настройки
-    inifile  <- io$ findFile configFilePlaces aINI_FILE
-    settings <- inifile  &&&  io(readConfigFile inifile) >>== map (split2 '=')
+    inifile  <- findFile configFilePlaces aINI_FILE
+    settings <- inifile  &&&  readConfigFile inifile >>== map (split2 '=')
     let langFile =  settings.$lookup aINITAG_LANGUAGE `defaultVal` ""
 
     -- Заполнить список языков именами файлов в каталоге arc.languages и выбрать активный язык
-    langDir   <- io$ findDir libraryFilePlaces aLANG_DIR
-    langFiles <- langDir &&& (io(dir_list langDir) >>== map baseName >>== sort >>== filter (match "arc.*.txt"))
+    langDir   <- findDir libraryFilePlaces aLANG_DIR
+    langFiles <- langDir &&& (dir_list langDir >>== map baseName >>== sort >>== filter (match "arc.*.txt"))
     -- Отобразим языки в 5 столбцов, с сортировкой по столбцам
     let cols = 5
     ;   langComboBox `New.comboBoxSetWrapWidth` cols
@@ -441,9 +441,9 @@ settingsDialog fm' = do
     when (choice==ResponseOk) $ do
       -- Сохраняем настройки в INI-файл, пароли - в глоб. переменных, keyfile - в истории
       langFile <- getCurrentLangFile
-      inifile  <- io$ findOrCreateFile configFilePlaces aINI_FILE
-      io$ buildPathTo inifile
-      io$ saveConfigFile inifile$ map (join2 "=") [(aINITAG_LANGUAGE, takeFileName langFile)]
+      inifile  <- findOrCreateFile configFilePlaces aINI_FILE
+      buildPathTo inifile
+      saveConfigFile inifile$ map (join2 "=") [(aINITAG_LANGUAGE, takeFileName langFile)]
       logfile' <- val logfile;  saveHistory logfile
       tempdir' <- val tempdir;  saveHistory tempdir
       saveHistory `mapM_` [toolbarTextButton, checkNewsButton]

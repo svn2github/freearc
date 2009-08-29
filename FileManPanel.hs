@@ -72,19 +72,19 @@ newFM window view model selection statusLabel messageCombo = do
 newFMArc fm' arcname arcdir = do
   xpwd'     <- val decryptionPassword
   xkeyfile' <- fmGetHistory1 fm' "keyfile" ""
-  [command] <- io$ parseCmdline$ ["l", arcname]++(xpwd' &&& ["-op"++xpwd'])
-                                               ++(xkeyfile' &&& ["--OldKeyfile="++xkeyfile'])
+  [command] <- parseCmdline$ ["l", arcname]++(xpwd' &&& ["-op"++xpwd'])
+                                           ++(xkeyfile' &&& ["--OldKeyfile="++xkeyfile'])
   command <- (command.$ opt_cook_passwords) command ask_passwords  -- подготовить пароли в команде к использованию
-  archive <- io$ archiveReadInfo command "" "" (const True) doNothing2 arcname
+  archive <- archiveReadInfo command "" "" (const True) doNothing2 arcname
   let filetree = buildTree$ map (fiToFileData.cfFileInfo)$ arcDirectory archive
-  io$ arcClose archive
+  arcClose archive
   return$ FM_Archive archive arcname arcdir filetree
 
 -- |Закрыть файл архива чтобы 1) другие операции смогли модифицировать его,
 --    2) его содержимое было перечитано заново при следующем использовании
 closeFMArc fm' = do
   fm <- val fm'
-  --io$ arcClose (fm_archive fm)
+  --arcClose (fm_archive fm)
   when (isFM_Archive fm) $ do
     fm' .= \fm -> fm {subfm = (subfm fm) {subfm_archive = phantomArc}}
 
@@ -97,7 +97,7 @@ chdir fm' filename' = do
   if res==Not_Exists  then fmErrorMsg fm' (format msg filename)  else do
   (files, sub) <- case res of
     -- Список файлов в каталоге на диске
-    DiskPath dir -> do filelist <- io$ dir_list dir
+    DiskPath dir -> do filelist <- dir_list dir
                        return (map fiToFileData filelist, FM_Directory dir)
     -- Список файлов в архиве
     ArcPath arcname arcdir -> do

@@ -174,7 +174,7 @@ uiDef =
 myGUI run args = do
   fileManagerMode =: True
   runGUI $ do
-  io$ parseCmdline ["l", "a"]   -- инициализаци€: display, логфайл
+  parseCmdline ["l", "a"]   -- инициализаци€: display, логфайл
   -- —писок ассоциаций клавиша->действие
   onKeyActions <- newList
   let onKey = curry (onKeyActions <<=)
@@ -499,7 +499,7 @@ myGUI run args = do
                    other       -> return$ show ex
                 with' (val log_separator') (log_separator'=:) $ \_ -> do
                   log_separator' =: ""
-                  io$ condPrintLineLn "w" errmsg
+                  condPrintLineLn "w" errmsg
                 return ()
 
   -- “ред, выполн€ющий команды архиватора
@@ -614,7 +614,7 @@ myGUI run args = do
                 let arcname = fm_arcname fm
                 exec False [["d", "--noarcext", "--", arcname]++files]
         -- ”далить файлы на диске
-        else io$ mapM_ (ignoreErrors.fileRemove.(fm_dir fm </>)) files
+        else mapM_ (ignoreErrors.fileRemove.(fm_dir fm </>)) files
 
 
 ----------------------------------------------------------------------------------------------------
