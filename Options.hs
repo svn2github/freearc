@@ -607,6 +607,7 @@ luaLevel level params action = do
 ---- Операции с файлом истории ---------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------
 
+#ifdef FREEARC_GUI
 -- |Имя конфиг-файла где хранятся душераздирающие истории открытых архивов
 aHISTORY_FILE = "freearc.history"
 
@@ -695,6 +696,20 @@ hfUpdateConfigFiles hf = do
     hfAddHistory hf "compression" "0774 Maximum (require 1 gb RAM for decompression): -mx -ld800m"
     hfAddHistory hf "compression" "0773 Ultra (require 2 gb RAM for decompression): -mx -ld1600m"
     hfReplaceHistory hf "ConfigVersion" version
+
+-- |Общие опции для всех операций
+readGuiOptions = do
+  hf' <- openHistoryFile
+  logfile' <- hfGetHistory1 hf' "logfile" ""
+  tempdir' <- hfGetHistory1 hf' "tempdir" ""
+  return $
+       (logfile'  &&&  ["--logfile="++clear logfile'])++
+       (tempdir'  &&&  ["--workdir="++clear tempdir'])++
+       []
+
+#else
+readGuiOptions = return []
+#endif
 
 
 ----------------------------------------------------------------------------------------------------

@@ -57,6 +57,11 @@ parseCmdline cmdline  =  (`mapMaybeM` split ";" cmdline) $ \args -> do
                     "-"               -> return ""
                     env               -> getEnv env
 
+
+  -----------------------------------------------------------------------------------------------------------
+  -- РАЗБОР КОНФИГ-ФАЙЛА ------------------------------------------------------------------------------------
+  -----------------------------------------------------------------------------------------------------------
+
   -- Прочитаем конфиг-файл arc.ini или указанный опцией -cfg
   (o1, _)  <- parseOptions (words env_options++options) [] []   -- опция -cfg может быть задана в командной строке или в переменной среды
   cfgfile <- case (findReqArg o1 "config" "--") of
@@ -102,9 +107,15 @@ parseCmdline cmdline  =  (`mapMaybeM` split ";" cmdline) $ \args -> do
   let cmd = head1$ filter (not.match "-*") args
       default_cmd_options = configElement defaultOptions cmd
 
+  -----------------------------------------------------------------------------------------------------------
+  -----------------------------------------------------------------------------------------------------------
+
+  -- Настройки, сделанные в GUI Settings dialog
+  gui_options <- not no_configs &&& readGuiOptions
+
   -- Добавим в начало командной строки опции по умолчанию для всех команд,
   -- опции по умолчанию для этой команды и содержимое переменной среды
-  let additional_args  =  concatMap words [config_1st_line, default_cmd_options, env_options]
+  let additional_args  =  gui_options ++ concatMap words [config_1st_line, default_cmd_options, env_options]
 
   -- Разберём командную строку, получив набор опций и список "свободных аргументов"
   (o, freeArgs)  <-  parseOptions (additional_args++args) [] []

@@ -801,15 +801,6 @@ multiArchiveOperation fm' action = do
             fullnames <- mapM (fmCanonicalizePath fm') files
             action fullnames
 
--- |Общие опции для всех операций
-returnCommonOptions fm' = do
-      logfile' <- fmGetHistory1 fm' "logfile" ""
-      tempdir' <- fmGetHistory1 fm' "tempdir" ""
-      return $
-           (logfile'  &&&  ["--logfile="++clear logfile'])++
-           (tempdir'  &&&  ["--workdir="++clear tempdir'])++
-           []
-
 -- |Обновить содержимое панели файл-менеджера актуальными данными
 refreshCommand fm' = do
   fm <- val fm'
