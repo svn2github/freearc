@@ -604,6 +604,119 @@ luaLevel level params action = do
 
 
 ----------------------------------------------------------------------------------------------------
+---- Операции с файлом истории ---------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+
+-- |Имя конфиг-файла где хранятся душераздирающие истории открытых архивов
+aHISTORY_FILE = "freearc.history"
+
+-- |Файл истории настроек
+data HistoryFile = HistoryFile { hf_history_file :: MVar FilePath
+                               , hf_history      :: IORef (Maybe [String])
+                               }
+
+-- |Создать структуру, хранящую файл истории
+openHistoryFile = do
+  history_file <- findOrCreateFile configFilePlaces aHISTORY_FILE >>= mvar
+  history      <- ref Nothing
+  let hf = HistoryFile { hf_history_file = history_file
+                       , hf_history      = history
+                       }
+  hfUpdateConfigFiles hf
+  return hf
+
+-- |Добавить значение в список истории (удалив предыдущие точно такие же строки)
+hfAddHistory hf tags text     =   hfModifyHistory hf tags text (\tag line -> (line==))
+-- |Заменить значение в списке истории (удалив предыдущие значения с этим тегом)
+hfReplaceHistory hf tags text  =  hfModifyHistory hf tags text (\tag line -> (tag==).fst.split2 '=')
+-- |Добавить/Заменить значение в списке истории
+hfModifyHistory hf tags text deleteCond = ignoreErrors $ do
+  -- Занесём новый элемент в голову списка и избавимся от дублирующих значений
+  let newItem  =  join2 "=" (mainTag, text)
+      mainTag  =  head (split '/' tags)
+  withMVar (hf_history_file hf) $ \history_file -> do
+    modifyConfigFile history_file ((newItem:) . deleteIf (deleteCond mainTag newItem))
+
+-- |Удалить тег из списка истории
+hfDeleteTagFromHistory hf tag  =  hfDeleteConditionalFromHistory hf (\tag1 value1 -> tag==tag1)
+
+-- |Удалить из списка истории строки по условию
+hfDeleteConditionalFromHistory hf cond = ignoreErrors $ do
+  withMVar (hf_history_file hf) $ \history_file -> do
+    modifyConfigFile history_file (deleteIf ((uncurry cond).split2 '='))
+
+-- |Извлечь список истории по заданному тэгу/тэгам
+hfGetHistory1 hf tags deflt = do x <- hfGetHistory hf tags; return (head (x++[deflt]))
+hfGetHistory  hf tags       = handle (\_ -> return []) $ do
+  hist <- hfGetConfigFile hf
+  hist.$ map (split2 '=')                           -- разбить каждую строку на тэг+значение
+      .$ filter ((split '/' tags `contains`).fst)   -- отобрать строки с тэгом из списка tags
+      .$ map snd                                    -- оставить только значения.
+      .$ map (splitCmt "")                          -- разбить каждое значение на описание+опции
+      .$ mapM (\x -> case x of                      -- локализовать описание и слить их обратно
+                       ("",b) -> return b
+                       (a ,b) -> do a <- i18n a; return$ join2 ": " (a,b))
+
+-- Чтение/запись в историю булевского значения
+hfGetHistoryBool     hf tag deflt  =  hfGetHistory1 hf tag (bool2str deflt)  >>==  (==bool2str True)
+hfReplaceHistoryBool hf tag x      =  hfReplaceHistory hf tag (bool2str x)
+bool2str True  = "1"
+bool2str False = "0"
+
+
+-- |Получить содержимое файла истории
+hfGetConfigFile hf = do
+  history <- val (hf_history hf)
+  case history of
+    Just history -> return history
+    Nothing      -> withMVar (hf_history_file hf) readConfigFile
+
+-- |На время выполнения этих скобок содержимое файла истории читается из поля hf_history
+hfCacheConfigFile hf =
+  bracket_ (do history <- hfGetConfigFile hf
+               hf_history hf =: Just history)
+           (do hf_history hf =: Nothing)
+
+
+-- |Обновляет конфиг-файлы, если произошёл переход на новую версию
+hfUpdateConfigFiles hf = do
+  let version = "000.52.01"
+  lastVersion <- hfGetHistory1 hf "ConfigVersion" "0"
+  when (lastVersion < version) $ do
+    hfReplaceHistory hf "compressionLast" "0110 Normal: -m4 -s128m"
+    hfDeleteConditionalFromHistory hf (\tag value -> tag=="compression" && all isDigit (take 4 value))
+    hfAddHistory hf "compression" "0752 No compression: -m0"
+    hfAddHistory hf "compression" "0127 HDD-speed: -m1 -s8m"
+    hfAddHistory hf "compression" "0112 Very fast: -m2 -s96m"
+    hfAddHistory hf "compression" "0111 Fast: -m3 -s96m"
+    hfAddHistory hf "compression" "0110 Normal: -m4 -s128m"
+    hfAddHistory hf "compression" "0109 High: -m7 -md96m -ld192m"
+    hfAddHistory hf "compression" "0775 Best asymmetric (with fast decompression): -m9x -ld192m -s256m"
+    hfAddHistory hf "compression" "0774 Maximum (require 1 gb RAM for decompression): -mx -ld800m"
+    hfAddHistory hf "compression" "0773 Ultra (require 2 gb RAM for decompression): -mx -ld1600m"
+    hfReplaceHistory hf "ConfigVersion" version
+
+
+----------------------------------------------------------------------------------------------------
+---- Вспомогательные определения -------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+
+-- Выбирает один из нескольких вариантов по индексу
+opt `select` variants  =  words (split ',' variants !! opt)
+-- Преобразует текст настройки в список опций, предварительно удаляя комментарий в её начале
+cvt1 opt  =  map (opt++) . (||| [""]) . words . clear
+-- То же самое, только имя опции добавляется только к словам, не начинающимся с "-"
+cvt  opt  =  map (\w -> (w!~"-?*" &&& opt)++w) . (||| [""]) . words . clear
+-- Удаляет комментарий вида "*: " в начале строки
+clear     =  trim . snd . splitCmt ""
+-- |Разбивает значение на описание+опции
+splitCmt xs ""           = ("", reverse xs)
+splitCmt xs ":"          = (reverse xs, "")
+splitCmt xs (':':' ':ws) = (reverse xs, ws)
+splitCmt xs (w:ws)       = splitCmt (w:xs) ws
+
+
+----------------------------------------------------------------------------------------------------
 ---- System information ----------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------
 

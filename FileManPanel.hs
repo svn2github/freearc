@@ -27,7 +27,6 @@ import Cmdline
 import UIBase
 import UI
 import ArhiveDirectory
-import ArcExtract
 import FileManUtils
 
 
@@ -39,9 +38,9 @@ decryptionPassword  =  unsafePerformIO$ newIORef$ ""
 ---- Операции файл-менеджера -----------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------
 
--- Создать фиктивную панель файл-менеджера (для прямого вызова диалогов из ком. строки)
+-- |Создать фиктивную панель файл-менеджера (для прямого вызова диалогов из ком. строки)
 newEmptyFM = do
-  historyFile <- findOrCreateFile configFilePlaces aHISTORY_FILE >>= mvar
+  history <- openHistoryFile
   curdir <- getCurrentDirectory
   fm' <- mvar FM_State { fm_window_      = Nothing
                        , fm_view         = error "undefined FM_State::fm_view"
@@ -50,33 +49,23 @@ newEmptyFM = do
                        , fm_statusLabel  = error "undefined FM_State::fm_statusLabel"
                        , fm_messageCombo = error "undefined FM_State::fm_messageCombo"
                        , fm_filelist     = error "undefined FM_State::fm_filelist"
-                       , fm_history_file = historyFile
-                       , fm_history      = Nothing
+                       , fm_history      = history
                        , fm_onChdir      = []
                        , fm_sort_order   = ""
                        , subfm           = FM_Directory {subfm_dir=curdir}}
-  updateConfigFiles fm'
   return fm'
 
 -- |Создать переменную для хранения состояния файл-менеджера
 newFM window view model selection statusLabel messageCombo = do
-  historyFile <- findOrCreateFile configFilePlaces aHISTORY_FILE >>= mvar
-  curdir <- io$ getCurrentDirectory
-  counterCombo <- ref 0  -- number of last message + 1 in combobox
-  fm' <- mvar FM_State { fm_window_      = Just window
-                       , fm_view         = view
-                       , fm_model        = model
-                       , fm_selection    = selection
-                       , fm_statusLabel  = statusLabel
-                       , fm_messageCombo = (messageCombo, counterCombo)
-                       , fm_filelist     = error "undefined FM_State::fm_filelist"
-                       , fm_history_file = historyFile
-                       , fm_history      = Nothing
-                       , fm_onChdir      = []
-                       , fm_sort_order   = ""
-                       , subfm           = FM_Directory {subfm_dir=curdir}}
+  fm' <- newEmptyFM
+  messageCounter <- ref 0  -- number of last message + 1 in combobox
+  fm' .= (\fm -> fm { fm_window_      = Just window
+                   , fm_view         = view
+                   , fm_model        = model
+                   , fm_selection    = selection
+                   , fm_statusLabel  = statusLabel
+                   , fm_messageCombo = (messageCombo, messageCounter)})
   selection `New.onSelectionChanged` fmStatusBarTotals fm'
-  updateConfigFiles fm'
   return fm'
 
 -- |Открыть архив и возвратить его как объект состояния файл-менеджера
@@ -306,119 +295,18 @@ sortOnColumn _               =  id
 ---- Операции с файлом истории ---------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------
 
--- |Добавить значение в список истории (удалив предыдущие точно такие же строки)
-fmAddHistory fm' tags text     =   fmModifyHistory fm' tags text (\tag line -> (line==))
--- |Заменить значение в списке истории (удалив предыдущие значения с этим тегом)
-fmReplaceHistory fm' tags text  =  fmModifyHistory fm' tags text (\tag line -> (tag==).fst.split2 '=')
--- |Добавить/Заменить значение в списке истории
-fmModifyHistory fm' tags text deleteCond = ignoreErrors $ do
-  fm <- val fm'
-  -- Занесём новый элемент в голову списка и избавимся от дублирующих значений
-  let newItem  =  join2 "=" (mainTag, text)
-      mainTag  =  head (split '/' tags)
-  withMVar (fm_history_file fm) $ \history_file -> do
-    modifyConfigFile history_file ((newItem:) . deleteIf (deleteCond mainTag newItem))
-
--- |Удалить тег из списка истории
-fmDeleteTagFromHistory fm' tag  =  fmDeleteConditionalFromHistory fm' (\tag1 value1 -> tag==tag1)
-
--- |Удалить из списка истории строки по условию
-fmDeleteConditionalFromHistory fm' cond = ignoreErrors $ do
-  fm <- val fm'
-  withMVar (fm_history_file fm) $ \history_file -> do
-    modifyConfigFile history_file (deleteIf ((uncurry cond).split2 '='))
-
--- |Извлечь список истории по заданному тэгу/тэгам
-fmGetHistory1 fm' tags deflt = do x <- fmGetHistory fm' tags; return (head (x++[deflt]))
-fmGetHistory  fm' tags       = handle (\_ -> return []) $ do
-  fm <- val fm'
-  hist <- fmGetConfigFile fm'
-  hist.$ map (split2 '=')                           -- разбить каждую строку на тэг+значение
-      .$ filter ((split '/' tags `contains`).fst)   -- отобрать строки с тэгом из списка tags
-      .$ map snd                                    -- оставить только значения.
-      .$ map (splitCmt "")                          -- разбить каждое значение на описание+опции
-      .$ mapM (\x -> case x of                      -- локализовать описание и слить их обратно
-                       ("",b) -> return b
-                       (a ,b) -> do a <- i18n a; return$ join2 ": " (a,b))
-
--- Чтение/запись в историю булевского значения
-fmGetHistoryBool     fm' tag deflt  =  fmGetHistory1 fm' tag (bool2str deflt)  >>==  (==bool2str True)
-fmReplaceHistoryBool fm' tag x      =  fmReplaceHistory fm' tag (bool2str x)
-bool2str True  = "1"
-bool2str False = "0"
-
-
--- |Получить содержимое файла истории
-fmGetConfigFile fm' = do
-  fm <- val fm'
-  case fm_history fm of
-    Nothing      -> withMVar (fm_history_file fm) readConfigFile
-    Just history -> return history
-
--- |На время выполнения этих скобок содержимое файла истории читается из поля fm_history
-fmCacheConfigFile fm' =
-  bracket_ (do history <- fmGetConfigFile fm'
-               fm' .= \fm -> fm {fm_history = Just history})
-           (do fm' .= \fm -> fm {fm_history = Nothing})
-
-
--- |Обновляет конфиг-файлы, если произошёл переход на новую версию
-updateConfigFiles fm' = do
-  let version = "000.52.01"
-  lastVersion <- fmGetHistory1 fm' "ConfigVersion" "0"
-  when (lastVersion < version) $ do
-    fmReplaceHistory fm' "compressionLast" "0110 Normal: -m4 -s128m"
-    fmDeleteConditionalFromHistory fm' (\tag value -> tag=="compression" && all isDigit (take 4 value))
-    fmAddHistory fm' "compression" "0752 No compression: -m0"
-    fmAddHistory fm' "compression" "0127 HDD-speed: -m1 -s8m"
-    fmAddHistory fm' "compression" "0112 Very fast: -m2 -s96m"
-    fmAddHistory fm' "compression" "0111 Fast: -m3 -s96m"
-    fmAddHistory fm' "compression" "0110 Normal: -m4 -s128m"
-    fmAddHistory fm' "compression" "0109 High: -m7 -md96m -ld192m"
-    fmAddHistory fm' "compression" "0775 Best asymmetric (with fast decompression): -m9x -ld192m -s256m"
-    fmAddHistory fm' "compression" "0774 Maximum (require 1 gb RAM for decompression): -mx -ld800m"
-    fmAddHistory fm' "compression" "0773 Ultra (require 2 gb RAM for decompression): -mx -ld1600m"
-    fmReplaceHistory fm' "ConfigVersion" version
-
-
--- |Сохранить размеры и положение окна в истории
-saveSizePos fm' window name = do
-    (x,y) <- windowGetPosition window
-    (w,h) <- widgetGetSize     window
-    fmReplaceHistory fm' (name++"Coord") (unwords$ map show [x,y,w,h])
-
--- |Запомним, было ли окно максимизировано
-saveMaximized fm' name = fmReplaceHistoryBool fm' (name++"Maximized")
-
--- |Восстановить размеры и положение окна из истории
-restoreSizePos fm' window name deflt = do
-    coord <- fmGetHistory1 fm' (name++"Coord") deflt
-    let a  = coord.$split ' '
-    when (length(a)==4  &&  all isSignedInt a) $ do  -- проверим что a состоит ровно из 4 чисел
-      let [x,y,w,h] = map readSignedInt a
-      windowMove   window x y  `on` x/= -10000
-      windowResize window w h  `on` w/= -10000
-    whenM (fmGetHistoryBool fm' (name++"Maximized") False) $ do
-      windowMaximize window
-
-
-----------------------------------------------------------------------------------------------------
----- Вспомогательные определения -------------------------------------------------------------------
-----------------------------------------------------------------------------------------------------
-
--- Выбирает один из нескольких вариантов по индексу
-opt `select` variants  =  words (split ',' variants !! opt)
--- Преобразует текст настройки в список опций, предварительно удаляя комментарий в её начале
-cvt1 opt  =  map (opt++) . (||| [""]) . words . clear
--- То же самое, только имя опции добавляется только к словам, не начинающимся с "-"
-cvt  opt  =  map (\w -> (w!~"-?*" &&& opt)++w) . (||| [""]) . words . clear
--- Удаляет комментарий вида "*: " в начале строки
-clear     =  trim . snd . splitCmt ""
--- |Разбивает значение на описание+опции
-splitCmt xs ""           = ("", reverse xs)
-splitCmt xs ":"          = (reverse xs, "")
-splitCmt xs (':':' ':ws) = (reverse xs, ws)
-splitCmt xs (w:ws)       = splitCmt (w:xs) ws
+fmAddHistory         fm' tags text             =  do fm <- val fm';  hfAddHistory         (fm_history fm) tags text
+fmReplaceHistory     fm' tags text             =  do fm <- val fm';  hfReplaceHistory     (fm_history fm) tags text
+fmModifyHistory      fm' tags text deleteCond  =  do fm <- val fm';  hfModifyHistory      (fm_history fm) tags text deleteCond
+fmGetHistory1        fm' tags deflt            =  do fm <- val fm';  hfGetHistory1        (fm_history fm) tags deflt
+fmGetHistory         fm' tags                  =  do fm <- val fm';  hfGetHistory         (fm_history fm) tags
+fmGetHistoryBool     fm' tag deflt             =  do fm <- val fm';  hfGetHistoryBool     (fm_history fm) tag deflt
+fmReplaceHistoryBool fm' tag x                 =  do fm <- val fm';  hfReplaceHistoryBool (fm_history fm) tag x
+fmSaveSizePos        fm' dialog name           =  do fm <- val fm';  hfSaveSizePos        (fm_history fm) dialog name
+fmSaveMaximized      fm' dialog name           =  do fm <- val fm';  hfSaveMaximized      (fm_history fm) dialog name
+fmRestoreSizePos     fm' window name deflt     =  do fm <- val fm';  hfRestoreSizePos     (fm_history fm) window name deflt
+fmCacheConfigFile    fm' action                =  do fm <- val fm';  hfCacheConfigFile    (fm_history fm) action
+fmUpdateConfigFiles  fm'                       =  do fm <- val fm';  hfUpdateConfigFiles  (fm_history fm)
 
 
 ----------------------------------------------------------------------------------------------------
@@ -605,9 +493,9 @@ data FMDialogFlags = AddDetachButton  -- ^Добавлять Detach button в диалог?
 {-# NOINLINE fmDialogRun #-}
 -- |Отработать диалог с сохранением его положения и размера в истории
 fmDialogRun fm' dialog name = do
-  restoreSizePos fm' dialog name ""
+  fmRestoreSizePos fm' dialog name ""
   res <- dialogRun dialog
-  saveSizePos    fm' dialog name
+  fmSaveSizePos    fm' dialog name
   fm <- val fm'
   when (isJust$ fm_window_ fm) $ do
     windowPresent (fm_window fm)

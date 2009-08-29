@@ -259,7 +259,7 @@ myGUI run args = do
 
   -- Создадим переменную для хранения текущего состояния файл-менеджера
   fm' <- newFM window listView listModel listSelection statusLabel messageCombo
-  updateConfigFiles fm'
+  fmUpdateConfigFiles fm'
 
   -- Отрихтуем тулбар
   let toolbar = castToToolbar toolBar
@@ -322,11 +322,11 @@ myGUI run args = do
   --windowSetDefaultSize window 200 100
 
   -- При старте восстановим сохранённый размер окна
-  restoreSizePos fm' window "MainWindow" "-10000 -10000 720 500"
+  fmRestoreSizePos fm' window "MainWindow" "-10000 -10000 720 500"
 
   -- Сохраним размер и положение главного окна после его перемещения
   window `onConfigure` \e -> do
-    saveSizePos fm' window "MainWindow"
+    fmSaveSizePos fm' window "MainWindow"
     return False
 
   -- Запомним, было ли окно максимизировано
@@ -334,7 +334,7 @@ myGUI run args = do
     let isMax x = case x of
                     WindowStateMaximized -> True
                     _                    -> False
-    saveMaximized fm' "MainWindow" (any isMax (eventWindowState e))
+    fmSaveMaximized fm' "MainWindow" (any isMax (eventWindowState e))
     return False
 
 
@@ -859,7 +859,6 @@ myGUI run args = do
 
   -- Включить поддержку URL в диалоге About
   aboutDialogSetUrlHook openWebsite
-
 
   -- Инициализируем состояние файл-менеджера каталогом/архивом, заданным в командной строке (при его отсутствии - текущим каталогом)
   terminateOnError $

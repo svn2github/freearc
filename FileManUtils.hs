@@ -23,7 +23,6 @@ import Options
 import UIBase
 import UI
 import ArhiveDirectory
-import ArcExtract
 
 ----------------------------------------------------------------------------------------------------
 ---- Текущее состояние файл-менеджера --------------------------------------------------------------
@@ -37,8 +36,7 @@ data FM_State = FM_State { fm_window_      :: Maybe Window
                          , fm_statusLabel  :: Label
                          , fm_messageCombo :: (New.ComboBox, IORef Int)
                          , fm_filelist     :: [FileData]
-                         , fm_history_file :: MVar FilePath
-                         , fm_history      :: Maybe [String]
+                         , fm_history      :: HistoryFile
                          , fm_onChdir      :: [IO()]
                          , fm_sort_order   :: String
                          , subfm           :: SubFM_State

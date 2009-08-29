@@ -38,13 +38,9 @@ aMENU_FILE = "freearc.menu"
 
 -- Теги в INI-файле
 aINITAG_LANGUAGE = "language"
-aINITAG_PROGRESS = "ProgressWindowSize"
 
 -- |Каталог локализаций
 aLANG_DIR = "arc.languages"
-
--- |Имя конфиг-файла где хранятся душераздирающие истории открытых архивов
-aHISTORY_FILE = "freearc.history"
 
 -- |Имя файла с иконкой программы
 aICON_FILE = "FreeArc.ico"
@@ -113,18 +109,14 @@ guiDoneProgram = do
 {-# NOINLINE runIndicators #-}
 -- |Создаёт окно индикатора прогресса и запускает тред для его периодического обновления.
 runIndicators = do
-  settings <- readIniFile
+  hf' <- openHistoryFile
 
   -- Собственно окно индикатора прогресса
   window <- windowNew
   vbox   <- vBoxNew False 0
   set window [windowWindowPosition := WinPosCenter,
               containerBorderWidth := 10, containerChild := vbox]
-
-  -- Размер окна индикатора прогресса
-  let sz = settings.$lookup aINITAG_PROGRESS `defaultVal` "350 200"
-  let (w,h) = sz.$ split2 ' '
-  windowResize window (readInt w) (readInt h)
+  hfRestoreSizePos hf' window "ProgressWindow" "-10000 -10000 350 200"
 
   -- Разделим окно по вертикали
   (statsBox, updateStats, clearStats) <- createStats
@@ -147,6 +139,7 @@ runIndicators = do
 
   hbox <- hBoxNew False 0;                            containerAdd expanderBox hbox
   onTop <- checkBox "0446 Keep window on top";        boxPackStart hbox (widget onTop) PackNatural 1
+--  let onTopSetting = settings.$lookup "OnTop" `defaultVal` "350 200"
   setOnUpdate onTop $   do windowSetKeepAbove window =<< val onTop
 
   -- Заполним кнопками нижнюю часть окна
@@ -378,6 +371,31 @@ resetConsoleTitle = return ()
 
 -- |Pause progress indicator & timing while dialog runs
 myDialogRun dialog  =  uiPauseProgressIndicator$ pauseTiming$ dialogRun dialog
+
+
+----------------------------------------------------------------------------------------------------
+---- GUI-специфичные операции с файлом истории -----------------------------------------------------
+----------------------------------------------------------------------------------------------------
+
+-- |Сохранить размеры и положение окна в истории
+hfSaveSizePos hf' window name = do
+    (x,y) <- windowGetPosition window
+    (w,h) <- widgetGetSize     window
+    hfReplaceHistory hf' (name++"Coord") (unwords$ map show [x,y,w,h])
+
+-- |Запомним, было ли окно максимизировано
+hfSaveMaximized hf' name = hfReplaceHistoryBool hf' (name++"Maximized")
+
+-- |Восстановить размеры и положение окна из истории
+hfRestoreSizePos hf' window name deflt = do
+    coord <- hfGetHistory1 hf' (name++"Coord") deflt
+    let a  = coord.$split ' '
+    when (length(a)==4  &&  all isSignedInt a) $ do  -- проверим что a состоит ровно из 4 чисел
+      let [x,y,w,h] = map readSignedInt a
+      windowMove   window x y  `on` x/= -10000
+      windowResize window w h  `on` w/= -10000
+    whenM (hfGetHistoryBool hf' (name++"Maximized") False) $ do
+      windowMaximize window
 
 
 ----------------------------------------------------------------------------------------------------
