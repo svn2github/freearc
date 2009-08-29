@@ -195,8 +195,8 @@ arcinfoDialog fm' exec mode arcnames arcdir files = do
 
 
 ------ Закладка тех. содержания архива -------------------------------------------------------------
-    vBox <- newPage "0999 Solid blocks"
-    let columnTitles = ["0999 Pos", "0999 Size", "0999 Compressed", "0999 Files", "0999 Method"]
+    vBox <- newPage "0449 Solid blocks"
+    let columnTitles = ["0450 Position", "0451 Size", "0452 Compressed", "0453 Files", "0454 Method"]
         n = map (drop 5) columnTitles
     s <- i18ns columnTitles
     let compressor = join_compressor.blCompressor

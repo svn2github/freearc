@@ -355,12 +355,10 @@ fashell
   обработка 8000 выделенных файлов? ;)  или даже одного длинного имени файла
     обрабатывать @files в parseGUIcommands ("@" заменить на ":"? или использовать опцию "-@")
   установка в каталоги с unicode-именами и BOM в начале скрипта (luaL_dofile)
-  включать опции из Settings, в частности tempdir/logfile
 инсталятор
   sfx linux/nodelete
-  перевести закладку Solid blocks в ArcInfo
   перезапись arcshell.dll - автоперезагрузка
-  rep: убрать принудительное деление на блоки
+  rep: не забыть убрать принудительное деление на блоки :)
   откатиться на старый gtk из-за About?
   отшлифовать новый readme.txt
 after "--" allow filenames starting with "@". use "-@" option to include listfiles anywhere on cmdline

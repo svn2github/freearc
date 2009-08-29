@@ -319,6 +319,13 @@ Archive information dialog
 --
 0097 Encryption algorithms:=Алгоритмы шифрования:
 0098 Archive comment:=Описание архива:
+---
+0449 Solid blocks=Солид-блоки
+0450 Position=Адрес
+0451 Size=Размер
+0452 Compressed=Сжатый
+0453 Files=Файлов
+0454 Method=Метод
 
 
 Settings dialog
