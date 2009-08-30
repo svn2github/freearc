@@ -360,9 +360,9 @@ fashell
   перезапись arcshell.dll - автоперезагрузка
   rep: не забыть убрать принудительное деление на блоки :)
   откатиться на старый gtk из-за About?
+  PowerPack\unins000.exe /VERYSILENT
   отшлифовать новый readme.txt
 after "--" allow filenames starting with "@". use "-@" option to include listfiles anywhere on cmdline
-инсталятор для external compressors add-on с обновлением PATH
 "поверх всех окон" и "solid blocks": сохранение настроек, сортировка
 "lzp+ppmd:1gb" - не может выделить 1gb, но падает на I/O error в lzp (регресс 11b->20 июня)
 пустые каталоги не удаляются из архива (в FM)
