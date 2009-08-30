@@ -354,14 +354,14 @@
 fashell
   обработка 8000 выделенных файлов? ;)  или даже одного длинного имени файла
     обрабатывать @files в parseGUIcommands ("@" заменить на ":"? или использовать опцию "-@")
-  установка в каталоги с unicode-именами и BOM в начале скрипта (luaL_dofile)
+  установка в каталоги с unicode-именами и BOM в начале скрипта (заменить вызов luaL_dofile)
+обновить скриншоты
 инсталятор
+  лицензия
   sfx linux/nodelete
-  перезапись arcshell.dll - автоперезагрузка
   rep: не забыть убрать принудительное деление на блоки :)
-  откатиться на старый gtk из-за About?
   PowerPack\unins000.exe /VERYSILENT
-  отшлифовать новый readme.txt
+  отшлифовать новый readme.txt (для сайта как минимум)
 after "--" allow filenames starting with "@". use "-@" option to include listfiles anywhere on cmdline
 "поверх всех окон" и "solid blocks": сохранение настроек, сортировка
 "lzp+ppmd:1gb" - не может выделить 1gb, но падает на I/O error в lzp (регресс 11b->20 июня)

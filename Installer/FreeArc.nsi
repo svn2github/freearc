@@ -12,6 +12,7 @@
 SetCompressor /SOLID lzma
 
 !include "setenv.nsh"
+!include "Library.nsh"
 
 ; MUI 1.67 compatible ------
 !include "MUI.nsh"
@@ -69,7 +70,7 @@ ShowInstDetails show
 ShowUnInstDetails show
 
 Section "Install FreeArc" SEC01
-  !include "FreeArc-delete-old.nsh"   ; Delete old-style winarc*.* files
+  !include "FreeArc-delete-old.nsh"   ; Delete files from older installations
 
   ;Backup config files
   SetOverwrite off
@@ -100,6 +101,12 @@ Section "Install FreeArc" SEC01
   SetOutPath "$INSTDIR"
   File /r "gtk2-themes\*.*"
 !endif
+
+  ; If ArcShellExt*.dll files are currently used, replace them after reboot
+  !define LIBRARY_SHELL_EXTENSION
+  !define LIBRARY_IGNORE_VERSION
+  !insertmacro InstallLib DLL NOTSHARED REBOOT_NOTPROTECTED "ArcShellExt-dll\ArcShellExt.dll"    "$INSTDIR\bin\ArcShellExt\ArcShellExt.dll"    "$INSTDIR"
+  !insertmacro InstallLib DLL NOTSHARED REBOOT_NOTPROTECTED "ArcShellExt-dll\ArcShellExt-64.dll" "$INSTDIR\bin\ArcShellExt\ArcShellExt-64.dll" "$INSTDIR"
 SectionEnd
 
 SubSection /e "Options" pOptions
@@ -184,9 +191,9 @@ Section Uninstall
     Push "$INSTDIR"
     Call un.RemoveFromPath
 
-  !include "FreeArc-delete-old.nsh"   ; Delete winarc*.*
+  !include "FreeArc-delete-old.nsh"   ; Delete files from previous FreeArc versions
   !include "FreeArc-delete-all.nsh"
-  RMDir    "$INSTDIR"
+  RMDir /REBOOTOK   "$INSTDIR"
 
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
   DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"

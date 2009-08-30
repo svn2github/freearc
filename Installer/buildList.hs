@@ -16,8 +16,8 @@ main = do
   dirs  <- readFile "dirs"
   let nobase = drop (length dir+1)
   writeFile "FreeArc-delete.nsh"$
-    (unlines$ map (\f -> "Delete   \"$INSTDIR\\"++nobase f++"\"") $ sort$ lines files)++
-    (unlines$ map (\f -> "RMDir    \"$INSTDIR\\"++nobase f++"\"") $ reverse$ sort$ lines dirs)
+    (unlines$ map (\f -> "Delete /REBOOTOK  \"$INSTDIR\\"++nobase f++"\"") $ sort$ lines files)++
+    (unlines$ map (\f -> "RMDir  /REBOOTOK  \"$INSTDIR\\"++nobase f++"\"") $ reverse$ sort$ lines dirs)
   return $! last dirs
   removeFile "files"
   removeFile "dirs"
