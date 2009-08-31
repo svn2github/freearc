@@ -392,33 +392,12 @@ settingsDialog fm' = do
     let pack x = boxPackStart vbox x PackNatural 1
 
     let makeButton ("",_,_)             = do pack =<< hSeparatorNew; return []
-        makeButton (cmdname,etext,emsg) = do
-          [itext,imsg] <- i18ns [etext,emsg]
+        makeButton (cmdname,itext,imsg) = do
           button <- fmCheckButtonWithHistory fm' ("Settings.ContextMenu.Command."++cmdname) True imsg
           pack (widget button)
-          return [(button, (cmdname, itext, imsg))]
+          return [button]
 
-    commands <- concatMapM makeButton$
-                  [ ("add2arc"    ,  "0391 Add to \"%s\""      ,  "0392 Compress the selected files using FreeArc"           )
-                  , ("add2sfx"    ,  "0393 Add to SFX \"%s\""  ,  "0394 Compress the selected files into SFX using FreeArc"  )
-                  , ("add"        ,  "0395 Add to archive..."  ,  "0396 Compress the selected files using FreeArc via dialog")
-                  , (""           ,  ""                        ,  ""                                                         )
-                  , ("open"       ,  "0397 Open with FreeArc"  ,  "0398 Open the selected archive(s) with FreeArc"           )
-                  , ("extractTo"  ,  "0399 Extract to \"%s\""  ,  "0400 Extract the selected archive(s) to new folder"       )
-                  , ("extractHere",  "0401 Extract here"       ,  "0402 Extract the selected archive(s) to the same folder"  )
-                  , ("extract"    ,  "0403 Extract..."         ,  "0404 Extract the selected archive(s) via dialog"          )
-                  , ("test"       ,  "0405 Test"               ,  "0406 Test the selected archive(s)"                        )
-                  , (""           ,  ""                        ,  ""                                                         )
-                  , ("arc2sfx"    ,  "0407 Convert to SFX"     ,  "0408 Convert the selected archive(s) to SFX"              )
-                  , ("sfx2arc"    ,  "0409 Convert from SFX"   ,  "0410 Convert the selected SFX(es) to normal archive(s)"   )
-                  , (""           ,  ""                        ,  ""                                                         )
-                  , ("modify"     ,  "0411 Modify..."          ,  "0412 Modify the selected archives via dialog"             )
-                  , ("join"       ,  "0413 Join..."            ,  "0414 Join the selected archives via dialog"               )
-                  , (""           ,  ""                        ,  ""                                                         )
-                  , ("zip2arc"    ,  "0415 Convert to .arc"    ,  "0416 Convert the selected archive(s) to FreeArc format"   )
-                  , ("zip2sfx"    ,  "0417 Convert to .arc SFX",  "0418 Convert the selected archive(s) to FreeArc SFX"      )
-                  , ("zip2a"      ,  "0419 Convert to .arc..." ,  "0420 Convert the selected archive(s) to FreeArc format via dialog")
-                  ]
+    commands <- getExplorerCommands >>= concatMapM makeButton
 #endif
 
 ------ Закладка сжатия ------------------------------------------------------------------------
@@ -444,18 +423,13 @@ settingsDialog fm' = do
       inifile  <- findOrCreateFile configFilePlaces aINI_FILE
       buildPathTo inifile
       saveConfigFile inifile$ map (join2 "=") [(aINITAG_LANGUAGE, takeFileName langFile)]
-      logfile' <- val logfile;  saveHistory logfile
-      tempdir' <- val tempdir;  saveHistory tempdir
+      saveHistory `mapM_` [logfile, tempdir]
       saveHistory `mapM_` [toolbarTextButton, checkNewsButton]
       saveCompressionHistories
       saveEncryptionHistories ""
 #if defined(FREEARC_WIN)
-      saveHistory `mapM_` ([associateButton, contextMenuButton, cascadedButton] ++ map fst commands)
-      associate   <- val associateButton
-      contextMenu <- val contextMenuButton
-      cascaded    <- val cascadedButton
-      bValues     <- val `mapM` (map fst commands)
-      registerShellExtensions associate oldContextMenu contextMenu cascaded (zip bValues (map snd commands))
+      saveHistory `mapM_` ([associateButton, contextMenuButton, cascadedButton] ++ commands)
+      registerShellExtensions
 #endif
       return ()
 
@@ -465,66 +439,106 @@ settingsDialog fm' = do
 ----------------------------------------------------------------------------------------------------
 
 #if defined(FREEARC_WIN)
--- Удаление регистрации
-unregisterShellExtensions = registerShellExtensions False True False undefined undefined
+translateExplorerCommand (cmdname,etext,emsg) = do [itext,imsg] <- i18ns [etext,emsg]
+                                                   return (cmdname, itext, imsg)
 
-registerShellExtensions associate oldContextMenu contextMenu cascaded commands = do
-      exe <- getExeName                                -- Name of FreeArc.exe file
-      let ico   =  exe `replaceExtension` ".ico"       -- Name of FreeArc.ico file
-          dir   =  exe.$takeDirectory                  -- FreeArc.exe directory
-          shext =  dir </> "ArcShellExt"               -- Shell extension directory
-          empty =  dir </> "empty.arc"                 -- Name of empty archive file
-          register = registrySetStr hKEY_CLASSES_ROOT
+-- |Возвращает список локализованных описаний команд, интегрируемых в Explorer
+getExplorerCommands = mapM translateExplorerCommand$
+                  [ ("add2arc"    ,  "0391 Add to \"%s\""      ,  "0392 Compress the selected files using FreeArc"           )
+                  , ("add2sfx"    ,  "0393 Add to SFX \"%s\""  ,  "0394 Compress the selected files into SFX using FreeArc"  )
+                  , ("add"        ,  "0395 Add to archive..."  ,  "0396 Compress the selected files using FreeArc via dialog")
+                  , (""           ,  ""                        ,  ""                                                         )
+                  , ("open"       ,  "0397 Open with FreeArc"  ,  "0398 Open the selected archive(s) with FreeArc"           )
+                  , ("extractTo"  ,  "0399 Extract to \"%s\""  ,  "0400 Extract the selected archive(s) to new folder"       )
+                  , ("extractHere",  "0401 Extract here"       ,  "0402 Extract the selected archive(s) to the same folder"  )
+                  , ("extract"    ,  "0403 Extract..."         ,  "0404 Extract the selected archive(s) via dialog"          )
+                  , ("test"       ,  "0405 Test"               ,  "0406 Test the selected archive(s)"                        )
+                  , (""           ,  ""                        ,  ""                                                         )
+                  , ("arc2sfx"    ,  "0407 Convert to SFX"     ,  "0408 Convert the selected archive(s) to SFX"              )
+                  , ("sfx2arc"    ,  "0409 Convert from SFX"   ,  "0410 Convert the selected SFX(es) to normal archive(s)"   )
+                  , (""           ,  ""                        ,  ""                                                         )
+                  , ("modify"     ,  "0411 Modify..."          ,  "0412 Modify the selected archives via dialog"             )
+                  , ("join"       ,  "0413 Join..."            ,  "0414 Join the selected archives via dialog"               )
+                  , (""           ,  ""                        ,  ""                                                         )
+                  , ("zip2arc"    ,  "0415 Convert to .arc"    ,  "0416 Convert the selected archive(s) to FreeArc format"   )
+                  , ("zip2sfx"    ,  "0417 Convert to .arc SFX",  "0418 Convert the selected archive(s) to FreeArc SFX"      )
+                  , ("zip2a"      ,  "0419 Convert to .arc..." ,  "0420 Convert the selected archive(s) to FreeArc format via dialog")
+                  ]
 
-      -- (Un)registering ArcShellExt dlls - performed only if setting was changed
-      let dll_register mode = when (oldContextMenu /= contextMenu) $ do
-                                runProgram$ "regsvr32 "++mode++" /s /c \""++(shext </> "ArcShellExt.dll\"")
-                                runProgram$ "regsvr32 "++mode++" /s /c \""++(shext </> "ArcShellExt-64.dll\"")
-                                return ()
+-- |Регистрация
+registerShellExtensions = do
+  hf' <- openHistoryFile
+  hfCacheConfigFile hf' $ do
+  associate   <- hfGetHistoryBool hf' "Settings.Associate"            True
+  contextMenu <- hfGetHistoryBool hf' "Settings.ContextMenu"          True
+  cascaded    <- hfGetHistoryBool hf' "Settings.ContextMenu.Cascaded" True
+  commands    <- getExplorerCommands >>== filter(not.null.fst3)
+  cmdEnabled  <- foreach commands $ \(cmdname,itext,imsg) ->
+                   hfGetHistoryBool hf' ("Settings.ContextMenu.Command."++cmdname) True
+  changeRegistrationOfShellExtensions associate (not contextMenu) contextMenu cascaded cmdEnabled commands
 
-      -- First, unregister any old version
-      dll_register "/u"
-      registryDeleteTree hKEY_CLASSES_ROOT "*\\shell\\FreeArc"
-      registryDeleteTree hKEY_CLASSES_ROOT "Directory\\shell\\FreeArc"
-      registryDeleteTree hKEY_CLASSES_ROOT ".arc"
-      registryDeleteTree hKEY_CLASSES_ROOT "FreeArc.arc"
+-- |Удаление регистрации
+unregisterShellExtensions = changeRegistrationOfShellExtensions False True False undefined undefined undefined
 
-      -- This part is performed only when Association enabled
-      when associate $ do
-        register "FreeArc.arc" "" "FreeArc archive"
-        register "FreeArc.arc\\DefaultIcon" "" (ico++",0")
-        register "FreeArc.arc\\shell" "" "open"
-        register "FreeArc.arc\\shell\\open\\command" "" ("\""++exe++"\" \"%1\"")
-        register ".arc" "" "FreeArc.arc"
-        register ".arc\\ShellNew" "FileName" empty
+-- |Изменение настроек регистрации
+changeRegistrationOfShellExtensions associate oldContextMenu contextMenu cascaded cmdEnabled commands = do
+  exe <- getExeName                                -- Name of FreeArc.exe file
+  let ico   =  exe `replaceExtension` ".ico"       -- Name of FreeArc.ico file
+      dir   =  exe.$takeDirectory                  -- FreeArc.exe directory
+      shext =  dir </> "ArcShellExt"               -- Shell extension directory
+      empty =  dir </> "empty.arc"                 -- Name of empty archive file
+      register = registrySetStr hKEY_CLASSES_ROOT
 
-      -- This part is performed only when Context Menu is enabled
-      when contextMenu $ do
-        -- Generate ArcShellExt config script
-        all2arc <- all2arc_path
-        let q str = "\"" ++ str.$replaceAll "\"" "\\\"" ++ "\""
-        let script = [ "-- This file uses UTF8 encoding without BOM"
-                     , ""
-                     , "-- 1 for cascaded menus, nil for flat"
-                     , "cascaded = "++(iif cascaded "1" "nil")
-                     , ""
-                     , "-- Commands"
-                     , "command = {}"
-                     ] ++ map (\(enabled,(cmdname,text,help)) ->
-                                 (not enabled &&& "-- ")++"command."++cmdname++" = {text = "++q text++", help = "++q help++"}")
-                          commands ++
-                     [ ""
-                     , "-- Path to FreeArc"
-                     , "freearc = \"\\\""++(exe.$replaceAll "\\" "\\\\")++"\\\"\""
-                     , ""
-                     , "-- Path to All2Arc"
-                     , "all2arc = \"\\\""++(all2arc.$replaceAll "\\" "\\\\")++"\\\"\""
-                     ]
-        saveConfigFile (shext </> "ArcShellExt-config.lua") script
-        -- Register DLL
-        dll_register ""
-        return ()
+  -- (Un)registering ArcShellExt dlls - performed only if setting were changed
+  let dll_register mode = when (oldContextMenu /= contextMenu) $ do
+                            runProgram$ "regsvr32 "++mode++" /s /c \""++(shext </> "ArcShellExt.dll\"")
+                            runProgram$ "regsvr32 "++mode++" /s /c \""++(shext </> "ArcShellExt-64.dll\"")
+                            return ()
+
+  -- First, unregister any old version
+  dll_register "/u"
+  registryDeleteTree hKEY_CLASSES_ROOT "*\\shell\\FreeArc"
+  registryDeleteTree hKEY_CLASSES_ROOT "Directory\\shell\\FreeArc"
+  registryDeleteTree hKEY_CLASSES_ROOT ".arc"
+  registryDeleteTree hKEY_CLASSES_ROOT "FreeArc.arc"
+
+  -- This part is performed only when Association enabled
+  when associate $ do
+    register "FreeArc.arc" "" "FreeArc archive"
+    register "FreeArc.arc\\DefaultIcon" "" (ico++",0")
+    register "FreeArc.arc\\shell" "" "open"
+    register "FreeArc.arc\\shell\\open\\command" "" ("\""++exe++"\" \"%1\"")
+    register ".arc" "" "FreeArc.arc"
+    register ".arc\\ShellNew" "FileName" empty
+
+  -- This part is performed only when Context Menu is enabled
+  when contextMenu $ do
+    -- Generate ArcShellExt config script
+    all2arc <- all2arc_path
+    let q str = "\"" ++ str.$replaceAll "\"" "\\\"" ++ "\""
+    let script = [ "-- This file uses UTF8 encoding without BOM"
+                 , ""
+                 , "-- 1 for cascaded menus, nil for flat"
+                 , "cascaded = "++(iif cascaded "1" "nil")
+                 , ""
+                 , "-- Commands"
+                 , "command = {}"
+                 ] ++ zipWith (\enabled (cmdname,text,help) ->
+                              (not enabled &&& "-- ")++"command."++cmdname++" = {text = "++q text++", help = "++q help++"}")
+                      cmdEnabled commands ++
+                 [ ""
+                 , "-- Path to FreeArc"
+                 , "freearc = \"\\\""++(exe.$replaceAll "\\" "\\\\")++"\\\"\""
+                 , ""
+                 , "-- Path to All2Arc"
+                 , "all2arc = \"\\\""++(all2arc.$replaceAll "\\" "\\\\")++"\\\"\""
+                 ]
+    saveConfigFile (shext </> "ArcShellExt-config.lua") script
+    -- Register DLL
+    dll_register ""
+    return ()
 #else
+registerShellExtensions   = doNothing0
 unregisterShellExtensions = doNothing0
 #endif
 

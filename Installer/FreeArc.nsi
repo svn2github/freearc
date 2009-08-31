@@ -25,7 +25,22 @@ SetCompressor /SOLID lzma
 ReserveFile "Documentation\readme.txt"
 
 ; Welcome page
+; MUI_PAGE_HEADER_TEXT text
+; Text to display on the header of the page.
+;
+; MUI_PAGE_HEADER_SUBTEXT text
+; Subtext to display on the header of the page.
+;
+; MUI_WELCOMEPAGE_TITLE title
+; Title to display on the top of the page.
+;
+; MUI_WELCOMEPAGE_TITLE_3LINES
+; Extra space for the title area.
+;
+; MUI_WELCOMEPAGE_TEXT text
+; Text to display on the page.
 ; !insertmacro MUI_PAGE_WELCOME
+
 ; License page
 !define MUI_LICENSEPAGE_TEXT_TOP " "
 !define MUI_LICENSEPAGE_TEXT_BOTTOM " "
@@ -154,14 +169,14 @@ SectionEnd
 
 Section -Post
   WriteUninstaller "$INSTDIR\uninst.exe"
-  WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\FreeArc.exe"
+  WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\bin\FreeArc.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name)"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\bin\FreeArc.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
-  ExecWait '"$INSTDIR\bin\FreeArc.exe" --settings-dialog'
+  ExecWait '"$INSTDIR\bin\FreeArc.exe" --register'
 SectionEnd
 
 

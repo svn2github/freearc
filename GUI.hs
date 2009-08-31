@@ -65,18 +65,8 @@ all2arc_path = do
 -- |Переменная, хранящая номер GUI-треда
 guiThread  =  unsafePerformIO$ newIORef$ error "undefined GUI::guiThread"
 
--- |Прочитать настройки программы из ini-файла
-readIniFile = do
-  inifile  <- findFile configFilePlaces aINI_FILE
-  inifile  &&&  readConfigFile inifile >>== map (split2 '=')
-
 -- |Инициализация Gtk для интерактивной работы (режим FileManager)
 runGUI action = do
-  -- Локализация
-  langDir  <- findDir libraryFilePlaces aLANG_DIR
-  settings <- readIniFile
-  setLocale$ langDir </> (settings.$lookup aINITAG_LANGUAGE `defaultVal` aLANG_FILE)
-  -- Инициализация Gtk
   unsafeInitGUIForThreadedRTS
   guiThread =:: getOsThreadId
   action

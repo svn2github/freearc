@@ -28,7 +28,7 @@ import Utils
 import Errors
 import Files
 import FileInfo
-import Charsets            (i18n, i18ns, urlEncode)
+import Charsets
 import Compression
 import Encryption
 import Options
@@ -49,10 +49,12 @@ import FileManDialogAdd
 parseGUIcommands run args exec = do
   let extract fm' exec cmd arcnames = extractDialog fm' exec cmd arcnames "" []
       add     fm' exec cmd files    = addDialog     fm' exec cmd files NoMode
+  loadTranslation
   case args of
     ["--settings-dialog"] -> openSettingsDialog          -- Диалог настроек
     "--add-dialog":xs     -> openDialog xs exec add      -- Диалог упаковки
     "--extract-dialog":xs -> openDialog xs exec extract  -- Диалог распаковки
+    ["--register"]        -> registerShellExtensions     -- Регистрация в Explorer
     ["--unregister"]      -> unregisterShellExtensions   -- Удаление регистрации в Explorer
     []                    -> myGUI run args              -- При вызове программы без аргументов или с одним аргументом (именем каталога/архива)
     [_]                   -> myGUI run args              --   запускаем полноценный Archive Manager
@@ -81,6 +83,17 @@ openDialog (cmd:"--":params) exec dialog = do
 openDialog params exec dialog = do
   startGUI
   gui $ debugMsg "FileManager.hs: erroneous attempt to run dialog"
+
+-- |Локализация
+loadTranslation = do
+  langDir  <- findDir libraryFilePlaces aLANG_DIR
+  settings <- readIniFile
+  setLocale$ langDir </> (settings.$lookup aINITAG_LANGUAGE `defaultVal` aLANG_FILE)
+
+-- |Прочитать настройки программы из ini-файла
+readIniFile = do
+  inifile  <- findFile configFilePlaces aINI_FILE
+  inifile  &&&  readConfigFile inifile >>== map (split2 '=')
 
 
 ----------------------------------------------------------------------------------------------------
