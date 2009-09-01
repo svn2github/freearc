@@ -423,6 +423,7 @@ settingsDialog fm' = do
       inifile  <- findOrCreateFile configFilePlaces aINI_FILE
       buildPathTo inifile
       saveConfigFile inifile$ map (join2 "=") [(aINITAG_LANGUAGE, takeFileName langFile)]
+      loadTranslation
       saveHistory `mapM_` [logfile, tempdir]
       saveHistory `mapM_` [toolbarTextButton, checkNewsButton]
       saveCompressionHistories

@@ -84,17 +84,6 @@ openDialog params exec dialog = do
   startGUI
   gui $ debugMsg "FileManager.hs: erroneous attempt to run dialog"
 
--- |Локализация
-loadTranslation = do
-  langDir  <- findDir libraryFilePlaces aLANG_DIR
-  settings <- readIniFile
-  setLocale$ langDir </> (settings.$lookup aINITAG_LANGUAGE `defaultVal` aLANG_FILE)
-
--- |Прочитать настройки программы из ini-файла
-readIniFile = do
-  inifile  <- findFile configFilePlaces aINI_FILE
-  inifile  &&&  readConfigFile inifile >>== map (split2 '=')
-
 
 ----------------------------------------------------------------------------------------------------
 ---- Главное меню программы и тулбар под ним -------------------------------------------------------

@@ -57,6 +57,17 @@ all2arc_path = do
   let dir  = exe.$takeDirectory                  -- FreeArc.exe directory
   return$ windosifyPath(dir </> "all2arc.exe")
 
+-- |Локализация
+loadTranslation = do
+  langDir  <- findDir libraryFilePlaces aLANG_DIR
+  settings <- readIniFile
+  setLocale$ langDir </> (settings.$lookup aINITAG_LANGUAGE `defaultVal` aLANG_FILE)
+
+-- |Прочитать настройки программы из ini-файла
+readIniFile = do
+  inifile  <- findFile configFilePlaces aINI_FILE
+  inifile  &&&  readConfigFile inifile >>== map (split2 '=')
+
 
 ----------------------------------------------------------------------------------------------------
 ---- Отображение индикатора прогресса --------------------------------------------------------------
