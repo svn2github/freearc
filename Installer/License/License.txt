@@ -1,0 +1,17 @@
+  FreeArc
+  ~~~~~~~
+  Usage license
+  ~~~~~~~~~~~~~
+
+  FreeArc Copyright (C) 2004-2009 Bulat Ziganshin.
+
+  FreeArc is distributed under GNU GPL 2.0 license. You can use FreeArc on any
+  computer, including a computer in a commercial organization. You don't need
+  to register or pay for FreeArc.
+
+  See Contributors.txt for full list of program contributors and gpl-2.0.txt
+  for full program license.
+
+
+  --
+  Bulat Ziganshin

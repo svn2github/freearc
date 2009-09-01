@@ -25,7 +25,7 @@ SetCompressor /SOLID lzma
 ReserveFile "License\License.txt"
 
 ; Welcome page
-!define MUI_WELCOMEPAGE_TEXT "FreeArc features the following:\n* best speed and compression ratio among all practical archivers\n* dedicated algorithms for multimedia, executable, text compression with up to 2gb dictionary\n* solid archives with smart updating, recovery record\n* AES+Twofish+Serpent encryption, self-extracting archives\n* integration with Explorer, Total Commander, FAR manager and InnoSetup\n* GUI and console versions both for Windows and Linux"
+!define MUI_WELCOMEPAGE_TEXT "FreeArc is an archiver featuring:\n\n- world's best compression speed and efficiency\n- solid archives with smart updating\n- AES+Twofish+Serpent encryption\n- recovery record\n- self-extracting archives\n- GUI and console versions\n- Explorer integration"
 !insertmacro MUI_PAGE_WELCOME
 ; License page
 !insertmacro MUI_PAGE_LICENSE "License\License.txt"
