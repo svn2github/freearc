@@ -22,30 +22,13 @@ SetCompressor /SOLID lzma
 !define MUI_COMPONENTSPAGE_NODESC
 !define MUI_ICON "${NSISDIR}\Contrib\Graphics\Icons\modern-install.ico"
 !define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall.ico"
-ReserveFile "Documentation\readme.txt"
+ReserveFile "License\License.txt"
 
 ; Welcome page
-; MUI_PAGE_HEADER_TEXT text
-; Text to display on the header of the page.
-;
-; MUI_PAGE_HEADER_SUBTEXT text
-; Subtext to display on the header of the page.
-;
-; MUI_WELCOMEPAGE_TITLE title
-; Title to display on the top of the page.
-;
-; MUI_WELCOMEPAGE_TITLE_3LINES
-; Extra space for the title area.
-;
-; MUI_WELCOMEPAGE_TEXT text
-; Text to display on the page.
-; !insertmacro MUI_PAGE_WELCOME
-
+!define MUI_WELCOMEPAGE_TEXT "FreeArc features the following:\n* best speed and compression ratio among all practical archivers\n* dedicated algorithms for multimedia, executable, text compression with up to 2gb dictionary\n* solid archives with smart updating, recovery record\n* AES+Twofish+Serpent encryption, self-extracting archives\n* integration with Explorer, Total Commander, FAR manager and InnoSetup\n* GUI and console versions both for Windows and Linux"
+!insertmacro MUI_PAGE_WELCOME
 ; License page
-!define MUI_LICENSEPAGE_TEXT_TOP " "
-!define MUI_LICENSEPAGE_TEXT_BOTTOM " "
-!define MUI_LICENSEPAGE_BUTTON "I like it!"
-!insertmacro MUI_PAGE_LICENSE "Documentation\readme.txt"
+!insertmacro MUI_PAGE_LICENSE "License\License.txt"
 ; Directory page
 !insertmacro MUI_PAGE_DIRECTORY
 ; Components selection page
@@ -110,6 +93,8 @@ Section "Install FreeArc" SEC01
   File /r "bin\*.*"
   SetOutPath "$INSTDIR\Documentation"
   File /r "Documentation\*.*"
+  SetOutPath "$INSTDIR\License"
+  File /r "License\*.*"
 !ifndef UPDATE
   SetOutPath "$INSTDIR"
   File /r "GTK2-Runtime\*.*"
@@ -132,10 +117,11 @@ SubSection /e "Options" pOptions
     RMDir /r "$SMPROGRAMS\FreeArc"
     CreateDirectory "$SMPROGRAMS\FreeArc"
     CreateDirectory "$SMPROGRAMS\FreeArc\Documentation"
-    CreateDirectory "$SMPROGRAMS\FreeArc\Documentation (rus)"
+    CreateShortCut  "$SMPROGRAMS\FreeArc\Documentation\License.lnk" "$INSTDIR\License\License.txt"
     CreateShortCut  "$SMPROGRAMS\FreeArc\Documentation\What's new.lnk" "$INSTDIR\Documentation\whatsnew.txt"
     CreateShortCut  "$SMPROGRAMS\FreeArc\Documentation\FreeArc GUI.lnk" "$INSTDIR\Documentation\FreeArc-GUI-Eng.htm"
     CreateShortCut  "$SMPROGRAMS\FreeArc\Documentation\FreeArc command line.lnk" "$INSTDIR\Documentation\FreeArc036-eng.htm"
+    CreateDirectory "$SMPROGRAMS\FreeArc\Documentation (rus)"
     CreateShortCut  "$SMPROGRAMS\FreeArc\Documentation (rus)\What's new.lnk" "$INSTDIR\Documentation\whatsnew-rus.txt"
     CreateShortCut  "$SMPROGRAMS\FreeArc\Documentation (rus)\FreeArc GUI.lnk" "$INSTDIR\Documentation\FreeArc-GUI-Rus.htm"
     CreateShortCut  "$SMPROGRAMS\FreeArc\Documentation (rus)\FreeArc command line.lnk" "$INSTDIR\Documentation\FreeArc040-rus.htm"
@@ -169,7 +155,7 @@ SectionEnd
 
 Section -Post
   WriteUninstaller "$INSTDIR\uninst.exe"
-  WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\bin\FreeArc.exe"
+  WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name)"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\bin\FreeArc.exe"

@@ -11,6 +11,7 @@ mkdir !Release\bin
 mkdir !Release\bin\arc.languages
 mkdir !Release\bin\ArcShellExt
 mkdir !Release\Documentation
+mkdir !Release\License
 mkdir !Release\gtk2-runtime
 mkdir !Release\gtk2-themes
 mkdir !Release\ini
@@ -20,6 +21,7 @@ xcopy 7-zip         !Release\bin           /e
 xcopy bin           !Release\bin           /e
 xcopy ini           !Release\ini           /e
 xcopy Documentation !Release\Documentation /e
+xcopy License       !Release\License       /e
 xcopy gtk2-runtime  !Release\gtk2-runtime  /e
 xcopy gtk2-themes   !Release\gtk2-themes   /e
 xcopy arc.languages\arc.languages  !Release\bin\arc.languages        /e
