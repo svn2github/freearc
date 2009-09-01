@@ -11,20 +11,19 @@ mkdir !Release\bin
 mkdir !Release\bin\arc.languages
 mkdir !Release\bin\ArcShellExt
 mkdir !Release\Documentation
-mkdir !Release\License
 mkdir !Release\gtk2-runtime
 mkdir !Release\gtk2-themes
-mkdir !Release\ini
 
-xcopy Addons        !Release\Addons        /e
-xcopy 7-zip         !Release\bin           /e
-xcopy bin           !Release\bin           /e
-xcopy ini           !Release\ini           /e
-xcopy Documentation !Release\Documentation /e
-xcopy License       !Release\License       /e
-xcopy gtk2-runtime  !Release\gtk2-runtime  /e
-xcopy gtk2-themes   !Release\gtk2-themes   /e
-xcopy arc.languages\arc.languages  !Release\bin\arc.languages        /e
+xcopy Addons        !Release\Addons           /e
+xcopy 7-zip         !Release\bin              /e
+xcopy bin           !Release\bin           /i
+xcopy bin\scripts   !Release\bin\scripts   /i
+xcopy ini           !Release\ini           /i
+xcopy Documentation !Release\Documentation    /e
+xcopy License       !Release\License       /i
+xcopy gtk2-runtime  !Release\gtk2-runtime     /e
+xcopy gtk2-themes   !Release\gtk2-themes      /e
+xcopy arc.languages\arc.languages  !Release\bin\arc.languages  /e
 
 xcopy ..\Documentation\History.txt                      !Release\Addons
 xcopy ..\Unarc\FreeArc.fmt                             "!Release\Addons\FAR MultiArc plugin"

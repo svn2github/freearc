@@ -356,6 +356,7 @@ fashell
     обрабатывать @files в parseGUIcommands ("@" заменить на ":"? или использовать опцию "-@")
   установка в каталоги с unicode-именами и BOM в начале скрипта (заменить вызов luaL_dofile)
 Stranglehold.arc + unarc (1gb): вылет после распаковки первого блока
+исправить Hang up after cancelling operation in FileManager mode  (issue 51)
 инсталятор
   sfx linux/nodelete
   rep: не забыть убрать принудительное деление на блоки :)
@@ -364,7 +365,6 @@ Stranglehold.arc + unarc (1gb): вылет после распаковки первого блока
 уменьшить ширину диалога сжатия и обновить скриншоты
 использовать для проверки на новости crc данных, возвращаемых страницей CheckNews.aspx
   молчать при отсутствии ответа от сайта (при автопроверке)
-исправить Hang up after cancelling operation in FileManager mode  (issue 51)
 ??after "--" allow filenames starting with "@". use "-@" option to include listfiles anywhere on cmdline
 "поверх всех окон" и "solid blocks": сохранение настроек, сортировка
 "lzp+ppmd:1gb" - не может выделить 1gb, но падает на I/O error в lzp (регресс 11b->20 июня)
