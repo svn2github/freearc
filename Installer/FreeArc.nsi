@@ -206,6 +206,8 @@ Section Uninstall
     Push "$INSTDIR"
     Call un.RemoveFromPath
 
+  ExecWait '"$INSTDIR\PowerPack\unins000.exe" /VERYSILENT'
+
   !include "FreeArc-delete-old.nsh"   ; Delete files from previous FreeArc versions
   !include "FreeArc-delete-all.nsh"
   RMDir /REBOOTOK   "$INSTDIR"

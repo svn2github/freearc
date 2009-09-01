@@ -355,18 +355,17 @@ fashell
   обработка 8000 выделенных файлов? ;)  или даже одного длинного имени файла
     обрабатывать @files в parseGUIcommands ("@" заменить на ":"? или использовать опцию "-@")
   установка в каталоги с unicode-именами и BOM в начале скрипта (заменить вызов luaL_dofile)
-  при смене языка автоматическая перегенерация -config.lua файла не происходит
-обновить русские скриншоты
+  при смене языка автоматическая перегенерация -config.lua файла происходит со старым языков
+обновить freearc-sfx и русские скриншоты
 Stranglehold.arc + unarc (1gb): вылет после распаковки первого блока
 использовать для проверки на новости crc данных, возвращаемых страницей CheckNews.aspx
-  молчать при отсутвии ответа от сайта (при автопроверке)
+  молчать при отсутствии ответа от сайта (при автопроверке)
+исправить Hang up after cancelling operation in FileManager mode  (issue 51)
 инсталятор
-  ExecWait '"$INSTDIR\PowerPack\unins000.exe" /VERYSILENT'
-  лицензия
-  отшлифовать новый readme.txt (для сайта как минимум)
+  readme+лицензия (отшлифовать, включить обе в .nsi)
   sfx linux/nodelete
   rep: не забыть убрать принудительное деление на блоки :)
-after "--" allow filenames starting with "@". use "-@" option to include listfiles anywhere on cmdline
+??after "--" allow filenames starting with "@". use "-@" option to include listfiles anywhere on cmdline
 "поверх всех окон" и "solid blocks": сохранение настроек, сортировка
 "lzp+ppmd:1gb" - не может выделить 1gb, но падает на I/O error в lzp (регресс 11b->20 июня)
 пустые каталоги не удаляются из архива (в FM)
