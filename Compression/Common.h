@@ -124,7 +124,6 @@ typedef off_t                FILESIZE;
 #define nameequ(s1,s2)           (namecmp(s1,s2)==EQUAL)
 #define start_with(str,with)     (strncmp (str, with, strlen(with))==EQUAL)
 #define end_with(str,with)       (nameequ (str_end(str)-strlen(with), with))
-#define strdup_msg(s)            (strcpy (new char[strlen(s)+1], (s)))
 #define find_extension(str)      (find_extension_in_entry (drop_dirname(str)))
 #define mymax(a,b)               ((a)>(b)? (a) : (b))
 #define mymin(a,b)               ((a)<(b)? (a) : (b))
@@ -635,6 +634,14 @@ static inline void *malloc_msg (unsigned long size = MY_FILENAME_MAX * 4)
   void *ptr = malloc(size);
   CHECK (ptr, (s,"ERROR: can't alloc %lu memory bytes", size));
   return ptr;
+}
+
+// Checked strdup
+static inline char *strdup_msg (char *old)
+{
+  char *str = (char*) malloc_msg (strlen(old)+1);
+  strcpy (str, old);
+  return str;
 }
 
 }       // extern "C"

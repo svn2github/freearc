@@ -267,8 +267,10 @@ static int multi_decompress_callback (const char *what, void *buf, int size, voi
 
 
 // Распаковать данные, сжатые цепочкой методов
-int MultiDecompress (char *method, CALLBACK_FUNC *callback, void *auxdata)
+int MultiDecompress (char *_method, CALLBACK_FUNC *callback, void *auxdata)
 {
+  char *method = strdup_msg(_method);
+
   // Разобьём компрессор на отдельные алгоритмы и запустим для каждого из них отдельный тред
   CMETHOD cm[MAX_METHODS_IN_COMPRESSOR];
   Params  param[MAX_METHODS_IN_COMPRESSOR];
@@ -304,6 +306,7 @@ int MultiDecompress (char *method, CALLBACK_FUNC *callback, void *auxdata)
   for (int i=0; i<N; i++)
     param[i].thread.Wait();
     //printf("\nreleased %d    ", i);
+  FreeAndNil(method);
   return retcode;
 }
 

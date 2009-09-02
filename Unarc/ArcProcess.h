@@ -152,13 +152,10 @@ int PROCESS::DecompressCallback (const char *what, void *buf, int size)
 // Add "tempfile" to compressors chain if required
 char *AddTempfile (char *compressor)
 {
+  char *c = (compressor = strdup_msg(compressor));
+  int  compressor_len = strlen(compressor);
   char *buffering = "tempfile";
   char PLUS[] = {COMPRESSION_METHODS_DELIMITER, '\0'};
-
-  char *c = (char*) malloc (strlen(compressor)+1);
-  if (!c)  return NULL;
-  strcpy(c, compressor);
-  compressor = c;
 
   // Разобьём компрессор на отдельные алгоритмы и посчитаем расход памяти
   CMETHOD  cm[MAX_METHODS_IN_COMPRESSOR];
@@ -174,9 +171,7 @@ char *AddTempfile (char *compressor)
   // If memreqs are too large - add "tempfile" between methods
   if (mem > maxmem)
   {
-    char *c2 = (char*) malloc (strlen(compressor)+strlen(buffering)+2);
-    if (!c2)  return NULL;
-    compressor = c2;
+    compressor = (char*) malloc_msg (compressor_len + (strlen(buffering)+strlen(PLUS))*(N-1) + 1);
 
     strcpy(compressor, cm[0]);
     mem=memi[0];
