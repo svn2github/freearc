@@ -1,17 +1,21 @@
 ;[English]
 ;Example of using unarc.dll for decompression of FreeArc archives with displaying of progress indicator in Inno Setup window.
-;All you need to use the script is to compile it and put .arc archives to the same directory as installer.
-;The script requires Inno Setup QuickStart Pack 5.2.3 and above! (http://files.jrsoftware.org)
+;In order to use the script compile it and put *.arc archives to the same directory as installer executable before running it.
+;The script requires Inno Setup QuickStart Pack 5.2.3 and above (http://files.jrsoftware.org)
+;You will also need InnoCallback.dll that may be found at the http://www.sherlocksoftware.org/page.php?id=54
 
 ;[Russian]
 ;Пример распаковки FreeArc архива при помощи unarc.dll, с отображением прогресса распаковки в окне Inno Setup.
+;Для использования скрипта откомпилируйте его и поместите архивы *.arc в один каталог с инсталятором перед тем как запустить его.
+;Скрипт совместим с Inno Setup QuickStart Pack 5.2.3 и выше (http://files.jrsoftware.org)
+;Вам также потребуется InnoCallback.dll (http://www.sherlocksoftware.org/page.php?id=54)
 
+; Версия 3.3 от Bulat Ziganshin, 03-09-2009
+;   - исправлена ещё одна ошибка в unarc.dll - вылетала при распаковке с использованием временных файлов
+;
 ; Версия 3.2 от Bulat Ziganshin, 31-07-2009
 ;   - исправлена unarc.dll - теперь она не вылетает на сбойных архивах
-; miniFAQ
-;   - Подготовка скрипта: добавьте строки с архивами в секцию [Files], установите флаги external dontcopy, если надо, укажите компоненты/задачи.
-;   - один архив можно слить с инсталятором, если их общий размер не более 2Гб, через "copy /b setup.exe+xxx.arc newsetup.exe", добавив в [Files] "{srcexe}"
-
+;
 ; Версия 3.1 от Bulat Ziganshin, 29-07-2009
 ;   - более плавный индикатор прогресса (данные из LZMA пишутся кусками по 8 мб вместо dictsize)
 ;   - больше не грузятся всякие левые facompress.dll из PATH
@@ -60,7 +64,7 @@
 
 [Setup]
 AppName=FreeArc Example
-AppVerName=FreeArc Example 3.1
+AppVerName=FreeArc Example 3.3
 DefaultDirName={pf}\FreeArc Example
 UsePreviousAppDir=false
 DirExistsWarning=no
