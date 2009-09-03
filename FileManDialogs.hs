@@ -556,16 +556,10 @@ compressionPage fm' vbox = do
 
   -- Настройки алгоритма сжатия.
   hbox <- hBoxNew False 0;  pack hbox
-  ; vbox1 <- vBoxNew False 0
-  ;   method <- radioFrame "0107 Compression level" levels
-  ;     boxPackStart vbox1 (widget method)  PackNatural 0
-  ;   xMethod <- checkBox "0113 Fast, low-memory decompression"
-  ;     boxPackStart vbox1 (widget xMethod) PackNatural 0
-  ;   autodetect <- checkBox "0176 Filetype auto-detection"
-  ;     boxPackStart vbox1 (widget autodetect) PackNatural 1
-  ;   boxPackStart hbox vbox1 PackNatural 5
-  ; methodText <- labelNew Nothing
-  ;   boxPackStart hbox methodText PackGrow 0
+  ; method     <- radioFrame "0107 Compression level" levels;    boxPackStart hbox (widget method)  PackNatural 0
+  ; methodText <- labelNew Nothing;                              boxPackStart hbox methodText       PackGrow 0
+  xMethod    <- checkBox "0113 Fast, low-memory decompression";  pack (widget xMethod)
+  autodetect <- checkBox "0176 Filetype auto-detection"       ;  pack (widget autodetect)
 
   -- Настройки размера солид-блока
   vbox1 <- vBoxNew False 0;  let pack1 x = boxPackStart vbox1 x PackNatural 1
@@ -841,7 +835,7 @@ runEditCommand filename  = run (iif isWindows "notepad" "gedit") [filename]
 addCmdFiles dirname =  [dirname++"/"]
 xCmdFiles   dirname =  [dirname++"/*"]
 
--- Поместим все контролы в симпатичный notebook и получим процедуру создания новых страниц в нём
+-- Поместим все контролы в симпатичный notebook и возвратим процедуру создания новых страниц в нём
 startNotebook dialog = do
   upbox <- dialogGetUpper dialog
   nb <- notebookNew;  boxPackStart upbox nb PackGrow 0

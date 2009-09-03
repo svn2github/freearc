@@ -834,7 +834,8 @@ comboBox title labels = do
   combo <- New.comboBoxNewText
   for labels (\l -> New.comboBoxAppendText combo =<< i18n l)
   boxPackStart  hbox  label  PackNatural 5
-  boxPackStart  hbox  combo  PackNatural 5
+  boxPackStart  hbox  combo  PackGrow    5
+  widgetSetSizeRequest combo 10 (-1)           -- уменьшим размер кобо-бокса, посольку иначе диалог сжатия становится слишком широк
   return gtkWidget { gwWidget      = hbox
                    , gwGetValue    = New.comboBoxGetActive combo >>== fromMaybe 0
                    , gwSetValue    = New.comboBoxSetActive combo
