@@ -19,7 +19,7 @@
 
 Language name in english and mother tongue
 0000 Language=German (Deutsch)
-0159 Copyright=Peter Bauder alias JangoFat\nbased on 7zip language file\nedited for FreeArc-0.52-alpha-2009-08-22\n\nVacon\nOriginal copyrights:\nTranslated by Soeren Finster\n7-Zip 4.07 beta\nUpdated by JAK-Software.DE\n7-Zip 4.55 beta\nMaintained by Joachim Henke (since 4.12 beta)
+0159 Copyright=Peter Bauder alias JangoFat\nbased on 7zip language file\nedited for FreeArc-0.52-alpha-2009-09-01\n\nVacon\nOriginal copyrights:\nTranslated by Soeren Finster\n7-Zip 4.07 beta\nUpdated by JAK-Software.DE\n7-Zip 4.55 beta\nMaintained by Joachim Henke (since 4.12 beta)
 
 Language-specific URLs relative to http://freearc.org/ and helpfiles
 Filled only for languages providing their own translations
@@ -319,6 +319,13 @@ Archive information dialog
 --
 0097 Encryption algorithms:=Verschlüsselungsverfahren:
 0098 Archive comment:=Archivkommentar:
+---
+0449 Solid blocks=Solide Blöcke
+0450 Position=Position
+0451 Size=Größe
+0452 Compressed=Komprimiert
+0453 Files=Dateien
+0454 Method=Methode
 
 
 Settings dialog
