@@ -357,6 +357,7 @@ fashell
   установка в каталоги с unicode-именами и BOM в начале скрипта (заменить вызов luaL_dofile)
 исправить Hang up after cancelling operation in FileManager mode  (issue 51)
 инсталятор
+  ?overwrite arc.ini/groups
   sfx linux/nodelete
   rep: не забыть убрать принудительное деление на блоки :)
   ?выбор языка средствами инсталятора

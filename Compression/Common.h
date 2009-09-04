@@ -783,6 +783,7 @@ struct MYDIR : MYFILE
         char dirname[100];
         sprintf(dirname, "%s%u", "freearc", i);
         setname(dirname);
+        BuildPathTo(filename);
         if (create_dir() == 0)   {mark_as_temporary(); return TRUE;}  // Success
     }
     return FALSE;                                                     // Fail
