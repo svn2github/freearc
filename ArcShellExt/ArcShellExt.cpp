@@ -30,6 +30,7 @@
 
 #define GUID_SIZE 128
 #define MY_FILENAME_MAX 65536  /* maximum filename size */
+#define MY_CMDLINE_MAX 32000  /* maximum cmdline size */
 #define ResultFromShort(i) ResultFromScode(MAKE_SCODE(SEVERITY_SUCCESS, 0, (USHORT)(i)))
 #define MYARRAYSIZE(arr) (sizeof(arr)/sizeof(*(arr)))
 
@@ -406,6 +407,7 @@ CShellExt::CShellExt() {
   hr = SHGetMalloc(&m_pAlloc);
   if (FAILED(hr))
     m_pAlloc = NULL;
+  listfile_data = NULL;
 
   // Create Lua interpreter, register C functions and run Lua scripts to define Lua functions
   L = lua_newstate (l_alloc, this);  luaL_openlibs(L);
@@ -418,6 +420,7 @@ CShellExt::CShellExt() {
 CShellExt::~CShellExt() {
   lua_close(L);
 
+  free(listfile_data);
   if (m_pDataObj)
   m_pDataObj->Release();
   _cRef--;
@@ -761,7 +764,8 @@ static DWORD WINAPI WaitProgramFinish (void *paramPtr)
 {
   Param *param = (Param*) paramPtr;
   WaitForSingleObject (param->hProcess, INFINITE);
-  DeleteFile (param->listfile);
+  CloseHandle (param->hProcess);
+  DeleteFile (param->listfile),
   free (param->listfile);
   free (param);
   return 0;
@@ -769,7 +773,7 @@ static DWORD WINAPI WaitProgramFinish (void *paramPtr)
 
 STDMETHODIMP CShellExt::RunProgram (HWND hParent, LPCSTR pszWorkingDir, LPCSTR cmd0, LPCSTR pszParam, int iShowCmd)
 {
-  char message[MAX_PATH];
+  char message[MAX_PATH], cmdBuf[MAX_PATH+100];
 
   // Find current directory - it's the name of any file selected minus last part
   char* pDest = strrchr(SelectedFilename, '\\');
@@ -778,9 +782,26 @@ STDMETHODIMP CShellExt::RunProgram (HWND hParent, LPCSTR pszWorkingDir, LPCSTR c
   TCHAR *CurrentDirW = (TCHAR*) malloc (sizeof(TCHAR) * MY_FILENAME_MAX);
   MultiByteToWideChar (CP_UTF8, 0, SelectedFilename, -1, CurrentDirW, MY_FILENAME_MAX);
 
+  // Данные, которые нужно записать во временный файл
+  char *data_to_write = NULL;
+  if (strlen(cmd0) > MY_CMDLINE_MAX)
+  {
+    char *p = cmd0[0]=='"'? strchr((char*)cmd0+1, '"')+1 : strchr((char*)cmd0, ' ');
+    // Превратить команду в "freearc @cmd"
+    sprintf (cmdBuf, "%.*s @{listfile}", p-cmd0, cmd0);
+    cmd0 = cmdBuf;
+    // Записать остаток команды во временный файл
+    while (*p==' ')  p++;
+    data_to_write = p;
+  }
+  else if (strstr(cmd0, "{listfile}"))
+  {
+    data_to_write = listfile_data;
+  }
+
   // Save listfile data to tempfile
-  TCHAR *listfile = SaveDataToTempFile (listfile_data, message);
-  if (!listfile) {
+  TCHAR *listfile = data_to_write? SaveDataToTempFile (data_to_write, message) : NULL;
+  if (data_to_write && !listfile) {
     MsgBoxError (hParent, message);
     return NOERROR;////error
   }
@@ -810,18 +831,23 @@ STDMETHODIMP CShellExt::RunProgram (HWND hParent, LPCSTR pszWorkingDir, LPCSTR c
   if (CreateProcessW (NULL, cmdW, NULL, NULL, FALSE, 0, NULL, CurrentDirW, &si, &pi)) {
     CloseHandle (pi.hThread);
 
-    Param *param = (Param*) malloc(sizeof(Param));
-    param->hProcess = pi.hProcess;
-    param->listfile = listfile;
+    // Если есть файл, который нужно стереть после выполнения команды
+    if (listfile)
+    {
+      Param *param = (Param*) malloc(sizeof(Param));
+      param->hProcess = pi.hProcess;
+      param->listfile = listfile;
 
-    CreateThread(
-            NULL,              // default security attributes
-            0,                 // use default stack size
-            WaitProgramFinish, // thread function
-            param,             // argument to thread function
-            0,                 // use default creation flags
-            NULL);             // returns the thread identifier (Win9x-incompatible)
-
+      CreateThread(
+              NULL,              // default security attributes
+              0,                 // use default stack size
+              WaitProgramFinish, // thread function
+              param,             // argument to thread function
+              0,                 // use default creation flags
+              NULL);             // returns the thread identifier (Win9x-incompatible)
+    } else {
+      CloseHandle (pi.hProcess);
+    }
   } else {
     sprintf(message, "Cannot run program: %.*s", MAX_PATH-100, cmd0);
     MsgBoxError (hParent, message);

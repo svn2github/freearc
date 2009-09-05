@@ -1,5 +1,8 @@
 -- This file uses UTF8 encoding without BOM
 
+-- Maximum allow length of command line
+MAX_CMD_LENGTH = 4000
+
 -- Suffix for FreeArc archives
 arcext = ".arc"
 
@@ -42,11 +45,12 @@ register_menu_handler (function (filenames)
       filename = filename.." "..quote(drop_dir(f))
     end
   end
+  if string.len(filename) > MAX_CMD_LENGTH   then filelist = "@{listfile}"  else filelist = filename end
   arcname = arcbase..arcext
   sfxname = arcbase..exeext
   menu = {
-    append (command.add2arc,  {param = arcname,  command = freearc.." a --noarcext "     ..add_options.." -- \"" .. arcname .. "\" @{listfile}"}),
-    append (command.add2sfx,  {param = sfxname,  command = freearc.." a -sfx --noarcext "..add_options.." -- \"" .. arcname .. "\" @{listfile}"}),
+    append (command.add2arc,  {param = arcname,  command = freearc.." a --noarcext "     ..add_options.." -- \"" .. arcname .. "\" " .. filelist}),
+    append (command.add2sfx,  {param = sfxname,  command = freearc.." a -sfx --noarcext "..add_options.." -- \"" .. arcname .. "\" " .. filelist}),
     append (command.add,      {                  command = freearc.." --add-dialog a "   ..add_options.." -- "..filename}),
   }
 
