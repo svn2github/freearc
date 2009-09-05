@@ -42,6 +42,9 @@ import FileManUtils
 import FileManDialogs
 import FileManDialogAdd
 
+-- |Maximum size of command line
+aMAX_CMDLINE_LENGTH = 32000 `div` 4
+
 ----------------------------------------------------------------------------------------------------
 ---- Обработка GUI-специфичных вариаций командной строки -------------------------------------------
 ----------------------------------------------------------------------------------------------------
@@ -522,7 +525,13 @@ myGUI run args = do
           then do freearc <- getExeName
                   fm <- val fm'
                   for cmds $ \cmd -> do
-                    Files.runCommand (unparseCommand$ [freearc]++cmd) (fm_curdir fm) False
+                    let full_cmd = unparseCommand (freearc:cmd)
+                    if length(full_cmd) < aMAX_CMDLINE_LENGTH
+                      then Files.runCommand full_cmd (fm_curdir fm) False
+                      else forkIO_ $ do
+                             withTempFile (unparseCommand cmd) $ \cmdfile -> do
+                               Files.runCommand (unparseCommand [freearc,'@':cmdfile]) (fm_curdir fm) True
+
           else writeChan cmdChan cmds
 
   -- Закрытие окна файл-менеджера

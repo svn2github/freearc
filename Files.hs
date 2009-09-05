@@ -389,6 +389,13 @@ executeModes         =  [ownerExecuteMode, groupExecuteMode, otherExecuteMode]
 removeFileModes a b  =  a `intersectFileModes` (complement b)
 #endif
 
+-- |Выполнить операцию с использованием временного файла
+withTempFile contents action = do
+  tempDir <- getTempDir
+  (tempfile,h) <- openTempFile tempDir "freearc.tmp"
+  flip finally (fileRemove tempfile) $ do
+  hPutStr h contents `finally` hClose h
+  action tempfile
 
 -- Wait a few seconds (no more than half-hour due to Int overflow!)
 sleepSeconds secs = do let us = round (secs*1000000)
