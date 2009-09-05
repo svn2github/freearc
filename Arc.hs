@@ -65,6 +65,7 @@ doMain args  = do
   setUncaughtExceptionHandler handler
   setCtrlBreakHandler $ do          -- Организуем обработку ^Break
   ensureCtrlBreak "resetConsoleTitle" (resetConsoleTitle) $ do
+  args <- processCmdfile args
   luaLevel "Program" [("command", args)] $ do
 #ifdef FREEARC_GUI
   parseGUIcommands run args $ \args -> do  -- Обработка GUI-специфичных вариаций командной строки

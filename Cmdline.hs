@@ -767,6 +767,21 @@ replace_list_files parseFile  =  concatMapM $ \filespec ->
     Just listfile  ->  parseFile 'l' listfile >>== deleteIf null
     _              ->  return [filespec]
 
+-- |Если ком. строка представлена в виде одного параметра @filename, то надо прочитать её из указанного файла
+processCmdfile args =
+  case args of
+    ['@':cmdfile] -> fileGetBinary cmdfile >>== utf8_to_unicode >>== splitArgs
+    _             -> return args
+
+ where -- Разбивает строку с параметрами на отдельные аргументы
+       splitArgs = parseArg . dropWhile isSpace
+       parseArg ""          =  []
+       parseArg ('"':rest)  =  let (arg,_:rest1) = break (=='"') rest
+                                 in arg:splitArgs rest1
+       parseArg rest        =  let (arg,rest1) = break isSpace rest
+                                 in arg:splitArgs rest1
+
+
 -- |Разбор параметров опции "-s"
 parseSolidOption opt =
   case (split ';' opt) of
