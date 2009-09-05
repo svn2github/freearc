@@ -765,7 +765,7 @@ static DWORD WINAPI WaitProgramFinish (void *paramPtr)
   Param *param = (Param*) paramPtr;
   WaitForSingleObject (param->hProcess, INFINITE);
   CloseHandle (param->hProcess);
-  DeleteFile (param->listfile),
+  DeleteFile (param->listfile);
   free (param->listfile);
   free (param);
   return 0;
@@ -800,10 +800,13 @@ STDMETHODIMP CShellExt::RunProgram (HWND hParent, LPCSTR pszWorkingDir, LPCSTR c
   }
 
   // Save listfile data to tempfile
-  TCHAR *listfile = data_to_write? SaveDataToTempFile (data_to_write, message) : NULL;
-  if (data_to_write && !listfile) {
-    MsgBoxError (hParent, message);
-    return NOERROR;////error
+  TCHAR *listfile = NULL;
+  if (data_to_write) {
+    listfile = SaveDataToTempFile (data_to_write, message);
+    if (!listfile) {
+      MsgBoxError (hParent, message);
+      return NOERROR;////error
+    }
   }
 
   // Convert cmd from UTF-8 to UTF-16
