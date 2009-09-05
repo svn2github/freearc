@@ -19,7 +19,7 @@
 
 Language name in english and mother tongue
 0000 Language=Chinese Simplified (简体中文)
-0159 Copyright=Translated by TeLeMan\nLast Updated: 2009-08-04
+0159 Copyright=Translated by TeLeMan\nLast Updated: 2009-09-05
 
 Language-specific URLs relative to http://freearc.org/ and helpfiles
 Filled only for languages providing their own translations
@@ -297,7 +297,7 @@ Extract dialog
 
 
 Archive information dialog
-0085 All about %1="%1"所有信息
+0085 All about %1="%1"内部信息
 0173 Directories:=目录数：
 0088 Files:=文件数：
 0089 Total bytes:=总计字节数：
@@ -319,6 +319,13 @@ Archive information dialog
 --
 0097 Encryption algorithms:=加密算法：
 0098 Archive comment:=压缩文件注释：
+---
+0449 Solid blocks=固实压缩块
+0450 Position=起始位置
+0451 Size=原始大小
+0452 Compressed=压缩后大小
+0453 Files=文件数
+0454 Method=压缩方法
 
 
 Settings dialog
@@ -332,6 +339,8 @@ Settings dialog
 0166 Logfile:=日志文件：
 0292 View=查看
 0167 Select logfile=选择日志文件
+0447 Temporary directory:=临时目录：
+0448 Select directory for temporary files=选择临时目录
 0172 Associate FreeArc with .arc files=应用FreeArc关联文件：.arc
 0361 Add captions to toolbar buttons=加入文字到工具条的按钮上
 0370 Watch for new versions via Internet=联网检查新版本
@@ -407,12 +416,9 @@ Many dialogs
 0081 &Cancel=取消(&C)
 0363 &Select=选择(&S)
 0364 &Close=关闭(&C)
+0432 &Detach=分离(&D)
 
 Progress indicator
---Buttons
-0052 &Background=后台(&B)
-0053 &Pause=暂停(&P)
-0054 &Continue=继续(&C)
 --Labels
 0056 Files=文件个数
 0057 Total files=总计文件个数
@@ -433,6 +439,12 @@ Progress indicator
 0385 Scanning archive for damages=正在扫描压缩文件的损坏部分
 0386 Protecting archive from damages=正在保护压缩文件防止损坏
 0387 Recovering archive=正在恢复压缩文件
+--Extra options
+0446 Keep window on top=保持窗口始终在最上面
+--Buttons
+0052 &Background=后台(&B)
+0053 &Pause=暂停(&P)
+0054 &Continue=继续(&C)
 
 File overwrite dialog
 0078 Confirm File Replace=确认文件替换
@@ -455,19 +467,23 @@ Archive comment dialog
 
 
 === Infoline messages ====================================================
-0228 Deleting from %1=正在从"%1"压缩文件中删除
+0439 Listing archive %1=正在读取"%1"压缩文件中的文件列表
+0445 SUCCESFULLY LISTED %1=成功读取"%1"压缩文件中的文件列表
+0442 %2 WARNINGS WHILE LISTING %1=当读取"%1"压缩文件中的文件列表时有%2个警告
+
+0435 Deleting files from archive %1=正在从"%1"压缩文件中删除文件
 0229 FILES SUCCESFULLY DELETED FROM %1=从"%1"压缩文件中成功删除文件
 0230 %2 WARNINGS WHILE DELETING FROM %1=当从"%1"压缩文件中删除文件时有%2个警告
 
-0231 Testing %1=正在测试"%1"压缩文件
+0440 Testing archive %1=正在测试"%1"压缩文件
 0232 SUCCESFULLY TESTED %1=成功测试"%1"压缩文件
 0233 %2 WARNINGS WHILE TESTING %1=当测试"%1"压缩文件时有%2个警告
 
-0234 Extracting files from %1=正在从"%1"压缩文件中解压
+0441 Extracting files from archive %1=正在从"%1"压缩文件中解压
 0235 FILES SUCCESFULLY EXTRACTED FROM %1=文件从"%1"压缩文件中成功被解压
 0236 %2 WARNINGS WHILE EXTRACTING FILES FROM %1=当从"%1"压缩文件解压文件时有%2个警告
 
-0237 Modifying %1=正在修改"%1"压缩文件
+0433 Modifying archive %1=正在修改"%1"压缩文件
 0238 SUCCESFULLY MODIFIED %1=成功修改"%1"压缩文件
 0239 %2 WARNINGS WHILE MODIFYING %1=当修改"%1"压缩文件时有%2个警告
 
@@ -475,9 +491,13 @@ Archive comment dialog
 0241 SUCCESFULLY JOINED ARCHIVES TO %1=成功合并压缩文件到"%1"压缩文件
 0242 %2 WARNINGS WHILE JOINING ARCHIVES TO %1=合并压缩文件到"%1"压缩文件时有%2个警告
 
-0243 Adding to %1=正在添加文件到"%1"压缩文件
-0244 FILES SUCCESFULLY ADDED TO %1=成功添加文件到"%1"压缩文件
-0245 %2 WARNINGS WHILE ADDING TO %1=添加文件到"%1"压缩文件时有%2个警告
+0437 Creating archive %1=正在创建"%1"压缩文件
+0443 SUCCESFULLY CREATED %1=成功创建"%1"压缩文件
+0434 %2 WARNINGS WHILE CREATING %1=当创建"%1"压缩文件时有%2个警告
+
+0438 Updating archive %1=正在更新"%1"压缩文件
+0444 SUCCESFULLY UPDATED %1=成功更新"%1"压缩文件
+0436 %2 WARNINGS WHILE UPDATING %1=当更新"%1"压缩文件时有%2个警告
 
 0299 Lock archive(s)?=是否锁定压缩文件?
 0300 Locking archive %1=正在锁定"%1"压缩文件
@@ -556,6 +576,9 @@ Errors returned by compression methods
 Compression
 0771 Maximum=最高
 0772 Maximum with fast decompression=最高(快速解压缩)
+0773 Ultra (require 2 gb RAM for decompression)=超高(需要2gb内存解压缩)
+0774 Maximum (require 1 gb RAM for decompression)=最高(需要1gb内存解压缩)
+0775 Best asymmetric (with fast decompression)=最佳不对称(快速解压缩)
 0752 No compression=不压缩
 
 Encryption
