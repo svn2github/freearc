@@ -529,7 +529,7 @@ myGUI run args = do
                     if length(full_cmd) < aMAX_CMDLINE_LENGTH
                       then Files.runCommand full_cmd (fm_curdir fm) False
                       else forkIO_ $ do
-                             withTempFile (unparseCommand cmd) $ \cmdfile -> do
+                             withTempFile (unicode2utf8$ unparseCommand cmd) $ \cmdfile -> do
                                Files.runCommand (unparseCommand [freearc,'@':cmdfile]) (fm_curdir fm) True
 
           else writeChan cmdChan cmds

@@ -178,6 +178,7 @@ temparc_suffix = ".tmp"
 tempfile_wrapper filename command deleteFiles pretestArchive action  =  find 1 >>= doit
   where -- Найти свободное имя для временного файла
         find n = do tempdir <- if opt_create_in_workdir command  then getTempDir  else return (takeDirectory filename)
+                    createDirectoryHierarchy tempdir
                     let tempname = tempdir </> (temparc_prefix++show n++temparc_suffix)
                     found <- fileExist tempname
                     case found of

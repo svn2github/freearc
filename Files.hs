@@ -283,8 +283,9 @@ foreign import stdcall unsafe "windows.h GetDriveTypeA"
 
 -- |Create a hierarchy of directories
 createDirectoryHierarchy :: FilePath -> IO ()
-createDirectoryHierarchy dir = do
-  let d = stripRoot dir
+createDirectoryHierarchy dir0 = do
+  let dir = dropTrailingPathSeparator dir0
+      d   = stripRoot dir
   when (d/= "" && exclude_special_names d) $ do
     unlessM (dirExist dir) $ do
       createDirectoryHierarchy (takeDirectory dir)
@@ -388,14 +389,6 @@ foreign import ccall unsafe "Environment.h FormatDateTime"
 executeModes         =  [ownerExecuteMode, groupExecuteMode, otherExecuteMode]
 removeFileModes a b  =  a `intersectFileModes` (complement b)
 #endif
-
--- |Выполнить операцию с использованием временного файла
-withTempFile contents action = do
-  tempDir <- getTempDir
-  (tempfile,h) <- openTempFile tempDir "freearc.tmp"
-  flip finally (fileRemove tempfile) $ do
-  hPutStr h contents `finally` hClose h
-  action tempfile
 
 -- Wait a few seconds (no more than half-hour due to Int overflow!)
 sleepSeconds secs = do let us = round (secs*1000000)

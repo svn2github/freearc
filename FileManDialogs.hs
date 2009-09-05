@@ -8,6 +8,7 @@ import Prelude hiding (catch)
 import Control.Concurrent
 import Control.Exception
 import Control.Monad
+import Control.Monad.Fix
 import Data.Char
 import Data.IORef
 import Data.List
@@ -785,6 +786,13 @@ decryptionBox fm' dialog = do
 ---- Вспомогательные определения -------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------
 
+-- |Режимы диалогов
+data DialogMode = EncryptionMode | ProtectionMode | RecompressMode | CommentMode | MakeSFXMode | NoMode  deriving Eq
+
+-- |Определяет то, как имена каталогов подставляются в команды
+addCmdFiles dirname =  [dirname++"/"]
+xCmdFiles   dirname =  [dirname++"/*"]
+
 -- |Выполнить операцию над текущим архивом/всеми отмеченными файлами на диске
 compressionOperation fm' action exec cmd mode = do
   fm <- val fm'
@@ -831,10 +839,6 @@ runEditCommand filename  = run (iif isWindows "notepad" "gedit") [filename]
   where run cmd params = forkIO (rawSystem cmd params >> return ()) >> return ()
   -- edit filename | isWindows && takeExtension filename == "txt"  =  todo: direct shell open command
 
--- |Определяет то, как имена каталогов подставляются в команды
-addCmdFiles dirname =  [dirname++"/"]
-xCmdFiles   dirname =  [dirname++"/*"]
-
 -- Поместим все контролы в симпатичный notebook и возвратим процедуру создания новых страниц в нём
 startNotebook dialog = do
   upbox <- dialogGetUpper dialog
@@ -844,6 +848,15 @@ startNotebook dialog = do
                         return vbox
   return (nb,newPage)
 
--- |Режимы диалогов
-data DialogMode = EncryptionMode | ProtectionMode | RecompressMode | CommentMode | MakeSFXMode | NoMode  deriving Eq
+-- |Выполнить операцию с использованием временного файла
+withTempFile contents action = do
+  tempDir <- getTempDir
+  createDirectoryHierarchy tempDir
+  fix $ \go -> do n <- generateRandomBytes 4 >>== encode16
+                  let tempname = tempDir </> ("freearc"++n++".tmp")
+                  e <- fileExist tempname
+                  if e then go
+                       else do filePutBinary tempname contents
+                               ensureCtrlBreak "fileRemove tempfile" (ignoreErrors$ fileRemove tempname) $ do
+                                 action tempname
 
