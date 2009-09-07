@@ -534,8 +534,8 @@ Archive comment dialog
 0332 can't open file "%1"=невозможно открыть файл "%1"
 0333 CRC error in file "%1"=ошибка CRC в файле "%1"
 0334 bad section %1 in %2=ошибочная секция %1 в %2
-0335 operation terminated!=операция прекращена!
-0336 program terminated!=прекращено выполнение программы!
+0455 Operation terminated by user!=Операция прервана пользователем!
+0456 Program terminated by user!=Программа прервана пользователем!
 0337 no files, erasing empty archive=нет файлов, удаляю пустой архив
 0338 skipped %1 fake files=пропущено %1 виртуальных файлов
 0339 bad password for archive %1=неправильный пароль для архива %1

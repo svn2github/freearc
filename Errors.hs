@@ -58,6 +58,8 @@ data ErrorTypes = GENERAL_ERROR                 [String]
                 | INTERNAL_ERROR                String
                 | COMPRESSION_ERROR             [String]
                 | BAD_PASSWORD                  FilePath FilePath
+  deriving (Eq)
+
 
 --foreign import "&errCounter" :: Ptr Int
 {-
@@ -112,11 +114,12 @@ shutdown msg exitCode = do
       action
     compressionLib_cleanup
 
-    case w of
-      0 -> when (exitCode==aEXIT_CODE_SUCCESS) $ condPrintLineLn "k" "All OK"
-      _ -> condPrintLineLn "n"$ "There were "++show w++" warning(s)"
-    ignoreErrors (msg &&& condPrintLineLn "n" msg)
-    condPrintLineLn "e" ""
+    unlessM (val fileManagerMode) $ do
+      case w of
+        0 -> when (exitCode==aEXIT_CODE_SUCCESS) $ condPrintLineLn "k" "All OK"
+        _ -> condPrintLineLn "n"$ "There were "++show w++" warning(s)"
+      ignoreErrors (msg &&& condPrintLineLn "n" msg)
+      condPrintLineLn "e" ""
 #if !defined(FREEARC_WIN) && !defined(FREEARC_GUI)
     putStrLn ""  -- в Unix отсутствует автоматический перевод строки в терминале по завершению программы
 #endif
@@ -280,10 +283,10 @@ errormsg (BAD_CFG_SECTION cfgfile section) =
   i18fmt ["0334 bad section %1 in %2", head section, cfgfile]
 
 errormsg (OP_TERMINATED) =
-  i18fmt ["0335 operation terminated!"]
+  i18fmt ["0455 Operation terminated by user!"]
 
 errormsg (TERMINATED) =
-  i18fmt ["0336 program terminated!"]
+  i18fmt ["0456 Program terminated by user!"]
 
 errormsg (NOFILES) =
   i18fmt ["0337 no files, erasing empty archive"]
@@ -427,7 +430,9 @@ loggingHandlers = unsafePerformIO$ newIORef [] :: IORef [String -> IO ()]
 -- |Запись сообщения об ошибке в логфайл и аварийное завершение программы с этим сообщением
 registerError err = do
   msg <- errormsg err
-  msg <- i18fmt ["0316 ERROR: %1", msg]
+  msg <- if err `elem` [TERMINATED,OP_TERMINATED]
+           then return msg
+           else i18fmt ["0316 ERROR: %1", msg]
   val errorHandlers >>= mapM_ ($msg)
   -- Если мы не в режиме файл-менеджера - совершаем аварийный выход из программы
   unlessM (val fileManagerMode) $ do

@@ -369,6 +369,7 @@ myGUI run args = do
 
   -- Выводить errors/warnings/messages внизу окна FreeArc
   showErrors' <- ref True
+  errorHandlers   ++= [whenM (val showErrors') . condPrintLineLn "w"]
   errorHandlers   ++= [whenM (val showErrors') . postGUIAsync . fmStackMsg fm']
   warningHandlers ++= [whenM (val showErrors') . postGUIAsync . fmStackMsg fm']
   loggingHandlers ++= [postGUIAsync . fmStackMsg fm']
@@ -498,21 +499,21 @@ myGUI run args = do
                                    action `catch` handler
                                    operationTerminated =: False
         where handler ex = do
-                errmsg <- case ex of
-                   Deadlock    -> i18n"0011 No threads to run: infinite loop or deadlock?"
-                   ErrorCall s -> return s
-                   other       -> return$ show ex
-                with' (val log_separator') (log_separator'=:) $ \_ -> do
-                  log_separator' =: ""
+                unlessM (val operationTerminated) $ do
+                  errmsg <- case ex of
+                     Deadlock    -> i18n"0011 No threads to run: infinite loop or deadlock?"
+                     ErrorCall s -> return s
+                     other       -> return$ show ex
                   condPrintLineLn "w" errmsg
-                return ()
+                  return ()
+                condPrintLineLn "w" ""
 
   -- Тред, выполняющий команды архиватора
   cmdChan <- newChan
   forkIO $ do
     foreverM $ do
       commands <- readChan cmdChan
-      when (commands==[["ExitProgram"]])  $ shutdown "" aEXIT_CODE_SUCCESS
+      when (commands==[["ExitProgram"]])  $ do fileManagerMode =: True; shutdown "" aEXIT_CODE_SUCCESS
       postGUIAsync$ do widgetShowAll windowProgress
       for commands $ \cmd -> do
         myHandleErrors (parseCmdline cmd >>= mapM_ run)

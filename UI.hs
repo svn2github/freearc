@@ -320,9 +320,10 @@ uiDoneArchive2 = do
   w0 <- val ref_w0
   w1 <- val warnings
   let w = w1-w0  -- number of warnings while processing this archive
-  arcExist <- val ref_arcExist
-  msg <- i18n (msgFinishGUI cmd arcExist w)
-  condPrintLine "G" (formatn msg [arcname, show w])
+  unlessM (val operationTerminated) $ do
+    arcExist <- val ref_arcExist
+    msg <- i18n (msgFinishGUI cmd arcExist w)
+    condPrintLine "G" (formatn msg [arcname, show w])
   unless (cmd_subcommand command) $ do
     condPrintLineNeedSeparator "" "\n\n"
 
