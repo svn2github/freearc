@@ -90,8 +90,8 @@ runAsyncP p = do
   outcome_back <- newChan
   parent_id    <- myThreadId
   p_finished   <- newEmptyMVar
-  p_id         <- forkIO (p (Pipe Nothing Nothing income income_back outcome outcome_back)
-                            `catch` (\e -> do killThread parent_id; throwIO e)
+  p_id         <- forkOS (p (Pipe Nothing Nothing income income_back outcome outcome_back)
+--                            `catch` (\e -> do killThread parent_id; throwIO e)
                             `finally` putMVar p_finished ())
   return (Pipe (Just p_id) (Just p_finished) outcome outcome_back income income_back)
 

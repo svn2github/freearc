@@ -56,7 +56,7 @@ notTheEnd  _       = True
 create_archive_structure_AND_read_files_PROCESS command archive oldarc files processDir arcComment writeRecoveryBlocks results backdoor pipe = do
   initPos <- archiveGetPos archive
   -- При возникновении ошибки установим флаг для прерывания работы c_compress()
-  handleCtrlBreak "operationTerminated =: True" (operationTerminated =: True) $ do
+  -- handleCtrlBreak "operationTerminated =: True" (operationTerminated =: True) $ do
   -- Создадим процесс для распаковки файлов из входных архивов и гарантируем его корректное завершение
   bracket (runAsyncP$ decompress_PROCESS command doNothing)
           ( \decompress_pipe -> do sendP decompress_pipe Nothing; joinP decompress_pipe)

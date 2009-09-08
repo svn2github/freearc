@@ -496,9 +496,18 @@ myGUI run args = do
 
   -- При выполнении операций не выходим по исключениям, а печатаем сообщения о них в логфайл
   let myHandleErrors action  =  do operationTerminated =: False
+                                   parent_id =:: myThreadId
                                    action `catch` handler
-                                   operationTerminated =: False
-        where handler ex = do
+                                   whenM (val operationTerminated) $ do
+                                     sleepSeconds 0.1
+                                     operationTerminated =: False
+        where bg action = do
+                done <- newEmptyMVar
+                forkIO (action >> putMVar done ())
+                forkIO (foreverM (sleepSeconds 0.01 >> whenM (val operationTerminated) (putMVar done ())))
+                takeMVar done
+
+              handler ex = do
                 unlessM (val operationTerminated) $ do
                   errmsg <- case ex of
                      Deadlock    -> i18n"0011 No threads to run: infinite loop or deadlock?"

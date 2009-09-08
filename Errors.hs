@@ -192,6 +192,11 @@ finalizers :: IORef [(String, Int, IO ())]
 finalizers = unsafePerformIO (ref [])
 {-# NOINLINE finalizers #-}
 
+-- |ИД основного треда операции (только в режиме файл-менеджера)
+parent_id :: IORef ThreadId
+parent_id = unsafePerformIO (ref undefined)
+{-# NOINLINE parent_id #-}
+
 -- |Флаг, показывающий что мы находимся в режиме прерывания текущей операции
 operationTerminated = unsafePerformIO (ref False)
 {-# NOINLINE operationTerminated #-}
@@ -439,6 +444,7 @@ registerError err = do
     shutdown msg (errcode err)
   -- Иначе ждём завершения всех тредов компрессии
   operationTerminated =: True
+  killThread =<< val parent_id
   fail ""
 
 -- |Запись предупреждения в логфайл и вывод его на экран
