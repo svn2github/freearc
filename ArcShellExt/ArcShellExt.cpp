@@ -420,7 +420,7 @@ CShellExt::CShellExt() {
 CShellExt::~CShellExt() {
   lua_close(L);
 
-  //free(listfile_data);
+  free(listfile_data);
   if (m_pDataObj)
   m_pDataObj->Release();
   _cRef--;
