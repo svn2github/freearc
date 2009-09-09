@@ -420,7 +420,7 @@ CShellExt::CShellExt() {
 CShellExt::~CShellExt() {
   lua_close(L);
 
-  free(listfile_data);
+  //free(listfile_data);
   if (m_pDataObj)
   m_pDataObj->Release();
   _cRef--;
@@ -742,9 +742,9 @@ TCHAR *SaveDataToTempFile (char *buffer, char *message)
 // Replace substring one time
 TCHAR *str_replace (TCHAR *str, TCHAR *from, const TCHAR *to)
 {
-  TCHAR *s = (TCHAR*) malloc (sizeof(TCHAR) * (_tcslen(str)+_tcslen(to)+1));
+  TCHAR *s = (TCHAR*) malloc (sizeof(TCHAR) * (_tcslen(str) + (to?_tcslen(to):0) + 1));
   if (!s)  return NULL;
-  TCHAR *p = _tcsstr(str, from);
+  TCHAR *p = to? _tcsstr(str, from) : NULL;
   if (p) {
     _stprintf(s, _T("%.*s%s%s"), p-str, str, to, p+_tcslen(from));
   } else {
