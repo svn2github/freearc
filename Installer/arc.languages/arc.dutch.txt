@@ -19,7 +19,7 @@
 
 Language name in english and mother tongue
 0000 Language=Dutch (Nederlands)
-0159 Copyright=Vertaald door (Translated by):\nPatrick Noyens (aka Pat357)\nFerry Heibrink \n4 augustus 2009
+0159 Copyright=Vertaald door (Translated by):\nPatrick Noyens (aka Pat357)\nFerry Heibrink \n6 september 2009
 
 Language-specific URLs relative to http://freearc.org/ and helpfiles
 Filled only for languages providing their own translations
@@ -319,6 +319,13 @@ Archive information dialog
 --
 0097 Encryption algorithms:=Encr&yptiemethode:
 0098 Archive comment:=&Opmerking:
+---
+0449 Solid blocks=Solide blokken
+0450 Position=Positie
+0451 Size=Grootte
+0452 Compressed=Ingepakt
+0453 Files=Bestanden
+0454 Method=Methode
 
 
 Settings dialog
@@ -332,6 +339,8 @@ Settings dialog
 0166 Logfile:=Logbestand:
 0292 View=Beeld
 0167 Select logfile=Selecteer logbestand
+0447 Temporary directory:=Tijdelijke map
+0448 Select directory for temporary files=Kies map voor tijdelijke bestanden
 0172 Associate FreeArc with .arc files=Koppel .arc bestanden aan FreeArc
 0361 Add captions to toolbar buttons=Zet opdrachtnamen bij de knoppen in het menu
 0370 Watch for new versions via Internet=Automatisch controleren voor nieuwere versies via internet
@@ -407,12 +416,9 @@ Many dialogs
 0081 &Cancel=&Annuleren
 0363 &Select=&Selecteer
 0364 &Close=A&fsluiten
+0432 &Detach=Ont&koppel
 
 Progress indicator
---Buttons
-0052 &Background=&Achtergrond
-0053 &Pause=&Pauze
-0054 &Continue=&Hervatten
 --Labels
 0056 Files=Bestanden:
 0057 Total files=Totaal aantal bestanden
@@ -433,6 +439,12 @@ Progress indicator
 0385 Scanning archive for damages=Archief controleren op beschadigingen
 0386 Protecting archive from damages=Hersteldata aan archief toevoegen
 0387 Recovering archive=Archief herstellen
+--Extra options
+0446 Keep window on top=Window op de voorgrond houden
+--Buttons
+0052 &Background=&Achtergrond
+0053 &Pause=&Pauze
+0054 &Continue=&Hervatten
 
 File overwrite dialog
 0078 Confirm File Replace=Bevestigen overschijven bestand
@@ -455,19 +467,23 @@ Archive comment dialog
 
 
 === Infoline messages ====================================================
-0228 Deleting from %1=Bezig met verwijderen uit %1
+0439 Listing archive %1=Oplijsten inhoud archive %1
+0445 SUCCESFULLY LISTED %1=ARCHIVE %1 SUCCESVOL OPGELIJST
+0442 %2 WARNINGS WHILE LISTING %1=%2 WAARSCHUWINGEN BIJ OPLIJSTEN VAN %1
+
+0435 Deleting files from archive %1=Bestanden verwijderen van archief %1
 0229 FILES SUCCESFULLY DELETED FROM %1=BESTANDEN VANUIT %1 SUCCESVOL VERWIJDERD
 0230 %2 WARNINGS WHILE DELETING FROM %1=%2 WAARSCHIJWINGEN TIJDENS VERWIJDEREN
 
-0231 Testing %1=TESTEN VAN %1
+0440 Testing archive %1=Testen archief %1
 0232 SUCCESFULLY TESTED %1=%1 SUCCESVOL GETEST
 0233 %2 WARNINGS WHILE TESTING %1=%2 WAARSCHUWINGEN TIJDENS TESTEN
 
-0234 Extracting files from %1=UITPAKKEN BESTANDEN VANUIT %1
+0441 Extracting files from archive %1=Uitpakken van bestanden van archief %1
 0235 FILES SUCCESFULLY EXTRACTED FROM %1=BESTANDEN SUCCESVOL UITGEPAKT VANUIT %1
 0236 %2 WARNINGS WHILE EXTRACTING FILES FROM %1=%2 WAARSCHUWINGEN TIJDENS UITPAKKEN BESTANDEN VANUIT %1
 
-0237 Modifying %1=Bezig met wijzigen %1
+0433 Modifying archive %1=Wijzigen archief %1
 0238 SUCCESFULLY MODIFIED %1=%1 SUCCESVOL GEWIJZIGD
 0239 %2 WARNINGS WHILE MODIFYING %1=%2 WAARSCHUWINGEN TIJDENS WIJZIGEN %1
 
@@ -475,9 +491,13 @@ Archive comment dialog
 0241 SUCCESFULLY JOINED ARCHIVES TO %1=SUCCESVOL ARCHIEVEN NAAR %1 SAMENGEVOEGD
 0242 %2 WARNINGS WHILE JOINING ARCHIVES TO %1=%2 WAARSCHUWINGEN TIJDENS SAMENVOEGEN ARCHIEVEN NAAR %2
 
-0243 Adding to %1=Toevoegen naar %1
-0244 FILES SUCCESFULLY ADDED TO %1=BESTANDEN SUCCESVOEG TOEGEVOEGD AAN %1
-0245 %2 WARNINGS WHILE ADDING TO %1=%2 WAARSCHUWINGEN TIJDENS TOEVOEGEN AAN %1
+0437 Creating archive %1=Maken archief %1
+0443 SUCCESFULLY CREATED %1=ARCHIEF %1 SUCCESVOL GEMAAKT
+0434 %2 WARNINGS WHILE CREATING %1=%2 WAARSCHUWINGEN TIJDENS MAKEN VAN ARCHIEF %1
+
+0438 Updating archive %1=Bijwerken archief %1
+0444 SUCCESFULLY UPDATED %1=ARCHIEF %1 SUCCESVOL BIJGEWERKT
+0436 %2 WARNINGS WHILE UPDATING %1=%2 WAARSCHUWINGEN TIJDENS BIJWERKEN VAN ARCHIEF %1
 
 0299 Lock archive(s)?=Archief vergrendelen/verzegelen?
 0300 Locking archive %1=Vergrendelen archief %1
@@ -514,8 +534,8 @@ Archive comment dialog
 0332 can't open file "%1"=kan bestand niet openen "%1"
 0333 CRC error in file "%1"=CRC fout in bestand "%1"
 0334 bad section %1 in %2=ongeldige sectie %1 in %2
-0335 operation terminated!=bewerking afgebroken!
-0336 program terminated!=programma afgebroken!
+0455 Operation terminated by user!=Bewerking afgebroken door gebruiker!
+0456 Program terminated by user!=Programma afgebroken door gebruiker!
 0337 no files, erasing empty archive=geen bestanden, leeg archief wissen?
 0338 skipped %1 fake files= aantal fake bestanden overgeslagen %1
 0339 bad password for archive %1=ongeldig paswoord voor archief %1
@@ -556,6 +576,9 @@ Errors returned by compression methods
 Compression
 0771 Maximum=Maximaal
 0772 Maximum with fast decompression=Maximaal met snelle decompressie
+0773 Ultra (require 2 gb RAM for decompression)=Ultra (2 GB RAM nodig voor uitpakken)
+0774 Maximum (require 1 gb RAM for decompression)=Maximum (1 GB RAM nodig voor uitpakken)
+0775 Best asymmetric (with fast decompression)=Best asymmetric (snel uitpakken)
 0752 No compression=geen compressie
 
 Encryption

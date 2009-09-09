@@ -111,7 +111,7 @@ shutdown msg exitCode = do
     log_separator' =: "\n"
     fin <- val finalizers
     for fin $ \(name,id,action) -> do
-      action
+      ignoreErrors$ action
     compressionLib_cleanup
 
     unlessM (val fileManagerMode) $ do
