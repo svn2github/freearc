@@ -54,14 +54,14 @@ parseGUIcommands run args exec = do
       add     fm' exec cmd files    = addDialog     fm' exec cmd files NoMode
   loadTranslation
   case args of
-    ["--settings-dialog"] -> openSettingsDialog          -- Диалог настроек
-    "--add-dialog":xs     -> openDialog xs exec add      -- Диалог упаковки
-    "--extract-dialog":xs -> openDialog xs exec extract  -- Диалог распаковки
-    ["--register"]        -> registerShellExtensions     -- Регистрация в Explorer
-    ["--unregister"]      -> unregisterShellExtensions   -- Удаление регистрации в Explorer
-    []                    -> myGUI run args              -- При вызове программы без аргументов или с одним аргументом (именем каталога/архива)
-    [_]                   -> myGUI run args              --   запускаем полноценный Archive Manager
-    _                     -> startGUI >> exec args       --   а иначе - просто отрабатываем команды (де)архивации
+    ["--settings-dialog"] -> openSettingsDialog               -- Диалог настроек
+    "--add-dialog":xs     -> openDialog xs exec add           -- Диалог упаковки
+    "--extract-dialog":xs -> openDialog xs exec extract       -- Диалог распаковки
+    ["--register"]        -> registerShellExtensions Nothing  -- Регистрация в Explorer
+    ["--unregister"]      -> unregisterShellExtensions        -- Удаление регистрации в Explorer
+    []                    -> myGUI run args                   -- При вызове программы без аргументов или с одним аргументом (именем каталога/архива)
+    [_]                   -> myGUI run args                   --   запускаем полноценный Archive Manager
+    _                     -> startGUI >> exec args            --   а иначе - просто отрабатываем команды (де)архивации
 
 -- Диалог настроек
 openSettingsDialog = do
@@ -85,7 +85,7 @@ openDialog (cmd:"--":params) exec dialog = do
 
 openDialog params exec dialog = do
   startGUI
-  gui $ debugMsg "FileManager.hs: erroneous attempt to run dialog"
+  gui $ debugMsg "FileManager.hs: attempt to run dialog with incorrect parameters to command"
 
 
 ----------------------------------------------------------------------------------------------------

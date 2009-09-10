@@ -431,7 +431,7 @@ settingsDialog fm' = do
       saveEncryptionHistories ""
 #if defined(FREEARC_WIN)
       saveHistory `mapM_` ([associateButton, contextMenuButton, cascadedButton] ++ commands)
-      registerShellExtensions
+      registerShellExtensions (Just oldContextMenu)
 #endif
       return ()
 
@@ -468,7 +468,7 @@ getExplorerCommands = mapM translateExplorerCommand$
                   ]
 
 -- |Регистрация
-registerShellExtensions = do
+registerShellExtensions oldContextMenu = do
   hf' <- openHistoryFile
   hfCacheConfigFile hf' $ do
   associate   <- hfGetHistoryBool hf' "Settings.Associate"            True
@@ -477,7 +477,7 @@ registerShellExtensions = do
   commands    <- getExplorerCommands >>== filter(not.null.fst3)
   cmdEnabled  <- foreach commands $ \(cmdname,itext,imsg) ->
                    hfGetHistoryBool hf' ("Settings.ContextMenu.Command."++cmdname) True
-  changeRegistrationOfShellExtensions associate (not contextMenu) contextMenu cascaded cmdEnabled commands
+  changeRegistrationOfShellExtensions associate (oldContextMenu `defaultVal` not contextMenu) contextMenu cascaded cmdEnabled commands
 
 -- |Удаление регистрации
 unregisterShellExtensions = changeRegistrationOfShellExtensions False True False undefined undefined undefined
@@ -540,7 +540,7 @@ changeRegistrationOfShellExtensions associate oldContextMenu contextMenu cascade
     dll_register ""
     return ()
 #else
-registerShellExtensions   = doNothing0
+registerShellExtensions   = doNothing
 unregisterShellExtensions = doNothing0
 #endif
 
