@@ -19,7 +19,7 @@
 
 Language name in english and mother tongue
 0000 Language=German (Deutsch)
-0159 Copyright=Peter Bauder alias JangoFat\nbased on 7zip language file\nedited for FreeArc-0.52-2009-09-06\n\nVacon\nOriginal copyrights:\nTranslated by Soeren Finster\n7-Zip 4.07 beta\nUpdated by JAK-Software.DE\n7-Zip 4.55 beta\nMaintained by Joachim Henke (since 4.12 beta)
+0159 Copyright=Peter Bauder alias JangoFat\nbased on 7zip language file\nedited for FreeArc-0.52-alpha-2009-09-08\n\nVacon\nOriginal copyrights:\nTranslated by Soeren Finster\n7-Zip 4.07 beta\nUpdated by JAK-Software.DE\n7-Zip 4.55 beta\nMaintained by Joachim Henke (since 4.12 beta)
 
 Language-specific URLs relative to http://freearc.org/ and helpfiles
 Filled only for languages providing their own translations
@@ -534,8 +534,8 @@ Archive comment dialog
 0332 can't open file "%1"=kann Datei \"%1\" nicht öffnen
 0333 CRC error in file "%1"=CRC- Fehler in Datei \"%1\"
 0334 bad section %1 in %2=fehlerhafter Bereich %1 in %2
-0335 operation terminated!=Vorgang abgebrochen!
-0336 program terminated!=Programm beendet!
+0455 Operation terminated by user!=Vorgang durch den Benutzer abgebrochen!
+0456 Program terminated by user!=Programm durch den Benutzer beendet!
 0337 no files, erasing empty archive=keine Dateien, lösche leeres Archiv
 0338 skipped %1 fake files=%1 fehlerhafte Dateien übersprungen
 0339 bad password for archive %1=falsches Passwort zu Archiv %1
