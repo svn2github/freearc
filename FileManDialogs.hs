@@ -477,22 +477,30 @@ registerShellExtensions oldContextMenu = do
   commands    <- getExplorerCommands >>== filter(not.null.fst3)
   cmdEnabled  <- foreach commands $ \(cmdname,itext,imsg) ->
                    hfGetHistoryBool hf' ("Settings.ContextMenu.Command."++cmdname) True
-  changeRegistrationOfShellExtensions associate (oldContextMenu `defaultVal` not contextMenu) contextMenu cascaded cmdEnabled commands
+  changeRegistrationOfShellExtensions hf' associate oldContextMenu contextMenu cascaded cmdEnabled commands
 
 -- |Удаление регистрации
-unregisterShellExtensions = changeRegistrationOfShellExtensions False True False undefined undefined undefined
+unregisterShellExtensions = do
+  hf' <- openHistoryFile
+  hfCacheConfigFile hf' $ do
+  changeRegistrationOfShellExtensions hf' False Nothing False undefined undefined undefined
 
 -- |Изменение настроек регистрации
-changeRegistrationOfShellExtensions associate oldContextMenu contextMenu cascaded cmdEnabled commands = do
+changeRegistrationOfShellExtensions hf' associate oldContextMenu contextMenu cascaded cmdEnabled commands = do
   exe <- getExeName                                -- Name of FreeArc.exe file
   let ico   =  exe `replaceExtension` ".ico"       -- Name of FreeArc.ico file
       dir   =  exe.$takeDirectory                  -- FreeArc.exe directory
       shext =  dir </> "ArcShellExt"               -- Shell extension directory
       empty =  dir </> "empty.arc"                 -- Name of empty archive file
       register = registrySetStr hKEY_CLASSES_ROOT
+      version  = aARC_VERSION_WITH_DATE
+  old_shext   <- hfGetHistory1 hf' "Settings.ContextMenu.Directory" ""
+  hfReplaceHistory             hf' "Settings.ContextMenu.Directory" shext
+  old_version <- hfGetHistory1 hf' "Settings.ContextMenu.Version"   ""
+  hfReplaceHistory             hf' "Settings.ContextMenu.Version"   version
 
   -- (Un)registering ArcShellExt dlls - performed only if setting were changed
-  let dll_register mode = when (oldContextMenu /= contextMenu) $ do
+  let dll_register mode = when ((oldContextMenu,old_shext,old_version) /= (Just contextMenu,shext,version)) $ do
                             runProgram$ "regsvr32 "++mode++" /s /c \""++(shext </> "ArcShellExt.dll\"")
                             runProgram$ "regsvr32 "++mode++" /s /c \""++(shext </> "ArcShellExt-64.dll\"")
                             return ()

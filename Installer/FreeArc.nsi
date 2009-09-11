@@ -174,6 +174,11 @@ FunctionEnd
 Section Uninstall
   SetShellVarContext "all"
     ExecWait '"$INSTDIR\bin\FreeArc.exe" --unregister'
+  SetShellVarContext "current"
+    ExecWait '"$INSTDIR\bin\FreeArc.exe" --unregister'
+  ExecWait '"$INSTDIR\PowerPack\unins000.exe" /VERYSILENT'
+
+  SetShellVarContext "all"
     RMDir /r "$SMPROGRAMS\FreeArc"
     Delete   "$DESKTOP\FreeArc.lnk"
     Delete   "$QUICKLAUNCH\FreeArc.lnk"
@@ -183,7 +188,6 @@ Section Uninstall
     Call un.RemoveFromPath
 
   SetShellVarContext "current"
-    ExecWait '"$INSTDIR\bin\FreeArc.exe" --unregister'
     RMDir /r "$SMPROGRAMS\FreeArc"
     Delete   "$DESKTOP\FreeArc.lnk"
     Delete   "$QUICKLAUNCH\FreeArc.lnk"
@@ -191,8 +195,6 @@ Section Uninstall
     Call un.RemoveFromPath
     Push "$INSTDIR"
     Call un.RemoveFromPath
-
-  ExecWait '"$INSTDIR\PowerPack\unins000.exe" /VERYSILENT'
 
   !include "FreeArc-delete-old.nsh"   ; Delete files from previous FreeArc versions
   !include "FreeArc-delete-all.nsh"
