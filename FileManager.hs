@@ -803,7 +803,7 @@ myGUI run args = do
           -- ѕроверим страницу новостей
           handleErrors
             -- ¬ыполн€етс€ при недоступности страницы новостей
-            (postGUIAsync$ do
+            (when manual$ postGUIAsync$ do
                 msg <- i18n"0296 Cannot open %1. Do you want to check the page with browser?"
                 whenM (askOkCancel window (format msg newsURL)) $ do
                   openWebsite newsURL)
