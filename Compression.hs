@@ -21,7 +21,9 @@ import Foreign.Marshal.Pool
 import Foreign.Ptr
 import System.IO.Unsafe
 
+#ifdef FREEARC_CELS
 import qualified TABI
+#endif
 import qualified CompressionLib
 import Utils
 import Errors

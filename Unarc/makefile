@@ -1,7 +1,7 @@
 include ../common.mak
 
 windows: unarc.exe unarc.dll arc.sfx freearc.sfx freearc-installer.sfx FreeArc.fmt
-linux: unarc arc.linux.sfx
+unix: unarc arc.linux.sfx arc-mini.linux.sfx arc-tiny.linux.sfx
 
 Extractor_DEFINES = -DFREEARC_DECOMPRESS_ONLY -D_NO_EXCEPTIONS -DUNARC
 OBJDIR  = $(TEMPDIR)-unarc
@@ -67,7 +67,11 @@ unarc: $(OBJDIR)/unarc.o $(LINKOBJ)
 
 arc.linux.sfx: $(OBJDIR)/ArcSFX.o $(LINKOBJ)
 	$(GCC) $< $(LINKOBJ)      $(UNIX_LINK_FLAGS) -o arc.linux.sfx
+
+arc-mini.linux.sfx: $(OBJDIR)/ArcSFX.o $(LINKOBJ)
 	$(GCC) $< $(LINKOBJ_MINI) $(UNIX_LINK_FLAGS) -o arc-mini.linux.sfx
+
+arc-tiny.linux.sfx: $(OBJDIR)/ArcTinySFX.o $(LINKOBJ)
 	$(GCC) $< $(LINKOBJ_TINY) $(UNIX_LINK_FLAGS) -o arc-tiny.linux.sfx
 #	upx -9 --lzma arc*.linux.sfx
 

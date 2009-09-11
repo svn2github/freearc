@@ -326,7 +326,7 @@ CFILENAME GetTempDir (void)
     realloc (TempDir, (_tcslen(TempDir)+1) * sizeof(*TempDir));
 #else
     TempDir = tempnam(NULL,NULL);
-    CFILENAME *basename = drop_dirname(TempDir);
+    CFILENAME basename = drop_dirname(TempDir);
     if (basename > TempDir)
       basename[-1] = '\0';
 #endif

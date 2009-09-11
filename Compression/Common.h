@@ -183,6 +183,7 @@ static inline void WINAPI UnixTimeToFileTime( time_t time, FILETIME* ft )
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/types.h>
+#include <utime.h>
 
 #define __cdecl
 #define SSIZE_T ssize_t
@@ -775,7 +776,13 @@ struct MYDIR : MYFILE
   // Make it a temporary directory, removed automatically by destructor
   bool create_tempdir()
   {
+#ifdef FREEARC_WIN
     utf16_to_utf8 (GetTempDir(), utf8name);
+#elif defined(FREEARC_UNIX)
+    strcpy(utf8name, GetTempDir());
+#else
+    ???
+#endif
     SetBaseDir (utf8name);
     for (unsigned i = time_based_random(), cnt=0; cnt<1000; cnt++)
     {

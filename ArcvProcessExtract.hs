@@ -16,7 +16,9 @@ import Foreign.Ptr
 import Foreign.Marshal.Utils
 import Foreign.Storable
 
+#ifdef FREEARC_CELS
 import TABI
+#endif
 import Utils
 import Errors
 import Process

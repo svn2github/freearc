@@ -175,7 +175,7 @@ getExeName = getProgName
 
 
 -- |Get temporary files directory
-getTempDir = c_GetTempDir >>= peekCWString
+getTempDir = c_GetTempDir >>= peekCFilePath
 
 foreign import ccall safe "Environment.h GetTempDir"
   c_GetTempDir :: IO CFilePath
