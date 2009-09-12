@@ -111,10 +111,10 @@ $(OBJDIR)/C_External.o: ../Compression/External/C_External.cpp ../Compression/Ex
 	$(GCC) -c $(CFLAGS) -o $*.o $<
 
 
-$(OBJDIR)/C_BCJ.o: ../Compression/LZMA/C_BCJ.cpp ../Compression/LZMA/C_BCJ.h $(HEADERS)
+$(OBJDIR)/C_BCJ.o: ../Compression/LZMA2/C_BCJ.cpp ../Compression/LZMA2/C_BCJ.h $(HEADERS)
 	$(GCC) -c $(CFLAGS) -o $*.o $<
 
-$(OBJDIR)/C_LZMA.o: ../Compression/LZMA/C_LZMA.cpp ../Compression/LZMA/C_LZMA.h $(HEADERS)
+$(OBJDIR)/C_LZMA.o: ../Compression/LZMA2/C_LZMA.cpp ../Compression/LZMA2/C_LZMA.h $(HEADERS)
 	$(GCC) -c $(CFLAGS) -o $*.o $<
 
 $(OBJDIR)/C_Dict.o: ../Compression/Dict/C_Dict.cpp ../Compression/Dict/C_Dict.h $(HEADERS)
