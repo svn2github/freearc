@@ -14,9 +14,6 @@ extern "C" {
 #include "C_LZMA.h"
 }
 
-// Количество байт, записываемых за раз в LZMA Decode
-#define LZ_CHUNKS (8<<20)
-
 enum
 {
   kBT2,
@@ -55,7 +52,17 @@ static int FindMatchFinder(const char *s)
 
 static void *SzAlloc(void *p, size_t size) { p = p; return MyAlloc(size); }
 static void SzFree(void *p, void *address) { p = p; MyFree(address); }
-static ISzAlloc allocMain[1] = { SzAlloc, SzFree };
+static ISzAlloc g_Alloc = { SzAlloc, SzFree };
+
+int SRes_to_FreeArc (SRes res)
+{
+  if (res == E_OUTOFMEMORY)
+    return FREEARC_ERRCODE_NOT_ENOUGH_MEMORY;
+  if (res != S_OK)
+    //fprintf(stderr, "\nEncoder error = %X\n", (unsigned int)res);
+    return FREEARC_ERRCODE_GENERAL;
+  return FREEARC_OK;
+}
 
 SRes LzmaDec_AllocateUsingProperties(CLzmaDec *p, const CLzmaProps propNew, ISzAlloc *alloc)
 {
@@ -86,6 +93,49 @@ uint RangeDecoderBufferSize (uint dict)
 
 #ifndef FREEARC_DECOMPRESS_ONLY
 
+typedef struct
+{
+  SRes (*Read)(void *p, void *buf, size_t *size);
+    /* if (input(*size) != 0 && output(*size) == 0) means end_of_stream.
+       (output(*size) < input(*size)) is allowed */
+  CALLBACK_FUNC *callback;
+  void *auxdata;
+  bool first_read;
+} CallbackInStream;
+
+typedef struct
+{
+  size_t (*Write)(void *p, const void *buf, size_t size);
+    /* Returns: result - the number of actually written bytes.
+       (result < size) means error */
+  CALLBACK_FUNC *callback;
+  void *auxdata;
+  int errcode;
+} CallbackOutStream;
+
+
+SRes CallbackRead(void *p, void *buf, size_t *size)
+{
+  CallbackInStream *s = (CallbackInStream*) p;
+  // When compress_all_at_once enabled, all but first calls should return EOF
+  SRes res = s->first_read || !compress_all_at_once
+               ? s->callback ("read", buf, *size, s->auxdata)
+               : 0;
+  s->first_read = FALSE;
+  if (res >= 0)  {*size = res; return SZ_OK;}
+  else           {*size = 0;   return res;}
+}
+
+size_t CallbackWrite(void *p, const void *buf, size_t size)
+{
+  CallbackOutStream *s = (CallbackOutStream*) p;
+  int res = s->callback ("write", (void*)buf, size, s->auxdata);
+  if (res < 0) {s->errcode = res; return 0;}
+  else         return size;
+}
+
+
+
 int lzma_compress  ( int dictionarySize,
                      int hashSize,
                      int algorithm,
@@ -98,47 +148,44 @@ int lzma_compress  ( int dictionarySize,
                      CALLBACK_FUNC *callback,
                      void *auxdata )
 {
-  CallbackInStream  inStream  (callback, auxdata);
-  CallbackOutStream outStream (callback, auxdata);
-  NCompress::NLZMA::CEncoder* encoder = new NCompress::NLZMA::CEncoder;
+  CallbackInStream  inStream;    inStream.Read  = CallbackRead;    inStream.callback = callback;   inStream.auxdata = auxdata;  inStream.first_read = False;
+  CallbackOutStream outStream;  outStream.Write = CallbackWrite;  outStream.callback = callback;  outStream.auxdata = auxdata;  outStream.errcode = FREEARC_OK;
 
-  bool eos = (1==1);  // use End-Of-Stream marker because we don't know filesize apriori
+  CLzmaEncHandle enc;
+  SRes res;
+  CLzmaEncProps props;
 
-  if (encoder->SetupProperties (dictionarySize,
-                                hashSize,
-                                posStateBits,
-                                litContextBits,
-                                litPosBits,
-                                algorithm,
-                                numFastBytes,
-                                matchFinder,
-                                matchFinderCycles,
-                                GetCompressionThreads() > 1,
-                                eos) != S_OK)
-  {
-    delete encoder;
-    return FREEARC_ERRCODE_INVALID_COMPRESSOR;
-  }
+  LzmaEncProps_Init(&props);
+  props.dictSize = dictionarySize;
+  props.mc = matchFinderCycles;
+  props.lc = litContextBits;
+  props.lp = litPosBits;
+  props.pb = posStateBits;
+  props.algo = algorithm;
+  props.fb = numFastBytes;                           //// hashSize
+  props.btMode = 1;                                  //// 0 - hashChain Mode, 1 - binTree mode - normal, default = 1 */
+  props.numHashBytes = 4;                            //// 2, 3 or 4, default = 4 */
+  props.numThreads = GetCompressionThreads();
+  props.writeEndMark = 1;
+  LzmaEncProps_Normalize(&props);
 
-  HRESULT result = encoder->Code (&inStream, &outStream, 0, 0, 0);
-  delete encoder;
-  if (inStream.errcode)
-    return inStream.errcode;
+  enc = LzmaEnc_Create(&g_Alloc);
+  if (enc == 0)   return FREEARC_ERRCODE_NOT_ENOUGH_MEMORY;
+  res = LzmaEnc_SetProps(enc, &props);
+  if (res == SZ_OK)
+    res = LzmaEnc_Encode(enc, (ISeqOutStream*)&outStream, (ISeqInStream*)&inStream, NULL, &g_Alloc, &g_Alloc);
+  LzmaEnc_Destroy(enc, &g_Alloc, &g_Alloc);
+
+  // Вернуть код ошибки входного/выходного потока или перекодировать код ошибки из 7z в fa
+  //if (inStream.errcode)
+  //  return inStream.errcode;
   if (outStream.errcode)
     return outStream.errcode;
-  if (result == E_OUTOFMEMORY)
-  {
-    return FREEARC_ERRCODE_NOT_ENOUGH_MEMORY;
-  }
-  else if (result != S_OK)
-  {
-    //fprintf(stderr, "\nEncoder error = %X\n", (unsigned int)result);
-    return FREEARC_ERRCODE_GENERAL;
-  }
-  return 0;
+  return SRes_to_FreeArc(res);
 }
 
 #endif  // !defined (FREEARC_DECOMPRESS_ONLY)
+
 
 int lzma_decompress( int dictionarySize,
                      int hashSize,
@@ -167,7 +214,8 @@ int lzma_decompress( int dictionarySize,
 
   CLzmaDec _state;
   LzmaDec_Construct(&_state);
-  RINOK(LzmaDec_AllocateUsingProperties(&_state, LzmaProps, allocMain));    ////тестировать res
+  SRes res = LzmaDec_AllocateUsingProperties(&_state, LzmaProps, &g_Alloc);
+  if (res != SZ_OK)  {errcode = SRes_to_FreeArc(res); goto freeInBuf;}
   LzmaDec_Init(&_state);
 
   for (;;)
@@ -181,31 +229,30 @@ int lzma_decompress( int dictionarySize,
       first_read = FALSE;
     }
 
-    SizeT dicPos = _state.dicPos;
-    SizeT curSize = mymin(_state.dicBufSize - dicPos, HUGE_BUFFER_SIZE);     // Write outdata in 8mb chunks
+    SizeT oldDicPos = _state.dicPos;
+    SizeT curSize = mymin(_state.dicBufSize - oldDicPos, LARGE_BUFFER_SIZE);     // Write outdata in 256kb chunks
 
     ELzmaFinishMode finishMode = LZMA_FINISH_ANY;
     SizeT inSizeProcessed = _inSize - _inPos;
     ELzmaStatus status;
-    SRes res = LzmaDec_DecodeToDic(&_state, dicPos + curSize, _inBuf + _inPos, &inSizeProcessed, finishMode, &status);
+    SRes res = LzmaDec_DecodeToDic(&_state, oldDicPos + curSize, _inBuf + _inPos, &inSizeProcessed, finishMode, &status);
 
     _inPos += (UInt32)inSizeProcessed;
-    SizeT outSizeProcessed = _state.dicPos - dicPos;
+    SizeT outSizeProcessed = _state.dicPos - oldDicPos;
+
+    errcode = callback ("write", _state.dic+oldDicPos, _state.dicPos-oldDicPos, auxdata);
+    if (res != 0)    {errcode = SRes_to_FreeArc(res); break;}
+    if (errcode < 0)  break;
 
     bool finished = (inSizeProcessed == 0 && outSizeProcessed == 0);
+    if (finished)  {errcode = SRes_to_FreeArc(status == LZMA_STATUS_FINISHED_WITH_MARK ? S_OK : S_FALSE); break;}
 
-    if (res != 0 || _state.dicPos == _state.dicBufSize || finished)
-    {
-      errcode = callback ("write", _state.dic, _state.dicPos, auxdata);
-      if (res != 0)     {errcode = FREEARC_ERRCODE_BAD_COMPRESSED_DATA; break;}
-      if (errcode < 0)  break;
-      if (finished)     {errcode = (status == LZMA_STATUS_FINISHED_WITH_MARK ? S_OK : S_FALSE); break;}
-    }
     if (_state.dicPos == _state.dicBufSize)
       _state.dicPos = 0;
   }
 
-  LzmaDec_Free(&_state, allocMain);
+  LzmaDec_Free(&_state, &g_Alloc);
+freeInBuf:
   MyFree(_inBuf);
   return errcode;
 }

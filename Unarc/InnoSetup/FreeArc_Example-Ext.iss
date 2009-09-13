@@ -91,7 +91,7 @@
 
 [Setup]
 AppName=FreeArc Example
-AppVerName=FreeArc Example 3.2 Extreme
+AppVerName=FreeArc Example 3.3 Extreme
 DefaultDirName={pf}\FreeArc Example
 DirExistsWarning=no
 ;DisableReadyPage=true
