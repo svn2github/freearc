@@ -1,31 +1,40 @@
 ;[English]
-;Example of using unarc.dll for decompression of FreeArc archives with displaying of progress indicator in Inno Setup window.
-;All you need to use the script is to compile it and put .arc archives to the same directory as installer.
+;Extended example of using unarc.dll for decompression of FreeArc archives with displaying of progress indicator in Inno Setup window.
 ;The script requires Inno Setup QuickStart Pack 5.2.3 and above! (http://files.jrsoftware.org)
 
 ;[Russian]
-;Пример распаковки FreeArc архива при помощи unarc.dll, с отображением прогресса распаковки в окне Inno Setup.
+;Расширенный пример распаковки FreeArc архива при помощи unarc.dll, с отображением прогресса распаковки в окне Inno Setup.
 
-; Версия 3.2ext от Victor_Dobrov, 31-07-2009
+; Версия 3.3ext от Victor_Dobrov, 13-09-2009
 ; miniFAQ
-;   - Подготовка скрипта: добавьте строки с архивами в секцию [Files], установите флаги external dontcopy, если надо, укажите компоненты/задачи.
+;   - подготовка скрипта: добавьте строки с архивами в секцию [Files], установите флаги external dontcopy, если надо, укажите компоненты/задачи.
 ;       после этих строк вставьте команды: {#SourceToProgress}, распаковка идёт на этапе ssPostInstall из Source: в DestDir: (с учётом компонентов/задач).
 ;   - один архив можно слить с инсталятором, если их общий размер не более 2Гб, через "copy /b setup.exe+xxx.arc newsetup.exe", добавив в [Files] "{srcexe}"
 ;   - для распаковки архивов, сжатых с применением precomp, добавьте в инсталлятор нужные утилиты из PowerPack и файл arc.ini. (для примера в #define precomp указана папка Max, но иногда этого недостаточно, т.е. желательно добавлять весь PowerPack, а это более 8 Мб!)
 ;   - если при сборке выдаётся сообщение об ошибке в секции [_ISToolPreCompile], то переустановите инсталлятор, включив флажок: Install Inno Setup Preprocessor
 ;   - скрипт тестировался на версиях Inno Setup 5.2.3, 5.2.3.e7 от ResTools, 5.2.4, 5.3.2 beta, 5.3.2-beta-Unicode.
-
-; Версия 3.2 от Bulat Ziganshin
+; дополнения: оптимизация скрипта, распаковка в разные папки, проверка компонентов/задач, добавление в инсталятор файлов precomp, прозрачные строки статуса, имени файла и многое другое...
+;
+; Версия 3.3 от Bulat Ziganshin, 13-09-2009
+;   - ускорение распаковки на 10%
+;   - FreeArcExtract() поддерживает опцию '-wPATH' для задания каталога для временных файлов
+;   - при прерывании распаковки стирает временные файлы
+;   - исправлена ошибка в unarc.dll - вылетала при распаковке с использованием временных файлов
+;   - arc.ini ищется в c:\
+;   - купирована ошибка индикатора прогресса при использовании внешних распаковщиков
+;   - пофиксена потеря количества извлечённых/распакованных файлов
+;
+; Версия 3.2 от Bulat Ziganshin, 31-07-2009
 ;   - исправлена unarc.dll - теперь она не вылетает на сбойных архивах
 
 ; Версия 3.1 от Bulat Ziganshin, 29-07-2009
 ;   - более плавный индикатор прогресса (данные из LZMA пишутся кусками по 8 мб вместо dictsize)
 ;   - больше не грузятся всякие левые facompress.dll из PATH
-
+;
 ; Версия 3.0 от Bulat Ziganshin, 29-07-2009
 ;   - функция ArchiveOrigSize возвращает объём данных в архиве
 ;   - наименования колбэков изменены на read и write (было progress и written)
-
+;
 ; Версия 2.1 от Bulat Ziganshin, 10-07-2009
 ;   - В unarc.dll исправлена ошибка, чреватая потенциальными проблемами при распаковке множества архивов
 
@@ -78,7 +87,7 @@ DefaultDirName={pf}\FreeArc Example
 DirExistsWarning=no
 ;DisableReadyPage=true
 ShowLanguageDialog=auto
-OutputBaseFilename=FreeArc_Example-Ext
+OutputBaseFilename=FreeArc_example-Ext
 OutputDir=.
 VersionInfoCopyright=Bulat Ziganshin, Victor Dobrov, SotM, CTACKo
 
@@ -160,12 +169,12 @@ Source: compiler:InnoCallback.dll; DestDir: {tmp}; Flags: dontcopy
 #ifdef precomp
 ;если указано, что архивы созданы с PRECOMP, в инсталлятор включаются необходимые при распаковке файлы
 Source: {#precomp}; DestDir: {sys}; Flags: deleteafterinstall
-Source: {#GetEnv("ProgramFiles")}\FreeArc\bin\arc.ini; DestDir: {sd}; Flags: deleteafterinstall
+Source: {#GetEnv("ProgramFiles")}\FreeArc\bin\arc.ini; DestDir: c:\; Flags: deleteafterinstall
 #endif
 ;эта строка демонстрирует показ сведений и времени завершения при обычном извлечении файлов
-Source: {win}\help\*; DestDir: {app}\files; Flags: external
+Source: {win}\help\*.hlp; DestDir: {app}\Files; Flags: external
 ;строки распаковки архивов
-Source: {src}\*.arc; DestDir: {app}; Flags: external dontcopy; Components: English
+Source: {src}\*.arc; DestDir: {app}\ArcFiles; Flags: external dontcopy
 {#SourceToProgress}
 
 [Code]
@@ -299,7 +308,7 @@ Function CreateLabel(Parent: TWinControl; AutoSize, WordWrap, Transparent: Boole
 Begin
   Result:=TLabel.Create(Parent); Result.parent:= Parent;
   if Prefs <> Nil then begin
-    Top:= TWinControl(Prefs).Top; Left:= TWinControl(Prefs).Left; Width:= TWinControl(Prefs).Width; Height:= TWinControl(Prefs).Height; TWinControl(Prefs).Hide;
+    Top:= TWinControl(Prefs).Top; Left:= TWinControl(Prefs).Left; Width:= TWinControl(Prefs).Width; Height:= TWinControl(Prefs).Height;
   end;
     if Top > 0 then result.Top:=Top; if Left > 0 then result.Left:= Left; if Width > 0 then result.Width:= Width; if Height > 0 then result.Height:= Height;
     if FontName <> '' then result.Font.Name:= FontName; if FontColor > 0 then result.Font.Color:= FontColor; if FontStyle <> [] then result.Font.Style:= FontStyle;
@@ -384,34 +393,38 @@ end;
 // общий прогресс нарастает по мере записи данных из архива на диск (точка 'write')
 // прогресс архивов двигается в соответствии с позицией в текущем архиве (точка 'read')
 
-Procedure UpdateStatus(Flags: Integer);   // выполняется с переодичностью, заданной константой Period
+Procedure UpdateStatus(Flags: Integer);   // выполняется с периодичностью, заданной константой Period
 var
     Remaining: Integer; i, t, s: string;
 Begin
-    if Flags and $1 > 0 then FreezeTimer:= Flags and $2 = 0; //  bit 0 = 1 change start/stop, bit 1 = 0 stop, bit 1 = 1 start
-    if (Flags and $4 > 0) or (Status.size <> baseMb+lastMb) then LastTimerEvent:= 0; // bit 2 = 1 UpdateNow // обновить по флагу или записи из архива на диск
-    if FreezeTimer or (GetTickCount - LastTimerEvent <= Period) then Exit else LastTimerEvent:= GetTickCount;
+  if Flags and $1 > 0 then FreezeTimer:= Flags and $2 = 0; //  bit 0 = 1 change start/stop, bit 1 = 0 stop, bit 1 = 1 start
+  if (Flags and $4 > 0) or (Status.size <> baseMb+lastMb) then LastTimerEvent:= 0; // bit 2 = 1 UpdateNow // обновить по флагу или записи из архива на диск
+  if FreezeTimer or (GetTickCount - LastTimerEvent <= Period) then Exit else LastTimerEvent:= GetTickCount;
   Status.size := baseMb+lastMb; // извлечено на текущий момент
-    if totalUncompressedSize > 0 then with WizardForm.ProgressGauge do begin    //    основной прогресс движется по мере записи данных на диск
-        Position:= round(Max * Status.size/totalUncompressedSize)
-    end;
-  with WizardForm.ProgressGauge do begin    // оставшееся время
-    if position > 0 then Remaining:= trunc((GetTickCount - StartInstall) * Abs((max - position)/position)) else Remaining:= 0;
-        t:= cm('ending'); i:= t;
-        if Remaining > 0 then begin
-            t:= FmtMessage(cm('taskbar'), [IntToStr(Status.perc/10), TicksToTime(Remaining, 'h', 'm', 's', false)])
-            i:= TicksToTime(Remaining, cm('hour'), cm('min'), cm('sec'), false)
-        end;
+  if totalUncompressedSize > 0 then with WizardForm.ProgressGauge do begin    //    основной прогресс движется по мере записи данных на диск
+      Position:= round(Max * Status.size/totalUncompressedSize)
   end;
-    SetTaskBarTitle(t); // проценты и оставшееся время на кнопке инсталлятора
-    if Status.size > 0 then
-        s:= ' ['+ ByteOrTB(Status.size*oneMB, true) +']';   // если сделать подсчёт размера папки {app} через CalcDirSize, то при частом пересчёте папки большого объёма это может замедлить работу
-    StatusInfo.Caption:= FmtMessage(cm('StatusInfo'), [IntToStr(Status.count +ord(Status.count < 0)), s, Format('%.1n', [Abs(Status.perc/10)]), i]);
-//    второй прогрессбар движется по мере считывания текущего архива
-  if (Status.stage = cm('ArcTitle')) and (GetArrayLength(Arcs) > 0) then begin
-        ExtractFile.Caption:= FmtMessage(cm('ArcInfo'), [IntToStr(ArcInd+1), IntToStr(GetArrayLength(Arcs)), ByteOrTB(Arcs[ArcInd].Size, true), Format('%.0n', [Status.mb/(Arcs[ArcInd].Size/oneMB)*100]), ByteOrTB(Status.allsize, true)])
-        ProgressBar.Position:= round(ProgressBar.Max * Status.mb/trunc(Arcs[ArcInd].Size/oneMB))
+  with WizardForm.ProgressGauge do begin    // оставшееся время
+#ifndef precomp
+    // к сожалению, этот код иногда сбоит на очень больших архивах, созданных с использованием внешних упаковщиков
+    if position > 0 then Remaining:= trunc((GetTickCount - StartInstall) * Abs((max - position)/position)) else
+#endif
+      Remaining:= 0;
+    t:= cm('ending'); i:= t;
+    if Remaining > 0 then begin
+      t:= FmtMessage(cm('taskbar'), [IntToStr(Status.perc/10), TicksToTime(Remaining, 'h', 'm', 's', false)])
+      i:= TicksToTime(Remaining, cm('hour'), cm('min'), cm('sec'), false)
     end;
+  end;
+  SetTaskBarTitle(t); // проценты и оставшееся время на кнопке инсталлятора
+  if Status.size > 0 then
+    s:= ' ['+ ByteOrTB(Status.size*oneMB, true) +']';   // если сделать подсчёт размера папки {app} через CalcDirSize, то при частом пересчёте папки большого объёма это может замедлить работу
+  StatusInfo.Caption:= FmtMessage(cm('StatusInfo'), [IntToStr(Status.count +ord(Status.count < 0)), s, Format('%.1n', [Abs(Status.perc/10)]), i]);
+  // второй прогрессбар движется по мере считывания текущего архива
+  if (Status.stage = cm('ArcTitle')) and (GetArrayLength(Arcs) > 0) then begin
+    ExtractFile.Caption:= FmtMessage(cm('ArcInfo'), [IntToStr(ArcInd+1), IntToStr(GetArrayLength(Arcs)), ByteOrTB(Arcs[ArcInd].Size, true), Format('%.0n', [Status.mb/(Arcs[ArcInd].Size/oneMB)*100]), ByteOrTB(Status.allsize, true)])
+    ProgressBar.Position:= round(ProgressBar.Max * Status.mb/trunc(Arcs[ArcInd].Size/oneMB))
+  end;
 End;
 
 Procedure MyTimerProc(h, msg, idevent, dwTime: Longword);
@@ -422,20 +435,20 @@ End;
 Procedure OnWndHook(Code: Integer; wParam: Word; lParam: TCWPSTRUCT);
 Begin
   if (Code = HC_ACTION) and (LoWord(lParam.msg) = WM_PAINT) then begin  // подготовка данных для последующего отображения по таймеру
+    if (Status.name <> WizardForm.FileNameLabel.Caption) and (WizardForm.FileNameLabel.Caption <> '') then begin // имя файла, названия ярлыка и прочее
+        FileNameLabel.Caption:= WizardForm.FileNameLabel.Caption;
+        Status.name:= WizardForm.FileNameLabel.Caption;    // начало извлечения или распаковки очередного файла
+        Case Status.stage of
+            SetupMessage(msgStatusExtractFiles): // этап извлечения файлов инсталлятором
+                Status.count:= Status.count +1;    // кол-во файлов
+        End;
+    end;
     if (Status.stage <> WizardForm.StatusLabel.Caption) and (WizardForm.StatusLabel.Caption <> '') then begin
         StatusLabel.Caption:= WizardForm.StatusLabel.Caption;
         Status.stage:= WizardForm.StatusLabel.Caption;  // текущий этап установки
         if Status.stage = SetupMessage(msgStatusRollback) then begin
-            StatusInfo.Hide; ExtractFile.Hide; ProgressBar.Hide;
+            WizardForm.StatusLabel.Hide; WizardForm.FileNameLabel.Hide; StatusInfo.Hide; ExtractFile.Hide; ProgressBar.Hide;
         end;
-    end;
-    if (Status.name <> WizardForm.FileNameLabel.Caption) and (WizardForm.FileNameLabel.Caption <> '') then begin // имя файла, названия ярлыка и прочее
-        FileNameLabel.Caption:= WizardForm.FileNameLabel.Caption;
-        Status.name := WizardForm.FileNameLabel.Caption;    // начало извлечения или распаковки очередного файла
-        Case Status.stage of
-            SetupMessage(msgStatusExtractFiles), cm('ArcTitle'): // этапы извлечения файлов и распаковки архивов
-                Status.count:= Status.count + 1;    // кол-во файлов
-        End;
     end;
     with WizardForm.ProgressGauge do begin
         n:= (Max - Min)/1000
@@ -459,8 +472,11 @@ begin
   case string(what) of
     'origsize': origsize:= Mb;  // данных в тек. архиве (при распаковке не вызывается)
     'total_files': Null;
-    'filename':     // Update FileName label
+    'filename':  begin   // Update FileName label
         WizardForm.FileNameLabel.Caption:= OemToAnsiStr(str); // извлекаемый файл, их имена пишутся в журнал установки
+        FileNameLabel.Caption:= OemToAnsiStr(str); // извлекаемый файл, их имена пишутся в журнал установки
+        Status.count:= Status.count + 1;    // кол-во файлов, этап распаковки
+    end;
     'read': // позиция в текущем архиве
         Status.mb:= Mb;
     'write':  // Assign to Mb *total* amount of data extracted to the moment from all archives
@@ -476,9 +492,9 @@ end;
 Function ArcDecode(Line: string): array of TArc;   // разбор строки Archives
     var tmp, cut: array of String; n, i: integer;
 Begin
-    tmp:= StringToArray(Line,'|'); SetArrayLength(result,0);
+    SetArrayLength(result,0); if Line <> '' then tmp:= StringToArray(Line,'|') else Exit;
     for n:= 0 to GetArrayLength(tmp) - 1 do begin
-        if tmp[n][Length(tmp[n])] = '?' then Continue // эта запись обрабатывается в AfterInstall: UnArc(...)
+        if tmp[n][Length(tmp[n])] = '?' then Continue; // эта запись обрабатывается в AfterInstall: UnArc(...)
         SetArrayLength(result, GetArrayLength(result) +1); i:= GetArrayLength(result) -1;
         cut:= StringToArray(tmp[n],'>')    // задачи, логика or and not наверное не будет работать
             if GetArrayLength(cut) > 1 then result[i].task:= cut[1];
@@ -623,8 +639,9 @@ End;
 Procedure InitializeWizard();
 Begin
 // Create controls to show extended info
-    StatusLabel:= CreateLabel(WizardForm.InstallingPage,false,true,true,'',[],0,0,0,0,0, WizardForm.StatusLabel);
-    FileNameLabel:= CreateLabel(WizardForm.InstallingPage,false,true,true,'',[],0,0,0,0,0, WizardForm.FileNameLabel);
+    StatusLabel:= CreateLabel(WizardForm.InstallingPage,false,false,true,'',[],0,0,0,0,0, WizardForm.StatusLabel);
+    FileNameLabel:= CreateLabel(WizardForm.InstallingPage,false,false,true,'',[],0,0,0,0,0, WizardForm.FileNameLabel);
+    WizardForm.StatusLabel.Top:= WizardForm.ProgressGauge.Top; WizardForm.FileNameLabel.Top:= WizardForm.ProgressGauge.Top;    // прячем под прогрессбар, тогда все события WM_PAINT перехватываются
     with WizardForm.ProgressGauge do begin
     StatusInfo:= CreateLabel(WizardForm.InstallingPage, false, true, true, '', [], 0, 0, Top + ScaleY(32), Width, 0, Nil);
     ProgressBar := TNewProgressBar.Create(WizardForm);
