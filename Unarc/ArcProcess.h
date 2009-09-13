@@ -271,7 +271,7 @@ PROCESS::PROCESS (COMMAND* _cmd, BASEUI* _UI, uint64 &total_files, uint64 &origs
 PROCESS::PROCESS (COMMAND* _cmd, BASEUI* _UI) : cmd(_cmd), UI(_UI)
 {
   CurrentProcess = this;
-  SetCompressionThreads (GetProcessorsCount());
+  cmd->Prepare();
 
   arcinfo.arcfile.open (cmd->arcname, READ_MODE);                     // Откроем файл архива
   arcinfo.read_structure();                                           // Прочитаем структуру архива

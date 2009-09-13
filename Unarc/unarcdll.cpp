@@ -161,6 +161,7 @@ int __cdecl FreeArcExtract (cbtype *callback, ...)
 
   COMMAND command (argc, argv);    // Распарсить команду
   if (command.ok) {                // Если парсинг был удачен и можно выполнить команду
+    command.Prepare();
     CThread thread;
     DLLUI *ui = new DLLUI(&command);
     thread.Create (timer_thread,      ui);   //   Спец. тред, вызывающий callback 100 раз в секунду

@@ -6,7 +6,7 @@
 #endif
 
 #define HEADER1        "FreeArc 0.52 "
-#define HEADER2        "  http://freearc.org  2009-09-12\n"
+#define HEADER2        "  http://freearc.org  2009-09-13\n"
 
 
 /******************************************************************************
@@ -50,6 +50,7 @@ public:
   FILENAME arcname;     // Имя обрабатываемого командой архива
   FILENAME *filenames;  // Имена обрабатываемых командой файлов из архива
   MYDIR    outpath;     // Каталог, куда распаковываются файлы (опция -dp или временный)
+  MYDIR    workdir;     // Каталог для временных файлов
   MYFILE   runme;       // Файл, запускаемый после распаковки
   BOOL tempdir;         // Мы извлекали файлы во временный каталог?
   BOOL wipeoutdir;      // Удалить файлы из outpath после завершения работы runme?
@@ -61,6 +62,7 @@ public:
   BOOL nooptions;       // Опция --
 
   COMMAND (int argc, char *argv[]);                      // Разбор командной строки
+  void Prepare();                                        // Приготовиться к выполнению команды
   bool list_cmd()  {return cmd=='l' || cmd=='v';}        // TRUE, если это команда получения листинга архива
   BOOL accept_file (DIRECTORY_BLOCK *dirblock, int i);   // TRUE, если i-й файл каталога dirblock следует включить в обработку
 };
@@ -141,6 +143,7 @@ COMMAND::COMMAND (int argc, char *argv[])
   noarcext  = FALSE;
   nooptions = FALSE;
   outpath.setname("");
+  workdir.setname("");
   runme.setname("");
   wipeoutdir = FALSE;
   tempdir = FALSE;
@@ -190,6 +193,7 @@ COMMAND::COMMAND (int argc, char *argv[])
       else if (strequ(argv[0],"-y"))       yes = TRUE;
       else if (strequ(argv[0],"-n"))       no  = TRUE;
       else if (start_with(argv[0],"-d"))   outpath.setname(argv[0]+2);
+      else if (start_with(argv[0],"-w"))   workdir.setname(argv[0]+2);
       else if (strequ(argv[0],"-s"))       silent = 1;
       else if (strequ(argv[0],"-s0"))      silent = 0;
       else if (strequ(argv[0],"-s1"))      silent = 1;
@@ -221,6 +225,7 @@ COMMAND::COMMAND (int argc, char *argv[])
          "  -e       - extract files without pathnames\n"
          "  -t       - test archive integrity\n"
          "  -d{Path} - set destination path\n"
+         "  -w{Path} - set temporary files directory\n"
          "  -y       - answer Yes on all overwrite queries\n"
          "  -n       - answer No  on all overwrite queries\n"
          "  -s[1,2]  - silent mode\n"
@@ -243,6 +248,7 @@ COMMAND::COMMAND (int argc, char *argv[])
       else if (strequ(argv[0],"-o+"))      yes      =TRUE;
       else if (strequ(argv[0],"-o-"))      no       =TRUE;
       else if (start_with(argv[0],"-dp"))  outpath.setname(argv[0]+3);
+      else if (start_with(argv[0],"-w"))   workdir.setname(argv[0]+2);
       else if (strequ(argv[0],"--"))       nooptions=TRUE;
       else ok=FALSE;
     }
@@ -264,12 +270,22 @@ COMMAND::COMMAND (int argc, char *argv[])
          "  t - test archive integrity\n"
          "Available options:\n"
          "  -dp{Path}   - set destination path\n"
+         "  -w{Path}    - set temporary files directory\n"
          "  -o+         - overwrite existing files\n"
          "  -o-         - don't overwrite existing files\n"
          "  --noarcext  - don't add default extension to archive name\n"
          "  --          - no more options\n");
 #endif
 }
+
+
+// Приготовиться к выполнению команды
+void COMMAND::Prepare()
+{
+  SetTempDir (workdir.filename);
+  SetCompressionThreads (GetProcessorsCount());
+}
+
 
 // TRUE, если i-й файл каталога dirblock следует включить в обработку
 BOOL COMMAND::accept_file (DIRECTORY_BLOCK *dirblock, int i)
@@ -281,5 +297,4 @@ BOOL COMMAND::accept_file (DIRECTORY_BLOCK *dirblock, int i)
   }
   return FALSE;                             // Совпадающего имени не найдено
 }
-
 
