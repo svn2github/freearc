@@ -306,6 +306,7 @@ void PROCESS::quit(int errcode)
   cmd->ok = FALSE;
   if (outfile.isopen())  outfile.close(), outfile.remove();
   arcinfo.arcfile.tryClose();
+  compressionLib_cleanup();
   UI->Abort (cmd, errcode);
 }
 
