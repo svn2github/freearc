@@ -351,6 +351,7 @@
   aARC_VERSION = "0.52", aARCHIVE_VERSION = make4byte 0 0 5 2
 === To-do list ====================================================================================
 
+250 vars in Lua stack?
 убрать использование facompress.dll/lzma_decompress, проверить все остальные методы (unarc 17.3, arc 20.0, fac 22.2)
 использовать для проверки на новости crc данных, возвращаемых страницей CheckNews.aspx
 сайт - доб. ссылку на http://www.softpedia.com/progScreenshots/FreeArc-Screenshot-126780.html

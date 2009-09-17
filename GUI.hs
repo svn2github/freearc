@@ -502,31 +502,23 @@ ask_password_dialog title' amount opt_parseData = gui $ do
   addStdButton dialog ResponseCancel
 
   -- Создаёт таблицу с полями для ввода одного или двух паролей
-  (pwdTable, [pwd1,pwd2]) <- pwdBox amount
-  for [pwd1,pwd2] (`onEntryActivate` buttonClicked okButton)
-{-
-  -- Кнопка OK срабатывает только если оба введённых пароля одинаковы
-  onClicked okButton $ do
-    p1 <- val pwd1
-    p2 <- val pwd2
-    when (p1>"" && p1==p2) $ do
-      dialogResponse dialog ResponseOk
--}
+  (pwdTable, pwds@[pwd1,pwd2]) <- pwdBox amount
+  for pwds (`onEntryActivate` buttonClicked okButton)
+  for pwds $ flip afterKeyRelease $ \e -> do
+    [pwd1', pwd2'] <- mapM val pwds
+    okButton `widgetSetSensitivity` (pwd1'>"" && pwd1'==pwd2')
+    return False
+  okButton `widgetSetSensitivity` False
+
   -- Добавим пробелы вокруг таблицы и кинем её на форму
   set pwdTable [containerBorderWidth := 10]
   upbox <- dialogGetUpper dialog
   boxPackStart  upbox pwdTable PackGrow 0
   widgetShowAll upbox
 
-  fix $ \go -> do
   choice <- myDialogRun dialog
   if choice==ResponseOk
-    then do p1 <- val pwd1
-            p2 <- val pwd2
-            if (p1>"" && p1==p2)
-              then return p1
-              else do msgBox dialog MessageInfo "0457 Password and its confirmation are not the same!"
-                      go
+    then val pwd1
     else terminateOperation >> return ""
 
 
