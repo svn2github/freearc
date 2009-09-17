@@ -8,7 +8,7 @@
 #endif
 
 // Enable multithreading support
-#define COMPRESS_MF_MT
+//#define COMPRESS_MF_MT
 
 extern "C" {
 #include "C_LZMA.h"
@@ -42,12 +42,19 @@ static int FindMatchFinder(const char *s)
 
 // Включим в один .o файл все необходимые подпрограммы
 #include "C/LzmaDec.c"
+#undef kNumFullDistances
 #ifndef FREEARC_DECOMPRESS_ONLY
+namespace LzmaEncoder {
 #include "C/LzmaEnc.c"
 #include "C/LzFind.c"
+#undef SKIP_HEADER
+#undef SKIP_FOOTER
 #ifdef COMPRESS_MF_MT
+#include "C/Threads.c"
 #include "C/LzFindMt.c"
 #endif
+}
+using namespace LzmaEncoder;
 #endif
 
 static void *SzAlloc(void *p, size_t size) { p = p; return MyAlloc(size); }
@@ -117,11 +124,16 @@ typedef struct
 SRes CallbackRead(void *p, void *buf, size_t *size)
 {
   CallbackInStream *s = (CallbackInStream*) p;
-  // When compress_all_at_once enabled, all but first calls should return EOF
-  SRes res = s->first_read || !compress_all_at_once
-               ? s->callback ("read", buf, *size, s->auxdata)
-               : 0;
-  s->first_read = FALSE;
+  SRes res;
+  if (compress_all_at_once) {
+    // Read whole buffer at the first call
+    res  =  s->first_read? s->callback ("read", buf, *size, s->auxdata)
+                         : 0;
+    s->first_read = FALSE;
+  } else {
+    // Read data by the BUFFER_SIZE chunks
+    res  =  s->callback ("read", buf, mymin(*size, BUFFER_SIZE), s->auxdata);
+  }
   if (res >= 0)  {*size = res; return SZ_OK;}
   else           {*size = 0;   return res;}
 }
@@ -366,6 +378,8 @@ void LZMA_METHOD::ShowCompressionMethod (char *buf)
 MemSize LZMA_METHOD::GetCompressionMem (void)
 {
   SetDictionary (dictionarySize);   // Ограничим размер словаря чтобы сжатие влезало в 4гб памяти :)
+  return 11*dictionarySize+dictionarySize/2;  ////
+/*
   switch (matchFinder) {
     case kBT2:    return NBT2::CalcHashSize(dictionarySize,hashSize)*sizeof(NBT2::CIndex) + dictionarySize*9 + NBT2::ReservedAreaSize(dictionarySize) + 256*kb + RangeEncoderBufferSize(dictionarySize);
     case kBT3:    return NBT3::CalcHashSize(dictionarySize,hashSize)*sizeof(NBT3::CIndex) + dictionarySize*9 + NBT3::ReservedAreaSize(dictionarySize) + 256*kb + RangeEncoderBufferSize(dictionarySize);
@@ -374,6 +388,7 @@ MemSize LZMA_METHOD::GetCompressionMem (void)
     case kHT4:    return NHT4::CalcHashSize(dictionarySize,hashSize)*sizeof(NHT4::CIndex) + dictionarySize   + NHT4::ReservedAreaSize(dictionarySize) + 256*kb + RangeEncoderBufferSize(dictionarySize);
     default:      CHECK (FALSE, (s,"lzma::GetCompressionMem - unknown matchFinder %d", matchFinder));
   }
+*/
 }
 
 MemSize calcDictSize (LZMA_METHOD *p, MemSize mem)

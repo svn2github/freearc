@@ -353,6 +353,12 @@
 
 убрать использование facompress.dll/lzma_decompress, проверить все остальные методы (unarc 17.3, arc 20.0, fac 22.2)
 использовать для проверки на новости crc данных, возвращаемых страницей CheckNews.aspx
+сайт - доб. ссылку на http://www.softpedia.com/progScreenshots/FreeArc-Screenshot-126780.html
+  http://win-rar.ru/study/
+  доб. просьбу о рекламе на стр. fa4is и внутрь него
+ощибки
+  при сжатии не проверяет что пароли совпадают
+  When I a open an encrypted archive a try to test it, Freearc asks for the password twice, once before testing and once after it.
 fashell
   установка в каталоги с unicode-именами и BOM в начале скрипта (заменить вызов luaL_dofile)
   openDialog (cmd:"--":params) - расширить чтобы можно было передавать опции ("--add-dialog -mx -- filenames")
