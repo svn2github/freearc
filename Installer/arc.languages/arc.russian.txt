@@ -461,6 +461,7 @@ Enter password dialog
 0077 Enter decryption password=Ввод пароля расшифровки
 0074 Enter password:=&Введите пароль:
 0075 Reenter password:=&Повторите пароль:
+0457 Password and its confirmation are not the same!=Пароль и его подтверждение не совпадают!
 
 Archive comment dialog
 0073 Enter archive comment=Введите комментарий к архиву
