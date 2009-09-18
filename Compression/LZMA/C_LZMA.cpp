@@ -279,7 +279,7 @@ LZMA_METHOD::LZMA_METHOD()
 int LZMA_METHOD::decompress (CALLBACK_FUNC *callback, void *auxdata)
 {
   // Use faster function from DLL if possible
-  static FARPROC f = LoadFromDLL ("lzma_decompress");
+  static FARPROC f = LoadFromDLL ("lzma_decompress_____from_dll_is_too_slow_so_dont_use_it");
   if (!f) f = (FARPROC) lzma_decompress;
 
   return ((int (*)(int, int, int, int, int, int, int, int, int, CALLBACK_FUNC*, void*)) f)

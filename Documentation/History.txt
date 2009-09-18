@@ -358,7 +358,6 @@
   http://win-rar.ru/study/
   доб. просьбу о рекламе на стр. fa4is и внутрь него
 ощибки
-  при сжатии не проверяет что пароли совпадают
   When I a open an encrypted archive a try to test it, Freearc asks for the password twice, once before testing and once after it.
 fashell
   установка в каталоги с unicode-именами и BOM в начале скрипта (заменить вызов luaL_dofile)
