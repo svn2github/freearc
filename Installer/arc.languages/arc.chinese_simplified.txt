@@ -19,7 +19,7 @@
 
 Language name in english and mother tongue
 0000 Language=Chinese Simplified (简体中文)
-0159 Copyright=Translated by TeLeMan\nLast Updated: 2009-09-05
+0159 Copyright=Translated by TeLeMan\nLast Updated: 2009-09-11
 
 Language-specific URLs relative to http://freearc.org/ and helpfiles
 Filled only for languages providing their own translations
@@ -425,7 +425,7 @@ Progress indicator
 0058 Bytes=字节数
 0059 Total bytes=总计字节数
 0252 Compressed=已压缩字节数
-0253 Total compressed=总计已压缩字节数
+0253 Total compressed=压缩后总计字节数
 0060 Ratio=压缩率
 0061 Speed=速度
 0062 Time=时间
@@ -534,8 +534,8 @@ Archive comment dialog
 0332 can't open file "%1"=不能打开"%1"文件
 0333 CRC error in file "%1"="%1"文件内容有CRC错误
 0334 bad section %1 in %2=在"%2"中有坏块%1
-0335 operation terminated!=操作终止！
-0336 program terminated!=程序终止！
+0455 Operation terminated by user!=操作被用户终止！
+0456 Program terminated by user!=程序被用户终止！
 0337 no files, erasing empty archive=不包含任何文件，删除空压缩文件
 0338 skipped %1 fake files=忽略%1个假文件
 0339 bad password for archive %1="%1"压缩文件口令错误

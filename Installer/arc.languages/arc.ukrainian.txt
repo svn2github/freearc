@@ -12,11 +12,14 @@
 ***    0185 Protection:=Protection: (written in your language, of course)  ***
 ***  It's tooltip:                                                         ***
 ***    1185 Protection:=Appends recovery information to archive            ***
+***                                                                        ***
+***  Also, one section contains relative URLs for language-specific        ***
+***  resources                                                             ***
 ******************************************************************************
 
 Language name in english and mother tongue
 0000 Language=Ukrainian (Українська)
-0159 Copyright=chornobyl 2009-04-15
+0159 Copyright=chornobyl 2009-09-18
 
 Language-specific URLs relative to http://freearc.org/ and helpfiles
 Filled only for languages providing their own translations
@@ -26,6 +29,43 @@ Filled only for languages providing their own translations
 0372 Wiki page (URL, not translation!)=??
 0256 Helpfile (URL, not translation!)=FreeArc-GUI-Rus.htm
 0257 Command-line help (URL, not translation!)=FreeArc040-rus.htm
+
+
+=== Explorer context menu =======================================================
+0391 Add to "%s"=Додати в "%s"
+0392 Compress the selected files using FreeArc=Стиснути виділені файли за допомогою FreeArc
+0393 Add to SFX "%s"=Додати у SFX "%s"
+0394 Compress the selected files into SFX using FreeArc=Стиснути виділені файли у SFX за допомогою FreeArc
+0395 Add to archive...=Додати до архіву...
+0396 Compress the selected files using FreeArc via dialog=Стиснути виділені файли за допомогою FreeArc через діалог
+--
+0397 Open with FreeArc=Відкрити у FreeArc
+0398 Open the selected archive(s) with FreeArc=Відкрити виділений архів за допомогою FreeArc
+0399 Extract to "%s"=Розпакувати у "%s"
+0400 Extract the selected archive(s) to new folder=Розпакувати виділені архіви у новий каталог
+0401 Extract here=Розпакувати тут
+0402 Extract the selected archive(s) to the same folder=Розпакувати виділені архіви у поточний каталог
+0403 Extract...=Розпакувати...
+0404 Extract the selected archive(s) via dialog=Розпакувати виділені архіви через діалог
+0405 Test=Тестувати
+0406 Test the selected archive(s)=Тестувати виділені архіви
+--
+0407 Convert to SFX=Перетворити у SFX
+0408 Convert the selected archive(s) to SFX=Перетворити виділені архіви у SFX
+0409 Convert from SFX=Перетворити із SFX
+0410 Convert the selected SFX(es) to normal archive(s)=Перетворити виділені архіви із SFX у звичайні
+--
+0411 Modify...=Модифікувати...
+0412 Modify the selected archives via dialog=Модифікувати виділені архіви через діалог
+0413 Join...=Об'єднати...
+0414 Join the selected archives via dialog= виділені архіви через діалог
+--
+0415 Convert to .arc=Перетворити в .arc
+0416 Convert the selected archive(s) to FreeArc format=Перетворити виділені архіви у формат
+0417 Convert to .arc SFX=Перетворити в .arc SFX
+0418 Convert the selected archive(s) to FreeArc SFX= SFX
+0419 Convert to .arc...=Перетворити в .arc
+0420 Convert the selected archive(s) to FreeArc format via dialog=Перетворити виділені архіви у FreeArc через діалог
 
 
 === Menu ========================================================================
@@ -73,7 +113,9 @@ Tools menu/toolbar
 0293 Recompress=Перепакувати
 0294 Recompress files in archive=Перепакувати файли в архіві
 0270 Convert to SFX=Перетворити в SFX
-0271 Convert archive to SFX=Перетворити в SFX архів
+0271 Convert archive to SFX=Перетворити архів у SFX
+0426 Convert to FreeArc=Перетворити у FreeArc
+0427 Convert foreign archive to FreeArc format=Перетворити сторонній архів у формат FreeArc
 0272 Encrypt=Зашифрувати
 0273 Encrypt archive contents=Зашифрувати вміст архіву
 0274 Protect=Захистити
@@ -156,6 +198,8 @@ Add dialog
 0149 Join all archives=Об'єднати всі архіви
 0150 Join %1 with another archive=Об'єднати %1 з іншим архівом
 0151 Join %2 archives=Об'єднати %2 архівів
+0428 Convert %1 to FreeArc format=Перетворити %1 формат FreeArc
+0429 Convert %2 archives to FreeArc format=Перетворити %2 архівів у формат FreeArc
 ---------
 0182 Main=Головне
 0131 Output archive:=Вихідний архів:
@@ -248,6 +292,7 @@ Extract dialog
 0021 Select output directory=Вибір вихідного каталогу
 0014 Append archive name to the output directory=Додати ім'я архіву до вихідного каталогу
 --Other
+0425 Keep broken extracted files=Не видаляти файли розпаковані з помилками
 0072 Additional options:=Додаткові опції
 
 
@@ -274,6 +319,13 @@ Archive information dialog
 --
 0097 Encryption algorithms:=Метод шифрування:
 0098 Archive comment:=Опис архіву:
+---
+0449 Solid blocks=Суцільні блоки
+0450 Position=Позиція
+0451 Size=Розмір
+0452 Compressed=Стиснений
+0453 Files=файлів
+0454 Method=Метод
 
 
 Settings dialog
@@ -287,11 +339,18 @@ Settings dialog
 0166 Logfile:=Файл записів:
 0292 View=Переглянути
 0167 Select logfile=Виберіть Файл записів
+0447 Temporary directory:=Тимчасовий каталог:
+0448 Select directory for temporary files=Вкажіть каталог для тимчасових файлів
 0172 Associate FreeArc with .arc files=Асоціювати FreeArc з файлами .arc
 0361 Add captions to toolbar buttons=Підписувати кнопки на панелі інструментів
 0370 Watch for new versions via Internet=Слідкувати за появою нових версій через Інтернет
 0168 You should restart FreeArc in order for a language settings to take effect.=Ви маєте перезапустити FreeArc щоб активувати нові налаштування локалізації.
 0169 Passwords need to be entered again after restart.=Паролі мають бути ведені знову після перезапуску
+--
+0421 Explorer integration=Інтеграція у Провідник
+0422 Enable context menu in Explorer=Увімкнути контекстне меню Провідника
+0423 Make it cascaded=Зробити його вкладеним
+0424 Enable individual commands:=Дозволити окремі команди:
 --
 0388 Info=Інформація
 0389 Largest contiguous free memblock:=Найбільший безперервний блок вільної пам'яті:
@@ -320,7 +379,7 @@ Checking for updates
 0111 Fast=Швидке
 0112 Very fast=Дуже швидке
 0127 HDD-speed=Зі швидкістю HDD
-0113 Fast, low-memory decompression=Швидке розпакування, що потребує мало пам'яті 
+0113 Fast, low-memory decompression=Швидке розпакування, що потребує мало пам'яті
 0226 (fast, low-memory decompression)=зі швидким розпакуванням
 0176 Filetype auto-detection=Авто-визначення типів файлів
 --Description of compression method selected
@@ -357,12 +416,9 @@ Many dialogs
 0081 &Cancel=&Скасувати
 0363 &Select=&Вибрати
 0364 &Close=&Закрити
+0432 &Detach=&У фоні
 
 Progress indicator
---Buttons
-0052 &Background=&У Фоні
-0053 &Pause=&Пауза
-0054 &Continue=&Продовжити
 --Labels
 0056 Files=Файлів
 0057 Total files=Всього файлів
@@ -383,6 +439,12 @@ Progress indicator
 0385 Scanning archive for damages=Перевірка цілісності архіву
 0386 Protecting archive from damages=Додавання захисного запису
 0387 Recovering archive=Відновлення архіву
+--Extra options
+0446 Keep window on top=Поверх інших вікон
+--Buttons
+0052 &Background=&У Фоні
+0053 &Pause=&Пауза
+0054 &Continue=&Продовжити
 
 File overwrite dialog
 0078 Confirm File Replace=Підтвердження заміни файлу
@@ -405,19 +467,23 @@ Archive comment dialog
 
 
 === Infoline messages ====================================================
-0228 Deleting from %1=Видалення із %1
+0439 Listing archive %1=Вміст архіву %1
+0445 SUCCESFULLY LISTED %1=Успішно описано архів %1
+0442 %2 WARNINGS WHILE LISTING %1=%2 ПОПЕРЕДЖЕНЬ ПРИ СТВОРЕННІ СПИСКУ ФАЙЛІВ %1
+
+0435 Deleting files from archive %1=Видалення файлів із архіву %1
 0229 FILES SUCCESFULLY DELETED FROM %1=ФАЙЛИ УСПІШНО ВИДАЛЕНІ ІЗ %1
 0230 %2 WARNINGS WHILE DELETING FROM %1=%2 ПОПЕРЕДЖЕНЬ ПРИ ВИДАЛЕННІ ІЗ %1
 
-0231 Testing %1=Тестування %1
+0440 Testing archive %1=Тестування архіву %1
 0232 SUCCESFULLY TESTED %1=%1 УСПІШНО ПРОТЕСТОВАНО
 0233 %2 WARNINGS WHILE TESTING %1=%2 ПОПЕРЕДЖЕНЬ ПРИ ТЕСТУВАННІ %1
 
-0234 Extracting files from %1=Розпакування %1
+0441 Extracting files from archive %1=Розпаковка файлів із архіву %1
 0235 FILES SUCCESFULLY EXTRACTED FROM %1=УСПІШНО РОЗПАКОВАНИЙ %1
 0236 %2 WARNINGS WHILE EXTRACTING FILES FROM %1= %2 ПОПЕРЕДЖЕНЬ ПРИ РОЗПАКУВАННІ %1
 
-0237 Modifying %1=Модифікація %1
+0433 Modifying archive %1=Модифікація архіву %1
 0238 SUCCESFULLY MODIFIED %1=УСПІШНО МОДИФІКОВАНИЙ %1
 0239 %2 WARNINGS WHILE MODIFYING %1= %2 ПОПЕРЕДЖЕНЬ ПРИ МОДИФІКАЦІЇ %1
 
@@ -425,9 +491,13 @@ Archive comment dialog
 0241 SUCCESFULLY JOINED ARCHIVES TO %1=АРХІВИ УСПІШНО ОБ'ЄДНАНІ У %1
 0242 %2 WARNINGS WHILE JOINING ARCHIVES TO %1= %2 ПОПЕРЕДЖЕНЬ ПРИ ОБ'ЄДНАННІ АРХІВІВ У %1
 
-0243 Adding to %1=Додавання до 1%
-0244 FILES SUCCESFULLY ADDED TO %1=ФАЙЛИ УСПІШНО ДОДАНІ ДО %1
-0245 %2 WARNINGS WHILE ADDING TO %1= %2 ПОПЕРЕДЖЕНЬ ПРИ ДОДАВАННІ ДО %1
+0437 Creating archive %1=Створення архіву %1
+0443 SUCCESFULLY CREATED %1=УСПІШНО СТВОРЕНО %1
+0434 %2 WARNINGS WHILE CREATING %1=%2 ПОПЕРЕДЖЕНЬ ПРИ СТВОРЕННІ %1
+
+0438 Updating archive %1=Оновлення архіву %1
+0444 SUCCESFULLY UPDATED %1=УСПІШНО ОНОВЛЕНО %1
+0436 %2 WARNINGS WHILE UPDATING %1=%2 ПОПЕРЕДЖЕНЬ ПРИ ОНОВЛЕННІ %1
 
 0299 Lock archive(s)?=Захистити архів(и) від змін
 0300 Locking archive %1=Захищаю від змін архів %1
@@ -445,8 +515,8 @@ Archive comment dialog
 0317 WARNING: %1=ПОПЕРЕДЖЕННЯ: %1
 0310 can't modify archive locked with -k=неможливо змінити архів, захищений опцією -k
 0311 can't create temporary file=неможливо створити тимчасовий файл
-0312 output archive already exists, keeping temporary file %1=вихідний архів уже існує 
-0313 archive broken, keeping temporary file %1=архів ушкоджений, зберігаю тимчасовий файл 
+0312 output archive already exists, keeping temporary file %1=вихідний архів уже існує
+0313 archive broken, keeping temporary file %1=архів ушкоджений, зберігаю тимчасовий файл
 0314 archive broken, deleting=архів ушкоджений, видаляю
 0315 can't open SFX module %1=неможливо відкрити SFX модуль
 0318 command syntax is "%1"=синтаксис команди: "%1"
@@ -464,12 +534,12 @@ Archive comment dialog
 0332 can't open file "%1"=неможливо відкрити файл "%1"
 0333 CRC error in file "%1"=помилка CRC файлі "%1"
 0334 bad section %1 in %2=помилкова секція %1 у %2
-0335 operation terminated!=операцію перервано! 
-0336 program terminated!=перервано виконання програми!
+0455 Operation terminated by user!=Операція перервано користувачем!
+0456 Program terminated by user!=Програму закрито користувачем!
 0337 no files, erasing empty archive=відсутні файли, видаляю порожній архів
 0338 skipped %1 fake files=пропущено %1 віртуальних файлів
 0339 bad password for archive %1=невірний пароль для архіву %1
-0340 bad password for %1 in archive %2=невірний пароль для  файлу %1 в архіві %2
+0340 bad password for %1 in archive %2=невірний пароль для файлу %1 в архіві %2
 0341 %1 isn't archive or this archive is corrupt: %2. Please recover it using 'r' command or use -tp- option to ignore Recovery Record=%1 - не архів або пошкоджений: %2. Будь ласка відновіть його командою 'r' або використайте опцію -tp- щоб ігнорувати захисний запис архіву
 0342 SFX module %1 is not found=SFX-модуль %1 не знайдено
 0343 %1 isn't implemented=%1 не реалізовано
@@ -497,14 +567,18 @@ Errors returned by compression methods
 0365 general (de)compression error in %1=помилка (роз)пакування в %1
 0366 invalid compression method or parameters in %1=помилковий метод стиснення чи його параметр в %1
 0367 can't allocate memory required for (de)compression in %1=неможливо виділити пам'ять, необхідну для (роз)пакування в %1
-0368 I/O error in compression algorithm %1=помилка читання/запису в алгоритмі (роз)пакування %1
 0369 bad compressed data in %1=помилка в стиснутих даних алгоритму %1
+0430 read error (bad media?) in compression algorithm %1=помилка читання в алгоритмі (роз)пакування %1
+0431 write error (disk full?) in compression algorithm %1=помилка запису (повний диск?) в алгоритмі (роз)пакування %1
 
 
 === Standard profiles ====================================================
 Compression
 0771 Maximum=Максимальне
 0772 Maximum with fast decompression=Максимальне зі швидким розпакуванням
+0773 Ultra (require 2 gb RAM for decompression)=Ультра (потребує 2ГБ пам'яті для розпакування)
+0774 Maximum (require 1 gb RAM for decompression)=Максимальне (потребує 1ГБ пам'яті для розпакування)
+0775 Best asymmetric (with fast decompression)=Найкраще асиметричне (зі швидким розпакуванням)
 0752 No compression=Без стиснення
 
 Encryption
@@ -565,14 +639,14 @@ Additional extraction options
 === Tooltips (index=N+1000) ===========================================
 
 ******************************************************************************************
-***  DON'T FORGET THAT THIS SECTION SHOULD PROVIDE TOOLTIPS, NOT DIRECT TRANSLATIONS.  ***
-***  You may find some tooltips in arc.english.txt                                     ***
+*** DON'T FORGET THAT THIS SECTION SHOULD PROVIDE TOOLTIPS, NOT DIRECT TRANSLATIONS. ***
+*** You may find some tooltips in arc.english.txt ***
 ******************************************************************************************
 
 Add dialog
 --
-1183 Compression=Стиснення
-1184 Encryption=Шифрування
+1183 Compression=Вибір профілю стиснення. \nДля детальних налаштувань виберіть закладку \"Стиснення\"
+1184 Encryption=Вибір профілю шифрування. \nДля детальних налаштувань виберіть закладку \"Шифрування\".
 1185 Protection:=додає до архіву додаткову інформацію (за замовчуванням 1% від розміру архіву), що дозволяє відновити його від збоїв у магнітних носіях або при передачі даних.
 1186 Comment=Можете додати текст, що описує зміст архіву
 1227 Make EXE:=активуйте цю опцію щоб створити SFX архів\nтаким архівам не потрібен архіватор для розпакування
@@ -584,22 +658,22 @@ Add dialog
 1201 Compress each marked file/directory into separate archive=для кожного файлу буде створено окремий архів
 1202 Add to archive name=додає вибраний параметр до ім'я архіву\nнаприклад час, дата
 --
-1207 Delete previous archive contents=Увага! перед додаванням нових даних, старі видаляться назавжди.
+1207 Delete previous archive contents=Увага! перед додаванням нових даних, старі дані буде видалено назавжди.
 1208 Order of files in archive=може покращити стиснення, залежно від методу сортування та типу файлів
 --
 1222 Include only files=вкажіть файли лише які ви хочете додати (наприклад *.txt)
 1223 Exclude files=ці типи файлів не будуть додані до архіву
 
 --Compression settings
-1113 Fast, low-memory decompression=Відключає використання алгоритмів, які вимагають багато часу чи пам'яті при розпакуванні. Використання цієї опції трохи сповільнює й погіршує стискання
+1113 Fast, low-memory decompression=Відключає використання алгоритмів, які вимагають багато часу чи пам'яті при розпакуванні. Використання цієї опції трохи сповільнює та погіршує стискання
 1176 Filetype auto-detection=При включенні цієї опції FreeArc аналізує вміст кожного файлу, а потім вибирає для нього оптимальний алгоритм стиснення, при її відключенні алгоритми вибираються згідно з arc.groups
 1138 Bytes, no more than:=вказати розмір суцільного блоку
-1139 Files, no more than:=вказати кількість файлів котру міститиме суцільний блок
+1139 Files, no more than:=вказати кількість файлів, що міститиме суцільний блок
 1140 Split by extension=додатково розділити суцільні блоки, кожен суцільний блок міститиме лише один тип файлів
 
 --Encryption settings
 1120 Encrypt archive directory=Зашифровує мета інформацію архіву (імена, розміри, CRC файлів), навіть для відкриття архіву потрібно вказати пароль/файл-ключ. Особливо рекомендується включити цю опцію для отримання реального захисту даних
-1123 Keyfile:=Файл-ключ - це додатковий пароль, що записаний у файл на диску, без якого неможливо відкрити архів. Особливо рекомендується використовувати його для повної реалізації потенціалу криптостійкості AES.
+1123 Keyfile:=Файл-ключ - це додатковий пароль, що записаний у файл на диску, без якого неможливо відкрити архів. Особливо рекомендується використовувати його для повної реалізації потенціалу криптографічної стійкості AES.
 1125 Generate new keyfile=Створити новий файл-ключ, записавши криптографічні випадкові дані в зазначений користувачем файл.
 1181 Use password=позначте цю опцію для використання паролю \nтримайте пароль у секреті
 
