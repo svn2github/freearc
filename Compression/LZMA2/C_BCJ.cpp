@@ -2,36 +2,28 @@ extern "C" {
 #include "C_BCJ.h"
 }
 
-#include "CPP/Common/MyInitGuid.h"
-DEFINE_GUID(IID_IUnknown,
-0x00000000, 0x0000, 0x0000, 0xC0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x46);
-
-#include "CPP/7zip/Compress/BcjCoder.h"
-#include "CPP/7zip/Compress/BcjCoder.cpp"
 #include "C/Bra86.c"
-//#include "7zip/Compress/Branch/BranchX86.c"
-#include "CPP/7zip/Compress/BranchCoder.cpp"
-//#include "7zip/Compress/Branch/x86.cpp"
 
-template <class CBCJ_x86_Coder>
-int bcj_x86_de_compress( CALLBACK_FUNC *callback, void *auxdata)
+int bcj_x86_de_compress (int encoding, CALLBACK_FUNC *callback, void *auxdata)
 {
-  CBCJ_x86_Coder c; c.Init();                    // энкодер/декодер для BCJ-X86 препроцессора
-  BYTE* Buf = (BYTE*)malloc(LARGE_BUFFER_SIZE);  // место для данных
+  UInt32 state;  x86_Convert_Init(state);         // состояние энкодера/декодера для BCJ-X86 препроцессора
+  UInt32 ip = 0;                                  // эмулируемый "счётчик команд"
+  BYTE* Buf = (BYTE*) malloc(LARGE_BUFFER_SIZE);  // место для данных
   if (Buf==NULL)   return FREEARC_ERRCODE_NOT_ENOUGH_MEMORY;
   int RemainderSize=0;                           // остаток данных с предыдущего раза
   int x, InSize;                                 // количество прочитанных байт
   while ( (InSize = x = callback ("read", Buf+RemainderSize, LARGE_BUFFER_SIZE-RemainderSize, auxdata)) >= 0 )
   {
-    if ((InSize+=RemainderSize)==0)            goto Ok;  // Данных больше нет
-    int OutSize = InSize<=5? InSize : c.Filter(Buf, InSize);  // Меньше 5 байт этот фильтр не воспринимает :)
+    if ((InSize+=RemainderSize)==0)    goto Ok;  // Данных больше нет
+    int OutSize = InSize<=5? InSize : x86_Convert(Buf, InSize, ip, &state, encoding);  // Меньше 5 байт этот фильтр не воспринимает :)
+    ip += OutSize;
     if( (x=callback("write",Buf,OutSize,auxdata)) != OutSize )      goto Error;
     RemainderSize = InSize-OutSize;
     // Перенесём необработанный остаток данных в начало буфера
     if (RemainderSize>0)                memmove(Buf,Buf+OutSize,RemainderSize);
   }
-Error: delete Buf; return x;            // произошла ошибка при чтении/записи
-Ok:    delete Buf; return FREEARC_OK;   // всё в порядке
+Error: free(Buf); return x;            // произошла ошибка при чтении/записи
+Ok:    free(Buf); return FREEARC_OK;   // всё в порядке
 }
 
 
@@ -41,7 +33,7 @@ Ok:    delete Buf; return FREEARC_OK;   // всё в порядке
 // Функция распаковки
 int BCJ_X86_METHOD::decompress (CALLBACK_FUNC *callback, void *auxdata)
 {
-  return bcj_x86_de_compress<CBCJ_x86_Decoder> (callback, auxdata);
+  return bcj_x86_de_compress (0, callback, auxdata);
 }
 
 #ifndef FREEARC_DECOMPRESS_ONLY
@@ -49,7 +41,7 @@ int BCJ_X86_METHOD::decompress (CALLBACK_FUNC *callback, void *auxdata)
 // Функция упаковки
 int BCJ_X86_METHOD::compress (CALLBACK_FUNC *callback, void *auxdata)
 {
-  return bcj_x86_de_compress<CBCJ_x86_Encoder> (callback, auxdata);
+  return bcj_x86_de_compress (1, callback, auxdata);
 }
 
 // Записать в buf[MAX_METHOD_STRLEN] строку, описывающую метод сжатия (функция, обратная к parse_BCJ_X86)

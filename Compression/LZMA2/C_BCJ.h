@@ -1,10 +1,5 @@
 #include "../Compression.h"
-
-#ifndef FREEARC_DECOMPRESS_ONLY
-int bcj_x86_compress   (CALLBACK_FUNC *callback, void *auxdata);
-#endif
-int bcj_x86_decompress (CALLBACK_FUNC *callback, void *auxdata);
-
+int bcj_x86_de_compress (int encoding, CALLBACK_FUNC *callback, void *auxdata);
 
 #ifdef __cplusplus
 
