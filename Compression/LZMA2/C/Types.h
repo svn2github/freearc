@@ -110,7 +110,7 @@ typedef int Bool;
 #else
 
 #define MY_CDECL
-#define MY_STD_CALL
+#define MY_STD_CALL  __stdcall
 #define MY_FAST_CALL
 
 #endif
