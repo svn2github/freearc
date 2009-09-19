@@ -73,6 +73,7 @@
 #define Encode_LZP_MinMatchLen(Len)  ((Len)*65536)
 #define Encode_LZP_HT_Size(Size)     ((Size)*256)
 #define Get_LZP_MinMatchLen(Mode)    ((Mode)/65536%32767)
+#define LZP_MaxMatchLen              32768
 #define Get_LZP_HT_Size(Mode)        ((1<<((Mode)/256%256))-1)
 #define LZP_Enabled(Mode)            ((Mode)/256)
 #define Disable_LZP(Mode)            ((Mode)%256)

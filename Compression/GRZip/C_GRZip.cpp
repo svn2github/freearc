@@ -90,7 +90,7 @@ sint32 GRZip_CompressBlock(uint8 * Input ,sint32 Size,
     if (RecMode)
     {
       sint32 NewSize;
-      uint8 * Buffer=(uint8 *)BigAlloc(Size+1024);
+      uint8 * Buffer=(uint8 *)BigAlloc(Size+LZP_MaxMatchLen);
       if (Buffer==NULL) return(GRZip_StoreBlock(Input,Size,Output,0));
       GRZip_Rec_Encode(Input,Size,Buffer,RecMode); Mode+=GRZ_Disable_DeltaFlt;
       if ((RecMode&1)==1)
@@ -133,7 +133,7 @@ sint32 GRZip_CompressBlock(uint8 * Input ,sint32 Size,
     }
   }
 
-  uint8 * LZPBuffer=(uint8 *)BigAlloc(Size+1024);
+  uint8 * LZPBuffer=(uint8 *)BigAlloc(Size+LZP_MaxMatchLen);
   if (LZPBuffer==NULL) return(GRZip_StoreBlock(Input,Size,Output,0));
 
   if (LZP_Enabled(Mode))
@@ -257,7 +257,7 @@ sint32 GRZip_DecompressBlock(uint8 * Input,sint32 Size,uint8 * Output)
     sint32 RecMode=*(sint32 *)(Input+8);
               Size=*(sint32 *)(Input);
 
-    uint8 * Buffer=(uint8 *)BigAlloc(Size+1024);
+    uint8 * Buffer=(uint8 *)BigAlloc(Size+LZP_MaxMatchLen);
     if (Buffer==NULL) return(GRZ_NOT_ENOUGH_MEMORY);
 
     uint8 * Tmp=(Input+28);
@@ -294,7 +294,7 @@ sint32 GRZip_DecompressBlock(uint8 * Input,sint32 Size,uint8 * Output)
     return (Size);
   }
 
-  uint8 * LZPBuffer=(uint8 *)BigAlloc(*(sint32 *)(Input+8)+1024);
+  uint8 * LZPBuffer=(uint8 *)BigAlloc(*(sint32 *)(Input+8)+LZP_MaxMatchLen);
   if (LZPBuffer==NULL) return(GRZ_NOT_ENOUGH_MEMORY);
 
   sint32 TSize;
@@ -473,8 +473,8 @@ struct GRZipMTCompressor : MTCompressor<GRZipCompressionThread>
 int GRZipCompressionThread::init()                   // Alloc resources
 {
     compressor = (GRZipMTCompressor*) task;
-    InBuf   = (char*) BigAlloc (compressor->BlockSize + 1024);
-    OutBuf  = (char*) BigAlloc (compressor->BlockSize + 1024);
+    InBuf   = (char*) BigAlloc (compressor->BlockSize + LZP_MaxMatchLen);
+    OutBuf  = (char*) BigAlloc (compressor->BlockSize + LZP_MaxMatchLen);
     return (InBuf && OutBuf? 0 : FREEARC_ERRCODE_NOT_ENOUGH_MEMORY);
 }
 
@@ -489,7 +489,7 @@ int GRZipCompressionThread::process()                // Perform one compression 
 int GRZipCompressionThread::done()                   // Free resources
 {
     BigFree(OutBuf);  OutBuf = NULL;
-    BigFree(InBuf);   InBuf = NULL;
+    BigFree(InBuf);   InBuf  = NULL;
     return 0;
 }
 
@@ -559,10 +559,10 @@ struct GRZipMTDecompressor : MTCompressor<GRZipDecompressionThread>
             if (GRZip_CheckBlockSign(BlockSign,28)!=GRZ_NO_ERROR)    return FREEARC_ERRCODE_BAD_COMPRESSED_DATA;
 
             GRZipDecompressionThread *job = FreeJobs.Get();            // Acquire next compression job
-            job->InBuf = (char*) BigAlloc (*(sint32*)(BlockSign+16) + 1024);
+            job->InBuf = (char*) BigAlloc (*(sint32*)(BlockSign+16) + LZP_MaxMatchLen);
             if (job->InBuf==NULL)                                    return FREEARC_ERRCODE_NOT_ENOUGH_MEMORY;
             memcpy(job->InBuf,BlockSign,28);
-            job->OutBuf = (char*) BigAlloc (*(sint32*)job->InBuf + 1024);
+            job->OutBuf = (char*) BigAlloc (*(sint32*)job->InBuf + LZP_MaxMatchLen);
             if (job->OutBuf==NULL)                                   return FREEARC_ERRCODE_NOT_ENOUGH_MEMORY;
             job->InSize = callback("read",job->InBuf+28,*(sint32 *)(job->InBuf+16),auxdata);
             if (job->InSize != *(sint32 *)(job->InBuf+16))           return job->InSize<0? job->InSize : FREEARC_ERRCODE_BAD_COMPRESSED_DATA;
