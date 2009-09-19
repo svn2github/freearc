@@ -16,7 +16,58 @@
 
 Language name in english and mother tongue
 0000 Language=Portuguese Brazil (Português (Brasil))
-0159 Copyright=Fabricio Biazzotto - Translated and updated by Felipe and Lucian
+0159 Copyright=Fabricio Biazzotto - Translated and updated by Felipe and Lucian Carleti
+
+
+Language-specific URLs relative to http://freearc.org/ and helpfiles
+Filled only for languages providing their own translations
+0254 Homepage (URL, not translation!)=??
+0255 News page (URL, not translation!)=??
+0371 Forum page (URL, not translation!)=??
+0372 Wiki page (URL, not translation!)=??
+0256 Helpfile (URL, not translation!)=??
+0257 Command-line help (URL, not translation!)=??
+
+
+=== Explorer context menu =======================================================
+0391 Add to "%s"=Adicionar para "%s"
+0392 Compress the selected files using FreeArc=Comprimir os arquivos selecionados para FreeArc
+0393 Add to SFX "%s"=Adicionar para o SFX "%s"
+0394 Compress the selected files into SFX using FreeArc=Comprimir os arquivos selecionados para o SFX usando FreeArc
+0395 Add to archive...=Adicionar para o pacote...
+0396 Compress the selected files using FreeArc via dialog=Comprimir os arquivos selecionados usando FreeArc via diálogo
+--
+0397 Open with FreeArc=Abrir com o FreeArc
+0398 Open the selected archive(s) with FreeArc=Abrir o(s) pacote(s) selecionado(s) com o FreeArc
+0399 Extract to "%s"=Extrair para "%s"
+0400 Extract the selected archive(s) to new folder=Extrair o(s) pacote(s) para um novo diretório
+0401 Extract here=Extrair aqui
+0402 Extract the selected archive(s) to the same folder=Extrair o(s) pacote(s) selecionado(s) para o mesmo diretório
+0403 Extract...=Extrair...
+0404 Extract the selected archive(s) via dialog=Extrair o(s) pacote(s) selecionados
+0405 Test=Testar
+0406 Test the selected archive(s)=Testar o(s) pacote(s) selecionado(s)
+--
+0407 Convert to SFX=Converte para SFX
+0408 Convert the selected archive(s) to SFX=Converter os pacote(s) selecionado(s) para SFX
+0409 Convert from SFX=Converter do SFX
+0410 Convert the selected SFX(es) to normal archive(s)=Converter os SFXs selcionado(s) para formato de pacote normal
+--
+0411 Modify...=Modificar...
+0412 Modify the selected archives via dialog=Modificar os pacote(s) selecionado(s) via diálogo
+0413 Join...=Juntar...
+0414 Join the selected archives via dialog=Juntar os pacote(s) selecionado(s) via diálogo
+--
+0415 Convert to .arc=Converter para .arc
+0416 Convert the selected archive(s) to FreeArc format=Converter o(s) pacote(s) selecionado(s) para o formato FreeArc
+0417 Convert to .arc SFX=Converter para .arc SFX
+0418 Convert the selected archive(s) to FreeArc SFX=Converter o(s) pacote(s) selecionado(s) para FreeArc SFX
+0419 Convert to .arc...=Converter para .arc...
+0420 Convert the selected archive(s) to FreeArc format via dialog=Converter o(s) pacote(s) selecionado(s) para o Formato FreeArc via diálogo
+
+
+
+
 
 === Menu ========================================================================
 Main menu
@@ -86,7 +137,7 @@ Tools menu/toolbar
 0031 Modify=Modificar
 0041 Modify archive(s)=Modificar pacote(s)
 0032 Join=Juntar
-0042 Join archives together=Juntar Pacotes
+0042 Join archives together=Juntar pacotes unidos
 
 
 Options menu/toolbar
@@ -138,7 +189,6 @@ Messages
 0071 %1: no such file or directory!= %1: Arquivo ou diretório inexistente!
 0133 You can't compress files directly from archive!=Você não pode comprimir arquivos diretamente no pacote!
 0145 You can't join archives directly from archive!=Você não pode juntar pacotes direto do pacote!
-0145 You can't join archives directly from archive!=Você não pode juntar pacotes direto do pacote!
 0251 Abort operation?=Encerrar operação?
 
 === Dialogs =======================================================================
@@ -162,6 +212,9 @@ Add dialog
 0149 Join all archives=Juntar todos os pacotes
 0150 Join %1 with another archive=Juntar %1 com outro pacote
 0151 Join %2 archives=Juntar %2 pacotes
+0428 Convert %1 to FreeArc format=Converte %1 para o formato FreeArc
+0429 Convert %2 archives to FreeArc format=Converte %2 pacotes para o Formato FreeArc
+
 ---------
 0182 Main=Principal
 0131 Output archive:=Caminho de destino do pacote:
@@ -282,6 +335,15 @@ Archive information dialog
 0098 Archive comment:=Comentário no pacote:
 
 
+---
+0449 Solid blocks=Blocos Sólidos
+0450 Position=Posição
+0451 Size=Tamanho
+0452 Compressed=Comprimido
+0453 Files=Arquivos
+0454 Method=Método
+
+
 Settings dialog
 0067 Settings=Configurações
 0174 Main=Principal
@@ -300,9 +362,16 @@ Settings dialog
 0370 Watch for new versions via Internet=Verificar por novas versões via internet
 
 
+--
+0421 Explorer integration=Integração com o Explorer
+0422 Enable context menu in Explorer=Ativar o menu de contexto no Explorer
+0423 Make it cascaded=Faze-los em cascata
+0424 Enable individual commands:=Ativar comandos individuais:
+
+
 0388 Info=Informação
 0389 Largest contiguous free memblock:=O maior bloco de memória contígua:
-
+--
 
 Logfiles
 0303 No log file specified in Settings dialog!=Não há arquivo de log especificado na configuração!
@@ -334,8 +403,7 @@ Checking for updates
 0114 Compression level: %1=Nível da &compressão: %1
 0115 Compression speed: %1, memory: %2=Uso de memória para compressão: %2, Velocidade: %1
 0116 Decompression speed: %1, memory: %2=Uso de memória para descompressão: %2, Velocidade: %1
-0117 All speeds were measured on 1GHz single-core Duron,=Todas as velocidades foram medidas usando um duron de 1GHz com 1 núcleo,
-0118 and your horse will probably run faster=e sua máquina vai provavelmente rodar mais rápido 
+0390 All speeds were measured on 3GHz Core2Duo=todas as velocidades foram medidas em um Core2Duo de 3Ghz
 --Solid block size
 0177 Limit solid blocks=Limitar blocos solidos
 0138 Bytes, no more than:=Bytes, não mais que:
@@ -365,7 +433,7 @@ Many dialogs
 0081 &Cancel=&Cancelar
 0363 &Select=&Selecionar
 0364 &Close=&Fechar
-
+0432 &Detach=&Desvincular
 
 
 Progress indicator
@@ -379,6 +447,8 @@ Progress indicator
 0057 Total files=Total de arquivos
 0058 Bytes=Bytes
 0059 Total bytes=Total de bytes
+0252 Compressed=Comprimido
+0253 Total compressed=Total comprimido
 0060 Ratio=Taxa
 0061 Speed=Velocidade
 0062 Time=Tempo decorrido
@@ -406,9 +476,6 @@ File overwrite dialog
 0163 Would you like to replace the existing file=Você gostaria de substituir o arquivo existente
 0164 with this one?=por este?
 0165 %1\n%2 bytes\nmodified on %3=%1\n%2 bytes\nmodificado em %3
-0079 &Yes=&Sim
-0080 &No=&Não
-0081 &Cancel=&Cancelar
 0082 Yes to &All=Sim para &Todos
 0083 No to A&ll=Não para To&dos
 0084 &Update all=&Atualizar Todos
@@ -424,29 +491,40 @@ Archive comment dialog
 
 
 === Infoline messages ====================================================
-0228 Deleting from %1=Apagar do %1
+0439 Listing archive %1=Listando pacote %1
+0445 SUCCESFULLY LISTED %1=%1 LISTADO COM SUCESSO 
+0442 %2 WARNINGS WHILE LISTING %1=%2 AVISOS ENQUANTO LISTA %1
+
+
+
+0435 Deleting files from archive %1=Apagando arquivos do pacote %1
 0229 FILES SUCCESFULLY DELETED FROM %1=ARQUIVOS APAGADOS DE %1 COM SUCESSO
 0230 %2 WARNINGS WHILE DELETING FROM %1=%2 AVISOS ENQUANTO APAGAVA DO %1
 
-0231 Testing %1=Testando %1
+
+0440 Testing archive %1=Testando o pacote %1
 0232 SUCCESFULLY TESTED %1=%1 TESTADO COM SUCESSO
 0233 %2 WARNINGS WHILE TESTING %1=%2 AVISOS ENQUANTO TESTAVA %1	
 
-0234 Extracting files from %1=Extraindo arquivos de %1
+0441 Extracting files from archive %1=Extraindo arquivos do pacote %1
 0235 FILES SUCCESFULLY EXTRACTED FROM %1=EXTRAÇÃO DE ARQUIVOS COM SUCESSO DE %1
-0236 %2 WARNINGS WHILE EXTRACTING FILES FROM %1=%2 AVISOS ENQUANTO EXTRAIA ARQUIVOS DE %1
+0236 %2 WARNINGS WHILE EXTRACTING FILES FROM %1=%2 AVISOS ENQUANTO EXTRAÍA ARQUIVOS DE %1
 
-0237 Modifying %1=Modificando %1
-0238 SUCCESFULLY MODIFIED %1=%1 MODIFICADO COM SUCESSO
+0433 Modifying archive %1=Modificando o pacote %1
+0238 SUCCESFULLY MODIFIED %1=%1 
 0239 %2 WARNINGS WHILE MODIFYING %1=%2 AVISOS ENQUANTO MODIFICAVA %1
 
 0240 Joining archives to %1=Juntando arquivos para %1
 0241 SUCCESFULLY JOINED ARCHIVES TO %1=JUNÇÃO DE PACOTES PARA %1 BEM SUCEDIDA
 0242 %2 WARNINGS WHILE JOINING ARCHIVES TO %1=%2 AVISOS ENQUANTO JUNTAVA PACOTES PARA %1
 
-0243 Adding to %1=Adicionando para %1
-0244 FILES SUCCESFULLY ADDED TO %1=ARQUIVO(S) PARA %1 ADICIONADOS COM SUCESSO
-0245 %2 WARNINGS WHILE ADDING TO %1=%2 AVISOS ENQUANTO ADICIONAVA PARA %1
+0437 Creating archive %1=Criando o pacote %1
+0443 SUCCESFULLY CREATED %1=%1 CRIADO COM SUCESSO
+0434 %2 WARNINGS WHILE CREATING %1=%2 AVISOS ENQUANTO CRIA %1 
+
+0438 Updating archive %1=Atualizando pacote %1
+0444 SUCCESFULLY UPDATED %1=%1 ATUALIZADO COM SUCESSO
+0436 %2 WARNINGS WHILE UPDATING %1=%2 AVISOS ENQUANTO CRIA %1
 
 
 0299 Lock archive(s)?=Trancar pacote(s)?
@@ -531,7 +609,9 @@ Compression
 0729 Maximum (fast, low-memory decompression)=Máxima (rápida,baixo consumo de memória para a descompressão)
 0752 No compression=Sem compressão
 0771 Maximum=Máxima
-0772 Maximum with fast decompression=Máxima com descompressão rápida,
+0772 Maximum with fast decompression=Máxima com descompressão rápida
+0773 Ultra (require 2 gb RAM for decompression)=Ultra (requer 2 GB de RAM para descompressão)
+0774 Maximum (require 1 gb RAM for decompression)=Maximum (requer 1 GB de RAM para descompressão)
 
 
 
@@ -544,10 +624,6 @@ Encryption
 Protection
 0734 Add=Adicionar
 0735 Remove=Remover
-0736 Internet-only (4kb blocks)=Para envio somente na internet (Blocos de 4 Kib)
-0737 Internet-only (64kb blocks)=Para envio somente na internet (Blocos de 64 Kib)
-0738 Percents, example=Percentual,exemplo
-0739 Fixed-size, example=Tamanho fixo,exemplo
 0769 Add (autosize, 1-4%)=Adicionar(Tamanho automátido, 1-4%)
 0770 Add for recovery via Internet=Adicionar recuperação via internet?
 
@@ -642,7 +718,7 @@ Criptografia
 1181 Use password=Marque esta opção para especificar uma senha.Mantenha está senha segura!\n(Você pode até mesmo usar um arquivo-chave e uma senha simultâneamente em função de aumentar a segurança!).
 
 Proteção
-1185 Proteção:=Anexa ao pacote informação (por padrão 1% do tamanho do pacote) no qual permite restaurar seu conteúdo no caso de danos no armazenamento ou falhas de transmissão
+1185 Proteção:=Anexa ao pacote informação (por padrão  1% do tamanho do pacote), no qual permite restaurar seu conteúdo em caso de danos no armazenamento magnético ou falhas de transmissão.
 
 === Todo o restante ====================================================
 Common words

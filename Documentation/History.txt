@@ -351,20 +351,16 @@
   aARC_VERSION = "0.52", aARCHIVE_VERSION = make4byte 0 0 5 2
 === To-do list ====================================================================================
 
-250 vars in Lua stack?
-убрать использование facompress.dll/lzma_decompress, проверить все остальные методы (unarc 17.3, arc 20.0, fac 22.2)
+сделать на сайте редиректы для forum/wiki
 использовать для проверки на новости crc данных, возвращаемых страницей CheckNews.aspx
-сайт - доб. ссылку на http://www.softpedia.com/progScreenshots/FreeArc-Screenshot-126780.html
-  http://win-rar.ru/study/
-  доб. просьбу о рекламе на стр. fa4is и внутрь него
-ощибки
-  When I a open an encrypted archive a try to test it, Freearc asks for the password twice, once before testing and once after it.
 fashell
+  250 vars in Lua stack?
   установка в каталоги с unicode-именами и BOM в начале скрипта (заменить вызов luaL_dofile)
   openDialog (cmd:"--":params) - расширить чтобы можно было передавать опции ("--add-dialog -mx -- filenames")
   разделители в начале/конце (для некаскадного меню) и между двумя группами операций
 при начале след. операции показывается индикатор прогресса от предыдущей (по крайней мере после Cancel)
 окно перезаписи файла - иногда выводится не в gui треде?
+When I a open an encrypted archive and try to test it, Freearc asks for the password twice, once before testing and once after it.
 инсталятор
   sfx linux/nodelete
   ?overwrite arc.ini/groups
@@ -401,6 +397,7 @@ other
     http://msdn.microsoft.com/en-us/library/dd183402(VS.85).aspx
   загружать иконки для всех команд из png/ico файлов
   unix - run-by-extension - /etc/mailcap and xdg-mime
+  сайт - ссылки на http://win-rar.ru/study/ , софтпедию и другие ресурсы упоминающие freearc
 
 ДОБАВИТЬ В 7z.dll ПОДДЕРЖКУ .arc ИЛИ СДЕЛАТЬ unarc.dll С АНАЛОГИЧНЫМ ИНТЕРФЕЙСОМ (и chaining к 7z.dll)!!!!!!!!!!!!!!!!!!!
 
