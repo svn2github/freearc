@@ -93,7 +93,7 @@ SRes LzmaDec_AllocateUsingProperties(CLzmaDec *p, const CLzmaProps propNew, ISzA
 
 // Input buffer size
 uint RangeDecoderBufferSize (uint dict)
-{return compress_all_at_once? dict : LARGE_BUFFER_SIZE;}
+{return compress_all_at_once? dict : LARGE_BUFFER_SIZE;}     //// dict*1.1?
 
 
 
@@ -174,9 +174,16 @@ int lzma_compress  ( int dictionarySize,
   props.lp = litPosBits;
   props.pb = posStateBits;
   props.algo = algorithm;
-  props.fb = numFastBytes;                           //// hashSize
-  props.btMode = 1;                                  //// 0 - hashChain Mode, 1 - binTree mode - normal, default = 1 */
-  props.numHashBytes = 4;                            //// 2, 3 or 4, default = 4 */
+  props.fb = numFastBytes;
+  //// hashSize
+  switch (matchFinder)
+  {
+    case kHC4:  props.btMode = 0;  props.numHashBytes = 4; break;
+    case kBT2:  props.btMode = 1;  props.numHashBytes = 2; break;
+    case kBT3:  props.btMode = 1;  props.numHashBytes = 3; break;
+    case kBT4:  props.btMode = 1;  props.numHashBytes = 4; break;
+    case kHT4:  props.btMode = 2;  props.numHashBytes = 4; break;
+  }
   props.numThreads = GetCompressionThreads();
   props.writeEndMark = 1;
   LzmaEncProps_Normalize(&props);
