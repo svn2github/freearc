@@ -350,6 +350,42 @@ static UInt32 * Hc_GetMatchesSpec(UInt32 lenLimit, UInt32 curMatch, UInt32 pos, 
   }
 }
 
+static UInt32 * Ht_GetMatchesSpec(UInt32 lenLimit, UInt32 *curMatchPtr, UInt32 pos, const Byte *cur, CLzRef *son,
+    UInt32 _cyclicBufferPos, UInt32 _cyclicBufferSize, UInt32 cutValue,
+    UInt32 *distances, UInt32 maxLen)
+{
+  //UInt32 *curMatchPtr= &_hash[kFixHashSize + hashValue];   // First entry in hash table to check
+  UInt32 *lastMatchPtr = curMatchPtr + cutValue;            // Last entry to check + 1
+  UInt32 prevMatch = pos; //// + (UInt32(cur[0]) << 30);
+#define getMatch(x) (x)
+
+  do {
+    UInt32 curMatch = *curMatchPtr;   *curMatchPtr++ = prevMatch;   prevMatch = curMatch;
+    ////if ((curMatch>>30) != (*cur&3))   continue;   // Check tag stored in 2 higher bits of hash entry
+    curMatch = getMatch(curMatch);
+    UInt32 delta = pos - curMatch;
+    if (delta >= _cyclicBufferSize)
+      break;
+    const Byte *pb = cur - delta;
+    if (pb[maxLen] == cur[maxLen] && *pb == *cur)
+    {
+      UInt32 len = 0;
+      while (++len != lenLimit)
+        if (pb[len] != cur[len])
+          break;
+      if (maxLen < len)
+      {
+        *distances++ = maxLen = len;
+        *distances++ = delta - 1;
+        if (len == lenLimit)
+          break;
+      }
+    }
+  } while (curMatchPtr < lastMatchPtr);
+
+  return distances;
+}
+
 UInt32 * GetMatchesSpec1(UInt32 lenLimit, UInt32 curMatch, UInt32 pos, const Byte *cur, CLzRef *son,
     UInt32 _cyclicBufferPos, UInt32 _cyclicBufferSize, UInt32 cutValue,
     UInt32 *distances, UInt32 maxLen)
@@ -635,17 +671,15 @@ static UInt32 Hc4_MatchFinder_GetMatches(CMatchFinder *p, UInt32 *distances)
 static UInt32 Ht4_MatchFinder_GetMatches(CMatchFinder *p, UInt32 *distances)
 {
   UInt32 hash2Value, hash3Value, delta2, delta3, maxLen, offset;
-  GET_MATCHES_HEADER(4)
+  GET_MATCHES_HEADER(4)  curMatch = curMatch;
 
   HASH4_CALC;
 
   delta2 = p->pos - p->hash[                hash2Value];
   delta3 = p->pos - p->hash[kFix3HashSize + hash3Value];
-  curMatch = p->hash[kFix4HashSize + hashValue];
 
   p->hash[                hash2Value] =
-  p->hash[kFix3HashSize + hash3Value] =
-  p->hash[kFix4HashSize + hashValue] = p->pos;
+  p->hash[kFix3HashSize + hash3Value] = p->pos;
 
   maxLen = 1;
   offset = 0;
@@ -670,13 +704,14 @@ static UInt32 Ht4_MatchFinder_GetMatches(CMatchFinder *p, UInt32 *distances)
     distances[offset - 2] = maxLen;
     if (maxLen == lenLimit)
     {
-      p->son[p->cyclicBufferPos] = curMatch;
+      ////p->son[p->cyclicBufferPos] = curMatch;
       MOVE_POS_RET;
     }
   }
   if (maxLen < 3)
     maxLen = 3;
-  offset = (UInt32)(Hc_GetMatchesSpec(lenLimit, curMatch, MF_PARAMS(p),
+  UInt32 *curMatchPtr = &(p->hash[kFix4HashSize + hashValue*p->cutValue]);   // First entry in hash table to check
+  offset = (UInt32)(Ht_GetMatchesSpec(lenLimit, curMatchPtr, MF_PARAMS(p),
     distances + offset, maxLen) - (distances));
   MOVE_POS_RET
 }
@@ -772,13 +807,19 @@ static void Ht4_MatchFinder_Skip(CMatchFinder *p, UInt32 num)
   do
   {
     UInt32 hash2Value, hash3Value;
-    SKIP_HEADER(4)
+    SKIP_HEADER(4)   curMatch = curMatch;
     HASH4_CALC;
-    curMatch = p->hash[kFix4HashSize + hashValue];
     p->hash[                hash2Value] =
-    p->hash[kFix3HashSize + hash3Value] =
-    p->hash[kFix4HashSize + hashValue] = p->pos;
-    p->son[p->cyclicBufferPos] = curMatch;
+    p->hash[kFix3HashSize + hash3Value] = p->pos;
+    {
+      UInt32 *curMatchPtr  = &(p->hash[kFix4HashSize + hashValue * p->cutValue]);   // First entry in hash table to check
+      UInt32 *lastMatchPtr = curMatchPtr + p->cutValue/2;                           // Last entry+1
+      UInt32 prevMatch = p->pos; //// + (UInt32(cur[0]) << 30);
+
+      do {
+        UInt32 curMatch = *curMatchPtr;   *curMatchPtr++ = prevMatch;   prevMatch = curMatch;
+      } while (curMatchPtr < lastMatchPtr);
+    }
     MOVE_POS
   }
   while (--num != 0);
