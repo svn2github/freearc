@@ -10,7 +10,7 @@ OPT_FLAGS   = -O2 -march=i486 -mtune=pentiumpro \
 DEBUG_FLAGS = -g0
 CFLAGS = $(CODE_FLAGS) $(OPT_FLAGS) $(DEBUG_FLAGS) $(DEFINES)
 
-$(TEMPDIR)/C_LZMA.o: C_LZMA.cpp C_LZMA.h makefile C/LzmaEnc.h C/LzmaEnc.c
+$(TEMPDIR)/C_LZMA.o: C_LZMA.cpp C_LZMA.h makefile C/LzmaEnc.h C/LzmaEnc.c C/LzFind.c
 	$(GCC) -c $(CFLAGS) -o $*.o $<
 
 $(TEMPDIR)/C_BCJ.o: C_BCJ.cpp C_BCJ.h makefile
