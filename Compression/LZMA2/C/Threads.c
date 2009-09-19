@@ -70,11 +70,15 @@ WRes Semaphore_Release1(CSemaphore *p) { return Semaphore_ReleaseN(p, 1); }
 WRes CriticalSection_Init(CCriticalSection *p)
 {
   /* InitializeCriticalSection can raise only STATUS_NO_MEMORY exception */
-  //__try
+  #ifdef _MSC_VER
+  __try
+  #endif
   {
     InitializeCriticalSection(p);
     /* InitializeCriticalSectionAndSpinCount(p, 0); */
   }
-  //__except (EXCEPTION_EXECUTE_HANDLER) { return 1; }
+  #ifdef _MSC_VER
+  __except (EXCEPTION_EXECUTE_HANDLER) { return 1; }
+  #endif
   return 0;
 }
