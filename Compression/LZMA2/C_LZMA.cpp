@@ -10,6 +10,11 @@
 // Enable multithreading support
 #define COMPRESS_MF_MT
 
+// Match finder classes
+#define MF_HashChain  0
+#define MF_BinaryTree 1
+#define MF_HashTable  2
+
 extern "C" {
 #include "C_LZMA.h"
 }

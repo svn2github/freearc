@@ -123,7 +123,7 @@ static void MatchFinder_CheckAndMoveAndRead(CMatchFinder *p)
 static void MatchFinder_SetDefaultSettings(CMatchFinder *p)
 {
   p->cutValue = 32;
-  p->btMode = 1;
+  p->btMode = MF_BinaryTree;
   p->numHashBytes = 4;
   p->bigHash = 0;
 }
@@ -226,7 +226,7 @@ int MatchFinder_Create(CMatchFinder *p, UInt32 historySize,
       p->historySize = historySize;
       p->hashSizeSum = hs;
       p->cyclicBufferSize = newCyclicBufferSize;
-      p->numSons = (p->btMode ? newCyclicBufferSize * 2 : newCyclicBufferSize);
+      p->numSons = (p->btMode==MF_BinaryTree ? newCyclicBufferSize * 2 : newCyclicBufferSize);
       newSize = p->hashSizeSum + p->numSons;
       if (p->hash != 0 && prevSize == newSize)
         return 1;
@@ -512,7 +512,7 @@ static UInt32 Bt3_MatchFinder_GetMatches(CMatchFinder *p, UInt32 *distances)
 
   delta2 = p->pos - p->hash[hash2Value];
   curMatch = p->hash[kFix3HashSize + hashValue];
-  
+
   p->hash[hash2Value] =
   p->hash[kFix3HashSize + hashValue] = p->pos;
 
@@ -546,7 +546,7 @@ static UInt32 Bt4_MatchFinder_GetMatches(CMatchFinder *p, UInt32 *distances)
   delta2 = p->pos - p->hash[                hash2Value];
   delta3 = p->pos - p->hash[kFix3HashSize + hash3Value];
   curMatch = p->hash[kFix4HashSize + hashValue];
-  
+
   p->hash[                hash2Value] =
   p->hash[kFix3HashSize + hash3Value] =
   p->hash[kFix4HashSize + hashValue] = p->pos;
@@ -584,6 +584,55 @@ static UInt32 Bt4_MatchFinder_GetMatches(CMatchFinder *p, UInt32 *distances)
 }
 
 static UInt32 Hc4_MatchFinder_GetMatches(CMatchFinder *p, UInt32 *distances)
+{
+  UInt32 hash2Value, hash3Value, delta2, delta3, maxLen, offset;
+  GET_MATCHES_HEADER(4)
+
+  HASH4_CALC;
+
+  delta2 = p->pos - p->hash[                hash2Value];
+  delta3 = p->pos - p->hash[kFix3HashSize + hash3Value];
+  curMatch = p->hash[kFix4HashSize + hashValue];
+
+  p->hash[                hash2Value] =
+  p->hash[kFix3HashSize + hash3Value] =
+  p->hash[kFix4HashSize + hashValue] = p->pos;
+
+  maxLen = 1;
+  offset = 0;
+  if (delta2 < p->cyclicBufferSize && *(cur - delta2) == *cur)
+  {
+    distances[0] = maxLen = 2;
+    distances[1] = delta2 - 1;
+    offset = 2;
+  }
+  if (delta2 != delta3 && delta3 < p->cyclicBufferSize && *(cur - delta3) == *cur)
+  {
+    maxLen = 3;
+    distances[offset + 1] = delta3 - 1;
+    offset += 2;
+    delta2 = delta3;
+  }
+  if (offset != 0)
+  {
+    for (; maxLen != lenLimit; maxLen++)
+      if (cur[(ptrdiff_t)maxLen - delta2] != cur[maxLen])
+        break;
+    distances[offset - 2] = maxLen;
+    if (maxLen == lenLimit)
+    {
+      p->son[p->cyclicBufferPos] = curMatch;
+      MOVE_POS_RET;
+    }
+  }
+  if (maxLen < 3)
+    maxLen = 3;
+  offset = (UInt32)(Hc_GetMatchesSpec(lenLimit, curMatch, MF_PARAMS(p),
+    distances + offset, maxLen) - (distances));
+  MOVE_POS_RET
+}
+
+static UInt32 Ht4_MatchFinder_GetMatches(CMatchFinder *p, UInt32 *distances)
 {
   UInt32 hash2Value, hash3Value, delta2, delta3, maxLen, offset;
   GET_MATCHES_HEADER(4)
@@ -718,6 +767,23 @@ static void Hc4_MatchFinder_Skip(CMatchFinder *p, UInt32 num)
   while (--num != 0);
 }
 
+static void Ht4_MatchFinder_Skip(CMatchFinder *p, UInt32 num)
+{
+  do
+  {
+    UInt32 hash2Value, hash3Value;
+    SKIP_HEADER(4)
+    HASH4_CALC;
+    curMatch = p->hash[kFix4HashSize + hashValue];
+    p->hash[                hash2Value] =
+    p->hash[kFix3HashSize + hash3Value] =
+    p->hash[kFix4HashSize + hashValue] = p->pos;
+    p->son[p->cyclicBufferPos] = curMatch;
+    MOVE_POS
+  }
+  while (--num != 0);
+}
+
 void Hc3Zip_MatchFinder_Skip(CMatchFinder *p, UInt32 num)
 {
   do
@@ -738,10 +804,15 @@ void MatchFinder_CreateVTable(CMatchFinder *p, IMatchFinder *vTable)
   vTable->GetIndexByte = (Mf_GetIndexByte_Func)MatchFinder_GetIndexByte;
   vTable->GetNumAvailableBytes = (Mf_GetNumAvailableBytes_Func)MatchFinder_GetNumAvailableBytes;
   vTable->GetPointerToCurrentPos = (Mf_GetPointerToCurrentPos_Func)MatchFinder_GetPointerToCurrentPos;
-  if (!p->btMode)
+  if (p->btMode==MF_HashChain)
   {
     vTable->GetMatches = (Mf_GetMatches_Func)Hc4_MatchFinder_GetMatches;
     vTable->Skip = (Mf_Skip_Func)Hc4_MatchFinder_Skip;
+  }
+  else if (p->btMode==MF_HashTable)
+  {
+    vTable->GetMatches = (Mf_GetMatches_Func)Ht4_MatchFinder_GetMatches;
+    vTable->Skip = (Mf_Skip_Func)Ht4_MatchFinder_Skip;
   }
   else if (p->numHashBytes == 2)
   {
