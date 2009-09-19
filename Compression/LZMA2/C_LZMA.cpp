@@ -8,7 +8,7 @@
 #endif
 
 // Enable multithreading support
-//#define COMPRESS_MF_MT
+#define COMPRESS_MF_MT
 
 extern "C" {
 #include "C_LZMA.h"
