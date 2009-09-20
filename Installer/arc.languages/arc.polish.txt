@@ -289,7 +289,7 @@ Settings dialog
 0167 Select logfile=Wybierz plik log
 0172 Associate FreeArc with .arc files=Skojarz FreeArc z rozszerzeniem .arc
 0361 Add captions to toolbar buttons=Pokazuj opisy na pasku narzędzi
-0370 Watch for new versions via Internet=??
+0370 Watch for new versions via Internet=Sprawdzaj przez internet czy są nowe wersje programu
 0168 You should restart FreeArc in order for a language settings to take effect.=Powinieneś zrestartować FreeArc aby ustawienia języków zostały zatwierdzone.
 0169 Passwords need to be entered again after restart.=Hasło powinno zostać wpisane ponownie po restarcie.
 --
@@ -327,7 +327,7 @@ Checking for updates
 0114 Compression level: %1=Poziom &kompresji: %1
 0115 Compression speed: %1, memory: %2=Użycie pamięci dla kompresji: %2, Prędkość: %1
 0116 Decompression speed: %1, memory: %2=Użycie pamięci dla dekompresji: %2, Prędkość: %1
-0390 All speeds were measured on 3GHz Core2Duo=??
+0390 All speeds were measured on 3GHz Core2Duo=Wszystkie prędkości zostały zmierzone na Core2Duo 3GHz
 --Solid block size
 0177 Limit solid blocks=Limituj stałe bloki
 0138 Bytes, no more than:=Bajtów, nie więcej niż:
@@ -355,7 +355,7 @@ Many dialogs
 0080 &No=&Nie
 0362 &OK=OK
 0081 &Cancel=&Anuluj
-0363 &Select=??
+0363 &Select=Zaznacz
 0364 &Close=&Zamknij
 
 Progress indicator
