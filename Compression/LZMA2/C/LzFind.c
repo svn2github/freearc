@@ -190,7 +190,7 @@ int MatchFinder_Create(CMatchFinder *p, UInt32 historySize, UInt32 hashSize,
   {
     p->matchMaxLen = matchMaxLen;
     hashSize /= sizeof(CLzRef);                                      // convert bytes to hashtable entries
-    p->hashMask =  p->btMode==MF_HashTable? hashSize/matchMaxLen-1   // every hash slot contains matchMaxLen entries with the same hash value
+    p->hashMask =  p->btMode==MF_HashTable? hashSize/p->cutValue-1   // every hash slot contains cutValue entries with the same hash value
                                           : hashSize-1;
     p->fixedHashSize = 0;
     if (p->numHashBytes > 2)   p->fixedHashSize += kHash2Size;
@@ -207,7 +207,10 @@ int MatchFinder_Create(CMatchFinder *p, UInt32 historySize, UInt32 hashSize,
                                             : 0;
       UInt32 newSize = p->hashSizeSum + p->numSons;
       if (p->hash != 0 && prevSize == newSize)
+      {
+        p->son = p->hash + p->hashSizeSum;
         return 1;
+      }
       MatchFinder_FreeThisClassMemory(p, alloc);
       p->hash = AllocRefs(newSize, alloc);
       if (p->hash != 0)
