@@ -167,7 +167,7 @@ Filelist
 
 Statusbar
 0022 Selected %1 bytes in %2 file(s)= %2 kijelölt fájl, %1 bájt
-0023 Total %1 bytes in %2 file(s)= Összesen %2 fájl, %1 bájt
+0023 Total %1 bytes in %2 file(s)= %2 fájl, összesen %1 bájt
 
 Messages
 0012 There are no files selected!=Nem jelölt ki fájlokat!
@@ -182,7 +182,7 @@ Messages
 Archive open dialog
 0305 Open archive=Archívum megnyitása
 0306 This file isn't a FreeArc archive!=A fájl nem FreeArc formátumú!
-0307 FreeArc archives (*.arc)=FreeArc fájlok (*.arc) 
+0307 FreeArc archives (*.arc)=FreeArc archívumok (*.arc) 
 0308 Archives and SFXes (*.arc;*.exe)=FreeArc archívumok és SFX-ek (*.arc;*.exe)
 0309 All files (*)=Minden fájl (*)
 
@@ -199,7 +199,7 @@ Add dialog
 0150 Join %1 with another archive=%1 egyesítése másik archívummal
 0151 Join %2 archives=%2 archívum egyesítése
 0428 Convert %1 to FreeArc format=%1 konvertálása FreeArc formátumba
-0429 Convert %2 archives to FreeArc format=%1 archívum konvertálása FreeArc formátumba
+0429 Convert %2 archives to FreeArc format=%2 archívum konvertálása FreeArc formátumba
 ---------
 0182 Main=Főlap
 0131 Output archive:=Kimeneti archívum:
@@ -315,10 +315,17 @@ Archive information dialog
 0094 Archive locked:=Zárolás:
 0095 Recovery info:=Sérülésvédelem:
 0096 SFX size:=SFX modul mérete [bájt]:
-0156 Headers encrypted:=Fejlécek titkosítva:
+0156 Headers encrypted:=Titkosított fejlécek:
 --
 0097 Encryption algorithms:=Titkosítási algoritmus:
 0098 Archive comment:=Archívum megjegyzése:
+---
+0449 Solid blocks=Szolid blokkok
+0450 Position=Helyzet
+0451 Size=Méret
+0452 Compressed=Tömörített
+0453 Files=Fájlok
+0454 Method=Módszer
 
 
 Settings dialog
@@ -332,9 +339,11 @@ Settings dialog
 0166 Logfile:=Naplófájl:
 0292 View=&Megnéz
 0167 Select logfile=Naplófájl kiválasztása
+0447 Temporary directory:=Átmeneti mappa:
+0448 Select directory for temporary files=Átmeneti fájlok mappájának kiválsztása
 0172 Associate FreeArc with .arc files=FreeArc társítása *.arc kiterjesztéshez
 0361 Add captions to toolbar buttons=Az eszköztár gombjai feliratokkal jelenjenek meg
-0370 Watch for new versions via Internet=Új programverzió keresése az Interneten
+0370 Watch for new versions via Internet=Új programverzió keresése az interneten
 0168 You should restart FreeArc in order for a language settings to take effect.=A nyelvi beállítások érvényesítéséhez újra kell indítani a FreeArcot.
 0169 Passwords need to be entered again after restart.=Újraindítás után a jelszavakat ismét be kell írnia.
 --
@@ -377,7 +386,7 @@ Checking for updates
 0114 Compression level: %1=A tömörítés mértéke: %1
 0115 Compression speed: %1, memory: %2=A tömörítés sebessége %1, memóriaigénye %2.
 0116 Decompression speed: %1, memory: %2=A kibontás sebessége %1, memóriaigénye %2.
-0390 All speeds were measured on 3GHz Core2Duo=A sebességek 3GHz-es Core2Duo processzoron mért értékek
+0390 All speeds were measured on 3GHz Core2Duo=A sebességek 3 GHz-es Core2Duo processzoron mért értékek
 --Solid block size
 0177 Limit solid blocks= Szolid blokk korlát 
 0138 Bytes, no more than:=Nem több bájt, mint
@@ -407,13 +416,9 @@ Many dialogs
 0081 &Cancel=&Mégsem
 0363 &Select=&Kijelöl
 0364 &Close=&Bezár
-0432 &Detach=&Új példányban
+0432 &Detach= &Új példányban
 
 Progress indicator
---Buttons
-0052 &Background=&Háttérben
-0053 &Pause=&Szünet
-0054 &Continue=&Folytat
 --Labels
 0056 Files=Fájl
 0057 Total files=Összes fájl
@@ -434,6 +439,12 @@ Progress indicator
 0385 Scanning archive for damages=Sérülések keresése az archívumban
 0386 Protecting archive from damages=Archívum sérülésvédelme
 0387 Recovering archive=Archívum helyreállítása
+--Extra options
+0446 Keep window on top=Ablak mindig felül
+--Buttons
+0052 &Background=&Háttérben
+0053 &Pause=&Szünet
+0054 &Continue=&Folytat
 
 File overwrite dialog
 0078 Confirm File Replace=Fájlcsere megerősítése
@@ -456,29 +467,37 @@ Archive comment dialog
 
 
 === Infoline messages ====================================================
-0228 Deleting from %1=Törlés %1 fájból
-0229 FILES SUCCESFULLY DELETED FROM %1=A FÁJLOK SIKERESEN TÖRÖLVE %1 FÁJLBÓL
-0230 %2 WARNINGS WHILE DELETING FROM %1=%2 FIGYELMEZTETÉS %1 FÁJLBÓL TÖRLÉS KÖZBEN
+0439 Listing archive %1=%1 archívum listázása
+0445 SUCCESFULLY LISTED %1=%1 LISTÁZÁSA SIKERES VOLT
+0442 %2 WARNINGS WHILE LISTING %1=%2 FIGYELMEZETÉS %1 LISTÁZÁSA KÖZBEN
 
-0231 Testing %1=%1 tesztje
+0435 Deleting files from archive %1=Fájlok törlése %1 arcbívumból
+0229 FILES SUCCESFULLY DELETED FROM %1=A FÁJLOK SIKERESEN TÖRÖLVE %1 ARCHÍVUMBÓL
+0230 %2 WARNINGS WHILE DELETING FROM %1=%2 FIGYELMEZTETÉS %1 ARCHÍVUMBÓL TÖRLÉS KÖZBEN
+
+0440 Testing archive %1=%1 archívum tesztelése
 0232 SUCCESFULLY TESTED %1=%1 TESZTJE SIKERES VOLT
 0233 %2 WARNINGS WHILE TESTING %1=%2 FIGYELMEZTETÉS %1 TESZTJE KÖZBEN
 
-0234 Extracting files from %1=Fájlok kibontása %1 fájból
-0235 FILES SUCCESFULLY EXTRACTED FROM %1=A FÁJLOK SIKERESEN KIBONTVA %1 FÁJLBÓL 
-0236 %2 WARNINGS WHILE EXTRACTING FILES FROM %1=%2 FIGYELMEZTETÉS %1 FÁJLBÓL KIBONTÁS KÖZBEN
+0441 Extracting files from archive %1=Fájlok kibontása %1 archívumból
+0235 FILES SUCCESFULLY EXTRACTED FROM %1=A FÁJLOK SIKERESEN KIBONTVA %1 ARCHÍVUMBÓL 
+0236 %2 WARNINGS WHILE EXTRACTING FILES FROM %1=%2 FIGYELMEZTETÉS %1 ARCHÍVUMBÓL KIBONTÁS KÖZBEN
 
-0237 Modifying %1=%1 módosítása
+0433 Modifying archive %1=%1 archívum módosítása
 0238 SUCCESFULLY MODIFIED %1=%1 SIKERESEN MÓDOSÍTVA
 0239 %2 WARNINGS WHILE MODIFYING %1=%2 FIGYELMEZTETÉS %1 MÓDOSÍTÁSA KÖZBEN
 
 0240 Joining archives to %1=Archívumok egyesítése %1 fájlba
-0241 SUCCESFULLY JOINED ARCHIVES TO %1=AZ EGYESÍTÉS %1 FÁJLBA SIKERÜLT
+0241 SUCCESFULLY JOINED ARCHIVES TO %1=AZ ARCHÍVUMOK EGYESÍTÉSE %1 FÁJLBA SIKERÜLT
 0242 %2 WARNINGS WHILE JOINING ARCHIVES TO %1=%2 FIGYELMEZTETÉS %1 FÁJLBA EGYESÍTÉS KÖZBEN
 
-0243 Adding to %1=Hozzáadás %1 fájlhoz
-0244 FILES SUCCESFULLY ADDED TO %1=A FÁJLOK SIKERESEN HOZZÁADVA %1 FÁJLHOZ
-0245 %2 WARNINGS WHILE ADDING TO %1=%2 FIGYELMEZTETÉS %1 FÁJLBA TÖMÖRÍTÉS KÖZBEN
+0437 Creating archive %1=%1 archívum létrehozása
+0443 SUCCESFULLY CREATED %1=%1 SIKERESEN LÉTREHOZVA
+0434 %2 WARNINGS WHILE CREATING %1=%2 FIGYELMEZTETÉS %1 LÉTREHOZÁSA KÖZBEN
+
+0438 Updating archive %1=%1 archívum aktualizálása
+0444 SUCCESFULLY UPDATED %1=%1 SIKERESEN AKTUALIZÁLVA
+0436 %2 WARNINGS WHILE UPDATING %1=%2 FIGYELMEZTETÉS %1 AKTUALIZÁLÁSA KÖZBEN
 
 0299 Lock archive(s)?=Archívum(ok) zárolása?
 0300 Locking archive %1=%1 archívum zárolása
@@ -487,7 +506,7 @@ Archive comment dialog
 
 0381 Repair archive(s)? Repaired archive(s) will be placed into files named fixed.*=Kijavíttatja az archívumo(ka)t? A helyreállított fájlokat a FreeArc "fixed.*" néven menti.
 0382 Repairing archive %1=%1 archívum helyreállítása
-0383 SUCCESFULLY REPAIRED ARCHIVE %1=%1 ARCHÍVUM SIKERESEN KIJAVÍTVA
+0383 SUCCESFULLY REPAIRED ARCHIVE %1=%1 ARCHÍVUM SIKERESEN HELYREÁLLÍTVA
 0384 %2 WARNINGS WHILE REPAIRING ARCHIVE %1=%2 FIGYELMEZTETÉS %1 ARCHÍVUM HELYREÁLLÍTÁSA KÖZBEN
 
 
@@ -515,8 +534,8 @@ Archive comment dialog
 0332 can't open file "%1"="%1" fájl nem nyitható meg
 0333 CRC error in file "%1"="%1" fájl CRC-hibás
 0334 bad section %1 in %2=%1 hibás szakasz %2 fájlban
-0335 operation terminated!=művelet kész!
-0336 program terminated!=program befejeződött!
+0455 Operation terminated by user!=A műveletet a felhasználó leállította!
+0456 Program terminated by user!=A programot a felhasználó leállította!
 0337 no files, erasing empty archive=nincsenek fájlok, az üres archívum törlődik
 0338 skipped %1 fake files=%1 hamis .arc fájl kihagyva
 0339 bad password for archive %1=%1 archívum: rossz jelszó
@@ -533,7 +552,7 @@ Archive comment dialog
 0350 %1 has size %2 so it can't be used to recover %3 having size %4=%1 %2 méretű, ezért nem alkalmas %4 méretű %3 javítására
 0351 %1 errors (%2) remain unrecovered=%1 hiba (%2) javítatlan maradt
 0352 found %1 errors (%2)=%1 hiba (%2)
-0353 there were %1 warnings due archive testing=%1 figyelmeztetés a teszt során
+0353 there were %1 warnings due archive testing=%1 figyelmeztetés történt az archvívum tesztje során
 0354 block descriptor at pos %1 is corrupted=%1 pozíciójú blokkleíró sérült
 0355 %1 is corrupted=%1 sérült
 0359 %1 failed decompression=%1 sikertelen kibontás
@@ -557,6 +576,9 @@ Errors returned by compression methods
 Compression
 0771 Maximum=Maximális
 0772 Maximum with fast decompression=Maximális, gyors kibontással
+0773 Ultra (require 2 gb RAM for decompression)=Ultra (2 GB RAM memóriaigényű kibontás)
+0774 Maximum (require 1 gb RAM for decompression)=Maximális (1 GB RAM memóriaigényű kibontás)
+0775 Best asymmetric (with fast decompression)=Legjobb aszimmetrikus (gyors kibontás)
 0752 No compression=Tömörítés nélkül
 
 Encryption
@@ -566,7 +588,7 @@ Encryption
 0731 Fast=Gyors
 
 Protection
-0769 Add (autosize, 1-4%)=Sérülésvédelem (automatikus, 1-4%)
+0769 Add (autosize, 1-4%)=Sérülésvédelem (automatikus, 1-4 %)
 0735 Remove=Törlés
 0734 Add=Sérülésvédelem
 0770 Add for recovery via Internet=Internetes javíthatóság hozzáadása
@@ -606,12 +628,12 @@ Exclude
 
 Additional compression options
 0760 Perform full backup=Teljes biztonsági mentés
-0761 Full archive test before and after operation=Teljes archívum teszt művelet előtt és után
+0761 Full archive test before and after operation=Teljes archívumteszt művelet előtt és után
 
 Additional extraction options
 0762 Remove pathnames=Elérési utak törlése
 0763 Restore absolute pathnames=Abszolút elérési utak visszaállítása
-0764 Full archive test before performing operation=Teljes archívum teszt művelet előtt
+0764 Full archive test before performing operation=Teljes archívumteszt művelet előtt
 
 
 === Tooltips (index=N+1000) ===========================================
