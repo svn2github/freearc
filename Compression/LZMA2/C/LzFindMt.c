@@ -133,8 +133,8 @@ void MtSync_Init(CMtSync *p) { p->needStart = True; }
 
 #define DEF_GetHeads2(name, v, action) \
 static void GetHeads ## name(const Byte *p, UInt32 pos, \
-UInt32 *hash, UInt32 hashMask, UInt32 *heads, UInt32 numHeads, const UInt32 *crc) \
-{ action; for (; numHeads != 0; numHeads--) { \
+UInt32 *hash, UInt32 hashMask, UInt32 *heads, UInt32 numHeads, const UInt32 *crc, UInt32 cutValue) \
+{ cutValue=cutValue; action; for (; numHeads != 0; numHeads--) { \
 const UInt32 value = (v); p++; *heads++ = pos - hash[value]; hash[value] = pos++;  } }
 
 #define DEF_GetHeads(name, v) DEF_GetHeads2(name, v, ;)
@@ -144,6 +144,17 @@ DEF_GetHeads(3,  (crc[p[0]] ^ p[1] ^ ((UInt32)p[2] << 8)) & hashMask)
 DEF_GetHeads(4,  (crc[p[0]] ^ p[1] ^ ((UInt32)p[2] << 8) ^ (crc[p[3]] << 5)) & hashMask)
 DEF_GetHeads(4b, (crc[p[0]] ^ p[1] ^ ((UInt32)p[2] << 8) ^ ((UInt32)p[3] << 16)) & hashMask)
 /* DEF_GetHeads(5,  (crc[p[0]] ^ p[1] ^ ((UInt32)p[2] << 8) ^ (crc[p[3]] << 5) ^ (crc[p[4]] << 3)) & hashMask) */
+
+static void GetHeadsHt4(const Byte *p, UInt32 pos, UInt32 *hash, UInt32 hashMask, UInt32 *heads, UInt32 numHeads, const UInt32 *crc, UInt32 cutValue)
+{
+  for (; numHeads != 0; numHeads--)
+  {
+    const UInt32 value = (crc[p[0]] ^ p[1] ^ ((UInt32)p[2] << 8) ^ (crc[p[3]] << 5)) & hashMask;
+    p++;
+    *heads++ = (UInt32) &(hash[value*cutValue]);   // First entry in hash table to check      ////64-bit!
+  }
+}
+
 
 void HashThreadFunc(CMatchFinderMt *mt)
 {
@@ -202,7 +213,7 @@ void HashThreadFunc(CMatchFinderMt *mt)
             num = num - mf->numHashBytes + 1;
             if (num > kMtHashBlockSize - 2)
               num = kMtHashBlockSize - 2;
-            mt->GetHeadsFunc(mf->buffer, mf->pos, mf->hash + mf->fixedHashSize, mf->hashMask, heads + 2, num, mf->crc);
+            mt->GetHeadsFunc(mf->buffer, mf->pos, mf->hash + mf->fixedHashSize, mf->hashMask, heads + 2, num, mf->crc, mf->cutValue);
             heads[0] += num;
           }
           mf->pos += num;
@@ -369,7 +380,22 @@ void BtGetMatches(CMatchFinderMt *p, UInt32 *distances)
         }
         #endif
       }
-      else
+      else if (p->MatchFinder->btMode == MF_HashTable)
+      {
+        while (curPos < limit && size-- != 0)
+        {
+          UInt32 *startDistances = distances + curPos;
+          UInt32 num = (UInt32)(Ht_GetMatchesSpec(lenLimit, (UInt32 *) (p->hashBuf[p->hashBufPos++]),
+            pos, p->buffer, p->son, cyclicBufferPos, p->cyclicBufferSize, p->cutValue,
+            startDistances + 1, p->numHashBytes - 1) - startDistances);
+          *startDistances = num - 1;
+          curPos += num;
+          cyclicBufferPos++;
+          pos++;
+          p->buffer++;
+        }
+      }
+      else // if (p->MatchFinder->btMode == MF_HashChain)
       {
         while (curPos < limit && size-- != 0)
         {
@@ -796,7 +822,9 @@ void MatchFinderMt_CreateVTable(CMatchFinderMt *p, IMatchFinder *vTable)
       break;
     default:
     /* case 4: */
-      p->GetHeadsFunc = p->MatchFinder->bigHash ? GetHeads4b : GetHeads4;
+      p->GetHeadsFunc = p->MatchFinder->btMode == MF_HashTable? GetHeadsHt4
+                      : p->MatchFinder->bigHash               ? GetHeads4b
+                                                              : GetHeads4;
       /* p->GetHeadsFunc = GetHeads4; */
       p->MixMatchesFunc = (Mf_Mix_Matches)MixMatches3;
       vTable->Skip = (Mf_Skip_Func)MatchFinderMt3_Skip;

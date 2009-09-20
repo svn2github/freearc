@@ -10,10 +10,11 @@
 9. maxDist[] = {0, 0, 128, 2048, 64<<10, 2<<20, 12<<20}
 10. len + 1 >= lenMain ...  (оптимизация lazy matching)
 11. LZMA_LOG_BSR (BSR работает быстро на Intel, но очень медленно на AMD K7/K8)
-12. InitializeCriticalSection exception
++12. InitializeCriticalSection exception
 13. проверить что LzmaEnc_Encode возвращает код возврата Read-колбэка
 14. использовать big_alloc
 15. -m3: использовать lzma:a1 поскольку оно быстрее на многоядерных cpu?
-    (lzma:fast:32:mc8|lzma:normal:16:mc2|...) - синтаксис для выбора алгоритма в зависимости от значения -mt
-16. DEF_GetHeads, HASH4_CALC, MT_HASH4_CALC: использовать умножение
-17. многопоточность + a1 + hc4/ht4 не работает (программа вылетает после обработки dictSize/2 байт)
+    "(lzma:fast:32:mc8|lzma:normal:16:mc2|...)" - синтаксис для выбора алгоритма в зависимости от значения -mt
+16. DEF_GetHeads, GetHeadsHt4, HASH4_CALC, MT_HASH4_CALC: использовать умножение
++17. многопоточность + a1 + hc4/ht4 не работает (программа вылетает после обработки dictSize/2 байт)
+18. GetHeadsHt4 isn't 64-bit compatible
