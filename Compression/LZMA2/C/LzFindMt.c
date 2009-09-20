@@ -507,7 +507,7 @@ static unsigned MY_STD_CALL BtThreadFunc2(void *p)
   return 0;
 }
 
-SRes MatchFinderMt_Create(CMatchFinderMt *p, UInt32 historySize, UInt32 keepAddBufferBefore,
+SRes MatchFinderMt_Create(CMatchFinderMt *p, UInt32 historySize, UInt32 hashSize, UInt32 keepAddBufferBefore,
     UInt32 matchMaxLen, UInt32 keepAddBufferAfter, ISzAlloc *alloc)
 {
   CMatchFinder *mf = p->MatchFinder;
@@ -523,7 +523,7 @@ SRes MatchFinderMt_Create(CMatchFinderMt *p, UInt32 historySize, UInt32 keepAddB
   }
   keepAddBufferBefore += (kHashBufferSize + kBtBufferSize);
   keepAddBufferAfter += kMtHashBlockSize;
-  if (!MatchFinder_Create(mf, historySize, keepAddBufferBefore, matchMaxLen, keepAddBufferAfter, alloc))
+  if (!MatchFinder_Create(mf, historySize, hashSize, keepAddBufferBefore, matchMaxLen, keepAddBufferAfter, alloc))
     return SZ_ERROR_MEM;
 
   RINOK(MtSync_Create(&p->hashSync, HashThreadFunc2, p, kMtHashNumBlocks));

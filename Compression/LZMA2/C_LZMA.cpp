@@ -180,14 +180,14 @@ int lzma_compress  ( int dictionarySize,
   props.pb = posStateBits;
   props.algo = algorithm;
   props.fb = numFastBytes;
-  //// hashSize
+  props.hashSize = hashSize;
   switch (matchFinder)
   {
-    case kHC4:  props.btMode = 0;  props.numHashBytes = 4; break;
-    case kBT2:  props.btMode = 1;  props.numHashBytes = 2; break;
-    case kBT3:  props.btMode = 1;  props.numHashBytes = 3; break;
-    case kBT4:  props.btMode = 1;  props.numHashBytes = 4; break;
-    case kHT4:  props.btMode = 2;  props.numHashBytes = 4; break;
+    case kHC4:  props.btMode = MF_HashChain ;  props.numHashBytes = 4; break;
+    case kBT2:  props.btMode = MF_BinaryTree;  props.numHashBytes = 2; break;
+    case kBT3:  props.btMode = MF_BinaryTree;  props.numHashBytes = 3; break;
+    case kBT4:  props.btMode = MF_BinaryTree;  props.numHashBytes = 4; break;
+    case kHT4:  props.btMode = MF_HashTable;   props.numHashBytes = 4; break;
   }
   props.numThreads = GetCompressionThreads();
   props.writeEndMark = 1;

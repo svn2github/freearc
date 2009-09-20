@@ -18,6 +18,7 @@ typedef struct _CLzmaEncProps
   UInt32 dictSize; /* (1 << 12) <= dictSize <= (1 << 27) for 32-bit version
                       (1 << 12) <= dictSize <= (1 << 30) for 64-bit version
                        default = (1 << 24) */
+  UInt32 hashSize;
   int lc;          /* 0 <= lc <= 8, default = 3 */
   int lp;          /* 0 <= lp <= 4, default = 0 */
   int pb;          /* 0 <= pb <= 4, default = 2 */

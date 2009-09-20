@@ -93,7 +93,7 @@ typedef struct _CMatchFinderMt
 
 void MatchFinderMt_Construct(CMatchFinderMt *p);
 void MatchFinderMt_Destruct(CMatchFinderMt *p, ISzAlloc *alloc);
-SRes MatchFinderMt_Create(CMatchFinderMt *p, UInt32 historySize, UInt32 keepAddBufferBefore,
+SRes MatchFinderMt_Create(CMatchFinderMt *p, UInt32 historySize, UInt32 hashSize, UInt32 keepAddBufferBefore,
     UInt32 matchMaxLen, UInt32 keepAddBufferAfter, ISzAlloc *alloc);
 void MatchFinderMt_CreateVTable(CMatchFinderMt *p, IMatchFinder *vTable);
 void MatchFinderMt_ReleaseStream(CMatchFinderMt *p);

@@ -168,7 +168,7 @@ static CLzRef* AllocRefs(UInt32 num, ISzAlloc *alloc)
   return (CLzRef *)alloc->Alloc(alloc, sizeInBytes);
 }
 
-int MatchFinder_Create(CMatchFinder *p, UInt32 historySize,
+int MatchFinder_Create(CMatchFinder *p, UInt32 historySize, UInt32 hashSize,
     UInt32 keepAddBufferBefore, UInt32 matchMaxLen, UInt32 keepAddBufferAfter,
     ISzAlloc *alloc)
 {
@@ -188,46 +188,24 @@ int MatchFinder_Create(CMatchFinder *p, UInt32 historySize,
   /* we need one additional byte, since we use MoveBlock after pos++ and before dictionary using */
   if (LzInWindow_Create(p, sizeReserv, alloc))
   {
-    UInt32 newCyclicBufferSize = historySize + 1;
-    UInt32 hs;
     p->matchMaxLen = matchMaxLen;
-    {
-      p->fixedHashSize = 0;
-      if (p->numHashBytes == 2)
-        hs = (1 << 16) - 1;
-      else
-      {
-        hs = historySize - 1;
-        hs |= (hs >> 1);
-        hs |= (hs >> 2);
-        hs |= (hs >> 4);
-        hs |= (hs >> 8);
-        hs >>= 1;
-        hs |= 0xFFFF; /* don't change it! It's required for Deflate */
-        if (hs > (1 << 24))
-        {
-          if (p->numHashBytes == 3)
-            hs = (1 << 24) - 1;
-          else
-            hs >>= 1;
-        }
-      }
-      p->hashMask = hs;
-      hs++;
-      if (p->numHashBytes > 2) p->fixedHashSize += kHash2Size;
-      if (p->numHashBytes > 3) p->fixedHashSize += kHash3Size;
-      if (p->numHashBytes > 4) p->fixedHashSize += kHash4Size;
-      hs += p->fixedHashSize;
-    }
+    hashSize /= sizeof(CLzRef);                                      // convert bytes to hashtable entries
+    p->hashMask =  p->btMode==MF_HashTable? hashSize/matchMaxLen-1   // every hash slot contains matchMaxLen entries with the same hash value
+                                          : hashSize-1;
+    p->fixedHashSize = 0;
+    if (p->numHashBytes > 2)   p->fixedHashSize += kHash2Size;
+    if (p->numHashBytes > 3)   p->fixedHashSize += kHash3Size;
+    if (p->numHashBytes > 4)   p->fixedHashSize += kHash4Size;
 
     {
       UInt32 prevSize = p->hashSizeSum + p->numSons;
-      UInt32 newSize;
       p->historySize = historySize;
-      p->hashSizeSum = hs;
-      p->cyclicBufferSize = newCyclicBufferSize;
-      p->numSons = (p->btMode==MF_BinaryTree ? newCyclicBufferSize * 2 : newCyclicBufferSize);
-      newSize = p->hashSizeSum + p->numSons;
+      p->hashSizeSum = hashSize + p->fixedHashSize;
+      p->cyclicBufferSize = historySize + 1;
+      p->numSons = p->btMode==MF_BinaryTree ? p->cyclicBufferSize * 2
+                 : p->btMode==MF_HashChain  ? p->cyclicBufferSize
+                                            : 0;
+      UInt32 newSize = p->hashSizeSum + p->numSons;
       if (p->hash != 0 && prevSize == newSize)
         return 1;
       MatchFinder_FreeThisClassMemory(p, alloc);
@@ -354,7 +332,7 @@ static UInt32 * Ht_GetMatchesSpec(UInt32 lenLimit, UInt32 *curMatchPtr, UInt32 p
     UInt32 _cyclicBufferPos, UInt32 _cyclicBufferSize, UInt32 cutValue,
     UInt32 *distances, UInt32 maxLen)
 {
-  //UInt32 *curMatchPtr= &_hash[kFixHashSize + hashValue];   // First entry in hash table to check
+  //UInt32 *curMatchPtr= &_hash[kFixHashSize + hashValue];  // First entry in hash table to check
   UInt32 *lastMatchPtr = curMatchPtr + cutValue;            // Last entry to check + 1
   UInt32 prevMatch = pos; //// + (UInt32(cur[0]) << 30);
 #define getMatch(x) (x)

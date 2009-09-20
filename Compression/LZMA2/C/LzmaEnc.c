@@ -45,7 +45,7 @@ static int ttt = 0;
 void LzmaEncProps_Init(CLzmaEncProps *p)
 {
   p->level = 5;
-  p->dictSize = p->mc = 0;
+  p->dictSize = p->hashSize = p->mc = 0;
   p->lc = p->lp = p->pb = p->algo = p->fb = p->btMode = p->numHashBytes = p->numThreads = -1;
   p->writeEndMark = 0;
 }
@@ -61,7 +61,7 @@ void LzmaEncProps_Normalize(CLzmaEncProps *p)
   if (p->pb < 0) p->pb = 2;
   if (p->algo < 0) p->algo = (level < 5 ? 0 : 1);
   if (p->fb < 0) p->fb = (level < 7 ? 32 : 64);
-  if (p->btMode < 0) p->btMode = (p->algo == 0 ? 0 : 1);
+  if (p->btMode < 0) p->btMode = (p->algo == 0 ? MF_HashChain : MF_BinaryTree);
   if (p->numHashBytes < 0) p->numHashBytes = 4;
   if (p->mc == 0)  p->mc = (16 + (p->fb >> 1)) >> (p->btMode==MF_BinaryTree ? 0 : 1);
   if (p->numThreads < 0)
@@ -71,6 +71,23 @@ void LzmaEncProps_Normalize(CLzmaEncProps *p)
       #else
       1;
       #endif
+
+  if (p->hashSize == 0)
+  {
+    UInt32 hs = rounddown_to_power_of (p->dictSize/3*4, 2);
+    p->hashSize = p->btMode==MF_HashTable?  p->dictSize/sizeof(CLzRef)*2-1
+                : p->numHashBytes==2     ?  64*kb
+                : hs<=64*kb              ?  64*kb
+                : hs<=32*mb              ?  hs/2
+                : p->numHashBytes==3     ?  16*mb
+                :                           hs/4;
+    p->hashSize *= sizeof(CLzRef);
+  }
+
+  // Number of entries in every hash slot
+  UInt32 k = p->btMode==MF_HashTable? p->mc : 1;
+  // Round down to 2^n hash slots
+  p->hashSize = rounddown_to_power_of (p->hashSize/k, 2) * k;
 }
 
 UInt32 LzmaEncProps_GetDictSize(const CLzmaEncProps *props2)
@@ -329,6 +346,7 @@ typedef struct
 
   SRes result;
   UInt32 dictSize;
+  UInt32 hashSize;
   UInt32 matchFinderCycles;
 
   int needInit;
@@ -398,6 +416,7 @@ SRes LzmaEnc_SetProps(CLzmaEncHandle pp, const CLzmaEncProps *props2)
       props.dictSize > (1 << kDicLogSizeMaxCompress) || props.dictSize > (1 << 30))
     return SZ_ERROR_PARAM;
   p->dictSize = props.dictSize;
+  p->hashSize = props.hashSize;
   p->matchFinderCycles = props.mc;
   {
     unsigned fb = props.fb;
@@ -1929,14 +1948,14 @@ static SRes LzmaEnc_Alloc(CLzmaEnc *p, UInt32 keepWindowSize, ISzAlloc *alloc, I
   #ifdef COMPRESS_MF_MT
   if (p->mtMode)
   {
-    RINOK(MatchFinderMt_Create(&p->matchFinderMt, p->dictSize, beforeSize, p->numFastBytes, LZMA_MATCH_LEN_MAX, allocBig));
+    RINOK(MatchFinderMt_Create(&p->matchFinderMt, p->dictSize, p->hashSize, beforeSize, p->numFastBytes, LZMA_MATCH_LEN_MAX, allocBig));
     p->matchFinderObj = &p->matchFinderMt;
     MatchFinderMt_CreateVTable(&p->matchFinderMt, &p->matchFinder);
   }
   else
   #endif
   {
-    if (!MatchFinder_Create(&p->matchFinderBase, p->dictSize, beforeSize, p->numFastBytes, LZMA_MATCH_LEN_MAX, allocBig))
+    if (!MatchFinder_Create(&p->matchFinderBase, p->dictSize, p->hashSize, beforeSize, p->numFastBytes, LZMA_MATCH_LEN_MAX, allocBig))
       return SZ_ERROR_MEM;
     p->matchFinderObj = &p->matchFinderBase;
     MatchFinder_CreateVTable(&p->matchFinderBase, &p->matchFinder);
