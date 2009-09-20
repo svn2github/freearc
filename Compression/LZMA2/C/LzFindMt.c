@@ -341,30 +341,49 @@ void BtGetMatches(CMatchFinderMt *p, UInt32 *distances)
         if (size2 < size)
           size = size2;
       }
-      #ifndef MFMT_GM_INLINE
-      while (curPos < limit && size-- != 0)
+
+      if (p->MatchFinder->btMode == MF_BinaryTree)
       {
-        UInt32 *startDistances = distances + curPos;
-        UInt32 num = (UInt32)(GetMatchesSpec1(lenLimit, pos - p->hashBuf[p->hashBufPos++],
-          pos, p->buffer, p->son, cyclicBufferPos, p->cyclicBufferSize, p->cutValue,
-          startDistances + 1, p->numHashBytes - 1) - startDistances);
-        *startDistances = num - 1;
-        curPos += num;
-        cyclicBufferPos++;
-        pos++;
-        p->buffer++;
+        #ifndef MFMT_GM_INLINE
+        while (curPos < limit && size-- != 0)
+        {
+          UInt32 *startDistances = distances + curPos;
+          UInt32 num = (UInt32)(GetMatchesSpec1(lenLimit, pos - p->hashBuf[p->hashBufPos++],
+            pos, p->buffer, p->son, cyclicBufferPos, p->cyclicBufferSize, p->cutValue,
+            startDistances + 1, p->numHashBytes - 1) - startDistances);
+          *startDistances = num - 1;
+          curPos += num;
+          cyclicBufferPos++;
+          pos++;
+          p->buffer++;
+        }
+        #else
+        {
+          UInt32 posRes;
+          curPos = limit - GetMatchesSpecN(lenLimit, pos, p->buffer, p->son, cyclicBufferPos, p->cyclicBufferSize, p->cutValue,
+            distances + curPos, p->numHashBytes - 1, p->hashBuf + p->hashBufPos, (Int32)(limit - curPos) , size, &posRes);
+          p->hashBufPos += posRes - pos;
+          cyclicBufferPos += posRes - pos;
+          p->buffer += posRes - pos;
+          pos = posRes;
+        }
+        #endif
       }
-      #else
+      else
       {
-        UInt32 posRes;
-        curPos = limit - GetMatchesSpecN(lenLimit, pos, p->buffer, p->son, cyclicBufferPos, p->cyclicBufferSize, p->cutValue,
-          distances + curPos, p->numHashBytes - 1, p->hashBuf + p->hashBufPos, (Int32)(limit - curPos) , size, &posRes);
-        p->hashBufPos += posRes - pos;
-        cyclicBufferPos += posRes - pos;
-        p->buffer += posRes - pos;
-        pos = posRes;
+        while (curPos < limit && size-- != 0)
+        {
+          UInt32 *startDistances = distances + curPos;
+          UInt32 num = (UInt32)(Hc_GetMatchesSpec(lenLimit, pos - p->hashBuf[p->hashBufPos++],
+            pos, p->buffer, p->son, cyclicBufferPos, p->cyclicBufferSize, p->cutValue,
+            startDistances + 1, p->numHashBytes - 1) - startDistances);
+          *startDistances = num - 1;
+          curPos += num;
+          cyclicBufferPos++;
+          pos++;
+          p->buffer++;
+        }
       }
-      #endif
 
       numProcessed += pos - p->pos;
       p->hashNumAvail -= pos - p->pos;

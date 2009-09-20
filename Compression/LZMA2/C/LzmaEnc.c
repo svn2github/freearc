@@ -67,7 +67,7 @@ void LzmaEncProps_Normalize(CLzmaEncProps *p)
   if (p->numThreads < 0)
     p->numThreads =
       #ifdef COMPRESS_MF_MT
-      ((p->btMode==MF_BinaryTree && p->algo) ? 2 : 1);
+      ((/*p->btMode==MF_BinaryTree &&*/ p->algo) ? 2 : 1);
       #else
       1;
       #endif
@@ -1902,7 +1902,7 @@ static SRes LzmaEnc_Alloc(CLzmaEnc *p, UInt32 keepWindowSize, ISzAlloc *alloc, I
     return SZ_ERROR_MEM;
   btMode = p->matchFinderBase.btMode;
   #ifdef COMPRESS_MF_MT
-  p->mtMode = (p->multiThread && !p->fastMode && btMode==MF_BinaryTree);
+  p->mtMode = (p->multiThread && !p->fastMode /*&& btMode==MF_BinaryTree*/);
   #endif
 
   {
