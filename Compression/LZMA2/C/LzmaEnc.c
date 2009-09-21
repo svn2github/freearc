@@ -63,7 +63,7 @@ void LzmaEncProps_Normalize(CLzmaEncProps *p)
   if (p->fb < 0) p->fb = (level < 7 ? 32 : 64);
   if (p->btMode < 0) p->btMode = (p->algo == 0 ? MF_HashChain : MF_BinaryTree);
   if (p->numHashBytes < 0) p->numHashBytes = 4;
-  if (p->mc == 0)  p->mc = (16 + (p->fb / (p->btMode==MF_BinaryTree ? 2 : 4);
+  if (p->mc == 0)  p->mc = 16 + p->fb / (p->btMode==MF_BinaryTree ? 2 : 4);
   if (p->numThreads < 0)
     p->numThreads =
       #ifdef COMPRESS_MF_MT
