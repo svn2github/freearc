@@ -118,7 +118,7 @@ UInt32 GetPosSlot1(UInt32 pos)
 
 #else
 
-#define kNumLogBits (9 + (int)sizeof(size_t) / 2)
+#define kNumLogBits 13
 #define kDicLogSizeMaxCompress ((kNumLogBits - 1) * 2 + 7)
 
 void LzmaEnc_FastPosInit(Byte *g_FastPos)
