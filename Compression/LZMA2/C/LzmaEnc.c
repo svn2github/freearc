@@ -1568,10 +1568,14 @@ static UInt32 GetOptimumFast(CLzmaEnc *p, UInt32 *backRes)
       mainLen = matches[numPairs - 2];
       mainDist = matches[numPairs - 1];
     }
-    if (mainLen == 2 && mainDist >= 0x80)
+    // Отбросим матч, если дистанция слишком велика для такой длины
+    static const int maxDist[] = {0, 0, 128, 2048, 64<<10, 2<<20, 12<<20};
+    if (mainLen < sizeof(maxDist)/sizeof(*maxDist)
+    	&& mainDist >= maxDist[mainLen])
       mainLen = 1;
   }
 
+  // Если нашёлся подходящий REPDIST, то используем его при определённых условиях
   if (repLen >= 2 && (
         (repLen + 1 >= mainLen) ||
         (repLen + 2 >= mainLen && mainDist >= (1 << 9)) ||
@@ -1605,7 +1609,10 @@ static UInt32 GetOptimumFast(CLzmaEnc *p, UInt32 *backRes)
       continue;
     limit = mainLen - 1;
     for (len = 2; len < limit && data[len] == data2[len]; len++);
-    if (len >= limit)
+    // Если нашёлся подходящий REPDIST, то используем его при определённых условиях
+    if ((len     >= limit) ||
+        (len + 1 >= limit && mainDist >= (1 << 9)) ||
+        (len + 2 >= limit && mainDist >= (1 << 15)))
       return 1;
   }
   *backRes = mainDist + LZMA_NUM_REPS;

@@ -7,8 +7,8 @@
 6. BinTreeMain.h: размер хеша и выделение памяти (CalcHashSize, ReservedAreaSize); разбить на 3 части и сначала выделять меньший блок
 +7. kDicLogSizeMaxCompress = 31;  HASH_TABLE;  hashSize;  LzmaEncProps_Normalize
 8. compress_all_at_once
-9. maxDist[] = {0, 0, 128, 2048, 64<<10, 2<<20, 12<<20}
-10. len + 1 >= lenMain ...  (оптимизация lazy matching)
++9. maxDist[] = {0, 0, 128, 2048, 64<<10, 2<<20, 12<<20}  (оптимизация lazy matching)
++10. "Если нашёлся подходящий REPDIST, то используем его при определённых условиях"*2  (оптимизация lazy matching)
 11. LZMA_LOG_BSR (BSR работает быстро на Intel, но очень медленно на AMD K7/K8)
 +12. InitializeCriticalSection exception
 13. проверить что LzmaEnc_Encode возвращает код возврата Read-колбэка
