@@ -63,7 +63,7 @@ void LzmaEncProps_Normalize(CLzmaEncProps *p)
   if (p->fb < 0) p->fb = (level < 7 ? 32 : 64);
   if (p->btMode < 0) p->btMode = (p->algo == 0 ? MF_HashChain : MF_BinaryTree);
   if (p->numHashBytes < 0) p->numHashBytes = 4;
-  if (p->mc == 0)  p->mc = (16 + (p->fb >> 1)) >> (p->btMode==MF_BinaryTree ? 0 : 1);
+  if (p->mc == 0)  p->mc = (16 + (p->fb / (p->btMode==MF_BinaryTree ? 2 : 4);
   if (p->numThreads < 0)
     p->numThreads =
       #ifdef COMPRESS_MF_MT
@@ -74,7 +74,7 @@ void LzmaEncProps_Normalize(CLzmaEncProps *p)
 
   if (p->hashSize == 0)
   {
-    UInt32 hs = rounddown_to_power_of (p->dictSize/3*4, 2);
+    UInt32 hs = rounddown_to_power_of (p->dictSize, 2);
     p->hashSize = p->btMode==MF_HashTable?  p->dictSize/sizeof(CLzRef)*2-1
                 : p->numHashBytes==2     ?  64*kb
                 : hs<=64*kb              ?  64*kb
