@@ -68,8 +68,14 @@ static ISzAlloc g_Alloc = { SzAlloc, SzFree };
 
 int SRes_to_FreeArc (SRes res)
 {
-  if (res == E_OUTOFMEMORY)
-    return FREEARC_ERRCODE_NOT_ENOUGH_MEMORY;
+  if (res == SZ_ERROR_DATA)         return FREEARC_ERRCODE_BAD_COMPRESSED_DATA;
+  if (res == SZ_ERROR_MEM)          return FREEARC_ERRCODE_NOT_ENOUGH_MEMORY;
+  if (res == SZ_ERROR_UNSUPPORTED)  return FREEARC_ERRCODE_BAD_COMPRESSED_DATA;
+  if (res == SZ_ERROR_PARAM)        return FREEARC_ERRCODE_INVALID_COMPRESSOR;
+  if (res == SZ_ERROR_INPUT_EOF)    return FREEARC_ERRCODE_BAD_COMPRESSED_DATA;
+  if (res == SZ_ERROR_OUTPUT_EOF)   return FREEARC_ERRCODE_WRITE;
+  if (res == SZ_ERROR_READ)         return FREEARC_ERRCODE_READ;
+  if (res == SZ_ERROR_WRITE)        return FREEARC_ERRCODE_WRITE;
   if (res != S_OK)
     //fprintf(stderr, "\nEncoder error = %X\n", (unsigned int)res);
     return FREEARC_ERRCODE_GENERAL;
