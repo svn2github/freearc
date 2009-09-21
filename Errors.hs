@@ -109,11 +109,6 @@ shutdown msg exitCode = do
     programFinished =: True
     separator' =: ("","\n")
     log_separator' =: "\n"
-    fin <- val finalizers
-    for fin $ \(name,id,action) -> do
-      ignoreErrors$ action
-    compressionLib_cleanup
-
     unlessM (val fileManagerMode) $ do
       case w of
         0 -> when (exitCode==aEXIT_CODE_SUCCESS) $ condPrintLineLn "k" "All OK"
@@ -123,6 +118,12 @@ shutdown msg exitCode = do
 #if !defined(FREEARC_WIN) && !defined(FREEARC_GUI)
     putStrLn ""  -- в Unix отсутствует автоматический перевод строки в терминале по завершению программы
 #endif
+
+    fin <- val finalizers
+    for fin $ \(name,id,action) -> do
+      ignoreErrors$ action
+    compressionLib_cleanup
+
     ignoreErrors$ closeLogFile
     ignoreErrors$ hFlush stdout
     ignoreErrors$ hFlush stderr
