@@ -14,6 +14,15 @@
 
 #define kStartMaxLen 3
 
+#define OPTIMIZE_HT        /* store 2 bits of hashed string in every hash entry in order to speed up searching */
+#ifdef OPTIMIZE_HT
+#define getMatch(x)        ((x)%(1<<30))
+#define saveMatch(pos,cur) ((pos) + (UInt32((cur)[0]) << 30))
+#else
+#define getMatch(x)        (x)
+#define saveMatch(pos,cur) (pos)
+#endif
+
 static void LzInWindow_Free(CMatchFinder *p, ISzAlloc *alloc)
 {
   if (!p->directInput)
@@ -268,24 +277,39 @@ static UInt32 MatchFinder_GetSubValue(CMatchFinder *p)
   return (p->pos - p->historySize - 1) & kNormalizeMask;
 }
 
-void MatchFinder_Normalize3(UInt32 subValue, CLzRef *items, UInt32 numItems)
+void MatchFinder_Normalize3(UInt32 subValue, CLzRef *items, UInt32 numItems, int btMode)
 {
   UInt32 i;
-  for (i = 0; i < numItems; i++)
+  if (btMode==MF_HashTable)
   {
-    UInt32 value = items[i];
-    if (value <= subValue)
-      value = kEmptyHashValue;
-    else
-      value -= subValue;
-    items[i] = value;
+    for (i = 0; i < numItems; i++)
+    {
+      UInt32 value = items[i];
+      if (getMatch(value) <= subValue)
+        value = kEmptyHashValue;
+      else
+        value -= subValue;
+      items[i] = value;
+    }
+  }
+  else
+  {
+    for (i = 0; i < numItems; i++)
+    {
+      UInt32 value = items[i];
+      if (value <= subValue)
+        value = kEmptyHashValue;
+      else
+        value -= subValue;
+      items[i] = value;
+    }
   }
 }
 
 static void MatchFinder_Normalize(CMatchFinder *p)
 {
   UInt32 subValue = MatchFinder_GetSubValue(p);
-  MatchFinder_Normalize3(subValue, p->hash, p->hashSizeSum + p->numSons);
+  MatchFinder_Normalize3(subValue, p->hash, p->hashSizeSum + p->numSons, p->btMode);
   MatchFinder_ReduceOffsets(p, subValue);
 }
 
@@ -337,12 +361,13 @@ static UInt32 * Ht_GetMatchesSpec(UInt32 lenLimit, UInt32 *curMatchPtr, UInt32 p
 {
   //UInt32 *curMatchPtr= &_hash[kFixHashSize + hashValue];  // First entry in hash table to check
   UInt32 *lastMatchPtr = curMatchPtr + cutValue;            // Last entry to check + 1
-  UInt32 prevMatch = pos; //// + (UInt32(cur[0]) << 30);
-#define getMatch(x) (x)
+  UInt32 prevMatch = saveMatch(pos,cur);
 
   do {
     UInt32 curMatch = *curMatchPtr;   *curMatchPtr++ = prevMatch;   prevMatch = curMatch;
-    ////if ((curMatch>>30) != (*cur&3))   continue;   // Check tag stored in 2 higher bits of hash entry
+#ifdef OPTIMIZE_HT
+    if ((curMatch>>30) != (*cur&3))   continue;   // Check tag stored in 2 higher bits of hash entry
+#endif
     curMatch = getMatch(curMatch);
     UInt32 delta = pos - curMatch;
     if (delta >= _cyclicBufferSize)
@@ -795,7 +820,7 @@ static void Ht4_MatchFinder_Skip(CMatchFinder *p, UInt32 num)
     {
       UInt32 *curMatchPtr  = &(p->hash[kFix4HashSize + hashValue * p->cutValue]);   // First entry in hash table to check
       UInt32 *lastMatchPtr = curMatchPtr + p->cutValue/2;                           // Last entry+1
-      UInt32 prevMatch = p->pos; //// + (UInt32(cur[0]) << 30);
+      UInt32 prevMatch = saveMatch(p->pos,cur);
 
       do {
         UInt32 curMatch = *curMatchPtr;   *curMatchPtr++ = prevMatch;   prevMatch = curMatch;

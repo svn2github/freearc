@@ -201,7 +201,7 @@ void HashThreadFunc(CMatchFinderMt *mt)
         {
           UInt32 subValue = (mf->pos - mf->historySize - 1);
           MatchFinder_ReduceOffsets(mf, subValue);
-          MatchFinder_Normalize3(subValue, mf->hash + mf->fixedHashSize, mf->hashMask + 1);
+          MatchFinder_Normalize3(subValue, mf->hash + mf->fixedHashSize, mf->hashMask + 1, mf->btMode);
         }
         {
           UInt32 *heads = mt->hashBuf + ((numProcessedBlocks++) & kMtHashNumBlocksMask) * kMtHashBlockSize;
@@ -436,7 +436,7 @@ void BtFillBlock(CMatchFinderMt *p, UInt32 globalBlockIndex)
   if (p->pos > kMtMaxValForNormalize - kMtBtBlockSize)
   {
     UInt32 subValue = p->pos - p->cyclicBufferSize;
-    MatchFinder_Normalize3(subValue, p->son, p->cyclicBufferSize * 2);
+    MatchFinder_Normalize3(subValue, p->son, p->cyclicBufferSize * 2, p->MatchFinder->btMode);
     p->pos -= subValue;
   }
 
@@ -565,7 +565,7 @@ void MatchFinderMt_ReleaseStream(CMatchFinderMt *p)
 
 void MatchFinderMt_Normalize(CMatchFinderMt *p)
 {
-  MatchFinder_Normalize3(p->lzPos - p->historySize - 1, p->hash, p->fixedHashSize);
+  MatchFinder_Normalize3(p->lzPos - p->historySize - 1, p->hash, p->fixedHashSize, p->MatchFinder->btMode);
   p->lzPos = p->historySize + 1;
 }
 
