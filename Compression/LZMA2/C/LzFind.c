@@ -179,7 +179,7 @@ int MatchFinder_Create(CMatchFinder *p, UInt32 historySize, UInt32 hashSize,
     return 0;
   }
   sizeReserv = historySize >> 1;
-  if (historySize > ((UInt32)2 << 30))
+  if (historySize > ((UInt32)2 << 30)  ||  p->btMode==MF_HashTable)
     sizeReserv = historySize >> 2;
   sizeReserv += (keepAddBufferBefore + matchMaxLen + keepAddBufferAfter) / 2 + (1 << 19);
 

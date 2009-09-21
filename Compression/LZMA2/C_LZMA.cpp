@@ -102,7 +102,7 @@ SRes LzmaDec_AllocateUsingProperties(CLzmaDec *p, const CLzmaProps propNew, ISzA
   return SZ_OK;
 }
 
-// Input buffer size
+// Input buffer size for decompressor
 uint RangeDecoderBufferSize (uint dict)
 {return compress_all_at_once? dict : LARGE_BUFFER_SIZE;}     //// dict*1.1?
 
@@ -395,74 +395,88 @@ void LZMA_METHOD::ShowCompressionMethod (char *buf)
 // Посчитать, сколько памяти требуется для упаковки заданным методом
 MemSize LZMA_METHOD::GetCompressionMem (void)
 {
-  SetDictionary (dictionarySize);   // Ограничим размер словаря чтобы сжатие влезало в 4гб памяти :)
-  return 11*dictionarySize+dictionarySize/2;  ////
-/*
-  switch (matchFinder) {
-    case kBT2:    return NBT2::CalcHashSize(dictionarySize,hashSize)*sizeof(NBT2::CIndex) + dictionarySize*9 + NBT2::ReservedAreaSize(dictionarySize) + 256*kb + RangeEncoderBufferSize(dictionarySize);
-    case kBT3:    return NBT3::CalcHashSize(dictionarySize,hashSize)*sizeof(NBT3::CIndex) + dictionarySize*9 + NBT3::ReservedAreaSize(dictionarySize) + 256*kb + RangeEncoderBufferSize(dictionarySize);
-    case kBT4:    return NBT4::CalcHashSize(dictionarySize,hashSize)*sizeof(NBT4::CIndex) + dictionarySize*9 + NBT4::ReservedAreaSize(dictionarySize) + 256*kb + RangeEncoderBufferSize(dictionarySize);
-    case kHC4:    return NHC4::CalcHashSize(dictionarySize,hashSize)*sizeof(NHC4::CIndex) + dictionarySize*5 + NHC4::ReservedAreaSize(dictionarySize) + 256*kb + RangeEncoderBufferSize(dictionarySize);
-    case kHT4:    return NHT4::CalcHashSize(dictionarySize,hashSize)*sizeof(NHT4::CIndex) + dictionarySize   + NHT4::ReservedAreaSize(dictionarySize) + 256*kb + RangeEncoderBufferSize(dictionarySize);
-    default:      CHECK (FALSE, (s,"lzma::GetCompressionMem - unknown matchFinder %d", matchFinder));
+  CLzmaEncProps props;
+  LzmaEncProps_Init(&props);
+  props.dictSize = dictionarySize;
+  props.mc = matchFinderCycles;
+  props.lc = litContextBits;
+  props.lp = litPosBits;
+  props.pb = posStateBits;
+  props.algo = algorithm;
+  props.fb = numFastBytes;
+  props.hashSize = hashSize;
+  switch (matchFinder)
+  {
+    case kHC4:  props.btMode = MF_HashChain ;  props.numHashBytes = 4; break;
+    case kBT2:  props.btMode = MF_BinaryTree;  props.numHashBytes = 2; break;
+    case kBT3:  props.btMode = MF_BinaryTree;  props.numHashBytes = 3; break;
+    case kBT4:  props.btMode = MF_BinaryTree;  props.numHashBytes = 4; break;
+    case kHT4:  props.btMode = MF_HashTable;   props.numHashBytes = 4; break;
   }
-*/
+  props.numThreads = GetCompressionThreads();
+  props.writeEndMark = 1;
+  LzmaEncProps_Normalize(&props);
+
+  MemSize reservedArea = props.dictSize/(matchFinder==kHT4? 4 : 2);
+  MemSize sons         = matchFinder==kHT4? 0
+                       : matchFinder==kHC4? 1
+                       :                    2;
+
+  return props.dictSize + reservedArea + props.hashSize + sons*sizeof(CLzRef)*props.dictSize + 1*mb;
 }
 
+// Вычисляет словарь, использующий не более mem памяти для сжатия заданным LZMA_METHOD
 MemSize calcDictSize (LZMA_METHOD *p, MemSize mem)
 {
-  double mem4 = mymax (double(mem)-256*kb, 0);
-  switch (p->matchFinder) {
-    case kBT2:    return (MemSize)floor(mem4/9.5);
-    case kBT3:    return (MemSize)floor(mem4/11.5);
-    case kBT4:    return (MemSize)floor(mem4/11.5);
-    case kHC4:    return (MemSize)floor(mem4/7.5);
-    case kHT4:    return (MemSize)floor(mem4/1.75);
-    default:      CHECK (FALSE, (s,"lzma::calcDictSize - unknown matchFinder %d", p->matchFinder));
+  double mem4 = mymax (double(mem) - BUFFER_SIZE, 0);
+  if (p->hashSize)
+  {
+    mem4 = mymax (mem4 - p->hashSize, 0);
+    switch (p->matchFinder) {
+      case kBT2:    return (MemSize)floor(mem4/9.5);
+      case kBT3:    return (MemSize)floor(mem4/9.5);
+      case kBT4:    return (MemSize)floor(mem4/9.5);
+      case kHC4:    return (MemSize)floor(mem4/5.5);
+      case kHT4:    return (MemSize)floor(mem4/1.25);
+    }
   }
+  else
+  {
+    switch (p->matchFinder) {
+      case kBT2:    return (MemSize)floor(mem4/9.5);
+      case kBT3:    return (MemSize)floor(mem4/11.5);
+      case kBT4:    return (MemSize)floor(mem4/11.5);
+      case kHC4:    return (MemSize)floor(mem4/7.5);
+      case kHT4:    return (MemSize)floor(mem4/1.75);      //// дефолтный хеш - до 2x, см. LzmaEncProps_Normalize
+    }
+  }
+  return 0;
 }
 
 // Ограничить использование памяти при упаковке
 void LZMA_METHOD::SetCompressionMem (MemSize mem)
 {
   if (mem<=0)  return;
-  hashSize       = 0;
-  dictionarySize = calcDictSize (this, mem);
-
-  if (dictionarySize<32*kb) {
-
-  // Если словарь получился слишком маленьким - переключимся на самый простой алгоритм сжатия.
-  //   (на настоящий момент, при одинаковых минимимальных требованиях к памяти
-  //     у всех оставшихся алгоритмов, это не имеет никакого смысла):
-  //  if (matchFinder!=HC4)
-  //    matchFinder = HC4,  SetCompressionMem (mem);
-  //  else
-      dictionarySize = 32*kb;
-  }
-  // Округлим словарь вниз до 32 kb, 48 kb, 64 kb...
-  uint t = 1 << lb(dictionarySize);
-  if (t/2*3 <= dictionarySize)
-        dictionarySize = t/2*3;
-  else  dictionarySize = t;
+  SetDictionary (calcDictSize (this, mem));
 }
 
 // Ограничить использование памяти при распаковке
 void LZMA_METHOD::SetDecompressionMem (MemSize mem)
 {
   if (mem<=0)  return;
-  dictionarySize = mem;
-  // Округлим словарь вниз до 32 kb, 48 kb, 64 kb...
-  uint t = 1 << lb(dictionarySize);
-  if (t/2*3 <= dictionarySize)
-        dictionarySize = t/2*3;
-  else  dictionarySize = t;
+  SetDictionary (mem);
 }
 
 // Установить размер словаря.
 void LZMA_METHOD::SetDictionary (MemSize mem)
 {
   if (mem<=0)  return;
+  // Ограничим размер словаря чтобы сжатие влезало в 4гб памяти :)
   dictionarySize = mymin (mem, roundDown (calcDictSize (this, UINT_MAX), mb));
+  // Словарь - минимум 32 кб, по возможности округлённый до мегабайт
+  dictionarySize = mymax (32*kb, dictionarySize);
+  dictionarySize = dictionarySize < 2*mb? dictionarySize
+                                        : roundDown(dictionarySize, 1*mb);
 }
 
 #endif  // !defined (FREEARC_DECOMPRESS_ONLY)
@@ -499,8 +513,8 @@ COMPRESSION_METHOD* parse_LZMA (char** parameters)
       else if (strequ (param, "fastest"))  p->algorithm = 0,  p->matchFinder==INT_MAX && (p->matchFinder = kHT4),  p->numFastBytes = 32,   p->matchFinderCycles = 1;
       else if (strequ (param, "fast"))     p->algorithm = 0,  p->matchFinder==INT_MAX && (p->matchFinder = kHT4),  p->numFastBytes = 32,   p->matchFinderCycles = 0;
       else if (strequ (param, "normal"))   p->algorithm = 1,  p->matchFinder==INT_MAX && (p->matchFinder = kHT4),  p->numFastBytes = 32,   p->matchFinderCycles = 0;
-      else if (strequ (param, "max"))      p->algorithm = 2,  p->matchFinder==INT_MAX && (p->matchFinder = kBT4),  p->numFastBytes = 128,  p->matchFinderCycles = 0;
-      else if (strequ (param, "ultra"))    p->algorithm = 2,  p->matchFinder==INT_MAX && (p->matchFinder = kBT4),  p->numFastBytes = 128,  p->matchFinderCycles = 128;
+      else if (strequ (param, "max"))      p->algorithm = 1,  p->matchFinder==INT_MAX && (p->matchFinder = kBT4),  p->numFastBytes = 128,  p->matchFinderCycles = 0;
+      else if (strequ (param, "ultra"))    p->algorithm = 1,  p->matchFinder==INT_MAX && (p->matchFinder = kBT4),  p->numFastBytes = 128,  p->matchFinderCycles = 128;
       else {
 unnamed:// Сюда мы попадаем, если в параметре опущено его наименование
         // Это может быть строка - имя MatchFinder'а, целое число - значение numFastBytes,
@@ -521,6 +535,7 @@ unnamed:// Сюда мы попадаем, если в параметре опущено его наименование
     }
     if (p->matchFinder == INT_MAX)
       p->matchFinder = kHT4;   // default match finder
+    p->SetDictionary (p->dictionarySize);   // Ограничим размер словаря чтобы сжатие влезало в 4гб памяти :)
     return p;
   } else
     return NULL;   // Это не метод lzma
