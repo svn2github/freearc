@@ -11,7 +11,7 @@
 +10. "≈сли нашЄлс€ подход€щий REPDIST, то используем его при определЄнных услови€х"*2  (оптимизаци€ lazy matching)
 11. LZMA_LOG_BSR (BSR работает быстро на Intel, но очень медленно на AMD K7/K8)
 +12. InitializeCriticalSection exception
-13. использовать big_alloc
++13. использовать big_alloc
 14. -m3: использовать lzma:a1 поскольку оно быстрее на много€дерных cpu?
     "(lzma:fast:32:mc8|lzma:normal:16:mc2|...)" - синтаксис дл€ выбора алгоритма в зависимости от значени€ -mt
 15. DEF_GetHeads, GetHeadsHt4, HASH4_CALC, MT_HASH4_CALC: использовать умножение

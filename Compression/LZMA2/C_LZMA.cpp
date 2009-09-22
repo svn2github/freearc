@@ -62,8 +62,8 @@ namespace LzmaEncoder {
 using namespace LzmaEncoder;
 #endif
 
-static void *SzAlloc(void *p, size_t size) { p = p; return MyAlloc(size); }
-static void SzFree(void *p, void *address) { p = p; MyFree(address); }
+static void *SzAlloc(void *p, size_t size) { p = p; return BigAlloc(size); }
+static void SzFree(void *p, void *address) { p = p; BigFree(address); }
 static ISzAlloc g_Alloc = { SzAlloc, SzFree };
 
 int SRes_to_FreeArc (SRes res)
