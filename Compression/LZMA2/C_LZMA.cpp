@@ -119,6 +119,7 @@ typedef struct
   CALLBACK_FUNC *callback;
   void *auxdata;
   bool first_read;
+  int errcode;
 } CallbackInStream;
 
 typedef struct
@@ -146,7 +147,7 @@ SRes CallbackRead(void *p, void *buf, size_t *size)
     res  =  s->callback ("read", buf, mymin(*size, BUFFER_SIZE), s->auxdata);
   }
   if (res >= 0)  {*size = res; return SZ_OK;}
-  else           {*size = 0;   return res;}
+  else           {*size = 0;   s->errcode = res; return res;}
 }
 
 size_t CallbackWrite(void *p, const void *buf, size_t size)
@@ -171,7 +172,7 @@ int lzma_compress  ( int dictionarySize,
                      CALLBACK_FUNC *callback,
                      void *auxdata )
 {
-  CallbackInStream  inStream;    inStream.Read  = CallbackRead;    inStream.callback = callback;   inStream.auxdata = auxdata;  inStream.first_read = False;
+  CallbackInStream  inStream;    inStream.Read  = CallbackRead;    inStream.callback = callback;   inStream.auxdata = auxdata;   inStream.errcode = FREEARC_OK;  inStream.first_read = False;
   CallbackOutStream outStream;  outStream.Write = CallbackWrite;  outStream.callback = callback;  outStream.auxdata = auxdata;  outStream.errcode = FREEARC_OK;
 
   CLzmaEncHandle enc;
@@ -207,8 +208,8 @@ int lzma_compress  ( int dictionarySize,
   LzmaEnc_Destroy(enc, &g_Alloc, &g_Alloc);
 
   // Вернуть код ошибки входного/выходного потока или перекодировать код ошибки из 7z в fa
-  //if (inStream.errcode)
-  //  return inStream.errcode;
+  if (inStream.errcode)
+    return inStream.errcode;
   if (outStream.errcode)
     return outStream.errcode;
   return SRes_to_FreeArc(res);
