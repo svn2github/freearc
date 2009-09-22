@@ -129,13 +129,18 @@ static SRes MtSync_Create(CMtSync *p, unsigned (MY_STD_CALL *startAddress)(void 
 
 void MtSync_Init(CMtSync *p) { p->needStart = True; }
 
-#define kMtMaxValForNormalize 0xFFFFFFFF
+#define kMtMaxValForNormalize 0xffffffff
 
-#define DEF_GetHeads2(name, v, action) \
-static void GetHeads ## name(const Byte *p, UInt32 pos, \
-UInt32 *hash, UInt32 hashMask, UInt32 *heads, UInt32 numHeads, const UInt32 *crc, UInt32 cutValue) \
-{ cutValue=cutValue; action; for (; numHeads != 0; numHeads--) { \
-const UInt32 value = (v); p++; *heads++ = pos - hash[value]; hash[value] = pos++;  } }
+#define DEF_GetHeads2(name, v, action)                                                                \
+static void GetHeads ## name(const Byte *p, UInt32 pos, UInt32 *hash, UInt32 hashMask,                \
+                             UInt32 *heads, UInt32 numHeads, const UInt32 *crc, UInt32 cutValue)      \
+{                                                                                                     \
+  cutValue=cutValue;                                                                                  \
+  action;                                                                                             \
+  for (; numHeads != 0; numHeads--)                                                                   \
+    {const UInt32 value = (v); p++; *heads++ = pos - hash[value]; hash[value] = pos++;}               \
+}
+
 
 #define DEF_GetHeads(name, v) DEF_GetHeads2(name, v, ;)
 
@@ -145,11 +150,13 @@ DEF_GetHeads(4,  (crc[p[0]] ^ p[1] ^ ((UInt32)p[2] << 8) ^ (crc[p[3]] << 5)) & h
 DEF_GetHeads(4b, (crc[p[0]] ^ p[1] ^ ((UInt32)p[2] << 8) ^ ((UInt32)p[3] << 16)) & hashMask)
 /* DEF_GetHeads(5,  (crc[p[0]] ^ p[1] ^ ((UInt32)p[2] << 8) ^ (crc[p[3]] << 5) ^ (crc[p[4]] << 3)) & hashMask) */
 
-static void GetHeadsHt4(const Byte *p, UInt32 pos, UInt32 *hash, UInt32 hashMask, UInt32 *heads, UInt32 numHeads, const UInt32 *crc, UInt32 cutValue)
+static void GetHeadsHt4(const Byte *p, UInt32 pos, UInt32 *hash, UInt32 hashMask,
+                        UInt32 *heads, UInt32 numHeads, const UInt32 *crc, UInt32 cutValue)
 {
+  int shiftBits = 32 - lb(hashMask+1);
   for (; numHeads != 0; numHeads--)
   {
-    const UInt32 value = (crc[p[0]] ^ p[1] ^ ((UInt32)p[2] << 8) ^ (crc[p[3]] << 5)) & hashMask;
+    const UInt32 value = (*(UInt32*)p * 1234567891) >> shiftBits;
     p++;
     *heads++ = (UInt32) &(hash[value*cutValue]);   // First entry in hash table to check      ////64-bit!
   }
