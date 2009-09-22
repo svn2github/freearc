@@ -418,10 +418,10 @@ MemSize LZMA_METHOD::GetCompressionMem (void)
   props.writeEndMark = 1;
   LzmaEncProps_Normalize(&props);
 
-  MemSize reservedArea = props.dictSize/(matchFinder==kHT4? 4 : 2);
-  uint64  sons         = matchFinder==kHT4? 0
-                       : matchFinder==kHC4? 1
-                       :                    2;
+  uint64 reservedArea = props.dictSize/(matchFinder==kHT4? 4 : 2);
+  uint64 sons         = matchFinder==kHT4? 0
+                      : matchFinder==kHC4? 1
+                      :                    2;
   // Возращаем значение не более 4gb-1
   return MemSize (mymin (MemSize(-1), uint64(props.dictSize) + reservedArea + props.hashSize + sons*sizeof(CLzRef)*props.dictSize + 1*mb));
 }
