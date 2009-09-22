@@ -76,16 +76,18 @@ doMain args  = do
   uiDoneProgram                     -- Закрыть UI
 
  where
-  handler ex  =
+  handler ex  = do
 #ifdef FREEARC_GUI
-    mapM_ doNothing $
+    doNothing0
 #else
+    whenM (val programFinished) $ do
+      foreverM$ sleepSeconds 1      -- Если программа находится в shutdown, позволим ему завершить программу
     registerError$ GENERAL_ERROR$
-#endif
       case ex of
         Deadlock    -> ["0011 No threads to run: infinite loop or deadlock?"]
         ErrorCall s -> [s]
         other       -> [show ex]
+#endif
 
 
 -- |Диспетчеризует команду и организует её повторение для каждого подходящего архива
