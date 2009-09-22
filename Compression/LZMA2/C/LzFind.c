@@ -160,7 +160,9 @@ void MatchFinder_Construct(CMatchFinder *p)
 static void MatchFinder_FreeThisClassMemory(CMatchFinder *p, ISzAlloc *alloc)
 {
   alloc->Free(alloc, p->hash);
+  if (p->son)  alloc->Free(alloc, p->son);
   p->hash = 0;
+  p->son  = 0;
 }
 
 void MatchFinder_Free(CMatchFinder *p, ISzAlloc *alloc)
@@ -195,6 +197,7 @@ int MatchFinder_Create(CMatchFinder *p, UInt32 historySize, UInt32 hashSize,
   p->keepSizeBefore = historySize + keepAddBufferBefore + 1;
   p->keepSizeAfter = matchMaxLen + keepAddBufferAfter;
   /* we need one additional byte, since we use MoveBlock after pos++ and before dictionary using */
+
   if (LzInWindow_Create(p, sizeReserv, alloc))
   {
     p->matchMaxLen = matchMaxLen;
@@ -207,24 +210,24 @@ int MatchFinder_Create(CMatchFinder *p, UInt32 historySize, UInt32 hashSize,
     if (p->numHashBytes > 4)   p->fixedHashSize += kHash4Size;
 
     {
-      UInt32 prevSize = p->hashSizeSum + p->numSons;
+      UInt32 prevHashSizeSum = p->hashSizeSum;
+      UInt32 prevNumSons     = p->numSons;
       p->historySize = historySize;
       p->hashSizeSum = hashSize + p->fixedHashSize;
       p->cyclicBufferSize = historySize + 1;
       p->numSons = p->btMode==MF_BinaryTree ? p->cyclicBufferSize * 2
                  : p->btMode==MF_HashChain  ? p->cyclicBufferSize
                                             : 0;
-      UInt32 newSize = p->hashSizeSum + p->numSons;
-      if (p->hash != 0 && prevSize == newSize)
+      if (p->hash != 0 && prevHashSizeSum == p->hashSizeSum &&
+      	 (p->son  != 0 || prevNumSons == 0) && prevNumSons == p->numSons)
       {
-        p->son = p->hash + p->hashSizeSum;
         return 1;
       }
       MatchFinder_FreeThisClassMemory(p, alloc);
-      p->hash = AllocRefs(newSize, alloc);
-      if (p->hash != 0)
+      p->hash = AllocRefs(p->hashSizeSum, alloc);
+      p->son  = p->numSons? AllocRefs(p->numSons, alloc) : 0;
+      if (p->hash != 0  &&  (p->numSons==0 || p->son!=0))
       {
-        p->son = p->hash + p->hashSizeSum;
         return 1;
       }
     }
@@ -309,7 +312,8 @@ void MatchFinder_Normalize3(UInt32 subValue, CLzRef *items, UInt32 numItems, int
 static void MatchFinder_Normalize(CMatchFinder *p)
 {
   UInt32 subValue = MatchFinder_GetSubValue(p);
-  MatchFinder_Normalize3(subValue, p->hash, p->hashSizeSum + p->numSons, p->btMode);
+  MatchFinder_Normalize3(subValue, p->hash, p->hashSizeSum, p->btMode);
+  MatchFinder_Normalize3(subValue, p->son,  p->numSons,     p->btMode);
   MatchFinder_ReduceOffsets(p, subValue);
 }
 
