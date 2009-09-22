@@ -419,11 +419,11 @@ MemSize LZMA_METHOD::GetCompressionMem (void)
   LzmaEncProps_Normalize(&props);
 
   MemSize reservedArea = props.dictSize/(matchFinder==kHT4? 4 : 2);
-  MemSize sons         = matchFinder==kHT4? 0
+  uint64  sons         = matchFinder==kHT4? 0
                        : matchFinder==kHC4? 1
                        :                    2;
-
-  return props.dictSize + reservedArea + props.hashSize + sons*sizeof(CLzRef)*props.dictSize + 1*mb;
+  // Возращаем значение не более 4gb-1
+  return MemSize (mymin (MemSize(-1), uint64(props.dictSize) + reservedArea + props.hashSize + sons*sizeof(CLzRef)*props.dictSize + 1*mb));
 }
 
 // Вычисляет словарь, использующий не более mem памяти для сжатия заданным LZMA_METHOD
@@ -536,7 +536,6 @@ unnamed:// Сюда мы попадаем, если в параметре опущено его наименование
     }
     if (p->matchFinder == INT_MAX)
       p->matchFinder = kHT4;   // default match finder
-    p->SetDictionary (p->dictionarySize);   // Ограничим размер словаря чтобы сжатие влезало в 4гб памяти :)
     return p;
   } else
     return NULL;   // Это не метод lzma
