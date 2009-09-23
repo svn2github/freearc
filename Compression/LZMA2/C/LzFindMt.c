@@ -129,14 +129,17 @@ static SRes MtSync_Create(CMtSync *p, unsigned (MY_STD_CALL *startAddress)(void 
 
 void MtSync_Init(CMtSync *p) { p->needStart = True; }
 
-#define kMtMaxValForNormalize 0xffffffff
+//#define kMtMaxValForNormalize ((1<<24)-1)
+//#define kMtNormalizeStepMin   (1*mb)
+#define kMtMaxValForNormalize 0x3fffffff
+#define kMtNormalizeStepMin   (64*mb)
 
 #define DEF_GetHeads2(name, v, action)                                                                \
 static void GetHeads ## name(const Byte *p, UInt32 pos, UInt32 *hash, UInt32 hashMask,                \
                              UInt32 *heads, UInt32 numHeads, const UInt32 *crc, UInt32 cutValue)      \
 {                                                                                                     \
   cutValue=cutValue;                                                                                  \
-  action;                                                                                             \
+  action                                                                                              \
   for (; numHeads != 0; numHeads--)                                                                   \
     {const UInt32 value = (v); p++; *heads++ = pos - hash[value]; hash[value] = pos++;}               \
 }
@@ -206,9 +209,10 @@ void HashThreadFunc(CMatchFinderMt *mt)
         MatchFinder_ReadIfRequired(mf);
         if (mf->pos > (kMtMaxValForNormalize - kMtHashBlockSize))
         {
-          UInt32 subValue = (mf->pos - mf->historySize - 1);
+          UInt32 subValue = mymax(mf->pos - mf->historySize - 1, kMtNormalizeStepMin);
           MatchFinder_ReduceOffsets(mf, subValue);
-          MatchFinder_Normalize3(subValue, mf->hash + mf->fixedHashSize, mf->hashMask + 1, mf->btMode);
+          if (mf->btMode != MF_HashTable)  // HT matchfinder uses MatchFinder->hash in other thread
+            MatchFinder_Normalize3(subValue, mf->hash + mf->fixedHashSize, mf->hashSizeSum - mf->fixedHashSize, mf->btMode);
         }
         {
           UInt32 *heads = mt->hashBuf + ((numProcessedBlocks++) & kMtHashNumBlocksMask) * kMtHashBlockSize;
@@ -442,8 +446,10 @@ void BtFillBlock(CMatchFinderMt *p, UInt32 globalBlockIndex)
 
   if (p->pos > kMtMaxValForNormalize - kMtBtBlockSize)
   {
-    UInt32 subValue = p->pos - p->cyclicBufferSize;
-    MatchFinder_Normalize3(subValue, p->son, p->cyclicBufferSize * 2, p->MatchFinder->btMode);
+    UInt32 subValue = mymax(p->pos - p->cyclicBufferSize, kMtNormalizeStepMin);
+    if (p->MatchFinder->btMode == MF_HashTable)   // HT matchfinder uses MatchFinder->hash in this thread
+      MatchFinder_Normalize3(subValue, p->MatchFinder->hash + p->MatchFinder->fixedHashSize, p->MatchFinder->hashSizeSum - p->MatchFinder->fixedHashSize, p->MatchFinder->btMode);
+    MatchFinder_Normalize3(subValue, p->son, p->MatchFinder->numSons, p->MatchFinder->btMode);
     p->pos -= subValue;
   }
 
@@ -572,8 +578,9 @@ void MatchFinderMt_ReleaseStream(CMatchFinderMt *p)
 
 void MatchFinderMt_Normalize(CMatchFinderMt *p)
 {
-  MatchFinder_Normalize3(p->lzPos - p->historySize - 1, p->hash, p->fixedHashSize, p->MatchFinder->btMode);
-  p->lzPos = p->historySize + 1;
+  UInt32 subValue = mymax(p->lzPos - p->historySize - 1, kMtNormalizeStepMin);
+  MatchFinder_Normalize3(subValue, p->hash, p->fixedHashSize, p->MatchFinder->btMode);
+  p->lzPos -= subValue;
 }
 
 void MatchFinderMt_GetNextBlock_Bt(CMatchFinderMt *p)

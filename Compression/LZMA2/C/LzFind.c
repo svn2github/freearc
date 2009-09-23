@@ -7,9 +7,10 @@
 #include "LzHash.h"
 
 #define kEmptyHashValue 0
-#define kMaxValForNormalize ((UInt32)0xFFFFFFFF)
-#define kNormalizeStepMin (1 << 10) /* it must be power of 2 */
-#define kNormalizeMask (~(kNormalizeStepMin - 1))
+//#define kMaxValForNormalize ((UInt32)(1<<22)-1)
+//#define kNormalizeStepMin (1*mb)
+#define kMaxValForNormalize ((UInt32)0x3FFFFFFF)
+#define kNormalizeStepMin (64*mb)
 #define kMaxHistorySize ((UInt32)3 << 30)
 
 #define kStartMaxLen 3
@@ -277,7 +278,7 @@ void MatchFinder_Init(CMatchFinder *p)
 
 static UInt32 MatchFinder_GetSubValue(CMatchFinder *p)
 {
-  return (p->pos - p->historySize - 1) & kNormalizeMask;
+  return mymax(p->pos - p->historySize - 1, kNormalizeStepMin);
 }
 
 void MatchFinder_Normalize3(UInt32 subValue, CLzRef *items, UInt32 numItems, int btMode)
@@ -363,8 +364,8 @@ static UInt32 * Ht_GetMatchesSpec(UInt32 lenLimit, UInt32 *curMatchPtr, UInt32 p
     UInt32 _cyclicBufferPos, UInt32 _cyclicBufferSize, UInt32 cutValue,
     UInt32 *distances, UInt32 maxLen)
 {
-  //UInt32 *curMatchPtr= &_hash[kFixHashSize + hashValue];  // First entry in hash table to check
-  UInt32 *lastMatchPtr = curMatchPtr + cutValue;            // Last entry to check + 1
+  //UInt32 *curMatchPtr= &_hash[kFix4HashSize + hashValue*p->cutValue];  // First entry in hash table to check
+  UInt32 *lastMatchPtr = curMatchPtr + cutValue;                         // Last entry to check + 1
   UInt32 prevMatch = saveMatch(pos,cur);
 
   do {
