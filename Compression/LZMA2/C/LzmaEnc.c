@@ -74,13 +74,12 @@ void LzmaEncProps_Normalize(CLzmaEncProps *p)
 
   if (p->hashSize == 0)
   {
-    UInt32 hs = rounddown_to_power_of (p->dictSize, 2);
-    p->hashSize = p->btMode==MF_HashTable?  p->dictSize/sizeof(CLzRef)    // for hashSize <= dictSize
+    p->hashSize = p->btMode==MF_HashTable?  p->dictSize/sizeof(CLzRef)    // by default, hashSize <= dictSize
                 : p->numHashBytes==2     ?  64*kb
-                : hs<=64*kb              ?  64*kb
-                : hs<=32*mb              ?  hs/2
+                : p->dictSize<=64*kb     ?  64*kb
+                : p->dictSize<=32*mb     ?  p->dictSize/2
                 : p->numHashBytes==3     ?  16*mb
-                :                           hs/4;
+                :                           p->dictSize/4;
     p->hashSize *= sizeof(CLzRef);
   }
 
