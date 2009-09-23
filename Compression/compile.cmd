@@ -23,7 +23,7 @@
 @cd GRZip
 @make
 @cd ..
-@cd LZMA
+@cd LZMA2
 @make
 @cd ..
 @cd External

@@ -19,7 +19,7 @@ Common.obj: Common.cpp Common.h Compression.h
 CompressionLibrary.obj: CompressionLibrary.cpp Common.h Compression.h
 	$(CC) $(CFLAGS) $(CFLAGS) $<
 
-C_LZMA.obj: LZMA\C_LZMA.cpp
+C_LZMA.obj: LZMA2\C_LZMA.cpp
 	$(CC) $(CFLAGS) $<
 
 C_PPMD.obj: PPMD\C_PPMD.cpp
