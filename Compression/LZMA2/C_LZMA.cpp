@@ -448,7 +448,7 @@ MemSize calcDictSize (LZMA_METHOD *p, MemSize mem)
       case kBT3:    return (MemSize)floor(mem4/11.5);
       case kBT4:    return (MemSize)floor(mem4/11.5);
       case kHC4:    return (MemSize)floor(mem4/7.5);
-      case kHT4:    return (MemSize)floor(mem4/1.75);      //// дефолтный хеш - до 2x, см. LzmaEncProps_Normalize
+      case kHT4:    return (MemSize)floor(mem4/2.25);
     }
   }
   return 0;
