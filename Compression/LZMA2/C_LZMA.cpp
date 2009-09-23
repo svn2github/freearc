@@ -345,10 +345,10 @@ int LZMA_METHOD::compress (CALLBACK_FUNC *callback, void *auxdata)
   if (!f) f = (FARPROC) lzma_compress;
 
   SetDictionary (dictionarySize);   // Ограничим размер словаря чтобы сжатие влезало в 4гб памяти :)
-  // Если LZMA будет использовать multithreading matchfinder,
+  // Если LZMA будет использовать multithreading алгоритм,
   // то нет смысла считать время работы по основному треду - вместо этого
   // следует использовать wall clock time всего процесса упаковки
-  if ((algorithm || matchFinder!=kHC4) && GetCompressionThreads()>1)
+  if (algorithm && GetCompressionThreads()>1)
       addtime = -1;   // это сигнал на использование wall clock time
   return ((int (*)(int, int, int, int, int, int, int, int, int, CALLBACK_FUNC*, void*)) f)
                          (dictionarySize,
