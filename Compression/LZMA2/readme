@@ -5,8 +5,8 @@
 +4. Буфер рангкодера уменьшен с 1 мб до 64 кб: RC_BUF_SIZE
 +5. При распаковке запись производится каждые 256 кб (LARGE_BUFFER_SIZE)
 +6. размер хеша и выделение памяти (CalcHashSize, ReservedAreaSize)
-6. разбить на 3 части (hash,son) и сначала выделять меньший блок; MatchFinder_Normalize3
-6. kMtMaxValForNormalize=(1<<30)-1, так как большие значения используются в ht4 mf
++6. разбить на 3 части (hash,son) и сначала выделять меньший блок; MatchFinder_Normalize3
++6. kMtMaxValForNormalize=(1<<30)-1, так как большие значения используются в ht4 mf
 +7. kDicLogSizeMaxCompress = 31;  MF_HashTable;  hashSize;  LzmaEncProps_Normalize
 8. compress_all_at_once
 +9. maxDist[] = {0, 0, 128, 2048, 64<<10, 2<<20, 12<<20}  (оптимизация lazy matching)

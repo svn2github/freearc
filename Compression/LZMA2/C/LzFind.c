@@ -199,40 +199,56 @@ int MatchFinder_Create(CMatchFinder *p, UInt32 historySize, UInt32 hashSize,
   p->keepSizeAfter = matchMaxLen + keepAddBufferAfter;
   /* we need one additional byte, since we use MoveBlock after pos++ and before dictionary using */
 
-  if (LzInWindow_Create(p, sizeReserv, alloc))
-  {
-    p->matchMaxLen = matchMaxLen;
-    hashSize /= sizeof(CLzRef);                                      // convert bytes to hashtable entries
-    p->hashMask =  p->btMode==MF_HashTable? hashSize/p->cutValue-1   // every hash slot contains cutValue entries with the same hash value
-                                          : hashSize-1;
-    p->fixedHashSize = 0;
-    if (p->numHashBytes > 2)   p->fixedHashSize += kHash2Size;
-    if (p->numHashBytes > 3)   p->fixedHashSize += kHash3Size;
-    if (p->numHashBytes > 4)   p->fixedHashSize += kHash4Size;
+  p->matchMaxLen = matchMaxLen;
+  hashSize /= sizeof(CLzRef);                                      // convert bytes to hashtable entries
+  p->hashMask =  p->btMode==MF_HashTable? hashSize/p->cutValue-1   // every hash slot contains cutValue entries with the same hash value
+                                        : hashSize-1;
+  p->fixedHashSize = 0;
+  if (p->numHashBytes > 2)   p->fixedHashSize += kHash2Size;
+  if (p->numHashBytes > 3)   p->fixedHashSize += kHash3Size;
+  if (p->numHashBytes > 4)   p->fixedHashSize += kHash4Size;
 
+  {
+    UInt32 prevHashSizeSum = p->hashSizeSum;
+    UInt32 prevNumSons     = p->numSons;
+    p->historySize = historySize;
+    p->hashSizeSum = hashSize + p->fixedHashSize;
+    p->cyclicBufferSize = historySize + 1;
+    p->numSons = p->btMode==MF_BinaryTree ? p->cyclicBufferSize * 2
+               : p->btMode==MF_HashChain  ? p->cyclicBufferSize
+                                          : 0;
+    if (p->hash != 0 && prevHashSizeSum == p->hashSizeSum &&
+       (p->son  != 0 || prevNumSons == 0) && prevNumSons == p->numSons)
     {
-      UInt32 prevHashSizeSum = p->hashSizeSum;
-      UInt32 prevNumSons     = p->numSons;
-      p->historySize = historySize;
-      p->hashSizeSum = hashSize + p->fixedHashSize;
-      p->cyclicBufferSize = historySize + 1;
-      p->numSons = p->btMode==MF_BinaryTree ? p->cyclicBufferSize * 2
-                 : p->btMode==MF_HashChain  ? p->cyclicBufferSize
-                                            : 0;
-      if (p->hash != 0 && prevHashSizeSum == p->hashSizeSum &&
-      	 (p->son  != 0 || prevNumSons == 0) && prevNumSons == p->numSons)
-      {
+      if (LzInWindow_Create(p, sizeReserv, alloc))
         return 1;
-      }
+    }
+    else
+    {
       MatchFinder_FreeThisClassMemory(p, alloc);
-      p->hash = AllocRefs(p->hashSizeSum, alloc);
-      p->son  = p->numSons? AllocRefs(p->numSons, alloc) : 0;
-      if (p->hash != 0  &&  (p->numSons==0 || p->son!=0))
+
+      // Allocate larger block first (either dictionary or hash+son)
+      if (historySize + sizeReserv > (p->hashSizeSum + p->numSons) * sizeof(CLzRef))
       {
-        return 1;
+        if (LzInWindow_Create(p, sizeReserv, alloc))
+        {
+          p->hash = AllocRefs(p->hashSizeSum, alloc);
+          p->son  = p->numSons? AllocRefs(p->numSons, alloc) : 0;
+          if (p->hash != 0  &&  (p->numSons==0 || p->son!=0))
+            return 1;
+        }
+      }
+      else
+      {
+        p->son  = p->numSons? AllocRefs(p->numSons, alloc) : 0;
+        p->hash = AllocRefs(p->hashSizeSum, alloc);
+        if (p->hash != 0  &&  (p->numSons==0 || p->son!=0))
+          if (LzInWindow_Create(p, sizeReserv, alloc))
+            return 1;
       }
     }
   }
+
   MatchFinder_Free(p, alloc);
   return 0;
 }
