@@ -356,7 +356,6 @@ lzma
   словарь в 1гб
 инсталятор
   sfx linux/nodelete
-  обновить powerpack для 0.52
   ?overwrite arc.ini/groups
   ?выбор языка средствами инсталятора
   translate the "Gb" and "Mb" and "kb" fields or dropdown entries that are not yet translatable...
