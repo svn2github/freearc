@@ -12,6 +12,9 @@
 ***    0185 Protection:=Protection: (written in your language, of course)  ***
 ***  It's tooltip:                                                         ***
 ***    1185 Protection:=Appends recovery information to archive            ***
+***                                                                        ***
+***  Also, one section contains relative URLs for language-specific        ***
+***  resources                                                             ***
 ******************************************************************************
 
 Language name in english and mother tongue
@@ -26,6 +29,43 @@ Filled only for languages providing their own translations
 0372 Wiki page (URL, not translation!)=??
 0256 Helpfile (URL, not translation!)=??
 0257 Command-line help (URL, not translation!)=??
+
+
+=== Explorer context menu =======================================================
+0391 Add to "%s"=Dodaj do "%s"
+0392 Compress the selected files using FreeArc=Kompresuj zaznaczone pliki przy użyciu FreeArc
+0393 Add to SFX "%s"=Dodaj do SFX "%s"
+0394 Compress the selected files into SFX using FreeArc=Kompresuj zaznaczone pliki do SFX przy użyciu FreeArc
+0395 Add to archive...=Dodaj do archiwum...
+0396 Compress the selected files using FreeArc via dialog=Kompresuj zaznaczone pliki przy użyciu linii komend FreeArc
+--
+0397 Open with FreeArc=Otwórz przy użyciu FreeArc
+0398 Open the selected archive(s) with FreeArc=Otwórz zaznaczone archiwa przy użyciu FreeArc
+0399 Extract to "%s"=Rozpakuj do "%s"
+0400 Extract the selected archive(s) to new folder=Rozpakuj zaznaczone archiwa do nowego folderu
+0401 Extract here=Rozpakuj tutaj
+0402 Extract the selected archive(s) to the same folder=Rozpakuj zaznaczone archiwa do tego folderu
+0403 Extract...=Rozpakuj...
+0404 Extract the selected archive(s) via dialog=Rozpakuj zaznaczone archiwa poprzez linię komend
+0405 Test=Testuj
+0406 Test the selected archive(s)=Testuj zaznaczone archiwa
+--
+0407 Convert to SFX=Konwertuj do SFX
+0408 Convert the selected archive(s) to SFX=Konwertuj zaznaczone archiwa do SFX
+0409 Convert from SFX=Konwertuj z SFX
+0410 Convert the selected SFX(es) to normal archive(s)=Konwertuj zaznaczone SFX do standartowych archiwów
+--
+0411 Modify...=Modyfikuj...
+0412 Modify the selected archives via dialog=Modyfikuj zaznaczone archiwa poprzez linię komend
+0413 Join...=Połącz...
+0414 Join the selected archives via dialog=Połącz zaznaczone archiwa poprzez linię komend
+--
+0415 Convert to .arc=Konwertuj do .arc
+0416 Convert the selected archive(s) to FreeArc format=Konwertuj zaznaczone archiwa do formatu FreeArc
+0417 Convert to .arc SFX=Konwetuj do .arc SFX
+0418 Convert the selected archive(s) to FreeArc SFX=Konwertuj zaznaczone archiwa do FreeArc SFX
+0419 Convert to .arc...=Konwertuj do .arc...
+0420 Convert the selected archive(s) to FreeArc format via dialog=Konwertuj zaznaczone archiwa do formatu FreeArc przy użyciu linii komend
 
 
 === Menu ========================================================================
@@ -74,6 +114,8 @@ Tools menu/toolbar
 0294 Recompress files in archive=Rekompresuj pliki w archiwum
 0270 Convert to SFX=Konwertuj do SFX
 0271 Convert archive to SFX=Konwertuj archiwum do SFX
+0426 Convert to FreeArc=Konwertuj do FreeArc
+0427 Convert foreign archive to FreeArc format=Konwertuj archiwa do formatu FreeArc
 0272 Encrypt=Szyfrowanie
 0273 Encrypt archive contents=Szyfruj zawartość archiwum
 0274 Protect=Ochrona
@@ -147,7 +189,7 @@ Archive open dialog
 
 Add dialog
 --Title
-0134 Add %1 to archive=Dodaj %1 do archiwum
+0134 Add %1 to archive=Dodaje %1 do archiwum
 0135 Add %2 files to archive=Dodaje plików: %2 do archiwum
 0136 Add all files to archive=Dodaj wybrane pliki do archiwum
 0146 Modify all archives=Modyfikuje wybrane archiwa
@@ -156,6 +198,8 @@ Add dialog
 0149 Join all archives=Łączy wybrane archiwa
 0150 Join %1 with another archive=Łączy %1 z wybranym archiwum
 0151 Join %2 archives=Łączy archiwa: %2
+0428 Convert %1 to FreeArc format=Konwertuje %1 do formatu FreeArc
+0429 Convert %2 archives to FreeArc format=Konwertuje %2 archiwa to formatu FreeArc
 ---------
 0182 Main=Główny
 0131 Output archive:=Archiwum:
@@ -248,6 +292,7 @@ Extract dialog
 0021 Select output directory=Wskaż miejsce dla wypakowanych plików
 0014 Append archive name to the output directory=Dołącz nazwę archiwum do katalogu wyjściowego
 --Other
+0425 Keep broken extracted files=Nie usuwaj uszkodzonych plików podczas wypakowywania
 0072 Additional options:=Dodatkowe opcje:
 
 
@@ -274,6 +319,13 @@ Archive information dialog
 --
 0097 Encryption algorithms:=Metoda szyfrowania:
 0098 Archive comment:=Komentarz:
+---
+0449 Solid blocks=Pełne bloki
+0450 Position=Pozycja
+0451 Size=Rozmiar
+0452 Compressed=Skompresowano
+0453 Files=Plików
+0454 Method=Metoda
 
 
 Settings dialog
@@ -287,11 +339,18 @@ Settings dialog
 0166 Logfile:=Log:
 0292 View=Widok
 0167 Select logfile=Wybierz plik log
+0447 Temporary directory:=Katalog tymczasowy
+0448 Select directory for temporary files=Wybierz katalog dla plików tymczasowych
 0172 Associate FreeArc with .arc files=Skojarz FreeArc z rozszerzeniem .arc
 0361 Add captions to toolbar buttons=Pokazuj opisy na pasku narzędzi
 0370 Watch for new versions via Internet=Sprawdzaj przez internet czy są nowe wersje programu
 0168 You should restart FreeArc in order for a language settings to take effect.=Powinieneś zrestartować FreeArc aby ustawienia języków zostały zatwierdzone.
 0169 Passwords need to be entered again after restart.=Hasło powinno zostać wpisane ponownie po restarcie.
+--
+0421 Explorer integration=Integracja z Explorer'em
+0422 Enable context menu in Explorer=Włącz menu kontekstowe
+0423 Make it cascaded=Menu kaskadowe
+0424 Enable individual commands:=Włącz poszczególne komendy
 --
 0388 Info=Informacje
 0389 Largest contiguous free memblock:=Największy graniczący wolny blok pamięci:
@@ -357,12 +416,9 @@ Many dialogs
 0081 &Cancel=&Anuluj
 0363 &Select=Zaznacz
 0364 &Close=&Zamknij
+0432 &Detach=Odłącz
 
 Progress indicator
---Buttons
-0052 &Background=Praca w tle
-0053 &Pause=Pauza
-0054 &Continue=Kontynuuj
 --Labels
 0056 Files=Plików:
 0057 Total files=Łącznie plików
@@ -383,6 +439,12 @@ Progress indicator
 0385 Scanning archive for damages=Skanowanie archiwum w poszukiwaniu błędów
 0386 Protecting archive from damages=Ochrona archiwum przed uszkodzeniami
 0387 Recovering archive=Odzyskiwanie archiwum
+--Extra options
+0446 Keep window on top=Zawsze na wierzchu
+--Buttons
+0052 &Background=Praca w tle
+0053 &Pause=Pauza
+0054 &Continue=Kontynuuj
 
 File overwrite dialog
 0078 Confirm File Replace=Potwierdź zamianę plików
@@ -405,19 +467,23 @@ Archive comment dialog
 
 
 === Infoline messages ====================================================
-0228 Deleting from %1=Usuwanie z %1
+0439 Listing archive %1=Tworzenie listy z archiwum %1
+0445 SUCCESFULLY LISTED %1=POMYŚLNIE UTWORZONO LISTĘ %1
+0442 %2 WARNINGS WHILE LISTING %1=OSTRZEŻENIA: %2 PODCZAS TWORZENIA LISTY
+
+0435 Deleting files from archive %1=Usuwanie plików z archiwum %1
 0229 FILES SUCCESFULLY DELETED FROM %1=PLIKI POMYŚLNIE USUNIĘTO Z %1
 0230 %2 WARNINGS WHILE DELETING FROM %1=OSTRZEŻENIA: %2 PODCZAS USUWANIA Z %1
 
-0231 Testing %1=Testowanie %1
+0440 Testing archive %1=Testowanie archiwum %1
 0232 SUCCESFULLY TESTED %1=POMYŚLNIE PRZETESTOWANO %1
 0233 %2 WARNINGS WHILE TESTING %1=OSTRZEŻENIA: %2 PODCZAS TESTOWANIA %1
 
-0234 Extracting files from %1=Wypakowywanie plików z %1
+0441 Extracting files from archive %1=Wypakowywanie plików z archiwum %1
 0235 FILES SUCCESFULLY EXTRACTED FROM %1=PLIKI POMYŚLNIE WYPAKOWANO Z %1
 0236 %2 WARNINGS WHILE EXTRACTING FILES FROM %1=OSTRZEŻENIA: %2 PODCZAS WYPAKOWYWANIA PLIKÓW Z %1
 
-0237 Modifying %1=Modyfikowanie %1
+0433 Modifying archive %1=Modyfikowanie archiwum %1
 0238 SUCCESFULLY MODIFIED %1=POMYŚLNIE ZMODYFIKOWANO %1
 0239 %2 WARNINGS WHILE MODIFYING %1=OSTRZEŻENIA: %2 PODCZAS MODYFIKOWANIA %1
 
@@ -425,9 +491,13 @@ Archive comment dialog
 0241 SUCCESFULLY JOINED ARCHIVES TO %1=POMYŚLNIE POŁĄCZONO ARCHIWA Z %1
 0242 %2 WARNINGS WHILE JOINING ARCHIVES TO %1=OSTRZEŻENIA: %2 PODCZAS ŁĄCZENIA ARCHIWÓW Z %1
 
-0243 Adding to %1=Dodawanie do %1
-0244 FILES SUCCESFULLY ADDED TO %1=POMYŚLNIE DODANO PLIKI DO %1
-0245 %2 WARNINGS WHILE ADDING TO %1=OSTRZEŻENIA: %2 PODCZAS DODAWNIA PLIKÓW DO %1
+0437 Creating archive %1=Tworzenie archiwum %1
+0443 SUCCESFULLY CREATED %1=POMYŚLNIE UTWORZONO %1
+0434 %2 WARNINGS WHILE CREATING %1=OSTRZEŻENIA: %2 PODCZAS TWORZENIA %1
+
+0438 Updating archive %1=Aktualizowanie archiwum %1
+0444 SUCCESFULLY UPDATED %1=POMYŚLNIE ZAKTUALIZOWANO %1
+0436 %2 WARNINGS WHILE UPDATING %1=OSTRZEŻENIA: %2 PODCZAS AKTUALIZWANIA %2
 
 0299 Lock archive(s)?=Zablokować archiwum?
 0300 Locking archive %1=Blokowanie archiwum %1
@@ -464,8 +534,8 @@ Archive comment dialog
 0332 can't open file "%1"=nie można otworzyć pliku "%1"
 0333 CRC error in file "%1"=błąd CRC w pliku "%1"
 0334 bad section %1 in %2=uszkodzony fragment %1 w %2
-0335 operation terminated!=operacja przerwana!
-0336 program terminated!=program zatrzymany!
+0455 Operation terminated by user!=Operacja przerwana przez użytkownika!
+0456 Program terminated by user!=Program zamknięty przez użytkownika!
 0337 no files, erasing empty archive=brak plików, plik tymczasowy został usunięty
 0338 skipped %1 fake files=odrzucono %1 fałszywych plik(ów)
 0339 bad password for archive %1=błędne hasło do archiwum %1
@@ -497,14 +567,18 @@ Errors returned by compression methods
 0365 general (de)compression error in %1=ogólny błąd podczas (de)kompresji w %1
 0366 invalid compression method or parameters in %1=niepoprawna metoda kompresji lub parametry w %1
 0367 can't allocate memory required for (de)compression in %1=nie można przydzielić pamięci do (de)kompresji w %1
-0368 I/O error in compression algorithm %1=błąd We/Wy w algorytmie kompresji %1
 0369 bad compressed data in %1=błąd w skompresowanych danych w %1
+0430 read error (bad media?) in compression algorithm %1=błąd odczytu (uszkodzone medium?) w algorytmie kompresji %1
+0431 write error (disk full?) in compression algorithm %1=błąd zapisu (dysk pełny?) w algorytmie kompresji %1
 
 
 === Standard profiles ====================================================
 Compression
 0771 Maximum=Maksymalny
 0772 Maximum with fast decompression=Maksymalny z szybką dekompresją
+0773 Ultra (require 2 gb RAM for decompression)=Ultra (wymagane 2GB RAM do dekompresji)
+0774 Maximum (require 1 gb RAM for decompression)=Maksymalny (wymagane 1GB RAM do dekompresji)
+0775 Best asymmetric (with fast decompression)=Najlepsze asymetryczne (szyba dekompresji)
 0752 No compression=Bez kompresji
 
 Encryption
