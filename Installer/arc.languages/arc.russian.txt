@@ -25,8 +25,8 @@ Language-specific URLs relative to http://freearc.org/ and helpfiles
 Filled only for languages providing their own translations
 0254 Homepage (URL, not translation!)=ru
 0255 News page (URL, not translation!)=ru/News.aspx
-0371 Forum page (URL, not translation!)=viewforum.php?f=4
-0372 Wiki page (URL, not translation!)=??
+0457 Forum page (URL, not translation!)=ru/redirects/forum.aspx
+0458 Wiki page (URL, not translation!)=ru/redirects/wiki.aspx
 0256 Helpfile (URL, not translation!)=FreeArc-GUI-Rus.htm
 0257 Command-line help (URL, not translation!)=FreeArc040-rus.htm
 

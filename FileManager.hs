@@ -727,8 +727,8 @@ myGUI run args = do
   -- Home/news page for the current locale
   homeURL  <- ((aARC_WEBSITE ++ "/") ++) ==<< i18n"0254 "
   newsURL  <- ((aARC_WEBSITE ++ "/") ++) ==<< i18n"0255 News.aspx"
-  forumURL <- ("http://apps.sourceforge.net/phpbb/freearc/" ++) ==<< i18n"0371 viewforum.php?f=3"
-  wikiURL  <- ("http://freearc.wiki.sourceforge.net/"       ++) ==<< i18n"0372 "
+  forumURL <- ((aARC_WEBSITE ++ "/") ++) ==<< i18n"0457 redirects/forum.aspx"
+  wikiURL  <- ((aARC_WEBSITE ++ "/") ++) ==<< i18n"0458 redirects/wiki.aspx"
 
   -- Открыть URL
   let openWebsite url  =  runFile url "." False

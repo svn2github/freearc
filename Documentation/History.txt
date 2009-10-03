@@ -351,7 +351,16 @@
   aARC_VERSION = "0.52", aARCHIVE_VERSION = make4byte 0 0 5 2
 === To-do list ====================================================================================
 
-сделать на сайте редиректы для forum/wiki
+lzma
+  -mlzma:1059mb:h100mb
+  словарь в 1гб
+инсталятор
+  sfx linux/nodelete
+  обновить powerpack для 0.52
+  ?overwrite arc.ini/groups
+  ?выбор языка средствами инсталятора
+  translate the "Gb" and "Mb" and "kb" fields or dropdown entries that are not yet translatable...
+  translate the about box
 tornado: use BigAlloc для выравнивания хеша на границу кеш-линии
 использовать для проверки на новости crc данных, возвращаемых страницей CheckNews.aspx
 fashell
@@ -362,13 +371,8 @@ fashell
 при начале след. операции показывается индикатор прогресса от предыдущей (по крайней мере после Cancel)
 окно перезаписи файла - иногда выводится не в gui треде?
 When I a open an encrypted archive and try to test it, Freearc asks for the password twice, once before testing and once after it.
-инсталятор
-  sfx linux/nodelete
-  ?overwrite arc.ini/groups
-  ?выбор языка средствами инсталятора
 при смене каталога путём прямого набора не меняется информация снизу (всего файлов/общий размер)
 пустые каталоги не удаляются из архива (в FM)
--mppmd:1m+ppmd:1m - вылет
 печатать в кавычках "xxx" в логфайл и на экран если есть пробелы внутри
 ??after "--" allow filenames starting with "@". use "-@" option to include listfiles anywhere on cmdline
 "поверх всех окон" и "solid blocks": сохранение настроек, сортировка
@@ -386,6 +390,7 @@ gui-версия не обрабатывает правильно ошибки:
 внешний вид
   выводить в заголовке окна "testing/compressing/extracting a.arc"
   по окончании операции в заголовке и поле Message "SUCESSFULLY TESTED a.arc", "% WARNINGS IN TESTING a.arc", "ERROR IN ..."
+    и заменять Отмена на ОК
   в GTK нет возможности сделать, чтобы в этом поле текст, который не поместился в поле с логом (внизу FM) по ширине, переносился на новую строчку?
 other
   Включение/выключение ассоциаций после переноса FreeArc на другую машину: http://forum.ru-board.com/topic.cgi?forum=5&topic=29437&start=1780#4
