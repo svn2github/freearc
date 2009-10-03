@@ -145,7 +145,6 @@ uiDef =
   "      <menuitem name=\"CmdlineHelp\"        action=\"CmdlineHelpAction\" />"++
   "      <menuitem name=\"OpenHomepage\"       action=\"OpenHomepageAction\" />"++
   "      <menuitem name=\"OpenForum\"          action=\"OpenForumAction\" />"++
-  "      <menuitem name=\"OpenWiki\"           action=\"OpenWikiAction\" />"++
   "      <menuitem name=\"CheckForUpdate\"     action=\"CheckForUpdateAction\" />"++
   "      <separator/>"++
   "      <menuitem name=\"About\"              action=\"AboutAction\" />"++

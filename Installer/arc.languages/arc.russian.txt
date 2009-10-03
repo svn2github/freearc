@@ -19,7 +19,7 @@
 
 Language name in english and mother tongue
 0000 Language=Russian (Русский)
-0159 Copyright=Bulat.Ziganshin@gmail.com
+0159 Translated by=Bulat.Ziganshin@gmail.com
 
 Language-specific URLs relative to http://freearc.org/ and helpfiles
 Filled only for languages providing their own translations
