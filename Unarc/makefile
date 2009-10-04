@@ -47,10 +47,11 @@ arc.sfx: $(OBJDIR)/ArcSFX.o $(OBJDIR)/ArcTinySFX.o $(LINKOBJ)
 
 freearc.sfx: $(OBJDIR)/FreeArcSFX.o $(OBJDIR)/FreeArcTinySFX.o $(LINKOBJ)
 	$(WINDRES) -Igui gui\main.rc gui\res.o
+	$(WINDRES) -Igui gui\main-small.rc gui\res-small.o
 	$(WINDRES) -Igui gui\icon.rc gui\icon.o
 	$(GCC) $< $(LINKOBJ)      $(LINK_FLAGS) gui\res.o -lcomctl32 -mwindows -o freearc.sfx
-	$(GCC) $< $(LINKOBJ_MINI) $(LINK_FLAGS) gui\res.o -lcomctl32 -mwindows -o freearc-mini.sfx
-	$(GCC) $(OBJDIR)/FreeArcTinySFX.o $(LINKOBJ_TINY) $(LINK_FLAGS) gui\res.o -lcomctl32 -mwindows -o freearc-tiny.sfx
+	$(GCC) $< $(LINKOBJ_MINI) $(LINK_FLAGS) gui\res-small.o -lcomctl32 -mwindows -o freearc-mini.sfx
+	$(GCC) $(OBJDIR)/FreeArcTinySFX.o $(LINKOBJ_TINY) $(LINK_FLAGS) gui\res-small.o -lcomctl32 -mwindows -o freearc-tiny.sfx
 	upx.exe -9 --lzma --compress-icons=2 freearc.sfx freearc-mini.sfx freearc-tiny.sfx
 
 freearc-installer.sfx: $(OBJDIR)/FreeArcInstaller.o $(LINKOBJ)

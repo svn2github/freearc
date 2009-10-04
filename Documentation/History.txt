@@ -351,6 +351,7 @@
   aARC_VERSION = "0.52", aARCHIVE_VERSION = make4byte 0 0 5 2
 === To-do list ====================================================================================
 
+linux: openWebsite http://code.google.com/p/freearc/issues/detail?id=19
 lzma
   -mlzma:1059mb:h100mb
   סכמגאנü ג 1דב

@@ -1,0 +1,3 @@
+#define ICON_FILE "freearc-small.ico"
+#define LOGO_FILE "logo-small.bmp"
+#include "common.rc"
