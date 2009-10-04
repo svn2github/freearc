@@ -19,14 +19,14 @@
 
 Language name in english and mother tongue
 0000 Language=Czech (Čeština)
-0159 Copyright=Radek "Black_Fox" Liška\nDodatky k překladu: Jan Ondruš, Milan Hrubý, Michal Molhanec
+0159 Translated by=Radek "Black_Fox" Liška\nDodatky k překladu: Jan Ondruš, Milan Hrubý, Michal Molhanec
 
 Language-specific URLs relative to http://freearc.org/ and helpfiles
 Filled only for languages providing their own translations
 0254 Homepage (URL, not translation!)=??
 0255 News page (URL, not translation!)=??
-0371 Forum page (URL, not translation!)=??
-0372 Wiki page (URL, not translation!)=??
+0457 Forum page (URL, not translation!)=??
+0458 Wiki page (URL, not translation!)=??
 0256 Helpfile (URL, not translation!)=??
 0257 Command-line help (URL, not translation!)=??
 
@@ -624,7 +624,7 @@ Archive name template
 0759 Weekday=Den v týdnu
 
 Exclude
-0753 Backup files=Zálohovat soubory
+0753 Backup files=Záložní soubory
 
 Additional compression options
 0760 Perform full backup=Provést plnou zálohu
