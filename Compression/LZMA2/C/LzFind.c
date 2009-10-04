@@ -190,9 +190,10 @@ int MatchFinder_Create(CMatchFinder *p, UInt32 historySize, UInt32 hashSize,
     MatchFinder_Free(p, alloc);
     return 0;
   }
-  sizeReserv = historySize >> 1;
-  if (historySize > ((UInt32)2 << 30)  ||  p->btMode==MF_HashTable)
-    sizeReserv = historySize >> 2;
+  if (p->btMode == MF_HashTable)
+    sizeReserv  =  historySize <= 768*mb           ?  historySize/4  :  historySize/8;
+  else
+    sizeReserv  =  historySize <= ((UInt32)2 << 30)?  historySize/2  :  historySize/4;
   sizeReserv += (keepAddBufferBefore + matchMaxLen + keepAddBufferAfter) / 2 + (1 << 19);
 
   p->keepSizeBefore = historySize + keepAddBufferBefore + 1;
