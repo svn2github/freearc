@@ -503,10 +503,12 @@ ask_password_dialog title' amount opt_parseData = gui $ do
 
   -- Создаёт таблицу с полями для ввода одного или двух паролей
   (pwdTable, pwds@[pwd1,pwd2]) <- pwdBox amount
-  for pwds (`onEntryActivate` buttonClicked okButton)
+  -- Процедура прверки правильности введённых паролей
+  let validate = do [pwd1', pwd2'] <- mapM val pwds
+                    return (pwd1'>"" && pwd1'==pwd2')
+  for pwds (`onEntryActivate` whenM validate (buttonClicked okButton))
   for pwds $ flip afterKeyRelease $ \e -> do
-    [pwd1', pwd2'] <- mapM val pwds
-    okButton `widgetSetSensitivity` (pwd1'>"" && pwd1'==pwd2')
+    validate >>= widgetSetSensitivity okButton
     return False
   okButton `widgetSetSensitivity` False
 
@@ -516,9 +518,11 @@ ask_password_dialog title' amount opt_parseData = gui $ do
   boxPackStart  upbox pwdTable PackGrow 0
   widgetShowAll upbox
 
+  fix $ \reenter -> do
   choice <- myDialogRun dialog
   if choice==ResponseOk
-    then val pwd1
+    then do ok <- validate
+            if ok  then val pwd1  else reenter
     else terminateOperation >> return ""
 
 
