@@ -1,4 +1,4 @@
-Welcome to FreeArc 0.52 installer.
+Welcome to FreeArc 0.60 RC.
 
 FreeArc features the following:
 * best speed and compression ratio among all practical archivers

@@ -319,7 +319,7 @@ URL* url_open (char *_url)
 
     /* some servers don't like requests that are made without a user-agent
        field, so we provide one */
-    curl_easy_setopt (url->curl_handle, CURLOPT_USERAGENT, "FreeArc/0.40");
+    curl_easy_setopt (url->curl_handle, CURLOPT_USERAGENT, "FreeArc/0.60RC");
 
     /* specify URL to get */
     curl_easy_setopt (url->curl_handle, CURLOPT_URL, url->url);

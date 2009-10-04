@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "FreeArc"
-!define PRODUCT_VERSION "0.52"
+!define PRODUCT_VERSION "0.60 RC"
 !define PRODUCT_PUBLISHER "Bulat Ziganshin"
 !define PRODUCT_WEB_SITE "http://freearc.org"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\FreeArc.exe"

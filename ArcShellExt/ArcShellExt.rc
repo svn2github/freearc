@@ -28,8 +28,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0,52,0,0
- PRODUCTVERSION 0,52,0,0
+ FILEVERSION 0,59,0,0
+ PRODUCTVERSION 0,59,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x3L
@@ -47,14 +47,14 @@ BEGIN
             VALUE "Comments", "\0"
             VALUE "CompanyName", "freearc.org\0"
             VALUE "FileDescription", "Context Menu Handler for FreeArc\0"
-            VALUE "FileVersion", "0.52\0"
+            VALUE "FileVersion", "0.59\0"
             VALUE "InternalName", "FreeArc\0"
             VALUE "LegalCopyright", "Copyright (c) 2009 Bulat Ziganshin\0"
             VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "ArcShellExt.dll\0"
             VALUE "PrivateBuild", "\0"
             VALUE "ProductName", "FreeArc Shell Extension\0"
-            VALUE "ProductVersion", "0.52\0"
+            VALUE "ProductVersion", "0.59\0"
             VALUE "SpecialBuild", "\0"
         END
     END

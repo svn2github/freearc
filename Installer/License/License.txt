@@ -1,7 +1,5 @@
-  FreeArc
-  ~~~~~~~
-  Usage license
-  ~~~~~~~~~~~~~
+  FreeArc usage license
+  ~~~~~~~~~~~~~~~~~~~~~
 
   FreeArc Copyright (C) 2004-2009 Bulat Ziganshin.
 
