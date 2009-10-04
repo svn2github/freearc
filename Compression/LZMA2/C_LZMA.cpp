@@ -50,8 +50,8 @@ static int FindMatchFinder(const char *s)
 #undef kNumFullDistances
 #ifndef FREEARC_DECOMPRESS_ONLY
 namespace LzmaEncoder {
-#include "C/LzmaEnc.c"
 #include "C/LzFind.c"
+#include "C/LzmaEnc.c"
 #undef SKIP_HEADER
 #undef SKIP_FOOTER
 #ifdef COMPRESS_MF_MT
