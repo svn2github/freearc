@@ -33,11 +33,11 @@ CFLAGS1= $(CODE_FLAGS) $(OPT_FLAGS) -O1 $(DEBUG_FLAGS) $(DEFINES) $(Extractor_DE
 
 
 unarc.exe: $(OBJDIR)/unarc.o $(LINKOBJ)
-	$(GCC) $< $(LINKOBJ) $(LINK_FLAGS) -o unarc.exe
+	$(GCC) $< $(LINKOBJ) $(LINK_FLAGS) -o $@
 
 unarc.dll: unarcdll.cpp unarcdll.h $(UNARC) $(HEADERS) $(LINKOBJ)
 	$(GCC) -c $(CFLAGS) -DFREEARC_LIBRARY -o $(OBJDIR)/unarclib.o $<
-	$(DLLWRAP) --driver-name g++ $(OBJDIR)/unarclib.o $(LINKOBJ) -lstdc++ -def unarc.def -s -o unarc.dll
+	$(DLLWRAP) --driver-name g++ $(OBJDIR)/unarclib.o $(LINKOBJ) -lstdc++ -def unarc.def -s -o $@
 
 arc.sfx: $(OBJDIR)/ArcSFX.o $(OBJDIR)/ArcTinySFX.o $(LINKOBJ)
 	$(GCC) $< $(LINKOBJ)      $(LINK_FLAGS) -o arc.sfx
@@ -56,25 +56,28 @@ freearc.sfx: $(OBJDIR)/FreeArcSFX.o $(OBJDIR)/FreeArcTinySFX.o $(LINKOBJ)
 
 freearc-installer.sfx: $(OBJDIR)/FreeArcInstaller.o $(LINKOBJ)
 	$(WINDRES) -Igui gui\main.rc gui\res.o
-	$(GCC) $< $(LINKOBJ)      $(LINK_FLAGS) gui\res.o -lcomctl32 -mwindows -o freearc-installer.sfx
-	upx.exe -9 --lzma --compress-icons=2 freearc-installer.sfx
+	$(GCC) $< $(LINKOBJ)      $(LINK_FLAGS) gui\res.o -lcomctl32 -mwindows -o $@
+	upx.exe -9 --lzma --compress-icons=2 $@
 
 FreeArc.fmt: $(OBJDIR)/FarPlugin.o FarPlugin.def $(LINKOBJ_FAR_PLUGIN)
-	$(DLLWRAP) --driver-name g++ $< $(LINKOBJ_FAR_PLUGIN) -lstdc++ -def FarPlugin.def -s -o FreeArc.fmt
+	$(DLLWRAP) --driver-name g++ $< $(LINKOBJ_FAR_PLUGIN) -lstdc++ -def FarPlugin.def -s -o $@
 
 
 unarc: $(OBJDIR)/unarc.o $(LINKOBJ)
-	$(GCC) $< $(LINKOBJ) $(UNIX_LINK_FLAGS) -o unarc
+	$(GCC) $< $(LINKOBJ) $(UNIX_LINK_FLAGS) -o $@
 
 arc.linux.sfx: $(OBJDIR)/ArcSFX.o $(LINKOBJ)
-	$(GCC) $< $(LINKOBJ)      $(UNIX_LINK_FLAGS) -o arc.linux.sfx
+	$(GCC) $< $(LINKOBJ)      $(UNIX_LINK_FLAGS) -o $@
+	chmod -x $@
 
-arc-mini.linux.sfx: $(OBJDIR)/ArcSFX.o $(LINKOBJ)
-	$(GCC) $< $(LINKOBJ_MINI) $(UNIX_LINK_FLAGS) -o arc-mini.linux.sfx
+arc-mini.linux.sfx: $(OBJDIR)/ArcSFX.o $(LINKOBJ_MINI)
+	$(GCC) $< $(LINKOBJ_MINI) $(UNIX_LINK_FLAGS) -o $@
+	chmod -x $@
 
-arc-tiny.linux.sfx: $(OBJDIR)/ArcTinySFX.o $(LINKOBJ)
-	$(GCC) $< $(LINKOBJ_TINY) $(UNIX_LINK_FLAGS) -o arc-tiny.linux.sfx
+arc-tiny.linux.sfx: $(OBJDIR)/ArcTinySFX.o $(LINKOBJ_TINY)
+	$(GCC) $< $(LINKOBJ_TINY) $(UNIX_LINK_FLAGS) -o $@
 #	upx -9 --lzma arc*.linux.sfx
+	chmod -x $@
 
 
 $(OBJDIR)/FarPlugin.o: $(FAR_PLUGIN) $(HEADERS)
