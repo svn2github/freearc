@@ -76,7 +76,7 @@ int SRes_to_FreeArc (SRes res)
   if (res == SZ_ERROR_OUTPUT_EOF)   return FREEARC_ERRCODE_WRITE;
   if (res == SZ_ERROR_READ)         return FREEARC_ERRCODE_READ;
   if (res == SZ_ERROR_WRITE)        return FREEARC_ERRCODE_WRITE;
-  if (res != S_OK)
+  if (res != SZ_OK)
     //fprintf(stderr, "\nEncoder error = %X\n", (unsigned int)res);
     return FREEARC_ERRCODE_GENERAL;
   return FREEARC_OK;
@@ -276,7 +276,7 @@ int lzma_decompress( int dictionarySize,
     if (errcode < 0)  break;
 
     bool finished = (inSizeProcessed == 0 && outSizeProcessed == 0);
-    if (finished)  {errcode = SRes_to_FreeArc(status == LZMA_STATUS_FINISHED_WITH_MARK ? S_OK : S_FALSE); break;}
+    if (finished)  {errcode = SRes_to_FreeArc(status == LZMA_STATUS_FINISHED_WITH_MARK ? SZ_OK : SZ_ERROR_DATA); break;}
 
     if (_state.dicPos == _state.dicBufSize)
       _state.dicPos = 0;
