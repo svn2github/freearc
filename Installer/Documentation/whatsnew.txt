@@ -2,12 +2,12 @@ Welcome to FreeArc 0.60 RC (October 5 2009)
 
 Main changes in this version:
 
-    * Fixed a lot of problems and bugs with memory, maximum compression, tempfiles etc
+    * Fixed a lot of problems and bugs with memory usage, maximum compression, tempfiles etc
     * Explorer integration (right-click context menu items on archives, files and directories)
     * Conversion of non-FreeArc archives to FreeArc format using All2Arc utility by Black_Fox
     * Support for using FreeArc archives in InnoSetup installers: http://freearc.org/InnoSetup.aspx
     * LZMA made 10-20% faster
-    * Added Ultra compression mode that uses 1.5 gb dictionary
+    * Added Ultra compression mode with 1.5 gb dictionary
     * Included license file clearly stating that FreeArc is free for any usage
 
 Full changelog: http://code.google.com/p/freearc/issues/list?can=1&q=status:fixed%20milestone=0.60

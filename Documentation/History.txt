@@ -352,6 +352,7 @@
 === To-do list ====================================================================================
 
 linux: openWebsite http://code.google.com/p/freearc/issues/detail?id=19
+       readme.txt (из виндового whastnew.txt)
 инсталятор
   sfx linux/nodelete
   ?overwrite arc.ini/groups

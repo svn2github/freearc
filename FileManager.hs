@@ -730,7 +730,13 @@ myGUI run args = do
   wikiURL  <- ((aARC_WEBSITE ++ "/") ++) ==<< i18n"0458 redirects/wiki.aspx"
 
   -- Открыть URL
+#ifdef FREEARC_WIN
   let openWebsite url  =  runFile url "." False
+#else
+  let openWebsite url  =  do browser <- runProgram "gconftool-2 --get '/desktop/gnome/url-handlers/http/command'"
+                             System.Process.runCommand (browser.$ replaceAll "%s" url)
+                             return ()
+#endif
 
   -- Открыть файл помощи
   let openHelp helpfile = do
