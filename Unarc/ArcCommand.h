@@ -5,7 +5,7 @@
 #define NAME           "unpacker"
 #endif
 
-#define HEADER1        "FreeArc 0.60 RC "
+#define HEADER1        "FreeArc 0.60RC "
 #define HEADER2        "  http://freearc.org  2009-10-05\n"
 
 
