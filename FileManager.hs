@@ -734,6 +734,7 @@ myGUI run args = do
   let openWebsite url  =  runFile url "." False
 #else
   let openWebsite url  =  do browser <- runProgram "gconftool-2 --get '/desktop/gnome/url-handlers/http/command'"
+                             browser <- return$ if "%s" `isInfixOf` browser  then browser  else "firefox \"%s\""
                              System.Process.runCommand (browser.$ replaceAll "%s" url)
                              return ()
 #endif
