@@ -3,7 +3,7 @@
 ; To install it, append contents of this file to multiarc.ini
 ; Arc.exe and unarc.exe should be in your PATH - or write paths here.
 ; -----------------------------------------------------------------------
-; Version: FreeArc 0.50
+; Version: FreeArc 0.60RC
 ; Available at: http://freearc.org
 ; Comments: none
 ; WARNINGS: none
@@ -13,13 +13,13 @@
 ID=41 72 43 01
 IDPos = 0, -38, -39, -40, <SeekID>
 Extension=arc
-Description="FreeArc 0.50"
+Description="FreeArc 0.60RC"
 Archiver=Arc.exe
-List="unarc v --noarcext -- %AQA"
+List="%P v --noarcext -- %AQA"
 Format0="yyyy tt dd hh mm ss aaaaaaa zzzzzzzzzzzzzzz ppppppppppppppp rrrrrrrr nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn"
 Start="^--"
 End="^--"
-Test="%P t --noarcext -sclANSI -- %AQA @%LA"
+Test="%P t --noarcext -sclANSI -- %AQA"
 Add="%P a {-ap%RA} --noarcext -sclANSI {%S} -- %AQA @%LA"
 Move="%P m {-ap%RA} --noarcext -sclANSI {%S} -- %AQA @%LA"
 Extract="%P e -y --noarcext -sclANSI -- %AQA @%LA"

@@ -9,8 +9,8 @@ install: uninstall
 	sudo mkdir -p $(PREFIX)/lib/FreeArc
 	sudo cp -r bin/* $(PREFIX)/bin
 	sudo cp -r lib/* $(PREFIX)/lib/FreeArc
-	mkdir -p /etc/FreeArc
-	cp -r cfg/* /etc/FreeArc
+	sudo mkdir -p /etc/FreeArc
+	sudo cp -r cfg/* /etc/FreeArc
 
 # Install with individual configuration for every user
 local: uninstall
@@ -18,8 +18,8 @@ local: uninstall
 	sudo mkdir -p $(PREFIX)/lib/FreeArc
 	sudo cp -r bin/* $(PREFIX)/bin
 	sudo cp -r lib/* $(PREFIX)/lib/FreeArc
-	mkdir -p ~/.FreeArc
-	cp -r cfg/* ~/.FreeArc
+	sudo mkdir -p ~/.FreeArc
+	sudo cp -r cfg/* ~/.FreeArc
 
 uninstall:
 	sudo rm -rf ~/.FreeArc

@@ -18,10 +18,10 @@ bin\arc a -t FreeArc-console FreeArc.url Addons\ -xFreeArc.reg bin\arc.* bin\fac
 ren FreeArc-console.exe FreeArc-console-%VER%-win32%V%.exe
 
 7z -mx a FreeArc-portable-%VER%-win32%V%.zip  -x!GTK* -x!FreeArc-* -x!*.nsi -x!*.nsh -x!*.cmd
+copy /b FreeArc-portable-%VER%-win32%V%.zip FreeArc-portable-update-%VER%-win32%V%.zip
 cd gtk2-themes
 7z -mx a ..\FreeArc-portable-%VER%-win32%V%.zip
 cd ..
-copy /b FreeArc-portable-%VER%-win32%V%.zip FreeArc-portable-update-%VER%-win32%V%.zip
 cd gtk2-runtime
 7z -mx a ..\FreeArc-portable-%VER%-win32%V%.zip
 cd ..
