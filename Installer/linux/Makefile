@@ -4,22 +4,16 @@
 
 PREFIX=/usr/local
 
+# Install with individual configuration for every user
 install: uninstall
 	sudo mkdir -p $(PREFIX)/bin
 	sudo mkdir -p $(PREFIX)/lib/FreeArc
+	sudo mkdir -p $(PREFIX)/lib/FreeArc/Documentation
 	sudo cp -r bin/* $(PREFIX)/bin
 	sudo cp -r lib/* $(PREFIX)/lib/FreeArc
-	sudo mkdir -p /etc/FreeArc
-	sudo cp -r cfg/* /etc/FreeArc
-
-# Install with individual configuration for every user
-local: uninstall
-	sudo mkdir -p $(PREFIX)/bin
-	sudo mkdir -p $(PREFIX)/lib/FreeArc
-	sudo cp -r bin/* $(PREFIX)/bin
-	sudo cp -r lib/* $(PREFIX)/lib/FreeArc
-	sudo mkdir -p ~/.FreeArc
-	sudo cp -r cfg/* ~/.FreeArc
+	sudo cp -r Documentation/* $(PREFIX)/lib/FreeArc/Documentation
+	mkdir -p ~/.FreeArc
+	cp -r cfg/* ~/.FreeArc
 
 uninstall:
 	sudo rm -rf ~/.FreeArc

@@ -26,7 +26,7 @@ cd ..
 cd GRZip
 make
 cd ..
-cd LZMA2
+cd LZMA
 make
 cd ..
 cd _Encryption

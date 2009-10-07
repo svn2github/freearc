@@ -742,7 +742,7 @@ myGUI run args = do
   -- Открыть файл помощи
   let openHelp helpfile = do
         doc  <- i18n helpfile
-        file <- findFile libraryFilePlaces ("../Documentation" </> doc)
+        file <- findFile libraryFilePlaces (iif isWindows "../Documentation" "Documentation" </> doc)
         case file of
           "" -> return ()
           _  -> openWebsite ((isWindows&&&windosifyPath) file)
