@@ -24,6 +24,7 @@
       <menuitem name="Comment"            action="CommentAction" />
       <menuitem name="Recompress"         action="RecompressAction" />
       <menuitem name="Convert to SFX"     action="ConvertToSFXAction" />
+      <menuitem name="Convert to FreeArc" action="ConvertToFreeArcAction" />
       <separator/>
       <menuitem name="Encrypt"            action="EncryptAction" />
       <menuitem name="Protect"            action="ProtectAction" />
