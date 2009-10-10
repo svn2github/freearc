@@ -322,11 +322,11 @@ aARCHIVE_VERSION = make4byte 0 0 5 9
 {-# NOINLINE aARC_WEBSITE #-}
 {-# NOINLINE aARC_LICENSE #-}
 -- |Краткое наименование программы, выводимое в начале работы
-aARC_VERSION_WITH_DATE = aARC_VERSION ++ " ("++aARC_DATE++")"    -- aARC_VERSION
-aARC_HEADER_WITH_DATE  = aARC_HEADER  ++ " ("++aARC_DATE++")"    -- aARC_HEADER
+aARC_VERSION_WITH_DATE = aARC_VERSION                    -- aARC_VERSION ++ " ("++aARC_DATE++")"
+aARC_HEADER_WITH_DATE  = aARC_HEADER                     -- aARC_HEADER  ++ " ("++aARC_DATE++")"
 aARC_HEADER  = aARC_NAME++" "++aARC_VERSION++" "
-aARC_VERSION = "0.60 RC2"                                        --  "0.60 RC ("++aARC_DATE++")"
-aARC_DATE    = "October 7 2009"
+aARC_VERSION = "0.60 RC ("++aARC_DATE++")"               --  "0.60 RC"
+aARC_DATE    = "October 10 2009"
 aARC_NAME    = "FreeArc"
 aARC_AUTHOR  = "Bulat Ziganshin"
 aARC_EMAIL   = "Bulat.Ziganshin@gmail.com"
