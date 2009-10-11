@@ -465,7 +465,12 @@ extern jmp_buf jumper;
 #define throw()
 #endif
 
-#ifndef FREEARC_STANDALONE_TORNADO
+#ifdef FREEARC_STANDALONE_TORNADO
+#define MidAlloc(size) malloc(size)
+#define MidFree(address) free(address)
+#define BigAlloc(size) malloc(size)
+#define BigFree(address) free(address)
+#else
 void *MyAlloc(size_t size) throw();
 void MyFree(void *address) throw();
 #ifdef FREEARC_WIN

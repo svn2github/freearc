@@ -357,7 +357,7 @@
   ?выбор €зыка средствами инстал€тора
   translate the "Gb" and "Mb" and "kb" fields or dropdown entries that are not yet translatable...
   translate the about box
-mm/tta/?external: BigAlloc; tornado: use BigAlloc дл€ выравнивани€ хеша на границу кеш-линии
+mm/tta/?external: BigAlloc
 fashell
   250 vars in Lua stack?
   установка в каталоги с unicode-именами и BOM в начале скрипта (заменить вызов luaL_dofile)

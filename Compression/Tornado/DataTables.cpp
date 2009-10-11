@@ -134,7 +134,7 @@ struct DataTables
    byte              original[MAX_TABLE_ROW_AT_DECOMPRESSION];
 
    DataTables();
-   ~DataTables()   {free(tables);}
+   ~DataTables()   {MidFree(tables);}
 
    // Add description of one more datatable to the list
    void add (int _table_type, BYTE *_table_start, int _table_len);
@@ -164,7 +164,7 @@ struct DataTables
 DataTables::DataTables()
 {
     const int ENTRIES = 10000;   // Number of entries in the list. When list overflows, data in outbuf are processed and written to outstream
-    tables     = (DataTableEntry *) malloc (sizeof(DataTableEntry) * ENTRIES);
+    tables     = (DataTableEntry *) MidAlloc (sizeof(DataTableEntry) * ENTRIES);
     curtable   = tables;
     tables_end = tables + ENTRIES;
 }

@@ -122,7 +122,7 @@ BaseMatchFinder::BaseMatchFinder (BYTE *buf, int hashsize, int _hash_row_width, 
     HashSize  = (1<<lb(hashsize)) / sizeof(*HTable);
     HashShift = 32-lb(HashSize);
     HashMask  = (HashSize-1) & ~(roundup_to_power_of(hash_row_width,2)-1);
-    HTable    = (PtrVal*) malloc (sizeof(PtrVal) * HashSize);
+    HTable    = (PtrVal*) BigAlloc (sizeof(PtrVal) * HashSize);
 }
 
 // Returns error code if there is any problem in MF work
@@ -156,7 +156,7 @@ struct MatchFinder1 : BaseMatchFinder
     MatchFinder1 (BYTE *buf, int hashsize, int hash_row_width, uint auxhash_size, int auxhash_row_width)
         : BaseMatchFinder (buf, hashsize, hash_row_width, auxhash_size, auxhash_row_width)
                      {clear_hash(buf);}
-    ~MatchFinder1 () {free(HTable);}
+    ~MatchFinder1 () {BigFree(HTable);}
 
     uint find_matchlen (byte *p, void *bufend, UINT prevlen)
     {
@@ -193,7 +193,7 @@ struct MatchFinder2 : BaseMatchFinder
     MatchFinder2 (BYTE *buf, int hashsize, int hash_row_width, uint auxhash_size, int auxhash_row_width)
         : BaseMatchFinder (buf, hashsize, hash_row_width, auxhash_size, auxhash_row_width)
                      {clear_hash(buf);}
-    ~MatchFinder2 () {free(HTable);}
+    ~MatchFinder2 () {BigFree(HTable);}
 
     uint find_matchlen (byte *p, void *bufend, UINT prevlen)
     {
@@ -243,7 +243,7 @@ struct MatchFinderN : BaseMatchFinder
     MatchFinderN (BYTE *buf, int hashsize, int hash_row_width, uint auxhash_size, int auxhash_row_width)
         : BaseMatchFinder (buf, hashsize, hash_row_width, auxhash_size, auxhash_row_width)
                      {clear_hash(buf);}
-    ~MatchFinderN () {free(HTable);}
+    ~MatchFinderN () {BigFree(HTable);}
 
     uint find_matchlen (byte *p, void *bufend, UINT prevlen)
     {
@@ -307,7 +307,7 @@ struct ExactMatchFinder : BaseMatchFinder
     ExactMatchFinder (BYTE *buf, int hashsize, int hash_row_width, uint auxhash_size, int auxhash_row_width)
         : BaseMatchFinder (buf, hashsize, hash_row_width, auxhash_size, auxhash_row_width)
                          {clear_hash(buf);}
-    ~ExactMatchFinder () {free(HTable);}
+    ~ExactMatchFinder () {BigFree(HTable);}
 
     uint find_matchlen (byte *p, void *bufend, UINT prevlen)
     {
@@ -363,7 +363,7 @@ struct CachingMatchFinder : BaseMatchFinder
         hash_row_width = _hash_row_width;
         clear_hash(buf);
     }
-    ~CachingMatchFinder() {free(HTable);}
+    ~CachingMatchFinder() {BigFree(HTable);}
 
     void clear_hash (BYTE *buf);
     void shift (BYTE *buf, int shift);
@@ -508,7 +508,7 @@ struct CycledCachingMatchFinder : BaseMatchFinder
     UINT  HeadSize;
 
     CycledCachingMatchFinder (BYTE *buf, uint hashsize, int _hash_row_width, uint auxhash_size, int auxhash_row_width);
-    ~CycledCachingMatchFinder()  {free(Head); free(HTable);}
+    ~CycledCachingMatchFinder()  {BigFree(Head); BigFree(HTable);}
 
     void clear_hash (BYTE *buf);
     void shift (BYTE *buf, int shift);
@@ -639,10 +639,10 @@ CycledCachingMatchFinder<N>::CycledCachingMatchFinder (BYTE *buf, uint hashsize,
         --hash_row_width;
 
     HeadSize  = 1 << lb(hashsize / (sizeof(*HTable) * hash_row_width * 2));
-    Head      = (BYTE*)  malloc (HeadSize * sizeof(*Head));
+    Head      = (BYTE*)  BigAlloc (HeadSize * sizeof(*Head));
 
     HashSize  = HeadSize * hash_row_width * 2 ;
-    HTable    = (PtrVal*) malloc (HashSize * sizeof(*HTable));
+    HTable    = (PtrVal*) BigAlloc (HashSize * sizeof(*HTable));
 
     HashShift = 32 - lb(HeadSize);
     HashMask  = ~0;
@@ -833,16 +833,16 @@ Hash3<MatchFinder, HASH3_LOG, HASH2_LOG, FULL_UPDATE>
 {
     HashSize  = 1 << HASH3_LOG;
     HashSize2 = 1 << HASH2_LOG;
-    HTable  = (BYTE**) malloc (sizeof(BYTE*) * HashSize);
-    HTable2 = (BYTE**) malloc (sizeof(BYTE*) * HashSize2);
+    HTable  = (BYTE**) MidAlloc (sizeof(BYTE*) * HashSize);
+    HTable2 = (BYTE**) MidAlloc (sizeof(BYTE*) * HashSize2);
     clear_hash3 (buf);
 }
 
 template <class MatchFinder, int HASH3_LOG, int HASH2_LOG, bool FULL_UPDATE>
 Hash3<MatchFinder, HASH3_LOG, HASH2_LOG, FULL_UPDATE> :: ~Hash3()
 {
-    free(HTable);
-    free(HTable2);
+    MidFree(HTable);
+    MidFree(HTable2);
 }
 
 template <class MatchFinder, int HASH3_LOG, int HASH2_LOG, bool FULL_UPDATE>

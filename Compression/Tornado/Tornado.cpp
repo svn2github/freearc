@@ -404,7 +404,7 @@ int tor_decompress0 (CALLBACK_FUNC *callback, void *auxdata, int _bufsize, int m
     Decoder decoder (callback, auxdata, _bufsize);        // LZ77 decoder parses raw input bitstream and returns literals&matches
     if (decoder.error() != FREEARC_OK)  return decoder.error();
     uint bufsize = compress_all_at_once? _bufsize : mymax (_bufsize, HUGE_BUFFER_SIZE);   // Make sure that outbuf is at least 8mb in order to avoid excessive disk seeks (not required in programs compiled for one-shot compression)
-    BYTE *outbuf = (byte*) malloc (bufsize+PAD_FOR_TABLES*2);  // Circular buffer for decompressed data
+    BYTE *outbuf = (byte*) BigAlloc (bufsize+PAD_FOR_TABLES*2);  // Circular buffer for decompressed data
     if (!outbuf)  return FREEARC_ERRCODE_NOT_ENOUGH_MEMORY;
     outbuf += PAD_FOR_TABLES;       // We need at least PAD_FOR_TABLES bytes available before and after outbuf in order to simplify datatables undiffing
     BYTE *output      = outbuf;     // Current position in decompressed data buffer
@@ -467,7 +467,7 @@ int tor_decompress0 (CALLBACK_FUNC *callback, void *auxdata, int _bufsize, int m
         }
     }
 finished:
-    free(outbuf-PAD_FOR_TABLES);
+    BigFree(outbuf-PAD_FOR_TABLES);
     // Return decoder error code, errcode or FREEARC_OK
     return decoder.error() < 0 ?  decoder.error() :
            errcode         < 0 ?  errcode

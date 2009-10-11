@@ -21,13 +21,6 @@ enum CodecDirection {Encoder, Decoder};
 
 #define MAXELEM 8  /* size of maximum data element that can be read/written to byte stream */
 
-struct ByteBuffer
-{
-    byte *buf;               // Buffer pointer
-    ByteBuffer (uint size)   {buf = (byte*) malloc (size);}
-    ~ByteBuffer()            {free(buf);}
-};
-
 struct OutputByteStream
 {
     CALLBACK_FUNC *callback;  // Function that writes data to the outstream
@@ -45,10 +38,10 @@ struct OutputByteStream
     {
         callback = _callback;  auxdata = _auxdata;  chunk = _chunk;
         // Add 512 bytes for LZ77_ByteCoder (its LZSS scheme needs to overwrite old flag words) and 4096 for rounding written chunks
-        last_qwrite = output = buf = (byte*) malloc (chunk+pad+512+4096);
+        last_qwrite = output = buf = (byte*) BigAlloc (chunk+pad+512+4096);
         errcode = buf==NULL?  FREEARC_ERRCODE_NOT_ENOUGH_MEMORY : FREEARC_OK;
     }
-    ~OutputByteStream()       {free(buf);}
+    ~OutputByteStream()       {BigFree(buf);}
     // Returns error code if there was any problems in stream work
     int error()               {return errcode;}
     // Drop/use anchor which marks place in buffer
@@ -61,7 +54,7 @@ struct OutputByteStream
     // Finish working, flushing any pending data
     void finish (int n=-1);
     // Writes 8-64 bits to the buffer
-    void put8   (uint c)      {*         output = c; advance(1);}
+    void put8   (uint c)      {          *output= c;  advance(1);}
     void put16  (uint c)      {setvalue16(output, c); advance(2);}
     void put24  (uint32 c)    {setvalue32(output, c); advance(3);}
     void put32  (uint32 c)    {setvalue32(output, c); advance(4);}
@@ -122,13 +115,13 @@ struct InputByteStream
     {
         callback   = _callback;  auxdata = _auxdata;
         bufsize    = compress_all_at_once? _bufsize+(_bufsize/4) : LARGE_BUFFER_SIZE;  // For all-at-once compression input buffer should be large enough to hold all compressed data
-        buf        = (byte*) malloc (MAXELEM+bufsize);
+        buf        = (byte*) BigAlloc (MAXELEM+bufsize);
         errcode    = buf==NULL?  FREEARC_ERRCODE_NOT_ENOUGH_MEMORY : FREEARC_OK;
         input      = buf + MAXELEM;
         read_point = buf + bufsize;
         if (error()==FREEARC_OK)   errcode = callback ("read", buf+MAXELEM, bufsize, auxdata);
     }
-    ~InputByteStream()  {free(buf);}
+    ~InputByteStream()  {BigFree(buf);}
     // Returns error code if there is any problem in stream work
     int error()  {return errcode<0? errcode : FREEARC_OK;}
 

@@ -35,11 +35,11 @@ static char *name (PackMethod method)
     return namebuf;
 }
 
-enum MODE {AUTO, COMPRESS, DECOMPRESS, BENCHMARK, HELP};
+enum OPMODE {AUTO, COMPRESS, DECOMPRESS, BENCHMARK, HELP};
 
 // Structure for recording compression statistics and zero record of this type
 struct Results {
-  MODE mode;                   // Operation mode
+  OPMODE mode;                 // Operation mode
   PackMethod method;           // Compression method used
   char method_name[100];       // Short name of compression method
   char *filename;              // Names of input/output files
@@ -176,7 +176,7 @@ int ReadWriteCallback (const char *what, void *buf, int size, void *r_)
 int main (int argc, char **argv)
 {
     // Operation mode
-    MODE global_mode=AUTO;
+    OPMODE global_mode=AUTO;
 
     // Record that stores all the info required for ReadWriteCallback
     static Results r;
